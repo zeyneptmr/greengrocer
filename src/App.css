@@ -1,5 +1,14 @@
 .App {
   text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.content {
+  min-height: 200vh;
+  max-height: 300vh;
+  overflow-y: auto;
 }
 
 .App-logo {
