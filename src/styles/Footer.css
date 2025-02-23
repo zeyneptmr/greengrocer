@@ -19,16 +19,20 @@
 
 .column{
     flex:1;
-    justify-items:flex-start;
-    min-width: 200px;
+    align-items: flex-start;
     margin:10px;
+    padding-left: 100px;
 
 }
 
+
+
 .vegetablecolumn{
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 0 100px;
+    flex:1;
+    margin-left: 12%;
    
 }
 
@@ -61,15 +65,16 @@
 
 .aboutcontainer{
     display: flex;
+    justify-content: center;
 
    
-
 }
 
 
 .footericons{
     width: 20px;
     margin-right: 10px;
+    
    
 }
 
@@ -80,9 +85,6 @@
     margin:20px 0;
     justify-content: center;
     margin-top: 40px;
-
-
-
 
 }
 
@@ -103,8 +105,18 @@
 .copyright{
     text-align: center;
     width:100%;
+    display: flex;
+    justify-content: center;
+    margin-left: 12%;
 }
 
 h4{
     font-weight: bold;
+    text-align: center;
+}
+
+hr{
+    width:100%;
+    margin-left: 90px;
+    
 }

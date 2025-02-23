@@ -79,7 +79,6 @@ function Footer() {
 
                 </div>
 
-
             </div>
             <hr></hr>
             <div className='row'>
