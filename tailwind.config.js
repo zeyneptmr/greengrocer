@@ -5,6 +5,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Poppins', 'sans-serif'],
+                //'oleo': ['Oleo Script', 'cursive'],
             },
         },
     },
