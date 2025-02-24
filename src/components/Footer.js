@@ -10,7 +10,6 @@ import InstagramIcon from '../assets/instagram.svg';
 import YoutubeIcon from '../assets/youtube.svg';
 
 
-
 function Footer() {
   return (
     <div className='main-footer'>

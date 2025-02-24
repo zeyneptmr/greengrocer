@@ -70,6 +70,20 @@
    
 }
 
+.aboutcontainer a{
+    color:inherit;
+    transition: all 0.4s ease
+
+}
+
+.aboutcontainer a:hover{
+    color:rgb(234, 165, 38);
+    font-weight: bold;
+    transition: all 0.4s ease;
+    text-decoration: underline;
+
+}
+
 
 .footericons{
     width: 20px;
