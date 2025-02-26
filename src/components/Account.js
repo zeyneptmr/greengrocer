@@ -172,8 +172,5 @@ const Account = ({ isOpen, onClose }) => {
     );
 };
 
-<<<<<<< HEAD
 export default Account;
-=======
-export default Account;
->>>>>>> 24d9ded63894ece4fd002df124396c0033ffe8db
+

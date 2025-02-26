@@ -54,23 +54,33 @@ function Footer() {
           <div className="flex-1 text-center">
             <h4 className="text-lg font-bold">COMPANY</h4>
             <div className="mt-4">
-              <a 
-                href="/" 
-                className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
+              <a
+                  href="/"
+                  className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
               >
-                <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5" />
+                <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5"/>
                 <span>About Us</span>
               </a>
             </div>
+
+            <div className='contact-link'>
+              <a href="/contact">Contact US </a>
+            </div>
+
+            <br></br>
+
             <div className="mt-6 flex justify-center space-x-6">
-              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="transition-transform transform hover:scale-150">
-                <img src={FacebookIcon} alt="Facebook Icon" className="w-10" />
+              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
+                 className="transition-transform transform hover:scale-150">
+                <img src={FacebookIcon} alt="Facebook Icon" className="w-10"/>
               </a>
-              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="transition-transform transform hover:scale-150">
-                <img src={InstagramIcon} alt="Instagram Icon" className="w-10" />
+              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"
+                 className="transition-transform transform hover:scale-150">
+                <img src={InstagramIcon} alt="Instagram Icon" className="w-10"/>
               </a>
-              <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="transition-transform transform hover:scale-150">
-                <img src={YoutubeIcon} alt="Youtube Icon" className="w-10" />
+              <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"
+                 className="transition-transform transform hover:scale-150">
+                <img src={YoutubeIcon} alt="Youtube Icon" className="w-10"/>
               </a>
             </div>
           </div>
