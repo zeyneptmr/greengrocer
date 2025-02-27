@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ShoppingCart, Search, Sun, Moon, Heart, User } from "lucide-react";
+import { Link } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
@@ -49,12 +50,24 @@ const Navbar = () => {
             <div className="bg-green-500 text-white p-3">
                 <div className="flex justify-center">
                     <ul className="flex space-x-6">
-                        <li className="cursor-pointer hover:underline">Fruits</li>
-                        <li className="cursor-pointer hover:underline">Vegetables</li>
-                        <li className="cursor-pointer hover:underline">Baked Goods</li>
-                        <li className="cursor-pointer hover:underline">Olives</li>
-                        <li className="cursor-pointer hover:underline">Sauces</li>
-                        <li className="cursor-pointer hover:underline">Designer Clothes</li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/fruits"> Fruits </Link>
+                        </li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/vegetables"> Vegetables </Link>
+                        </li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/bakedgoods"> Baked Goods </Link>
+                        </li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/olives"> Olives </Link>
+                        </li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/sauces"> Sauces </Link>
+                        </li>
+                        <li className="cursor-pointer hover:underline">
+                            <Link to="/designerclothes"> Designer Clothes </Link>
+                        </li>
                     </ul>
                 </div>
             </div>

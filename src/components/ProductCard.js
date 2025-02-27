@@ -1,14 +1,40 @@
-const ProductCard = ({ product }) => {
-    return (
-        <div className="border rounded-lg p-4 shadow-lg">
-            <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded" />
-            <h3 className="font-bold mt-2">{product.name}</h3>
-            <p className="text-green-600 font-semibold">{product.price} TL</p>
-            <button className="bg-orange-500 text-white p-2 rounded mt-2 w-full">
-                Sepete Ekle
-            </button>
-        </div>
-    );
-};
+import { useState } from "react";
+import { Heart } from "lucide-react";
+import { Card } from "./Card";
+import { CardContent } from "./CardContent";
+import { Button } from "./Button";
 
-export default ProductCard;
+export default function ProductCard({ product }) {
+    const [isFavorite, setIsFavorite] = useState(false);
+  
+    return (
+      <Card className="relative flex flex-col items-center">
+        {/* Favori Butonu */}
+        <button
+          onClick={() => setIsFavorite(!isFavorite)}
+          className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+        >
+          <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+        </button>
+        
+        {/* Ürün Görseli */}
+        <CardContent>
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-44 h-44 object-cover rounded-lg"
+          />
+          
+          {/* Ürün Adı */}
+          <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
+          
+          {/* Ürün Fiyatı */}
+          <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
+          
+          {/* Sepete Ekle Butonu */}
+          <Button className="mt-4">Sepete Ekle</Button>
+        </CardContent>
+      </Card>
+    );
+  }
+  
