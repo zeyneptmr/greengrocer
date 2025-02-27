@@ -1,25 +1,71 @@
 import ProductCard from "../components/ProductCard";
-import orangeImg from '../assets/orange.jpg';
-import bananaImg from "../assets/banana.jpg";
-import grapesImg from "../assets/grapes.jpg";
-import greenappleImg from "../assets/greenapple.jpg";
-import redappleImg from "../assets/redapple.jpg";
-import lemonImg from "../assets/lemon.jpg";
-import pearImg from "../assets/pear.jpg";
-import plumImg from "../assets/plum.jpg";
-import strawberryImg from "../assets/strawberry.jpg";
+import arugulaImg from "../assets/arugula.jpg";
+import bellpepperImg from "../assets/bellpepper.jpg";
+import broccoliImg from "../assets/broccoli.jpg";
+import capiapepperImg from "../assets/capiapepper.jpg";
+import carrotImg from "../assets/carrot.jpg";
+import cauliflowerImg from "../assets/cauliflower.jpg";
+import celeryImg from "../assets/celery.jpg";
+import cherrytomatoImg from "../assets/cherrytomato.jpg";
+import cucumberImg from "../assets/cucumber.jpg";
+import curlyletuceImg from "../assets/curlyletuce.jpg";
+import eggplantImg from "../assets/eggplant.jpg";
+import freshmintImg from "../assets/freshmint.jpg";
+import garlicImg from "../assets/garlic.jpg";
+import greenbeanImg from "../assets/greenbean.jpg";
+import greenpepperImg from "../assets/greenpepper.jpg";
+import iceberglettuceImg from "../assets/iceberglettuce.jpg";
+import kaleImg from "../assets/kale.jpg";
+import mushroomImg from "../assets/mushroom.jpg";
+import onionImg from "../assets/onion.jpg";
+import parsleyImg from "../assets/parsley.jpg";
+import pepperImg from "../assets/pepper.jpg";
+import potatoImg from "../assets/potato.jpg";
+import pumpkinImg from "../assets/pumpkin.jpg";
+import radishImg from "../assets/radish.jpg";
+import redcabbageImg from "../assets/redcabbage.jpg";
+import redonionImg from "../assets/redonion.jpg";
+import redpepperImg from "../assets/redpepper.jpg";
+import avocadoImg from "../assets/avocado.jpg";
+import scallionImg from "../assets/scallion.jpg";
+import sweetpepperImg from "../assets/sweetpepper.jpg";
+import tomatoImg from "../assets/tomato.jpg";
+import zucchiniImg from "../assets/zucchini.jpg";
 
 
 const vegetables = [
-    { name: "Orange", price: "49,95", image: orangeImg },
-    { name: "Banana", price: "129,95", image: bananaImg },
-    { name: "Grapes", price: "129,95", image: grapesImg },
-    { name: "Green apple", price: "129,95", image: greenappleImg },
-    { name: "Red apple", price: "129,95", image: redappleImg },
-    { name: "Lemon", price: "129,95", image: lemonImg },
-    { name: "Pear", price: "129,95", image: pearImg },
-    { name: "Plum", price: "129,95", image: plumImg },
-    { name: "Strawberry", price: "129,95", image: strawberryImg },
+    { name: "Avocado", price: "49,95", image: avocadoImg },
+    { name: "Arugula", price: "129,95", image: arugulaImg },
+    { name: "Tomatoes", price: "129,95", image: tomatoImg },
+    { name: "Cucumber", price: "129,95", image: cucumberImg },
+    { name: "Potatoes", price: "129,95", image: potatoImg },
+    { name: "Onion", price: "129,95", image: onionImg },
+    { name: "Carrot", price: "129,95", image: carrotImg },
+    { name: "Zucchini", price: "129,95", image: zucchiniImg },
+    { name: "Pumpkin", price: "129,95", image: pumpkinImg  },
+    { name: "Bell Pepper", price: "129,95", image: bellpepperImg  },
+    { name: "Broccoli", price: "129,95", image: broccoliImg  },
+    { name: "Capia Pepper", price: "129,95", image: capiapepperImg },
+    { name: "Pepper", price: "129,95", image: pepperImg },
+    { name: "Green Pepper", price: "129,95", image: greenpepperImg },
+    { name: "Sweet Pepper", price: "129,95", image: sweetpepperImg },
+    { name: "Cherry Tomato", price: "129,95", image: cherrytomatoImg },
+    { name: "Celery", price: "129,95", image: celeryImg },
+    { name: "Cauliflower", price: "129,95", image:  cauliflowerImg},
+    { name: "Iceberg Lettuce", price: "129,95", image: iceberglettuceImg },
+    { name: "Curly Lettuce", price: "129,95", image: curlyletuceImg },
+    { name: "Mushroom", price: "129,95", image:  mushroomImg},
+    { name: "Garlic", price: "129,95", image: garlicImg },
+    { name: "Red Onion", price: "129,95", image: redonionImg },
+    { name: "Red Pepper", price: "129,95", image: redpepperImg },
+    { name: "Eggplant", price: "129,95", image: eggplantImg },
+    { name: "Fresh Mint", price: "129,95", image: freshmintImg },
+    { name: "Green Bean", price: "129,95", image: greenbeanImg },
+    { name: "Kale", price: "129,95", image: kaleImg },
+    { name: "Parsley", price: "129,95", image: parsleyImg },
+    { name: "Radish", price: "129,95", image: radishImg },
+    { name: "Red Cabbage", price: "129,95", image:  redcabbageImg},
+    { name: "Scallion", price: "129,95", image: scallionImg },
 
 ];
 

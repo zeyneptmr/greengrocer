@@ -1,6 +1,7 @@
 // ContactPage.js
 import React, { useState } from 'react';
-import './ContactPage.css';
+import '../styles/ContactPage.css';
+
 
 function ContactPage() {
     const [formData, setFormData] = useState({
