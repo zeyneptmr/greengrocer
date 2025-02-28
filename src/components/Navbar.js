@@ -1,18 +1,17 @@
 import { useState } from "react";
-import { ShoppingCart, Search, Sun, Moon, Heart, User } from "lucide-react";
+import { ShoppingCart, Search, Heart, User } from "lucide-react";
 import { Link } from "react-router-dom";
 //import { useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 
 const Navbar = () => {
-    const [darkMode, setDarkMode] = useState(false);
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     //const navigate = useNavigate();
 
     return (
         <>
-            <nav className={`h-20 w-full ${darkMode ? "bg-gray-900 text-white" : "bg-white text-green-600"} flex items-center px-4`}>
+            <nav className="h-20 w-full bg-white text-green-600 flex items-center px-4">
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto" />
                     <h1 className="text-3xl font-bold text-green-600 ml-3">TapTaze</h1>
@@ -35,10 +34,6 @@ const Navbar = () => {
                     <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
                         <Heart size={18} />
                         <span className="text-xs">Favorites</span>
-                    </button>
-                    <button onClick={() => setDarkMode(!darkMode)} className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-                        <span className="text-xs">{darkMode ? "Light" : "Dark"}</span>
                     </button>
                     <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
                         <ShoppingCart size={18} />
