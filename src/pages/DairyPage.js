@@ -15,25 +15,37 @@ import goudacheesewithpestoImg from "../assets/goudacheesewithredpesto.jpg";
 import goatcheeseImg from "../assets/goatcheese.jpg";
 import deliciouscheeseballsImg from "../assets/deliciouscheeseballs.jpg";
 import cowfetacheeseImg from "../assets/cowfetacheese.jpg";
+import kefirImg from "../assets/kefir.png";
+import sheepyogurtImg from "../assets/sheepyogurtt.jpg";
+import waterbuffaloyogurtImg from "../assets/waterbuffaloyogurt.webp";
+import goatyogurtImg from "../assets/goatyogurt.jpg";
+import cowyogurtImg from "../assets/cowyogurt.jpg";
 
 
 const fruits = [
     { name: "Milk 1L", price: "149,99", image: milkImg },
+    { name: "Kefir 1L", price: "189,99", image: kefirImg },
     { name: "Cow Feta Cheese Kg", price: "475,65", image: cowfetacheeseImg },
     { name: "Twist Cheese Kg", price: "350,55", image: twistcheeseImg },
     { name: "Tulum Cheese Kg", price: "420,95", image: tulumcheeseImg },
-    { name: "Goat Cheese", price: "590,00", image: goatcheeseImg },
-    { name: "Trakya Aged Cheese", price: "480,58", image: TrakyaagedcheeseImg },
-    { name: "String Cheese", price: "379,75", image: stringcheeseImg },
-    { name: "Plaited Cheese", price: "420,58", image: plaitedcheeseImg },
-    { name: "Mihali Cheese", price: "550,00", image: mihalicheeseImg },
-    { name: "Kashar Cheese", price: "470,00", image: kasharcheeseImg },
-    { name: "Kars Gruyere Cheese", price: "600,00", image: KarsGruyereCheeseImg },
-    { name: "Herby Cheese", price: "520,25", image: herbycheeseImg },
+    { name: "Goat Cheese Kg", price: "590,00", image: goatcheeseImg },
+    { name: "Trakya Aged Cheese Kg", price: "580,58", image: TrakyaagedcheeseImg },
     { name: "Walnut Gouda Cheese Kg", price: "3.265,95 TL", image: walnutgoudacheeseImg },
-    { name: "Gouda Cheese with Truffle", price: "750,00", image: goudacheesewithtruffleImg },
-    { name: "Gouda Cheese with Pesto", price: "570,00", image: goudacheesewithpestoImg },
-    { name: "Delicious Cheese Balls", price: "650,00", image: deliciouscheeseballsImg },
+    { name: "Gouda Cheese with Truffle Kg", price: "750,00", image: goudacheesewithtruffleImg },
+    { name: "Gouda Cheese with Pesto Kg", price: "570,00", image: goudacheesewithpestoImg },
+    { name: "Delicious Cheese Balls Kg", price: "650,00", image: deliciouscheeseballsImg },
+    { name: "Sheep Yogurt Kg", price: "229,75", image: sheepyogurtImg },
+    { name: "Water Buffalo Yogurt Kg", price: "379,58", image: waterbuffaloyogurtImg },
+    { name: "Goat Yogurt Kg", price: "330,00", image: goatyogurtImg },
+    { name: "Cow Yogurt Kg", price: "135,00", image: cowyogurtImg },
+    { name: "Kars Gruyere Cheese Kg", price: "600,00", image: KarsGruyereCheeseImg },
+    { name: "String Cheese Kg", price: "379,75", image: stringcheeseImg },
+    { name: "Plaited Cheese Kg", price: "420,58", image: plaitedcheeseImg },
+    { name: "Mihali Cheese Kg", price: "550,00", image: mihalicheeseImg },
+    { name: "Kashar Cheese Kg", price: "470,00", image: kasharcheeseImg },
+    { name: "Kars Gruyere Cheese Kg", price: "600,00", image: KarsGruyereCheeseImg },
+    { name: "Herby Cheese Kg", price: "520,25", image: herbycheeseImg },
+
 
 ];
 
