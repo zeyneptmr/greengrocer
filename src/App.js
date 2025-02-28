@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
 import FruitsPage from "./pages/FruitsPage";
 import DairyPage from "./pages/DairyPage";
 import VegetablesPage from "./pages/VegetablesPage";
@@ -21,6 +22,7 @@ function App() {
                 <div className="content">
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<AboutUs />} />
                         <Route path="/fruits" element={<FruitsPage />} />
                         <Route path="/vegetables" element={<VegetablesPage />} />
                         <Route path="/bakedgoods" element={<BakedGoodsPage />} />
