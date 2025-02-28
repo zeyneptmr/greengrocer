@@ -10,7 +10,7 @@ import plumImg from "../assets/plum.jpg";
 import strawberryImg from "../assets/strawberry.jpg";
 
 
-const designerclothes = [
+const fruits = [
     { name: "Orange", price: "49,95", image: orangeImg },
     { name: "Banana", price: "129,95", image: bananaImg },
     { name: "Grapes", price: "129,95", image: grapesImg },
@@ -23,17 +23,17 @@ const designerclothes = [
 
 ];
 
-const DesignerClothesPage = () => {
+const DairyPage = () => {
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Designer Clothes</h2>
+            <h2 className="text-2xl font-bold mb-4">Dairy</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {designerclothes.map((clothes, index) => (
-                    <ProductCard key={index} product={clothes} />
+                {fruits.map((dairy, index) => (
+                    <ProductCard key={index} product={dairy} />
                 ))}
             </div>
         </div>
     );
 };
 
-export default DesignerClothesPage;
+export default DairyPage;

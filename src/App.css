@@ -1,25 +1,28 @@
 html, body {
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Yatay kaymayı engeller */
+  width: 100%; /* Yatayda tamamen ekranı kaplar */
 }
-/* navbarı ortalıyor bu
-.App {
-  text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;html, body {
-  overflow-x: hidden;
-}
-/* navbarı ortalıyor bu
-.App {
-  text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}*/
 
-.content {
-  min-height: 200vh;
-  max-height: 300vh;
-  overflow-y: auto;
+.App {
+  text-align: center;
+  max-width: 100%; /* 1200px yerine ekran genişliğini tam kapsar */
+  margin: 0;
+  padding: 0; /* Paddingi sıfırladık */
+  width: 100%; /* Yanlarda boşluk olmasın diye %100 genişlik */
+}
+
+.App-header {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  width: 100%; /* Navbar genişliğini tam ekran yapmak için */
+  padding: 0; /* Navbar'da padding bırakmıyoruz */
 }
 
 .App-logo {
@@ -27,25 +30,15 @@ html, body {
   pointer-events: none;
 }
 
+.content {
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {
@@ -56,55 +49,3 @@ html, body {
     transform: rotate(360deg);
   }
 }
-
-
-/* navbarı ortalıyor bu
-.App {
-  text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}*/
-
-
-.content {
-  min-height: 200vh;
-  max-height: 300vh;
-  overflow-y: auto;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-

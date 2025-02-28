@@ -25,7 +25,7 @@ const fruits = [
 
 const FruitsPage = () => {
     return (
-        <div className="p-6">
+        <div className="flex flex-col p-6 h-auto">
             <h2 className="text-2xl font-bold mb-4">Fruits</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {fruits.map((fruit, index) => (
@@ -35,5 +35,6 @@ const FruitsPage = () => {
         </div>
     );
 };
+
 
 export default FruitsPage;
