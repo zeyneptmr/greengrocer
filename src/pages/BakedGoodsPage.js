@@ -19,25 +19,24 @@ import villagebreadImg from "../assets/villagebread.jpg";
 import wholewheatbreadImg from "../assets/wholewheatbread.jpg";
 
 const bakedgoods = [
-    { name: "Bread", price: "129,95", image: breadImg },
-    { name: "Daisy Bread", price: "129,95", image: daisybreadImg },
-    { name: "Corn Bread", price: "129,95", image: cornbreadImg },
-    { name: "Pitta Bread", price: "129,95", image: pittabreadImg },
-    { name: "Sourdough Bread", price: "129,95", image: sourdoughbreadImg },
-    { name: "Brown Bread", price: "129,95", image: brownbreadImg },
-    { name: "Multi-grain bread", price: "129,95", image:multigrainbreadImg },
-    { name: "Village Bread", price: "129,95", image: villagebreadImg},
-    { name: "Whole Wheat Bread", price: "129,95", image: wholewheatbreadImg },
-    { name: "Bagel", price: "129,95", image: bagelImg },
-    { name: "Gevrek", price: "129,95", image: gevrekImg },
-    { name: "Croissant", price: "129,95", image: croissantImg },
-    { name: "Pastry", price: "129,95", image: pastryImg },
-    { name: "Pastry with Cheese", price: "129,95", image: pastrycheeseImg },
-    { name: "Pastry with Olive", price: "129,95", image: pastryoliveImg },
-    { name: "Spring Rolls", price: "129,95", image: springrollsImg},
-    { name: "Cake", price: "129,95", image: cakeImg },
-    { name: "Chocolate Cake", price: "129,95", image: chocolatecakeImg },
-
+    { name: "Bread", price: "20.00", image: breadImg },
+    { name: "Daisy Bread", price: "30.00", image: daisybreadImg },
+    { name: "Corn Bread", price: "35.00", image: cornbreadImg },
+    { name: "Pitta Bread", price: "25.00", image: pittabreadImg },
+    { name: "Sourdough Bread", price: "40.00", image: sourdoughbreadImg },
+    { name: "Brown Bread", price: "30.00", image: brownbreadImg },
+    { name: "Multi-grain bread", price: "32.00", image: multigrainbreadImg },
+    { name: "Village Bread", price: "35.00", image: villagebreadImg },
+    { name: "Whole Wheat Bread", price: "32.00", image: wholewheatbreadImg },
+    { name: "Bagel", price: "20.00", image: bagelImg },
+    { name: "Gevrek", price: "22.00", image: gevrekImg },
+    { name: "Croissant", price: "25.00", image: croissantImg },
+    { name: "Pastry", price: "30.00", image: pastryImg },
+    { name: "Pastry with Cheese", price: "35.00", image: pastrycheeseImg },
+    { name: "Pastry with Olive", price: "35.00", image: pastryoliveImg },
+    { name: "Spring Rolls", price: "35.00", image: springrollsImg },
+    { name: "Cake", price: "50.00", image: cakeImg },
+    { name: "Chocolate Cake", price: "60.00", image: chocolatecakeImg },
 ];
 
 const BakedGoodsPage = () => {
