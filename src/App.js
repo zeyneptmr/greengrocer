@@ -8,7 +8,7 @@ import FruitsPage from "./pages/FruitsPage";
 import DairyPage from "./pages/DairyPage";
 import VegetablesPage from "./pages/VegetablesPage";
 import BakedGoodsPage from "./pages/BakedGoodsPage";
-import OlivesPage from "./pages/OlivesPage";
+import OlivesOilsPage from "./pages/OlivesOilsPage";
 import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import './App.css';
@@ -24,7 +24,7 @@ function App() {
                         <Route path="/fruits" element={<FruitsPage />} />
                         <Route path="/vegetables" element={<VegetablesPage />} />
                         <Route path="/bakedgoods" element={<BakedGoodsPage />} />
-                        <Route path="/olives" element={<OlivesPage />} />
+                        <Route path="/olives" element={<OlivesOilsPage />} />
                         <Route path="/sauces" element={<SaucesPage />} />
                         <Route path="/dairy" element={<DairyPage />} />
                         <Route path="/contact" element={<ContactPage />} />

@@ -55,7 +55,7 @@ const Navbar = () => {
                             <Link to="/bakedgoods"> Baked Goods </Link>
                         </li>
                         <li className="cursor-pointer hover:underline">
-                            <Link to="/olives"> Olives </Link>
+                            <Link to="/olives"> Olives & Oils </Link>
                         </li>
                         <li className="cursor-pointer hover:underline">
                             <Link to="/sauces"> Sauces </Link>
