@@ -11,21 +11,20 @@ import strawberryImg from "../assets/strawberry.jpg";
 
 
 const fruits = [
-    { name: "Orange", price: "49,95", image: orangeImg },
-    { name: "Banana", price: "129,95", image: bananaImg },
-    { name: "Grapes", price: "129,95", image: grapesImg },
-    { name: "Green apple", price: "129,95", image: greenappleImg },
-    { name: "Red apple", price: "129,95", image: redappleImg },
-    { name: "Lemon", price: "129,95", image: lemonImg },
-    { name: "Pear", price: "129,95", image: pearImg },
-    { name: "Plum", price: "129,95", image: plumImg },
-    { name: "Strawberry", price: "129,95", image: strawberryImg },
-
+    { name: "Orange", price: "55.00", image: orangeImg },
+    { name: "Banana", price: "60.00", image: bananaImg },
+    { name: "Grapes", price: "70.00", image: grapesImg },
+    { name: "Green Apple", price: "50.00", image: greenappleImg },
+    { name: "Red Apple", price: "50.00", image: redappleImg },
+    { name: "Lemon", price: "35.00", image: lemonImg },
+    { name: "Pear", price: "55.00", image: pearImg },
+    { name: "Plum", price: "50.00", image: plumImg },
+    { name: "Strawberry", price: "80.00", image: strawberryImg },
 ];
 
 const FruitsPage = () => {
     return (
-        <div className="p-6">
+        <div className="flex flex-col p-6 h-auto">
             <h2 className="text-2xl font-bold mb-4">Fruits</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {fruits.map((fruit, index) => (
@@ -35,5 +34,6 @@ const FruitsPage = () => {
         </div>
     );
 };
+
 
 export default FruitsPage;
