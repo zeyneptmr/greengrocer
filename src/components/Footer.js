@@ -54,20 +54,20 @@ function Footer() {
           <div className="flex-1 text-center">
             <h4 className="text-lg font-bold">COMPANY</h4>
             <div className="mt-4">
-                <a
-                    href="/"
-                    className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
-                >
-                    <img src={MegaphoneIcon} alt="MegaphoneIcon" className="footericons"/>
-                    <a href="/about"> About Us </a>
-                </a>
+              <a
+                  href="/"
+                  className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
+              >
+                <img src={MegaphoneIcon} alt="MegaphoneIcon" className="footericons"/>
+                <a href="/about"> About Us </a>
+              </a>
             </div>
 
-              <div className='contact-link'>
-                  <a href="/contact">Contact US </a>
-              </div>
+            <div className='contact-link'>
+              <a href="/contact"  className="text-white hover:text-yellow-400 transition font-normal">Contact Us</a>
+            </div>
 
-              <br></br>
+            <br></br>
 
             <div className="mt-6 flex justify-center space-x-6">
               <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
@@ -87,7 +87,7 @@ function Footer() {
         </div>
 
         {/* Footer Bottom Section */}
-        <hr className="border-white my-6 w-full mx-auto" />
+        <hr className="border-white my-6 w-full mx-auto"/>
         <p className="text-center text-sm">&copy; {new Date().getFullYear()} All Rights Reserved</p>
       </div>
     </div>
