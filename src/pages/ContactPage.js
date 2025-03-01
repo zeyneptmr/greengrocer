@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Flag from "react-world-flags"; // Import the flag component
 
 export default function ContactForm() {
     const topics = [
@@ -14,6 +15,7 @@ export default function ContactForm() {
         "Other",
     ];
 
+
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
@@ -26,66 +28,66 @@ export default function ContactForm() {
     const [emailError, setEmailError] = useState("");
     const [phoneError, setPhoneError] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [countryCode, setCountryCode] = useState("+90"); // Default country code set to Turkey
+
+
+    const countries = [
+        { code: "+1", flag: "US" },
+        { code: "+44", flag: "GB" },
+        { code: "+90", flag: "TR" },
+        { code: "+33", flag: "FR" },
+        { code: "+49", flag: "DE" },
+        { code: "+39", flag: "IT" },
+        { code: "+34", flag: "ES" },
+        { code: "+1", flag: "CA" },
+        { code: "+61", flag: "AU" },
+        { code: "+55", flag: "BR" },
+        { code: "+91", flag: "IN" },
+        { code: "+81", flag: "JP" },
+        { code: "+52", flag: "MX" },
+        { code: "+7", flag: "RU" },
+        { code: "+82", flag: "KR" },
+        { code: "+46", flag: "SE" },
+        { code: "+45", flag: "DK" },
+        { code: "+27", flag: "ZA" },
+        { code: "+64", flag: "NZ" }
+    ];
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "name" || name === "surname") {
-            if (/^[a-zA-ZğüşıöçĞÜŞİÖÇ ]*$/.test(value)) {
-                setFormData({ ...formData, [name]: value });
-            }
-        } else if (name === "message") {
-            setFormData({ ...formData, [name]: value });
-            setMessageError(countLettersOnly(value) < 20 ? "Your message must be at least 20 characters." : "");
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
-    };
-
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setFormData({ ...formData, email: value });
-        if (value && !validateEmail(value)) {
-            setEmailError("Please enter a valid email address.");
-        } else {
-            setEmailError(null);
-        }
+        setEmailError(value && !validateEmail(value) ? "Please enter a valid email address." : "");
     };
 
     const handlePhoneChange = (e) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
         let formattedValue = "";
 
-        if (value.length > 0) {
-            formattedValue += "(" + value.substring(0, 3);
-        }
-        if (value.length >= 4) {
-            formattedValue += ") " + value.substring(3, 6);
-        }
-        if (value.length >= 7) {
-            formattedValue += "-" + value.substring(6, 10);
-        }
+        if (value.length > 0) formattedValue += "(" + value.substring(0, 3);
+        if (value.length >= 4) formattedValue += ") " + value.substring(3, 6);
+        if (value.length >= 7) formattedValue += "-" + value.substring(6, 10);
+
         setPhoneNumber(formattedValue);
-        if (value === "") {
+        if (value.length === 10) {
             setPhoneError(null);
         } else {
-            const phoneValid = value.length === 10;
-            setPhoneError(phoneValid ? null : "Please enter a valid phone number!");
+            setPhoneError("Please enter a valid phone number!");
         }
     };
 
-    const countLettersOnly = (text) => {
-        return (text.match(/[a-zA-ZğüşıöçĞÜŞİÖÇ]/g) || []).length;
+    const handleCountryCodeChange = (e) => {
+        setCountryCode(e.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (countLettersOnly(formData.message) < 20) {
-            alert("The message must contain at least 20 letters.");
+        if (phoneNumber.replace(/\D/g, "").length !== 10) {
+            setPhoneError("Please enter a valid phone number.");
             return;
         }
         if (emailError || phoneError) {
@@ -101,24 +103,88 @@ export default function ContactForm() {
                 <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
                 <p className="text-sm text-orange-500 mb-4">*To provide you with better service, you need to log in.</p>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input type="text" name="name" placeholder="Name*" value={formData.name} onChange={handleChange}
-                           className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required/>
-                    <input type="text" name="surname" placeholder="Surname*" value={formData.surname}
-                           onChange={handleChange} className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required/>
-                    <input type="email" name="email" placeholder="E-mail Address*" value={formData.email} onChange={handleEmailChange} className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required/>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Name*"
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="surname"
+                        placeholder="Surname*"
+                        value={formData.surname}
+                        onChange={e => setFormData({ ...formData, surname: e.target.value })}
+                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        required
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="E-mail Address*"
+                        value={formData.email}
+                        onChange={handleEmailChange}
+                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        required
+                    />
                     {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                    <input type="tel" name="phone" placeholder="Phone Number* (Format: 555-555-5555)" value={phoneNumber} onChange={handlePhoneChange} className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required/>
+                    <div className="flex items-center space-x-2">
+                        <div className="flex items-center border border-gray-300 rounded-md p-2 w-[150px]">
+                            <Flag
+                                code={countries.find(country => country.code === countryCode)?.flag || "US"}
+                                style={{ width: "20px", height: "20px" }}
+                            />
+                            <select
+                                value={countryCode}
+                                onChange={handleCountryCodeChange}
+                                className="ml-2 border-none text-lg focus:ring-0 focus:outline-none w-full"
+                            >
+                                {countries.map((country) => (
+                                    <option key={country.code} value={country.code}>
+                                        {country.code}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="Phone Number* (Format: 555-555-5555)"
+                            value={phoneNumber}
+                            onChange={handlePhoneChange}
+                            className={`w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
+                            required
+                        />
+                    </div>
                     {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
-                    <select name="topic" value={formData.topic} onChange={handleChange} className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required>
+
+                    <select
+                        name="topic"
+                        value={formData.topic}
+                        onChange={e => setFormData({ ...formData, topic: e.target.value })}
+                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        required
+                    >
                         <option value="">-- Select --</option>
                         {topics.map((topic, index) => (
                             <option key={index} value={topic}>{topic}</option>
                         ))}
                     </select>
-                    <textarea name="message" placeholder="Message*" value={formData.message} onChange={handleChange}
-                              className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required></textarea>
+
+                    <textarea
+                        name="message"
+                        placeholder="Message*"
+                        value={formData.message}
+                        onChange={e => setFormData({ ...formData, message: e.target.value })}
+                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        required
+                    />
                     {messageError && <p className="text-red-500 text-sm">{messageError}</p>}
+
                     <button type="submit" className="bg-green-500 text-white py-2 px-4 w-full">Submit</button>
                 </form>
             </div>

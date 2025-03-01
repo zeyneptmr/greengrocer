@@ -4,6 +4,8 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://unpkg.com/react-phone-number-input/style.css');
+
 
 body {
   margin: 0;

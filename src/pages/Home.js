@@ -26,7 +26,7 @@ const Home = () => {
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Sizin İçin Seçtiklerimiz</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
                 {products.map((product, index) => (
                     <ProductCard key={index} product={product} />
                 ))}

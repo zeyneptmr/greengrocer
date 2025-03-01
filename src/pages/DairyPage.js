@@ -53,7 +53,7 @@ const DairyPage = () => {
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Dairy</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
                 {fruits.map((dairy, index) => (
                     <ProductCard key={index} product={dairy} />
                 ))}
