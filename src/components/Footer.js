@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/Footer.css';
 import VegetableIcon from '../assets/vegetables.svg';
 import LocationIcon from '../assets/location.svg';
 import PhoneIcon from '../assets/phone.svg';
@@ -36,11 +35,9 @@ function Footer() {
               </div>
               <div className="flex items-center">
                 <img src={MailIcon} alt="Mail" className="w-5 mr-2" />
-                <a href="mailto:taptaze@stu.khas.edu.tr" className="text-white hover:text-yellow-400 transition">
-                taptaze@stu.khas.edu.tr
+                <a href="mailto:taptaze@stu.khas.edu.tr" className="hover:text-yellow-400 transition">
+                  taptaze@stu.khas.edu.tr
                 </a>
-
-
               </div>
             </div>
           </div>
@@ -54,20 +51,18 @@ function Footer() {
           <div className="flex-1 text-center">
             <h4 className="text-lg font-bold">COMPANY</h4>
             <div className="mt-4">
-                <a
-                    href="/"
-                    className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
-                >
-                    <img src={MegaphoneIcon} alt="MegaphoneIcon" className="footericons"/>
-                    <a href="/about"> About Us </a>
-                </a>
+              <a
+                href="/about"
+                className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
+              >
+                <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5" />
+                <span>About Us</span>
+              </a>
             </div>
 
-              <div className='contact-link'>
-                  <a href="/contact">Contact US </a>
-              </div>
-
-              <br></br>
+            <div className="mt-2">
+              <a href="/contact" className="font-bold hover:text-yellow-400 transition">Contact Us</a>
+            </div>
 
             <div className="mt-6 flex justify-center space-x-6">
               <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"

@@ -61,7 +61,7 @@ const Navbar = () => {
                             <Link to="/sauces"> Sauces </Link>
                         </li>
                         <li className="cursor-pointer hover:underline">
-                            <Link to="/Dairy"> Dairy </Link>
+                            <Link to="/dairy"> Dairy </Link>
                         </li>
                     </ul>
                 </div>
