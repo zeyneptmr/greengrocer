@@ -64,6 +64,20 @@ export default function ContactForm() {
         setEmailError(value && !validateEmail(value) ? "Please enter a valid email address." : "");
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === "name" || name === "surname") {
+            if (/^[a-zA-ZğüşıöçĞÜŞİÖÇ ]*$/.test(value)) {
+                setFormData({ ...formData, [name]: value });
+            }
+        } else if (name === "message") {
+            setFormData({ ...formData, [name]: value });
+            setMessageError(countLettersOnly(value) < 20 ? "Your message must be at least 20 characters." : "");
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
     const handlePhoneChange = (e) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
         let formattedValue = "";
@@ -84,8 +98,16 @@ export default function ContactForm() {
         setCountryCode(e.target.value);
     };
 
+    const countLettersOnly = (text) => {
+        return (text.match(/[a-zA-ZğüşıöçĞÜŞİÖÇ]/g) || []).length;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (countLettersOnly(formData.message) < 20) {
+            alert("The message must contain at least 20 letters.");
+            return;
+        }
         if (phoneNumber.replace(/\D/g, "").length !== 10) {
             setPhoneError("Please enter a valid phone number.");
             return;
@@ -98,109 +120,112 @@ export default function ContactForm() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row justify-center items-start p-10 space-x-10">
-            <div className="bg-white p-8 shadow-lg w-full md:w-1/2">
-                <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
-                <p className="text-sm text-orange-500 mb-4">*To provide you with better service, you need to log in.</p>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Name*"
-                        value={formData.name}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="surname"
-                        placeholder="Surname*"
-                        value={formData.surname}
-                        onChange={e => setFormData({ ...formData, surname: e.target.value })}
-                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="E-mail Address*"
-                        value={formData.email}
-                        onChange={handleEmailChange}
-                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
-                    {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+        <div className="flex flex-col items-center justify-center p-10">
+            <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
 
-                    <div className="flex items-center space-x-2">
-                        <div className="flex items-center border border-gray-300 rounded-md p-2 w-[150px]">
-                            <Flag
-                                code={countries.find(country => country.code === countryCode)?.flag || "US"}
-                                style={{ width: "20px", height: "20px" }}
-                            />
-                            <select
-                                value={countryCode}
-                                onChange={handleCountryCodeChange}
-                                className="ml-2 border-none text-lg focus:ring-0 focus:outline-none w-full"
-                            >
-                                {countries.map((country) => (
-                                    <option key={country.code} value={country.code}>
-                                        {country.code}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                <div>
+                    <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
+                    <p className="text-sm text-orange-500 mb-4">*To provide you with better service, you need to log in.</p>
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <input
-                            type="tel"
-                            name="phone"
-                            placeholder="Phone Number* (Format: 555-555-5555)"
-                            value={phoneNumber}
-                            onChange={handlePhoneChange}
-                            className={`w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
+                            type="text"
+                            name="name"
+                            placeholder="Name*"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
                             required
                         />
-                    </div>
-                    {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
+                        <input
+                            type="text"
+                            name="surname"
+                            placeholder="Surname*"
+                            value={formData.surname}
+                            onChange={handleChange}
+                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            required/>
 
-                    <select
-                        name="topic"
-                        value={formData.topic}
-                        onChange={e => setFormData({ ...formData, topic: e.target.value })}
-                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    >
-                        <option value="">-- Select --</option>
-                        {topics.map((topic, index) => (
-                            <option key={index} value={topic}>{topic}</option>
-                        ))}
-                    </select>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="E-mail Address*"
+                            value={formData.email}
+                            onChange={handleEmailChange}
+                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            required
+                        />
+                        {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                    <textarea
-                        name="message"
-                        placeholder="Message*"
-                        value={formData.message}
-                        onChange={e => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
-                    {messageError && <p className="text-red-500 text-sm">{messageError}</p>}
+                        <div className="flex items-center space-x-2">
+                            <div className="flex items-center border border-gray-300 rounded-md p-2 w-[150px]">
+                                <Flag
+                                    code={countries.find(country => country.code === countryCode)?.flag || "US"}
+                                    style={{width: "20px", height: "20px"}}
+                                />
+                                <select
+                                    value={countryCode}
+                                    onChange={handleCountryCodeChange}
+                                    className="ml-2 border-none text-lg focus:ring-0 focus:outline-none w-full"
+                                >
+                                    {countries.map((country) => (
+                                        <option key={country.code} value={country.code}>
+                                            {country.code}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <input
+                                type="tel"
+                                name="phone"
+                                placeholder="Phone Number* (Format: 555-555-5555)"
+                                value={phoneNumber}
+                                onChange={handlePhoneChange}
+                                className={`w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
+                                required
+                            />
+                        </div>
+                        {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
 
-                    <button type="submit" className="bg-green-500 text-white py-2 px-4 w-full">Submit</button>
-                </form>
-            </div>
+                        <select
+                            name="topic"
+                            value={formData.topic}
+                            onChange={e => setFormData({...formData, topic: e.target.value})}
+                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            required
+                        >
+                            <option value="">-- Select --</option>
+                            {topics.map((topic, index) => (
+                                <option key={index} value={topic}>{topic}</option>
+                            ))}
+                        </select>
+
+                        <textarea
+                            name="message"
+                            placeholder="Message*"
+                            value={formData.message}
+                            onChange={handleChange}
+                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            required
+                        />
+                        {messageError && <p className="text-red-500 text-sm">{messageError}</p>}
+
+                        <button type="submit" className="bg-green-500 text-white py-2 px-4 w-full">Submit</button>
+                    </form>
+                </div>
 
             {/* Customer Service Section */}
-            <div className="bg-white p-8 shadow-lg w-full md:w-1/3">
-                <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service</h2>
-                <p className="text-2xl font-bold">(0212) 533 65 32</p>
-                <p className="text-2xl text-green-700 font-semibold">TapTaze Food Services Inc.</p>
-                <p className="text-sm text-gray-600">
-                    Address: Cibali Mah. Kadir Has Cad. 34083 Fatih / İSTANBUL
-                    <br />
-                    Phone Number: (0212) 533 65 32
-                    <br />
-                    Fax: (0212) 533 65 32
-                </p>
+                <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
+                    <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service</h2>
+                    <p className="text-2xl font-bold text-orange-400">(0212) 533 65 32</p>
+                    <p className="text-2xl text-green-700 font-semibold">TapTaze Food Services Inc.</p>
+                    <p className="text-sm text-orange-400">
+                        Address: Cibali Mah. Kadir Has Cad. 34083 Fatih / İSTANBUL
+                        <br/>
+                        Phone Number: (0212) 533 65 32
+                        <br/>
+                        Fax: (0212) 533 65 32
+                    </p>
+                </div>
             </div>
         </div>
     );

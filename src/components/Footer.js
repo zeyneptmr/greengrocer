@@ -52,7 +52,7 @@ function Footer() {
             <h4 className="text-lg font-bold">COMPANY</h4>
             <div className="mt-4">
               <a
-<<<<<<< HEAD
+
                 href="/about"
                 className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
               >
@@ -61,24 +61,12 @@ function Footer() {
               </a>
             </div>
 
-            <div className="mt-2">
-              <a href="/contact" className="font-bold hover:text-yellow-400 transition">Contact Us</a>
-            </div>
-=======
-                  href="/"
-                  className="inline-flex items-center space-x-2 text-white hover:text-yellow-400 transition"
-              >
-                <img src={MegaphoneIcon} alt="MegaphoneIcon" className="footericons"/>
-                <a href="/about"> About Us </a>
-              </a>
-            </div>
-
             <div className='contact-link'>
               <a href="/contact"  className="text-white hover:text-yellow-400 transition font-normal">Contact Us</a>
             </div>
 
             <br></br>
->>>>>>> 006c78baf547507e2150851ce96cec77345f954b
+
 
             <div className="mt-6 flex justify-center space-x-6">
               <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"

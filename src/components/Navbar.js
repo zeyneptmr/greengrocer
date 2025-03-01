@@ -65,11 +65,11 @@ const Navbar = () => {
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/sauces"> Sauces </Link>
                         </li>
-<<<<<<< HEAD
-                        <li className="cursor-pointer hover:underline">
-=======
+
+
+
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
->>>>>>> 006c78baf547507e2150851ce96cec77345f954b
+
                             <Link to="/dairy"> Dairy </Link>
                         </li>
                     </ul>
