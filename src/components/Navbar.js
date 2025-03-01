@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { ShoppingCart, Search, Heart, User } from "lucide-react";
+import { ShoppingCart, Search, Heart, User, Home } from "lucide-react";
 import { Link } from "react-router-dom";
-//import { useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
-    //const navigate = useNavigate();
 
     return (
         <>
@@ -45,29 +43,40 @@ const Navbar = () => {
             <div className="bg-green-500 text-white p-3">
                 <div className="flex justify-center">
                     <ul className="flex space-x-6">
-                        <li className="cursor-pointer hover:underline">
+                        {/* Home Icon */}
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500">
+                            <Link to="/">
+                                <Home size={25} className="inline-block mr-1" />
+                                {/* Home */}
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/fruits"> Fruits </Link>
                         </li>
-                        <li className="cursor-pointer hover:underline">
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/vegetables"> Vegetables </Link>
                         </li>
-                        <li className="cursor-pointer hover:underline">
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/bakedgoods"> Baked Goods </Link>
                         </li>
-                        <li className="cursor-pointer hover:underline">
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/olives"> Olives & Oils </Link>
                         </li>
-                        <li className="cursor-pointer hover:underline">
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/sauces"> Sauces </Link>
                         </li>
+<<<<<<< HEAD
                         <li className="cursor-pointer hover:underline">
+=======
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
+>>>>>>> 006c78baf547507e2150851ce96cec77345f954b
                             <Link to="/dairy"> Dairy </Link>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)}/>
+            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
         </>
     );
 };

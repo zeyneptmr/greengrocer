@@ -27,9 +27,9 @@ const SaucesPage = () => {
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Sauces</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
                 {sauces.map((sauce, index) => (
-                    <ProductCard key={index} product={sauce} />
+                    <ProductCard key={index} product={sauce}/>
                 ))}
             </div>
         </div>

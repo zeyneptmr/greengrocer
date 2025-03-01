@@ -14,16 +14,18 @@ export default function ProductCard({ product }) {
                 onClick={() => setIsFavorite(!isFavorite)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
             >
-                <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+                <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`}/>
             </button>
 
-            {/* Ürün Görseli */}
+            {/* Ürün Görseli (Flexbox ile ortalanmış) */}
             <CardContent>
-                <img  //dinamik boyutlandırma
-                    src={product.image}
-                    alt={product.name}
-                    className="max-w-[150px] max-h-[150px] w-auto h-auto object-contain rounded-lg"
-                />
+                <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="max-w-full max-h-full object-cover"
+                    />
+                </div>
 
                 {/* Ürün Adı */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>

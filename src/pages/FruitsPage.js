@@ -26,7 +26,7 @@ const FruitsPage = () => {
     return (
         <div className="flex flex-col p-6 h-auto">
             <h2 className="text-2xl font-bold mb-4">Fruits</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
                 {fruits.map((fruit, index) => (
                     <ProductCard key={index} product={fruit} />
                 ))}

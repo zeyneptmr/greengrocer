@@ -71,7 +71,7 @@ const VegetablesPage = () => {
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Vegetables</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
                 {vegetables.map((vegetable, index) => (
                     <ProductCard key={index} product={vegetable} />
                 ))}
@@ -79,5 +79,6 @@ const VegetablesPage = () => {
         </div>
     );
 };
+
 
 export default VegetablesPage;
