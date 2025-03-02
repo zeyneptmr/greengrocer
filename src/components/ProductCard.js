@@ -1,37 +1,31 @@
-//import { useState } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
-<<<<<<< HEAD
 import { useFavorites } from "./FavoritesContext";
+import { useCart } from "../pages/CartContext";
 
 export default function ProductCard({ product }) {
     const { favorites, toggleFavorite } = useFavorites();
-
-    const isFavorite = favorites.some((fav) => fav.id === product.id);
-=======
-import { useCart } from "/Users/zeynep/greengrocer/src/pages/CartContext.js";
-
-export default function ProductCard({ product }) {
-    const [isFavorite, setIsFavorite] = useState(false);
     const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
 
-    // Do you have this product in your cart?
+    const isFavorite = favorites.some((fav) => fav.id === product.id);
+
+    // Sepette bu ürün var mı?
     const cartItem = cart.find((item) => item.id === product.id);
->>>>>>> 1cea27397fb4d92f8367fd74d35e74bb9b0727a4
 
     return (
         <Card className="relative flex flex-col items-center">
-            {/* Favorites*/}
+            {/* Favorilere ekleme butonu */}
             <button
-                onClick={() =>  toggleFavorite(product)}
+                onClick={() => toggleFavorite(product)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
             >
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
 
-            {/* Product Image*/}
+            {/* Ürün Resmi */}
             <CardContent>
                 <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
                     <img
@@ -41,13 +35,13 @@ export default function ProductCard({ product }) {
                     />
                 </div>
 
-                {/* Product Name */}
+                {/* Ürün Adı */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
-                {/* Product Price */}
+                {/* Ürün Fiyatı */}
                 <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
 
-                {/* Add Cart Button, Increase, Decrease */}
+                {/* Sepete ekleme ve miktar değiştirme */}
                 {cartItem ? (
                     <div className="flex items-center space-x-3 mt-4">
                         <button
