@@ -12,10 +12,14 @@ import BakedGoodsPage from "./pages/BakedGoodsPage";
 import OlivesOilsPage from "./pages/OlivesOilsPage";
 import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
+import FavoritesPage from "./pages/FavoritesPage";
+import { FavoritesProvider } from "./components/FavoritesContext"
+
 import './App.css';
 
 function App() {
     return (
+        <FavoritesProvider>
         <Router>
             <div className="App">
                 <Navbar />
@@ -29,6 +33,7 @@ function App() {
                         <Route path="/olives" element={<OlivesOilsPage />} />
                         <Route path="/sauces" element={<SaucesPage />} />
                         <Route path="/dairy" element={<DairyPage />} />
+                        <Route path="/favorites" element={<FavoritesPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                     </Routes>
                 </div>
@@ -36,6 +41,7 @@ function App() {
                 <Footer />
             </div>
         </Router>
+        </FavoritesProvider>
     );
 }
 

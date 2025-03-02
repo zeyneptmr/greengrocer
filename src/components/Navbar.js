@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 
+
+
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
 
@@ -29,10 +31,14 @@ const Navbar = () => {
                         <User size={18} />
                         <span className="text-xs">Log In</span>
                     </button>
-                    <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        <Heart size={18} />
-                        <span className="text-xs">Favorites</span>
-                    </button>
+
+                    <Link to="/favorites">
+                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
+                            <Heart size={18} />
+                            <span className="text-xs">Favorites</span>
+                        </button>
+                    
+                    </Link>
                     <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
                         <ShoppingCart size={18} />
                         <span className="text-xs">Cart</span>
@@ -65,11 +71,7 @@ const Navbar = () => {
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/sauces"> Sauces </Link>
                         </li>
-<<<<<<< HEAD
-                        <li className="cursor-pointer hover:underline">
-=======
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
->>>>>>> 006c78baf547507e2150851ce96cec77345f954b
                             <Link to="/dairy"> Dairy </Link>
                         </li>
                     </ul>

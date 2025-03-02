@@ -1,17 +1,20 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
+import { useFavorites } from "./FavoritesContext";
 
 export default function ProductCard({ product }) {
-    const [isFavorite, setIsFavorite] = useState(false);
+    const { favorites, toggleFavorite } = useFavorites();
+
+    const isFavorite = favorites.some((fav) => fav.id === product.id);
 
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favori Butonu */}
             <button
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={() =>  toggleFavorite(product)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
             >
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`}/>
