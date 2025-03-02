@@ -3,15 +3,21 @@ import Flag from "react-world-flags"; // Import the flag component
 
 const Account = ({ isOpen, onClose }) => {
     const [isRegister, setIsRegister] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [countryCode, setCountryCode] = useState("+90"); // Default country code
-    const [emailError, setEmailError] = useState(null);
-    const [passwordError, setPasswordError] = useState(null);
-    const [confirmPasswordError, setConfirmPasswordError] = useState(null);
-    const [phoneError, setPhoneError] = useState(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        surname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        phoneNumber: "",
+        countryCode: "+90", // Default country code
+    });
+    const [errors, setErrors] = useState({
+        emailError: null,
+        passwordError: null,
+        confirmPasswordError: null,
+        phoneError: null,
+    });
 
     useEffect(() => {
         if (isOpen) {
@@ -26,24 +32,58 @@ const Account = ({ isOpen, onClose }) => {
         return regex.test(email);
     };
 
+    const handleNameChange = (e) => {
+        const value = e.target.value.replace(/[^a-zA-Z]/g, "");
+        setFormData((prevData) => ({
+            ...prevData,
+            name: value,
+        }));
+    };
+
+    const handleSurnameChange = (e) => {
+        const value = e.target.value.replace(/[^a-zA-Z]/g, "");
+        setFormData((prevData) => ({
+            ...prevData,
+            surname: value,
+        }));
+    };
+
     const handleEmailChange = (e) => {
         const value = e.target.value;
-        setEmail(value);
-        setEmailError(value && !validateEmail(value) ? "Please enter a valid email address." : null);
+        setFormData((prevData) => ({
+            ...prevData,
+            email: value,
+        }));
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            emailError: value && !validateEmail(value) ? "Please enter a valid email address." : null,
+        }));
     };
 
     const handlePasswordChange = (e) => {
         const value = e.target.value;
-        setPassword(value);
+        setFormData((prevData) => ({
+            ...prevData,
+            password: value,
+        }));
         if (isRegister) {
-            setPasswordError(value.length >= 8 ? null : "Password must be at least 8 characters long!");
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                passwordError: value.length >= 8 ? null : "Password must be at least 8 characters long!",
+            }));
         }
     };
 
     const handleConfirmPasswordChange = (e) => {
         const value = e.target.value;
-        setConfirmPassword(value);
-        setConfirmPasswordError(value !== password ? "Passwords do not match!" : null);
+        setFormData((prevData) => ({
+            ...prevData,
+            confirmPassword: value,
+        }));
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            confirmPasswordError: value !== formData.password ? "Passwords do not match!" : null,
+        }));
     };
 
     const handlePhoneChange = (e) => {
@@ -54,29 +94,42 @@ const Account = ({ isOpen, onClose }) => {
         if (value.length >= 4) formattedValue += ") " + value.substring(3, 6);
         if (value.length >= 7) formattedValue += "-" + value.substring(6, 10);
 
-        setPhoneNumber(formattedValue);
+        setFormData((prevData) => ({
+            ...prevData,
+            phoneNumber: formattedValue,
+        }));
 
         if (value.length === 10) {
-            setPhoneError(null);
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                phoneError: null,
+            }));
         } else {
-            setPhoneError("Please enter a valid phone number!");
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                phoneError: "Please enter a valid phone number!",
+            }));
         }
     };
 
     const handleCountryCodeChange = (e) => {
-        setCountryCode(e.target.value);
+        setFormData((prevData) => ({
+            ...prevData,
+            countryCode: e.target.value,
+        }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const { email, password, confirmPassword, phoneNumber } = formData;
         const emailValid = validateEmail(email);
         const passwordsMatch = password === confirmPassword;
         const phoneValid = phoneNumber.replace(/\D/g, "").length === 10;
 
-        if (!emailValid) setEmailError("Please enter a valid email address.");
-        if (isRegister && !passwordsMatch) setConfirmPasswordError("Passwords do not match!");
-        if (isRegister && password.length < 8) setPasswordError("Password must be at least 8 characters long!");
-        if (isRegister && !phoneValid) setPhoneError("Please enter a valid phone number!");
+        if (!emailValid) setErrors((prevErrors) => ({ ...prevErrors, emailError: "Please enter a valid email address." }));
+        if (isRegister && !passwordsMatch) setErrors((prevErrors) => ({ ...prevErrors, confirmPasswordError: "Passwords do not match!" }));
+        if (isRegister && password.length < 8) setErrors((prevErrors) => ({ ...prevErrors, passwordError: "Password must be at least 8 characters long!" }));
+        if (isRegister && !phoneValid) setErrors((prevErrors) => ({ ...prevErrors, phoneError: "Please enter a valid phone number!" }));
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
             console.log("Form submitted successfully.");
@@ -107,7 +160,6 @@ const Account = ({ isOpen, onClose }) => {
 
     if (!isOpen) return null;
 
-
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-5 rounded-lg text-center relative w-[460px] border-2 border-orange-500">
@@ -116,24 +168,42 @@ const Account = ({ isOpen, onClose }) => {
                     {isRegister ? (
                         <>
                             <h2 className="text-xl font-bold text-green-600">Sign Up</h2>
-                            <input type="text" placeholder="Name" className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600" />
-                            <input type="text" placeholder="Surname" className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600" />
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Name"
+                                value={formData.name}
+                                onChange={handleNameChange}
+                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="surname"
+                                placeholder="Surname"
+                                value={formData.surname}
+                                onChange={handleSurnameChange}
+                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
+                                required
+                            />
                             <input
                                 type="email"
+                                name="email"
                                 placeholder="E-mail"
-                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${emailError ? "border-red-500" : "border-gray-300"}`}
-                                value={email}
+                                value={formData.email}
                                 onChange={handleEmailChange}
+                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.emailError ? "border-red-500" : "border-gray-300"}`}
+                                required
                             />
-                            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
                             <div className="flex items-center space-x-2">
                                 <div className="flex items-center border border-gray-300 rounded-md w-[150px] h-[60px] p-2">
                                     <Flag
-                                        code={countries.find(country => country.code === countryCode)?.flag || "US"}
+                                        code={countries.find(country => country.code === formData.countryCode)?.flag || "US"}
                                         style={{ width: "20px", height: "30px" }}
                                     />
                                     <select
-                                        value={countryCode}
+                                        value={formData.countryCode}
                                         onChange={handleCountryCodeChange}
                                         className="ml-2 border-none text-lg focus:ring-0 focus:outline-none w-full"
                                     >
@@ -146,29 +216,35 @@ const Account = ({ isOpen, onClose }) => {
                                 </div>
                                 <input
                                     type="tel"
+                                    name="phoneNumber"
                                     placeholder="Phone number"
-                                    value={phoneNumber}
+                                    value={formData.phoneNumber}
                                     onChange={handlePhoneChange}
-                                    className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${phoneError ? "border-red-500" : "border-gray-300"}`}
+                                    className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.phoneError ? "border-red-500" : "border-gray-300"}`}
+                                    required
                                 />
                             </div>
-                            {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
+                            {errors.phoneError && <p className="text-red-500 text-sm mt-1">{errors.phoneError}</p>}
                             <input
                                 type="password"
+                                name="password"
                                 placeholder="Password"
-                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${passwordError ? "border-red-500" : "border-gray-300"}`}
-                                value={password}
+                                value={formData.password}
                                 onChange={handlePasswordChange}
+                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.passwordError ? "border-red-500" : "border-gray-300"}`}
+                                required
                             />
-                            {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+                            {errors.passwordError && <p className="text-red-500 text-sm mt-1">{errors.passwordError}</p>}
                             <input
                                 type="password"
+                                name="confirmPassword"
                                 placeholder="Confirm password"
-                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
-                                value={confirmPassword}
+                                value={formData.confirmPassword}
                                 onChange={handleConfirmPasswordChange}
+                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
+                                required
                             />
-                            {confirmPasswordError && <p className="text-red-500 text-sm mt-1">{confirmPasswordError}</p>}
+                            {errors.confirmPasswordError && <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
                             <button type="submit" className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">Sign Up</button>
                             <p className="mt-2">Already have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(false)}>Log In</span></p>
                         </>
@@ -177,17 +253,22 @@ const Account = ({ isOpen, onClose }) => {
                             <h2 className="text-xl font-bold text-green-600">Log In</h2>
                             <input
                                 type="email"
+                                name="email"
                                 placeholder="E-mail"
-                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
-                                value={email}
+                                value={formData.email}
                                 onChange={handleEmailChange}
+                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
+                                required
                             />
+                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
                             <input
                                 type="password"
+                                name="password"
                                 placeholder="Password"
-                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
-                                value={password}
+                                value={formData.password}
                                 onChange={handlePasswordChange}
+                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
+                                required
                             />
                             <button type="submit" className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">Log In</button>
                             <p className="mt-2">Don't have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span></p>
