@@ -1,11 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ShoppingCart, Search, Heart, User, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
+import { useCart } from "../pages/CartContext"; // import useCart hook
 
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const { getTotalProductTypes } = useCart(); // Import product types from CartContext
 
     return (
         <>
@@ -33,10 +35,19 @@ const Navbar = () => {
                         <Heart size={18} />
                         <span className="text-xs">Favorites</span>
                     </button>
-                    <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        <ShoppingCart size={18} />
-                        <span className="text-xs">Cart</span>
-                    </button>
+                    <Link to="/cart">
+                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
+                            <ShoppingCart size={18} />
+                            <span className="text-xs">Cart</span>
+
+                            {/* badge that shows different type of products */}
+                            {getTotalProductTypes() > 0 && (
+                                <span className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {getTotalProductTypes()}
+                                </span>
+                            )}
+                        </button>
+                    </Link>
                 </div>
             </nav>
 
@@ -65,11 +76,7 @@ const Navbar = () => {
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
                             <Link to="/sauces"> Sauces </Link>
                         </li>
-
-
-
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500">
-
                             <Link to="/dairy"> Dairy </Link>
                         </li>
                     </ul>

@@ -5,10 +5,10 @@ import butterImg from "../assets/butter.jpg";
 import sunfloweroilImg from "../assets/sunfloweroil.jpg";
 
 const olives = [
-    { name: "Olive Oil 1L", price: "255,95", image: oliveoilImg },
-    { name: "Olive Oil Tin 5L", price: "799,95", image: oliveoiltinImg  },
-    { name: "Sunflower Oil 1L", price: "129,95", image: sunfloweroilImg },
-    { name: "Butter 1Kg", price: "575,95", image: butterImg },
+    { id: 33, name: "Olive Oil 1L", price: "255,95", image: oliveoilImg },
+    { id: 34, name: "Olive Oil Tin 5L", price: "799,95", image: oliveoiltinImg  },
+    { id: 35,name: "Sunflower Oil 1L", price: "129,95", image: sunfloweroilImg },
+    { id: 36, name: "Butter 1Kg", price: "575,95", image: butterImg },
 ];
 
 const OlivesOilsPage = () => {

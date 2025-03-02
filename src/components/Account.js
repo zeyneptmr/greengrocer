@@ -32,6 +32,8 @@ const Account = ({ isOpen, onClose }) => {
         return regex.test(email);
     };
 
+
+
     const handleNameChange = (e) => {
         const value = e.target.value.replace(/[^a-zA-Z]/g, "");
         setFormData((prevData) => ({
