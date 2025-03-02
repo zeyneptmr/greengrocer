@@ -11,15 +11,15 @@ import strawberryImg from "../assets/strawberry.jpg";
 
 
 const fruits = [
-    { name: "Orange", price: "55.00", image: orangeImg },
-    { name: "Banana", price: "60.00", image: bananaImg },
-    { name: "Grapes", price: "70.00", image: grapesImg },
-    { name: "Green Apple", price: "50.00", image: greenappleImg },
-    { name: "Red Apple", price: "50.00", image: redappleImg },
-    { name: "Lemon", price: "35.00", image: lemonImg },
-    { name: "Pear", price: "55.00", image: pearImg },
-    { name: "Plum", price: "50.00", image: plumImg },
-    { name: "Strawberry", price: "80.00", image: strawberryImg },
+    { id: 59, name: "Orange", price: "55.00", image: orangeImg },
+    { id: 60, name: "Banana", price: "60.00", image: bananaImg },
+    { id: 61, name: "Grapes", price: "70.00", image: grapesImg },
+    { id: 62, name: "Green Apple", price: "50.00", image: greenappleImg },
+    { id: 63, name: "Red Apple", price: "50.00", image: redappleImg },
+    { id: 64, name: "Lemon", price: "35.00", image: lemonImg },
+    { id: 65, name: "Pear", price: "55.00", image: pearImg },
+    { id: 66, name: "Plum", price: "50.00", image: plumImg },
+    { id: 67, name: "Strawberry", price: "80.00", image: strawberryImg },
 ];
 
 const FruitsPage = () => {
