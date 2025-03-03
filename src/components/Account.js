@@ -154,11 +154,11 @@ const Account = ({ isOpen, onClose }) => {
                     setMessage("Login successful!");
 
                     // Check the role based on the email
-                    if (email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
+                    if (email === "admin@taptaze.com" || email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
                         navigate("/admin"); // Admin page
-                    } else if (email === "selinbudak@taptaze.com" ) {
+                    } else if ( email === "manager@taptaze.com" || email === "selinbudak@taptaze.com" ) {
                         navigate("/manager"); // Manager page
-                    } else if (email === "zeynep.temur@gmail.com") {
+                    } else if ( email === "user@taptaze.com"|| email === "zeynep.temur@gmail.com") {
                         navigate("/user"); // User page
                     } else {
                         setMessage("Unknown role. Please contact support.");
