@@ -4,12 +4,14 @@ import { Link } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 import { useCart } from "../pages/CartContext"; // import useCart hook
+import { useFavorites } from "./FavoritesContext";
 
 
 
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const { getTotalProductTypes } = useCart(); // Import product types from CartContext
+    const {favorites} = useFavorites();
 
     return (
         <>
@@ -33,24 +35,18 @@ const Navbar = () => {
                         <User size={18} />
                         <span className="text-xs">Log In</span>
                     </button>
-<<<<<<< HEAD
-
                     <Link to="/favorites">
-                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
+                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
                             <Heart size={18} />
                             <span className="text-xs">Favorites</span>
+                            {favorites.length > 0 && (
+                                <span className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {favorites.length}
+                                </span>
+                            )}
                         </button>
                     
                     </Link>
-                    <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        <ShoppingCart size={18} />
-                        <span className="text-xs">Cart</span>
-                    </button>
-=======
-                    <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        <Heart size={18} />
-                        <span className="text-xs">Favorites</span>
-                    </button>
                     <Link to="/cart">
                         <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
                             <ShoppingCart size={18} />
@@ -64,7 +60,6 @@ const Navbar = () => {
                             )}
                         </button>
                     </Link>
->>>>>>> 1cea27397fb4d92f8367fd74d35e74bb9b0727a4
                 </div>
             </nav>
 
