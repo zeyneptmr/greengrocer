@@ -12,6 +12,8 @@ import OlivesOilsPage from "./pages/OlivesOilsPage";
 import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import SearchResults from "./pages/SearchResultPage";
+import ProductPage from "./pages/SearchProduct";
 import Cart from "./pages/Cart";
 
 import { FavoritesProvider } from "./components/FavoritesContext";
@@ -37,7 +39,9 @@ function App() {
                                 <Route path="/dairy" element={<DairyPage />} />
                                 <Route path="/favorites" element={<FavoritesPage />} />
                                 <Route path="/cart" element={<Cart />} />
+                                <Route path="/search-results" element={<SearchResults />} />
                                 <Route path="/contact" element={<ContactPage />} />
+                                <Route path="/product/:id" element={<ProductPage />} />
                             </Routes>
                         </div>
                         <Footer />

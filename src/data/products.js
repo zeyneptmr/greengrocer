@@ -84,7 +84,7 @@ import tomatoImg from "../assets/tomato.jpg";
 import zucchiniImg from "../assets/zucchini.jpg";
 
 
-const bakedgoods = [
+const allproducts = [
     { id: 1, name: "Avocado", price: "85.00", image: avocadoImg, category: "vegetables" },
     { id: 2, name: "Arugula", price: "40.00", image: arugulaImg, category: "vegetables" },
     { id: 3, name: "Tomatoes", price: "30.00", image: tomatoImg, category: "vegetables" },
@@ -172,4 +172,5 @@ const bakedgoods = [
     { id: 84, name: "Chocolate Cake", price: "60.00", image: chocolatecakeImg, category: "bakedgoods" },
 ];
 
-export default bakedgoods;
+export default allproducts;
+
