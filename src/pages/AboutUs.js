@@ -20,8 +20,8 @@ const AboutUs = () => {
     ];
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen p-6 bg-gray-100 bg-cover bg-opacity-80"
-             style={{ backgroundImage: `url(${backgroundImg})` }}> {/* Arka plan görselini buraya ekledik */}
+        <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100 bg-cover bg-opacity-80"
+             style={{ backgroundImage: `url(${backgroundImg})`, overflow: "hidden" }}> {/* Arka plan görselini buraya ekledik */}
 
             {/* Hakkımızda yazısının üstündeki beyaz kutu */}
             <div
@@ -45,7 +45,7 @@ const AboutUs = () => {
                 </h1>
             </div>
 
-            <div className="flex flex-col gap-20"> {/* gap-16 yerine gap-20 kullanarak mesafeyi artırdık */}
+            <div className="flex flex-col gap-12 items-center justify-center w-full flex-grow"> {/* gap-16 yerine gap-20 kullanarak mesafeyi artırdık */}
                 {items.map((item, index) => (
                     <motion.div
                         key={index}
