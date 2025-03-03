@@ -53,15 +53,22 @@ const Navbar = () => {
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && filteredProducts.length > 0) {
             navigate("/search-results", { state: { results: filteredProducts } });
-            setShowSuggestions(false); // Enter'a basıldığında öneri listesini gizle
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSearchClick = () => {
+        if (filteredProducts.length > 0) {
+            navigate("/search-results", { state: { results: filteredProducts } });
+            setShowSuggestions(false);
         }
     };
 
     const handleProductClick = (product) => {
-        navigate(`/product/${product.id}`);  // Ürünün ID'si ile yönlendir
-        setQuery("");  // Arama kutusunu temizle
-        setFilteredProducts([]);  // Önerileri temizle
-        setShowSuggestions(false); // Arama sonucu tıklandığında öneri listesini gizle
+        navigate(`/product/${product.id}`);
+        setQuery("");
+        setFilteredProducts([]);
+        setShowSuggestions(false);
     };
 
     const handleMenuClick = (menuName) => {
@@ -115,7 +122,10 @@ const Navbar = () => {
                             onChange={handleSearch}
                             onKeyDown={handleKeyDown}
                         />
-                        <button className="bg-green-600 text-white p-2 rounded z-10">
+                        <button
+                            className="bg-green-600 text-white p-2 rounded z-10"
+                            onClick={handleSearchClick}
+                        >
                             <Search size={20}/>
                         </button>
 
