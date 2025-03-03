@@ -18,9 +18,13 @@ const Navbar = () => {
         setQuery(searchTerm);
 
         if (searchTerm.length > 0) {
-            const filtered = products.filter((product) =>
-                product.name.toLowerCase().startsWith(searchTerm)
-            );
+            const searchTerms = searchTerm.split(" ");
+            const filtered = products.filter((product) => {
+                const productName = product.name.toLowerCase();
+                return searchTerms.every((term) => {
+                    return productName.split(" ").some((word) => word.startsWith(term));
+                });
+            });
             setFilteredProducts(filtered);
         } else {
             setFilteredProducts([]);
