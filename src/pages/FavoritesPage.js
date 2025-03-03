@@ -1,4 +1,4 @@
-import { useFavorites } from "../components/FavoritesContext";
+import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
 import ProductCard from "../components/ProductCard";
 import heartImg from "../assets/sadheart.png";
 

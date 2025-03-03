@@ -213,7 +213,7 @@ export default function ContactForm() {
                     </form>
                 </div>
 
-            {/* Customer Service Section */}
+                {/* Customer Service Section */}
                 <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
                     <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service</h2>
                     <p className="text-2xl font-bold text-orange-400">(0212) 533 65 32</p>

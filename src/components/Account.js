@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Flag from "react-world-flags"; // Import the flag component
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook from react-router-dom
 
 const Account = ({ isOpen, onClose }) => {
+    const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -18,6 +20,7 @@ const Account = ({ isOpen, onClose }) => {
         confirmPasswordError: null,
         phoneError: null,
     });
+    const [message, setMessage] = useState(""); // Message to display success or error
 
     useEffect(() => {
         if (isOpen) {
@@ -31,8 +34,6 @@ const Account = ({ isOpen, onClose }) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
-
-
 
     const handleNameChange = (e) => {
         const value = e.target.value.replace(/[^a-zA-Z]/g, "");
@@ -134,7 +135,40 @@ const Account = ({ isOpen, onClose }) => {
         if (isRegister && !phoneValid) setErrors((prevErrors) => ({ ...prevErrors, phoneError: "Please enter a valid phone number!" }));
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
-            console.log("Form submitted successfully.");
+            if (isRegister) {
+                // Handle Sign Up
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                const existingUser = users.find(user => user.email === email);
+                if (!existingUser) {
+                    users.push({ name: formData.name, surname: formData.surname, email, password, phoneNumber });
+                    localStorage.setItem("users", JSON.stringify(users));
+                    setMessage("Registration successful! You can now log in.");
+                } else {
+                    setMessage("This email is already registered.");
+                }
+            } else {
+                // Handle Log In
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                const existingUser = users.find(user => user.email === email && user.password === password);
+                if (existingUser) {
+                    setMessage("Login successful!");
+
+                    // Check the role based on the email
+                    if (email === "admin@taptaze.com" || email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
+                        navigate("/admin"); // Admin page
+                    } else if ( email === "manager@taptaze.com" || email === "selinbudak@taptaze.com" ) {
+                        navigate("/manager"); // Manager page
+                    } else if ( email === "user@taptaze.com"|| email === "zeynep.temur@gmail.com") {
+                        navigate("/user"); // User page
+                    } else {
+                        setMessage("Unknown role. Please contact support.");
+                    }
+
+                    onClose(); // Close the modal after successful login
+                } else {
+                    setMessage("No user found with this email and password.");
+                }
+            }
         }
     };
 
@@ -277,6 +311,7 @@ const Account = ({ isOpen, onClose }) => {
                         </>
                     )}
                 </form>
+                {message && <p className="text-center mt-3 text-green-600">{message}</p>} {/* Display message */}
             </div>
         </div>
     );

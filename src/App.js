@@ -11,15 +11,30 @@ import BakedGoodsPage from "./pages/BakedGoodsPage";
 import OlivesOilsPage from "./pages/OlivesOilsPage";
 import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
+<<<<<<< HEAD
 import Cart from "./pages/Cart";
 import { CartProvider } from "./pages/CartContext";
 import FavoritesPage from "./pages/FavoritesPage";
 import { FavoritesProvider } from "./components/FavoritesContext"
 import "./App.css";
+=======
+import FavoritesPage from "./pages/FavoritesPage";
+import SearchResults from "./components/SearchResultPage";
+import ProductPage from "./helpers/SearchProduct";
+import Cart from "./pages/Cart";
+import UserPage from "./pages/UserPage";
+import ManagerPage from "./pages/ManagerPage";
+import AdminPage from "./pages/AdminPage";
+
+import { FavoritesProvider } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { CartProvider } from "./helpers/CartContext";
+import "./styles/App.css";
+>>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
 
 function App() {
     return (
         <FavoritesProvider>
+<<<<<<< HEAD
         <CartProvider> {/* CartProvider  */}
             <Router>
                 <div className="App">
@@ -43,6 +58,37 @@ function App() {
                 </div>
             </Router>
         </CartProvider>
+=======
+            <CartProvider>
+                <Router>
+                    <div className="App">
+                        <Navbar />
+                        <div className="content">
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/about" element={<AboutUs />} />
+                                <Route path="/fruits" element={<FruitsPage />} />
+                                <Route path="/vegetables" element={<VegetablesPage />} />
+                                <Route path="/bakedgoods" element={<BakedGoodsPage />} />
+                                <Route path="/olives" element={<OlivesOilsPage />} />
+                                <Route path="/sauces" element={<SaucesPage />} />
+                                <Route path="/dairy" element={<DairyPage />} />
+                                <Route path="/favorites" element={<FavoritesPage />} />
+                                <Route path="/cart" element={<Cart />} />
+                                <Route path="/search-results" element={<SearchResults />} />
+                                <Route path="/contact" element={<ContactPage />} />
+                                <Route path="/user" element={<UserPage />} /> {/* Yeni sayfa */}
+                                <Route path="/manager" element={<ManagerPage />} /> {/* Yeni sayfa */}
+                                <Route path="/admin" element={<AdminPage />} /> {/* Yeni sayfa */}
+                                <Route path="/product/:id" element={<ProductPage />} />
+
+                            </Routes>
+                        </div>
+                        <Footer />
+                    </div>
+                </Router>
+            </CartProvider>
+>>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
         </FavoritesProvider>
     );
 }

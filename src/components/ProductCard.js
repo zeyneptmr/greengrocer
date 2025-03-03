@@ -1,31 +1,42 @@
-//import { useState } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
+<<<<<<< HEAD
 import { useCart } from "../pages/CartContext";
 import { useFavorites } from "./FavoritesContext";
+=======
+import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { useCart } from "../helpers/CartContext";
+>>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
 
 export default function ProductCard({ product, hideCartView=false }) {
     const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
     const { favorites, toggleFavorite } = useFavorites();
+<<<<<<< HEAD
+
+    const isFavorite = favorites.some((fav) => fav.id === product.id);
+=======
+    const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
+>>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
 
     const isFavorite = favorites.some((fav) => fav.id === product.id);
 
-    // Do you have this product in your cart?
+    // Sepette bu ürün var mı?
     const cartItem = cart.find((item) => item.id === product.id);
 
     return (
         <Card className="relative flex flex-col items-center">
-            {/* Favorites*/}
+            {/* Favorilere ekleme butonu */}
             <button
-                onClick={() =>  toggleFavorite(product)}
+                onClick={() => toggleFavorite(product)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
             >
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
 
-            {/* Product Image*/}
+            {/* Ürün Resmi */}
             <CardContent>
                 <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
                     <img
@@ -35,15 +46,20 @@ export default function ProductCard({ product, hideCartView=false }) {
                     />
                 </div>
 
-                {/* Product Name */}
+                {/* Ürün Adı */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
-                {/* Product Price */}
+                {/* Ürün Fiyatı */}
                 <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
 
+<<<<<<< HEAD
                 {/* Add Cart Button, Increase, Decrease */}
                 {!hideCartView && (
                 cartItem ? (
+=======
+                {/* Sepete ekleme ve miktar değiştirme */}
+                {cartItem ? (
+>>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
                     <div className="flex items-center space-x-3 mt-4">
                  <button
                 onClick={() => decreaseQuantity(product.id)}

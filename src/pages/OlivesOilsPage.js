@@ -1,23 +1,15 @@
 import ProductCard from "../components/ProductCard";
-import oliveoilImg from '../assets/oliveoil.jpg';
-import oliveoiltinImg from "../assets/oliveoilTin.png";
-import butterImg from "../assets/butter.jpg";
-import sunfloweroilImg from "../assets/sunfloweroil.jpg";
-
-const olives = [
-    { id: 33, name: "Olive Oil 1L", price: "255,95", image: oliveoilImg },
-    { id: 34, name: "Olive Oil Tin 5L", price: "799,95", image: oliveoiltinImg  },
-    { id: 35,name: "Sunflower Oil 1L", price: "129,95", image: sunfloweroilImg },
-    { id: 36, name: "Butter 1Kg", price: "575,95", image: butterImg },
-];
+import products from "../data/products";
 
 const OlivesOilsPage = () => {
+    const OlivesOils = products.filter(product => product.category === "olivesoils");
+
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Olives & Oils</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-                {olives.map((olive, index) => (
-                    <ProductCard key={index} product={olive} />
+                {OlivesOils.map((product, index) => (
+                    <ProductCard key={index} product={product} />
                 ))}
             </div>
         </div>
