@@ -3,8 +3,8 @@ import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
-import { useFavorites } from "./FavoritesContext";
-import { useCart } from "../pages/CartContext";
+import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { useCart } from "../helpers/CartContext";
 
 export default function ProductCard({ product }) {
     const { favorites, toggleFavorite } = useFavorites();

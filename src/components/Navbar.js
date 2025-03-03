@@ -3,7 +3,7 @@ import { ShoppingCart, Search, Heart, User, Home, ChevronDown } from "lucide-rea
 import { Link, useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
-import { useCart } from "../pages/CartContext";
+import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
 
 const menuItems = [

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useCart } from "./CartContext";
+import { useCart } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
 import { FaTrash } from "react-icons/fa"; // Rubbish bin icon
 
 

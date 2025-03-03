@@ -12,15 +12,15 @@ import OlivesOilsPage from "./pages/OlivesOilsPage";
 import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import FavoritesPage from "./pages/FavoritesPage";
-import SearchResults from "./pages/SearchResultPage";
-import ProductPage from "./pages/SearchProduct";
+import SearchResults from "./components/SearchResultPage";
+import ProductPage from "./helpers/SearchProduct";
 import Cart from "./pages/Cart";
 import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 
-import { FavoritesProvider } from "./components/FavoritesContext";
-import { CartProvider } from "./pages/CartContext";
+import { FavoritesProvider } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { CartProvider } from "./helpers/CartContext";
 import "./App.css";
 
 function App() {
