@@ -21,7 +21,7 @@ import AdminPage from "./pages/AdminPage";
 
 import { FavoritesProvider } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
 import { CartProvider } from "./helpers/CartContext";
-import "./App.css";
+import "./styles/App.css";
 
 function App() {
     return (
