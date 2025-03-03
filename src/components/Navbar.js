@@ -3,14 +3,12 @@ import { ShoppingCart, Search, Heart, User, Home, ChevronDown } from "lucide-rea
 import { Link, useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
-<<<<<<< HEAD
-import { useCart } from "../pages/CartContext"; // import useCart hook
-import { useFavorites } from "./FavoritesContext";
 
-=======
+import { useFavorites } from "../helpers/FavoritesContext";
+
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
+
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -24,9 +22,9 @@ const menuItems = [
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const { getTotalProductTypes } = useCart(); // Import product types from CartContext
-<<<<<<< HEAD
+
     const {favorites} = useFavorites();
-=======
+
     const [query, setQuery] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(true);
@@ -97,7 +95,7 @@ const Navbar = () => {
         const formattedSubItem = subItemName.toLowerCase().replace(/ /g, "-");
         navigate(`/${menuName.toLowerCase()}/${formattedSubItem}`);
     };
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
+
 
     return (
         <>
@@ -146,14 +144,8 @@ const Navbar = () => {
                         <span className="text-xs">Log In</span>
                     </button>
                     <Link to="/favorites">
-<<<<<<< HEAD
                         <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
                             <Heart size={18} />
-=======
-                        <button
-                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                            <Heart size={18}/>
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
                             <span className="text-xs">Favorites</span>
                             {favorites.length > 0 && (
                                 <span className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">

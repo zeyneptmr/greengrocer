@@ -1,25 +1,14 @@
-import { useState } from "react";
+
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
-<<<<<<< HEAD
-import { useCart } from "../pages/CartContext";
-import { useFavorites } from "./FavoritesContext";
-=======
-import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { useFavorites } from "../helpers/FavoritesContext"
 import { useCart } from "../helpers/CartContext";
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
 
 export default function ProductCard({ product, hideCartView=false }) {
     const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
     const { favorites, toggleFavorite } = useFavorites();
-<<<<<<< HEAD
-
-    const isFavorite = favorites.some((fav) => fav.id === product.id);
-=======
-    const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
 
     const isFavorite = favorites.some((fav) => fav.id === product.id);
 
@@ -52,14 +41,9 @@ export default function ProductCard({ product, hideCartView=false }) {
                 {/* Ürün Fiyatı */}
                 <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
 
-<<<<<<< HEAD
                 {/* Add Cart Button, Increase, Decrease */}
                 {!hideCartView && (
                 cartItem ? (
-=======
-                {/* Sepete ekleme ve miktar değiştirme */}
-                {cartItem ? (
->>>>>>> a75e3072e7a1ec41e1143bc6cc6e739306045bcf
                     <div className="flex items-center space-x-3 mt-4">
                  <button
                 onClick={() => decreaseQuantity(product.id)}
