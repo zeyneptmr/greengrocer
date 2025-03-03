@@ -13,6 +13,9 @@ import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import Cart from "./pages/Cart";
+import UserPage from "./pages/UserPage"; // Yeni sayfalar eklendi
+import ManagerPage from "./pages/ManagerPage";
+import AdminPage from "./pages/AdminPage";
 
 import { FavoritesProvider } from "./components/FavoritesContext";
 import { CartProvider } from "./pages/CartContext";
@@ -21,7 +24,7 @@ import "./App.css";
 function App() {
     return (
         <FavoritesProvider>
-            <CartProvider> {/* İki provider'ı birlikte sarmalıyoruz */}
+            <CartProvider>
                 <Router>
                     <div className="App">
                         <Navbar />
@@ -38,6 +41,9 @@ function App() {
                                 <Route path="/favorites" element={<FavoritesPage />} />
                                 <Route path="/cart" element={<Cart />} />
                                 <Route path="/contact" element={<ContactPage />} />
+                                <Route path="/user" element={<UserPage />} /> {/* Yeni sayfa */}
+                                <Route path="/manager" element={<ManagerPage />} /> {/* Yeni sayfa */}
+                                <Route path="/admin" element={<AdminPage />} /> {/* Yeni sayfa */}
                             </Routes>
                         </div>
                         <Footer />

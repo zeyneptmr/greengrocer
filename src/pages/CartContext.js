@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 // Context
@@ -47,25 +48,34 @@ export function CartProvider({ children }) {
         );
     };
 
+    const removeItem = (id) => {
+        setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    };
+
+    const clearCart = () => {
+        setCart([]);
+    };
+
     // Total cost
     const calculateTotalPrice = () => {
         return cart.reduce((total, item) => {
-            const price = parseFloat(item.price.replace('TL', '').replace(',', '').trim());
-            return total + price * item.quantity;
-        }, 0).toFixed(2);
+            let price = item.price.replace('TL', '').replace(/\s/g, '').replace(',', '.');
+            price = parseFloat(price);
+            return total + (price * item.quantity);
+        }, 0);
     };
 
-    // Different type of Products
     const getTotalProductTypes = () => {
-        return cart.length; // Benzersiz ürün sayısı
+        return cart.length; // Number of different products
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, increaseQuantity, decreaseQuantity, calculateTotalPrice, getTotalProductTypes }}>
+        <CartContext.Provider value={{ cart, addToCart, increaseQuantity, decreaseQuantity, removeItem, clearCart, calculateTotalPrice, getTotalProductTypes }}>
             {children}
         </CartContext.Provider>
     );
 }
+
 
 // Special Hook
 export function useCart() {
