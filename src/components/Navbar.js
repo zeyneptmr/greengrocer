@@ -125,10 +125,13 @@ const Navbar = () => {
                                 {filteredProducts.map((product) => (
                                     <li
                                         key={product.id}
-                                        className="p-2 cursor-pointer hover:bg-gray-200"
+                                        className="p-2 cursor-pointer hover:bg-gray-200 flex items-center gap-2"
                                         onClick={() => handleProductClick(product)}
                                     >
-                                        {product.name}
+                                        <img src={product.image} alt={product.name} className="w-8 h-8 rounded"/>
+                                        <div>
+                                            <p className="text-sm font-medium">{product.name}</p>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
