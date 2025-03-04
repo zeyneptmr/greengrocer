@@ -5,6 +5,7 @@ import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
+import { useFavorites } from "../helpers/FavoritesContext";
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -19,6 +20,7 @@ const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
+    const {favorites} = useFavorites();
     const [query, setQuery] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(true);
@@ -212,10 +214,14 @@ const Navbar = () => {
                     )}
 
                     <Link to="/favorites">
-                        <button
-                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                            <Heart size={18}/>
+                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
+                            <Heart size={18} />
                             <span className="text-xs">Favorites</span>
+                            {favorites.length > 0 && (
+                                <span className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {favorites.length}
+                                </span>
+                            )}
                         </button>
                     </Link>
 
