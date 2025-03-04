@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import backgroundImg from "../assets/manav.jpg"; // Dosya yolu doğru olmalı
+import backgroundImg from "../assets/background1.jpg";
 
 const AboutUs = () => {
     const [activeItems, setActiveItems] = useState([]);
@@ -21,24 +21,24 @@ const AboutUs = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100 bg-cover bg-opacity-80"
-             style={{ backgroundImage: `url(${backgroundImg})`, overflow: "hidden" }}> {/* Arka plan görselini buraya ekledik */}
+             style={{ backgroundImage: `url(${backgroundImg})`, overflow: "hidden" }}> {/* background img*/}
 
-            {/* Hakkımızda yazısının üstündeki beyaz kutu */}
+            {/* The white box above the About Us text */}
             <div
                 className="relative p-4 rounded-lg mb-12"
                 style={{
-                    backgroundColor: "#FFFFFF", // Beyaz arka plan
-                    boxShadow: "0px 0px 15px 2px rgba(0, 128, 0, 0.8)", // Yeşil gölge
+                    backgroundColor: "#FFFFFF", // white background
+                    boxShadow: "0px 0px 15px 2px rgba(0, 128, 0, 0.8)", // green shadow
                     display: "inline-block",
                 }}
             >
                 <h1
                     className="text-4xl md:text-5xl font-extrabold"
                     style={{
-                        color: "#000000", // Siyah renk
-                        textAlign: "center", // Ortalamak için
-                        letterSpacing: "5px", // Harfler arasına mesafe
-                        lineHeight: "1.2", // Satır yüksekliği
+                        color: "#000000", //black
+                        textAlign: "center", // center justify
+                        letterSpacing: "5px", //letter space
+                        lineHeight: "1.2", // row space
                     }}
                 >
                     About Us
@@ -69,9 +69,9 @@ const AboutUs = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3 }}
                                 style={{
-                                    backgroundColor: "#F5F5DC", // Krem rengi arka plan
+                                    backgroundColor: "#F5F5DC", //creme background
                                     left: index === 1 ? "-280px" : "120%",
-                                    marginTop: "-10px", // 1 birim yukarı kaydırmak için
+                                    marginTop: "-10px", //up margin
                                 }}
                             >
                                 {item.text}

@@ -1,23 +1,28 @@
-import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
+import { useFavorites } from "../helpers/FavoritesContext";
 import ProductCard from "../components/ProductCard";
+import heartImg from "../assets/sadheart.png";
+
 
 
 const FavoritesPage = () => {
     const { favorites } = useFavorites();
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-800">Favorilerim</h2>
-            {favorites.length === 0 ? (
-                <p className="text-gray-600 mt-4">Henüz favorilere eklenmiş ürün yok.</p>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-                    {favorites.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </div>
-            )}
-        </div>
+        <div className="p-6 min-h-[70vh]">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">FAVORITES</h2>
+        {favorites.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[60vh]">
+                <img src={heartImg} alt="No favorites" />
+                <p className="text-gray-600 mt-4 text-lg font-semibold">There are no products added to favorites yet.</p>
+            </div>
+        ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
+                {favorites.map((product) => (
+                    <ProductCard key={product.id} product={product} hideCartView={true} />
+                ))}
+            </div>
+        )}
+    </div>
     );
 };
 

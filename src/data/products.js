@@ -44,8 +44,22 @@ import greenappleImg from "../assets/greenapple.jpg";
 import redappleImg from "../assets/redapple.jpg";
 import lemonImg from "../assets/lemon.jpg";
 import pearImg from "../assets/pear.jpg";
-import plumImg from "../assets/plum.jpg";
+import damsonImg from "../assets/damson.jpg";
 import strawberryImg from "../assets/strawberry.jpg";
+import greenPlumImg from "../assets/greenplum.jpg";
+import watermelonImg from "../assets/watermelon.jpg";
+import pineappleImg from "../assets/pineapple.jpg";
+import melonImg from "../assets/melon.jpg";
+import kiwiImg from "../assets/kiwi.jpg";
+import peachImg from "../assets/peach.jpeg";
+import cherryImg from "../assets/cherry.jpg";
+import pomegranateImg from "../assets/pomegranate.jpg";
+import purpleFigImg from "../assets/purplefig.jpg";
+import greenFigImg from "../assets/greenfig.jpeg";
+import quinceImg from "../assets/quince.jpg";
+import dragonFruitImg from "../assets/dragonFruit.jpg";
+
+
 import oliveoilImg from "../assets/oliveoil.jpg";
 import oliveoiltinImg from "../assets/oliveoilTin.png";
 import sunfloweroilImg from "../assets/sunfloweroil.jpg";
@@ -82,9 +96,27 @@ import scallionImg from "../assets/scallion.jpg";
 import sweetpepperImg from "../assets/sweetpepper.jpg";
 import tomatoImg from "../assets/tomato.jpg";
 import zucchiniImg from "../assets/zucchini.jpg";
+import strawberryjamImg from "../assets/strawberryjam.jpg";
+import pepperpickleImg from "../assets/pepperpickle.jpg";
+import mustardsauceImg from "../assets/mustardsauce.jpg";
+import mixedpicklesImg from "../assets/mixedpickles.jpg";
+import mayonnaiseImg from "../assets/mayonnaise.jpg";
+import kimchiImg from "../assets/kimchi.jpg";
+import ketchupImg from "../assets/ketchup.jpg";
+import figjamImg from "../assets/figjam.webp";
+import cucumberpickleImg from "../assets/cucumberpickle.jpg";
+import cornpickleImg from "../assets/cornpickle.jpg";
+import carrotpickleImg from "../assets/carrotpickle.jpg";
+import cabbagepickleImg from "../assets/cabbagepickle.jpg";
+import barbecuesauceImg from "../assets/barbecuesauce.jpg";
+import apricotjamImg from "../assets/apricotjam.webp";
+import blackberryjamImg from "../assets/blackberryjam.webp";
+import cherryjamImg from "../assets/cherryjam.webp";
+import raspberryjamImg from "../assets/raspberryjam.webp";
 
 
-const allproducts = [
+
+export const allproducts = [
     { id: 1, name: "Avocado", price: "85.00", image: avocadoImg, category: "vegetables" },
     { id: 2, name: "Arugula", price: "40.00", image: arugulaImg, category: "vegetables" },
     { id: 3, name: "Tomatoes", price: "30.00", image: tomatoImg, category: "vegetables" },
@@ -117,32 +149,35 @@ const allproducts = [
     { id: 30, name: "Radish", price: "20.00", image: radishImg, category: "vegetables" },
     { id: 31, name: "Red Cabbage", price: "30.00", image: redcabbageImg, category: "vegetables" },
     { id: 32, name: "Scallion", price: "15.00", image: scallionImg, category: "vegetables" },
-    { id: 33, name: "Olive Oil 1L", price: "255,95", image: oliveoilImg, category: "olivesoils" },
-    { id: 34, name: "Olive Oil Tin 5L", price: "799,95", image: oliveoiltinImg, category: "olivesoils"  },
-    { id: 35, name: "Sunflower Oil 1L", price: "129,95", image: sunfloweroilImg, category: "olivesoils" },
-    { id: 36, name: "Butter 1Kg", price: "575,95", image: butterImg, category: "olivesoils" },
-    { id: 37, name: "Milk 1L", price: "149,99", image: milkImg, category: "dairy" },
-    { id: 38, name: "Kefir 1L", price: "189,99", image: kefirImg, category: "dairy" },
-    { id: 39, name: "Cow Feta Cheese Kg", price: "475,65", image: cowfetacheeseImg, category: "dairy" },
-    { id: 40, name: "Twist Cheese Kg", price: "350,55", image: twistcheeseImg, category: "dairy" },
-    { id: 41, name: "Tulum Cheese Kg", price: "420,95", image: tulumcheeseImg, category: "dairy" },
-    { id: 42, name: "Goat Cheese Kg", price: "590,00", image: goatcheeseImg, category: "dairy" },
-    { id: 43, name: "Trakya Aged Cheese Kg", price: "580,58", image: TrakyaagedcheeseImg, category: "dairy" },
-    { id: 44, name: "Walnut Gouda Cheese Kg", price: "3.265,95 TL", image: walnutgoudacheeseImg, category: "dairy" },
-    { id: 45, name: "Gouda Cheese with Truffle Kg", price: "750,00", image: goudacheesewithtruffleImg, category: "dairy" },
-    { id: 46, name: "Gouda Cheese with Pesto Kg", price: "570,00", image: goudacheesewithpestoImg, category: "dairy" },
-    { id: 47, name: "Delicious Cheese Balls Kg", price: "650,00", image: deliciouscheeseballsImg, category: "dairy" },
-    { id: 48, name: "Sheep Yogurt Kg", price: "229,75", image: sheepyogurtImg, category: "dairy" },
-    { id: 49, name: "Water Buffalo Yogurt Kg", price: "379,58", image: waterbuffaloyogurtImg, category: "dairy" },
-    { id: 50, name: "Goat Yogurt Kg", price: "330,00", image: goatyogurtImg, category: "dairy" },
-    { id: 51, name: "Cow Yogurt Kg", price: "135,00", image: cowyogurtImg, category: "dairy" },
-    { id: 52, name: "Kars Gruyere Cheese Kg", price: "600,00", image: KarsGruyereCheeseImg, category: "dairy" },
-    { id: 53, name: "String Cheese Kg", price: "379,75", image: stringcheeseImg, category: "dairy" },
-    { id: 54, name: "Plaited Cheese Kg", price: "420,58", image: plaitedcheeseImg, category: "dairy" },
-    { id: 55, name: "Mihali Cheese Kg", price: "550,00", image: mihalicheeseImg, category: "dairy" },
-    { id: 56, name: "Kashar Cheese Kg", price: "470,00", image: kasharcheeseImg, category: "dairy" },
-    { id: 57, name: "Kars Gruyere Cheese Kg", price: "600,00", image: KarsGruyereCheeseImg, category: "dairy" },
-    { id: 58, name: "Herby Cheese Kg", price: "520,25", image: herbycheeseImg, category: "dairy" },
+
+    { id: 33, name: "Olive Oil 1L", price: "255.95", image: oliveoilImg, category: "olivesoils" },
+    { id: 34, name: "Olive Oil Tin 5L", price: "799.95", image: oliveoiltinImg, category: "olivesoils"  },
+    { id: 35, name: "Sunflower Oil 1L", price: "129.95", image: sunfloweroilImg, category: "olivesoils" },
+    { id: 36, name: "Butter 1Kg", price: "575.95", image: butterImg, category: "olivesoils" },
+
+    { id: 37, name: "Milk 1L", price: "149.99", image: milkImg, category: "dairy" },
+    { id: 38, name: "Kefir 1L", price: "189.99", image: kefirImg, category: "dairy" },
+    { id: 39, name: "Cow Feta Cheese Kg", price: "475.65", image: cowfetacheeseImg, category: "dairy" },
+    { id: 40, name: "Twist Cheese Kg", price: "350.55", image: twistcheeseImg, category: "dairy" },
+    { id: 41, name: "Tulum Cheese Kg", price: "420.95", image: tulumcheeseImg, category: "dairy" },
+    { id: 42, name: "Goat Cheese Kg", price: "590.00", image: goatcheeseImg, category: "dairy" },
+    { id: 43, name: "Trakya Aged Cheese Kg", price: "580.58", image: TrakyaagedcheeseImg, category: "dairy" },
+    { id: 44, name: "Walnut Gouda Cheese Kg", price: "3.265.95", image: walnutgoudacheeseImg, category: "dairy" },
+    { id: 45, name: "Gouda Cheese with Truffle Kg", price: "750.00", image: goudacheesewithtruffleImg, category: "dairy" },
+    { id: 46, name: "Gouda Cheese with Pesto Kg", price: "570.00", image: goudacheesewithpestoImg, category: "dairy" },
+    { id: 47, name: "Delicious Cheese Balls Kg", price: "650.00", image: deliciouscheeseballsImg, category: "dairy" },
+    { id: 48, name: "Sheep Yogurt Kg", price: "229.75", image: sheepyogurtImg, category: "dairy" },
+    { id: 49, name: "Water Buffalo Yogurt Kg", price: "379.58", image: waterbuffaloyogurtImg, category: "dairy" },
+    { id: 50, name: "Goat Yogurt Kg", price: "330.00", image: goatyogurtImg, category: "dairy" },
+    { id: 51, name: "Cow Yogurt Kg", price: "135.00", image: cowyogurtImg, category: "dairy" },
+    { id: 52, name: "Kars Gruyere Cheese Kg", price: "600.00", image: KarsGruyereCheeseImg, category: "dairy" },
+    { id: 53, name: "String Cheese Kg", price: "379.75", image: stringcheeseImg, category: "dairy" },
+    { id: 54, name: "Plaited Cheese Kg", price: "420.58", image: plaitedcheeseImg, category: "dairy" },
+    { id: 55, name: "Mihali Cheese Kg", price: "550.00", image: mihalicheeseImg, category: "dairy" },
+    { id: 56, name: "Kashar Cheese Kg", price: "470.00", image: kasharcheeseImg, category: "dairy" },
+    { id: 57, name: "Kars Gruyere Cheese Kg", price: "600.00", image: KarsGruyereCheeseImg, category: "dairy" },
+    { id: 58, name: "Herby Cheese Kg", price: "520.25", image: herbycheeseImg, category: "dairy" },
+
     { id: 59, name: "Orange", price: "55.00", image: orangeImg, category: "fruits" },
     { id: 60, name: "Banana", price: "60.00", image: bananaImg, category: "fruits"  },
     { id: 61, name: "Grapes", price: "70.00", image: grapesImg, category: "fruits"  },
@@ -150,26 +185,60 @@ const allproducts = [
     { id: 63, name: "Red Apple", price: "50.00", image: redappleImg, category: "fruits"  },
     { id: 64, name: "Lemon", price: "35.00", image: lemonImg, category: "fruits"  },
     { id: 65, name: "Pear", price: "55.00", image: pearImg, category: "fruits"  },
-    { id: 66, name: "Plum", price: "50.00", image: plumImg, category: "fruits"  },
-    { id: 67, name: "Strawberry", price: "80.00", image: strawberryImg },
-    { id: 67, name: "Bread", price: "20.00", image: breadImg, category: "bakedgoods" },
-    { id: 68, name: "Daisy Bread", price: "30.00", image: daisybreadImg, category: "bakedgoods" },
-    { id: 69, name: "Corn Bread", price: "35.00", image: cornbreadImg, category: "bakedgoods" },
-    { id: 70, name: "Pitta Bread", price: "25.00", image: pittabreadImg, category: "bakedgoods" },
-    { id: 71, name: "Sourdough Bread", price: "40.00", image: sourdoughbreadImg, category: "bakedgoods" },
-    { id: 72, name: "Brown Bread", price: "30.00", image: brownbreadImg, category: "bakedgoods" },
-    { id: 73, name: "Multi-grain bread", price: "32.00", image: multigrainbreadImg, category: "bakedgoods" },
-    { id: 74, name: "Village Bread", price: "35.00", image: villagebreadImg, category: "bakedgoods" },
-    { id: 75, name: "Whole Wheat Bread", price: "32.00", image: wholewheatbreadImg, category: "bakedgoods" },
-    { id: 76, name: "Bagel", price: "20.00", image: bagelImg, category: "bakedgoods" },
-    { id: 77, name: "Gevrek", price: "22.00", image: gevrekImg, category: "bakedgoods" },
-    { id: 78, name: "Croissant", price: "25.00", image: croissantImg, category: "bakedgoods" },
-    { id: 79, name: "Pastry", price: "30.00", image: pastryImg, category: "bakedgoods" },
-    { id: 80, name: "Pastry with Cheese", price: "35.00", image: pastrycheeseImg, category: "bakedgoods" },
-    { id: 81, name: "Pastry with Olive", price: "35.00", image: pastryoliveImg, category: "bakedgoods" },
-    { id: 82, name: "Spring Rolls", price: "35.00", image: springrollsImg, category: "bakedgoods" },
-    { id: 83, name: "Cake", price: "50.00", image: cakeImg, category: "bakedgoods" },
-    { id: 84, name: "Chocolate Cake", price: "60.00", image: chocolatecakeImg, category: "bakedgoods" },
+    { id: 66, name: "Damson", price: "50.00", image: damsonImg, category: "fruits"  },
+    { id: 67, name: "Strawberry", price: "80.00", image: strawberryImg, category: "fruits" },
+    { id: 68, name: "Green Plum", price: "350.00", image: greenPlumImg, category: "fruits"  },
+    { id: 69, name: "Watermelon", price: "20.00", image: watermelonImg, category: "fruits"  },
+    { id: 70, name: "Melon", price: "30.00", image: melonImg, category: "fruits"  },
+    { id: 71, name: "Pineapple", price: "90.00", image: pineappleImg, category: "fruits"  },
+    { id: 72, name: "Kiwi", price: "80.00", image: kiwiImg, category: "fruits"  },
+    { id: 73, name: "Peach", price: "35.00", image: peachImg, category: "fruits"  },
+    { id: 74, name: "Cherry", price: "50.00", image: cherryImg, category: "fruits"  },
+    { id: 75, name: "Pomegranate", price: "45.00", image: pomegranateImg, category: "fruits"  },
+    { id: 76, name: "Purple Fig", price: "100.00", image: purpleFigImg, category: "fruits"  },
+    { id: 77, name: "Green Fig", price: "100.00", image: greenFigImg, category: "fruits"  },
+    { id: 78, name: "Quince", price: "40.00", image: quinceImg, category: "fruits"  },
+    { id: 79, name: "Dragon Fruit", price: "90.00", image: dragonFruitImg, category: "fruits"  },
+
+
+
+    { id: 80, name: "Bread", price: "20.00", image: breadImg, category: "bakedgoods" },
+    { id: 81, name: "Daisy Bread", price: "30.00", image: daisybreadImg, category: "bakedgoods" },
+    { id: 82, name: "Corn Bread", price: "35.00", image: cornbreadImg, category: "bakedgoods" },
+    { id: 83, name: "Pitta Bread", price: "25.00", image: pittabreadImg, category: "bakedgoods" },
+    { id: 84, name: "Sourdough Bread", price: "40.00", image: sourdoughbreadImg, category: "bakedgoods" },
+    { id: 85, name: "Brown Bread", price: "30.00", image: brownbreadImg, category: "bakedgoods" },
+    { id: 86, name: "Multi-grain bread", price: "32.00", image: multigrainbreadImg, category: "bakedgoods" },
+    { id: 87, name: "Village Bread", price: "35.00", image: villagebreadImg, category: "bakedgoods" },
+    { id: 88, name: "Whole Wheat Bread", price: "32.00", image: wholewheatbreadImg, category: "bakedgoods" },
+    { id: 89, name: "Bagel", price: "20.00", image: bagelImg, category: "bakedgoods" },
+    { id: 90, name: "Gevrek", price: "22.00", image: gevrekImg, category: "bakedgoods" },
+    { id: 91, name: "Croissant", price: "25.00", image: croissantImg, category: "bakedgoods" },
+    { id: 92, name: "Pastry", price: "30.00", image: pastryImg, category: "bakedgoods" },
+    { id: 93, name: "Pastry with Cheese", price: "35.00", image: pastrycheeseImg, category: "bakedgoods" },
+    { id: 94, name: "Pastry with Olive", price: "35.00", image: pastryoliveImg, category: "bakedgoods" },
+    { id: 95, name: "Spring Rolls", price: "35.00", image: springrollsImg, category: "bakedgoods" },
+    { id: 96, name: "Cake", price: "50.00", image: cakeImg, category: "bakedgoods" },
+    { id: 97, name: "Chocolate Cake", price: "60.00", image: chocolatecakeImg, category: "bakedgoods" },
+
+    { id: 98, name: "Blackberry Jam", price: "84.30", image: blackberryjamImg, category: "sauces" },
+    { id: 99, name: "Cherry Jam", price: "78.80", image: cherryjamImg, category: "sauces" },
+    { id: 100, name: "Raspberry Jam", price: "95.40", image: raspberryjamImg, category: "sauces" },
+    { id: 101, name: "Strawberry Jam", price: "50.50", image: strawberryjamImg, category: "sauces" },
+    { id: 102, name: "Pepper Pickle", price: "40.99", image: pepperpickleImg, category: "sauces" },
+    { id: 103, name: "Mustard Sauce", price: "45.80", image: mustardsauceImg, category: "sauces" },
+    { id: 104, name: "Mixed Pickles", price: "42.10", image: mixedpicklesImg, category: "sauces" },
+    { id: 105, name: "Mayonnaise", price: "28.50", image: mayonnaiseImg, category: "sauces" },
+    { id: 106, name: "Ketchup", price: "35.00", image: ketchupImg, category: "sauces" },
+    { id: 107, name: "Fig jam", price: "43.00", image: figjamImg, category: "sauces" },
+    { id: 108, name: "Cucumber Pickle", price: "48.00", image: cucumberpickleImg, category: "sauces" },
+    { id: 109, name: "Corn Pickle", price: "50.50", image: cornpickleImg, category: "sauces" },
+    { id: 110, name: "Carrot Pickle", price: "48.75", image: carrotpickleImg, category: "sauces" },
+    { id: 111, name: "Cabbage Pickle", price: "65.30", image: cabbagepickleImg, category: "sauces" },
+    { id: 112, name: "Barbecue Sauce", price: "70.25", image: barbecuesauceImg, category: "sauces" },
+    { id: 113, name: "Apricot Jam", price: "72.40", image: apricotjamImg, category: "sauces" },
+    { id: 114, name: "Kimchi", price: "32.80", image: kimchiImg, category: "sauces" },
+
 ];
 
 export default allproducts;

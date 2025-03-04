@@ -1,14 +1,14 @@
-import { useState } from "react";
+
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
-import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
-import { useCart } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
+import { useFavorites } from "../helpers/FavoritesContext"
+import { useCart } from "../helpers/CartContext";
 
-export default function ProductCard({ product }) {
-    const { favorites, toggleFavorite } = useFavorites();
+export default function ProductCard({ product, hideCartView=false }) {
     const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
+    const { favorites, toggleFavorite } = useFavorites();
 
     const isFavorite = favorites.some((fav) => fav.id === product.id);
 
@@ -41,25 +41,28 @@ export default function ProductCard({ product }) {
                 {/* Ürün Fiyatı */}
                 <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
 
-                {/* Sepete ekleme ve miktar değiştirme */}
-                {cartItem ? (
-                    <div className="flex items-center space-x-3 mt-4">
-                        <button
-                            onClick={() => decreaseQuantity(product.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded-md">
-                            -
-                        </button>
-                        <span className="text-lg font-semibold">{cartItem.quantity}</span>
-                        <button
-                            onClick={() => increaseQuantity(product.id)}
-                            className="bg-green-500 text-white px-3 py-1 rounded-md">
-                            +
-                        </button>
-                    </div>
-                ) : (
-                    <Button className="mt-4" onClick={() => addToCart(product)}>
-                        Sepete Ekle
-                    </Button>
+
+                {/* Add Cart Button, Increase, Decrease */}
+                {!hideCartView && (
+                    cartItem ? (
+                        <div className="flex items-center space-x-3 mt-4">
+                            <button
+                                onClick={() => decreaseQuantity(product.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded-md">
+                                -
+                            </button>
+                            <span className="text-lg font-semibold">{cartItem.quantity}</span>
+                            <button
+                                onClick={() => increaseQuantity(product.id)}
+                                className="bg-green-500 text-white px-3 py-1 rounded-md">
+                                +
+                            </button>
+                        </div>
+                    ) : (
+                        <Button className="mt-4" onClick={() => addToCart(product)}>
+                            Sepete Ekle
+                        </Button>
+                    )
                 )}
             </CardContent>
         </Card>
