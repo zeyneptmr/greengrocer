@@ -20,7 +20,6 @@ const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
-    const {favorites} = useFavorites();
     const [query, setQuery] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(true);
@@ -29,6 +28,7 @@ const Navbar = () => {
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
     const [notifications, setNotifications] = useState(5); // Set initial notification count
+    const {favorites} = useFavorites();
 
 
     // Giriş yapan kullanıcıyı kontrol et
@@ -37,6 +37,18 @@ const Navbar = () => {
         setLoggedInUser(storedUser);
     }, [navigate]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.search-bar') && !event.target.closest('.suggestions')) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleSearch = (e) => {
         const searchTerm = e.target.value.toLowerCase();
@@ -54,18 +66,50 @@ const Navbar = () => {
             setFilteredProducts(filtered);
         } else {
             setFilteredProducts([]);
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter" && filteredProducts.length > 0) {
-            navigate("/search-results", { state: { results: filteredProducts } });
             setShowSuggestions(false);
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            // Arama yapılmışsa ve ürünler varsa, arama sonuçlarına yönlendir
+            if (filteredProducts.length > 0) {
+                navigate("/search-results", { state: { results: filteredProducts } });
+                setShowSuggestions(false);  // Öneri listesini kapat
+                setQuery("");  // Arama çubuğunu temizle
+            }
+            // Eğer query var ama filteredProducts boşsa
+            else if (query) {
+                navigate(`/search-results?query=${query}`);  // Arama sonuçlarına yönlendir
+                setQuery("");  // Arama çubuğunu temizle
+            }
+        }
+    };
+
+
+    const handleSearchClick = () => {
+        if (filteredProducts.length > 0) {
+            navigate("/search-results", { state: { results: filteredProducts } });
+            setShowSuggestions(false);
+            setQuery("");
+        }
+        else if (query) {
+            navigate(`/search-results?query=${query}`);
+            setQuery("");
+        }
+    };
+
+    const NoResultsMessage = () => (
+        filteredProducts.length === 0 && query.length > 0 ? (
+            <div className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20 p-2 text-center text-red-500">
+                <p>Product not found!</p>
+            </div>
+        ) : null
+    );
+
     const handleProductClick = (product) => {
         navigate(`/product/${product.id}`);
+
         setQuery("");
         setFilteredProducts([]);
         setShowSuggestions(false);
@@ -112,13 +156,10 @@ const Navbar = () => {
         }
     };
 
-
-
     const handleProfileMenuToggle = (e) => {
         e.preventDefault(); // Varsayılan davranışı (yeni sayfaya yönlendirme) engelle
         setIsProfileMenuOpen(!isProfileMenuOpen); // Profil menüsünün açılmasını veya kapanmasını sağla
     };
-
 
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
@@ -144,23 +185,31 @@ const Navbar = () => {
                             onChange={handleSearch}
                             onKeyDown={handleKeyDown}
                         />
-                        <button className="bg-green-600 text-white p-2 rounded z-10">
+                        <button
+                            className="bg-green-600 text-white p-2 rounded z-10"
+                            onClick={handleSearchClick}
+                        >
                             <Search size={20}/>
                         </button>
 
+                        {/* Öneri Listesi */}
                         {showSuggestions && query && filteredProducts.length > 0 && (
-                            <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20">
+                            <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-30">
                                 {filteredProducts.map((product) => (
                                     <li
                                         key={product.id}
-                                        className="p-2 cursor-pointer hover:bg-gray-200"
+                                        className="p-2 cursor-pointer hover:bg-gray-200 flex items-center gap-2"
                                         onClick={() => handleProductClick(product)}
                                     >
-                                        {product.name}
+                                        <img src={product.image} alt={product.name} className="w-8 h-8 rounded"/>
+                                        <div>
+                                            <p className="text-sm font-medium">{product.name}</p>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
                         )}
+                        <NoResultsMessage />
                     </div>
                 </div>
 
@@ -283,7 +332,7 @@ const Navbar = () => {
                         {menuItems.map((menu, index) => (
                             <li
                                 key={index}
-                                className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-40"
+                                className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20"
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
                                 onClick={() => handleMenuClick(menu.name)}
@@ -315,4 +364,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
