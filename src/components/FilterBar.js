@@ -22,23 +22,14 @@ const FilterBar = ({ columns, setColumns, setSortOption }) => {
                     onClick={() => setColumns(4)}
                     className={`p-2 rounded ${columns === 4 ? "bg-green-600 text-white" : "bg-gray-200"}`}
                 >
-                    <div className="w-6 h-6 grid grid-cols-4 gap-0.25" onClick={toggleSelection}>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
-                        <div className={`w-1 h-1 ${selected ? "bg-white" : "bg-black"} rounded`}></div>
+                    <div className="w-6 h-6 grid grid-cols-4 gap-0.25">
+                        {/* 4x4 grid için */}
+                        {[...Array(16)].map((_, index) => (
+                            <div
+                                key={index}
+                                className={`w-1 h-1 ${columns === 4 ? "bg-white" : "bg-black"} rounded`} // 4x4 ise beyaz, 3x3 ise siyah
+                            ></div>
+                        ))}
                     </div>
                 </button>
             </div>
