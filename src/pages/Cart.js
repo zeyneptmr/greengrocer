@@ -1,14 +1,13 @@
-
 import { useState } from "react";
 import { useCart } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
 import { FaTrash } from "react-icons/fa"; // Rubbish bin icon
-
-
+import { useNavigate } from "react-router-dom"; // useNavigate import edildi
 
 export default function Cart() {
     const { cart, increaseQuantity, decreaseQuantity, calculateTotalPrice, getTotalProductTypes, removeItem, clearCart } = useCart();
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
+    const navigate = useNavigate(); // useNavigate hook'u tanımlandı
 
     const toggleSelectItem = (id) => {
         setSelectedItems((prev) =>
@@ -21,15 +20,28 @@ export default function Cart() {
         setSelectedItems([]);
     };
 
-    // Function that calculates Shipping Cost
+    // Shipping Fee hesaplama fonksiyonu
     const calculateShippingFee = () => {
         const totalPrice = calculateTotalPrice();
         return totalPrice >= 500 ? 0 : 49;
     };
 
-    // Function that calculates the total of the order amount and shipping cost
+    // Toplam tutar ve shipping cost hesaplama fonksiyonu
     const calculateTotalAmount = () => {
-        return (calculateTotalPrice() + calculateShippingFee()).toFixed(2);
+        const totalPrice = Number(calculateTotalPrice()); // Sayıya çevir
+        const shippingFee = Number(calculateShippingFee()); // Sayıya çevir
+        return (totalPrice + shippingFee).toFixed(2);
+    };
+
+    // Console log'ları
+    console.log("Total Price:", calculateTotalPrice()); // Bunu ekle
+    console.log("Shipping Fee:", calculateShippingFee()); // Bunu ekle
+    console.log("Total Amount (before fix):", calculateTotalPrice() + calculateShippingFee()); // Bunu ekle
+
+
+    // Continue butonuna tıklayınca yönlendirme yapılacak fonksiyon
+    const handleContinueClick = () => {
+        navigate("/payment"); // /address sayfasına yönlendir
     };
 
     return (
@@ -142,7 +154,7 @@ export default function Cart() {
                     </div>
                 )}
 
-                {/* Free delivery message */}
+                {/* Ücretsiz teslimat mesajı */}
                 {calculateShippingFee() === 0 && (
                     <div className="flex justify-between text-green-600 font-semibold text-lg mt-2">
                         <span>Free Delivery</span>
@@ -153,11 +165,13 @@ export default function Cart() {
                     <span>Total Amount:</span>
                     <span className="font-semibold">{calculateTotalAmount()} TL</span>
                 </div>
-                <button className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition">
+                {/* Continue butonuna tıklandığında yönlendirme yapılır */}
+                <button
+                    onClick={handleContinueClick}
+                    className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition">
                     Continue
                 </button>
             </div>
         </div>
     );
 }
-

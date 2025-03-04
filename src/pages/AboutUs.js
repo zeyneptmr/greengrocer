@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import backgroundImg from "../assets/background1.jpg"; // Dosya yolu doğru olmalı
+import backgroundImg from "../assets/manav.jpg"; // Dosya yolu doğru olmalı
 
 const AboutUs = () => {
     const [activeItems, setActiveItems] = useState([]);

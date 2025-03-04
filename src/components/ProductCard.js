@@ -4,7 +4,7 @@ import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { Button } from "./Button";
 import { useFavorites } from "/Users/zeynep/greengrocer/src/helpers/FavoritesContext.js";
-import { useCart } from "../helpers/CartContext";
+import { useCart } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
 
 export default function ProductCard({ product }) {
     const { favorites, toggleFavorite } = useFavorites();
