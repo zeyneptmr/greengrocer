@@ -1,35 +1,50 @@
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
-import orangeImg from '../assets/orange.jpg';
-import bananaImg from "../assets/banana.jpg";
-import grapesImg from "../assets/grapes.jpg";
-import greenappleImg from "../assets/greenapple.jpg";
-import redappleImg from "../assets/redapple.jpg";
-import lemonImg from "../assets/lemon.jpg";
-import pearImg from "../assets/pear.jpg";
-import plumImg from "../assets/plum.jpg";
-import strawberryImg from "../assets/strawberry.jpg";
-
-
-const sauces = [
-    { name: "Orange", price: "49,95", image: orangeImg },
-    { name: "Banana", price: "129,95", image: bananaImg },
-    { name: "Grapes", price: "129,95", image: grapesImg },
-    { name: "Green apple", price: "129,95", image: greenappleImg },
-    { name: "Red apple", price: "129,95", image: redappleImg },
-    { name: "Lemon", price: "129,95", image: lemonImg },
-    { name: "Pear", price: "129,95", image: pearImg },
-    { name: "Plum", price: "129,95", image: plumImg },
-    { name: "Strawberry", price: "129,95", image: strawberryImg },
-
-];
+import products from "../data/products";
+import FilterBar from "../components/FilterBar";
+import SlideBar from "../components/SliderBar";
+import sauces1 from '../assets/sauces1.jpg';
+import sauces2 from '../assets/sauces2.jpg';
 
 const SaucesPage = () => {
+    const [columns, setColumns] = useState(4);
+    const [sortOption, setSortOption] = useState("default");
+    const [Sauces, setSauces] = useState(products.filter(product => product.category === "sauces"));
+
+    useEffect(() => {
+        let sortedArray = [...Sauces];
+
+        if (sortOption === "price-asc") {
+            sortedArray.sort((a, b) => a.price - b.price);
+        } else if (sortOption === "price-desc") {
+            sortedArray.sort((a, b) => b.price - a.price);
+        } else if (sortOption === "name-asc") {
+            sortedArray.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortOption === "name-desc") {
+            sortedArray.sort((a, b) => b.name.localeCompare(a.name));
+        }
+
+        setSauces(sortedArray);
+    }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
+
+    const slideItems = [
+        { image: sauces1, name: "sauces1" },
+        { image: sauces2, name: "sauces2" },
+
+    ];
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Sauces</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-                {sauces.map((sauce, index) => (
-                    <ProductCard key={index} product={sauce}/>
+            <SlideBar items={slideItems}/>
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Sauces</h2>
+            <FilterBar
+                columns={columns}
+                setColumns={setColumns}
+                setSortOption={setSortOption}
+            />
+
+            <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
+                {Sauces.map((product, index) => (
+                    <ProductCard key={index} product={product} />
                 ))}
             </div>
         </div>

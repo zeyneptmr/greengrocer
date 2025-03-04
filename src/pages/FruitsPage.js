@@ -1,13 +1,49 @@
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import products from "../data/products";
+import FilterBar from "../components/FilterBar";
+import SlideBar from "../components/SliderBar";
+import fruits1 from '../assets/fruits1.jpg';
+import fruits2 from '../assets/fruits2.jpg';
+import fruits3 from '../assets/fruits3.jpg';
 
 const FruitsPage = () => {
-    const Fruits = products.filter(product => product.category === "fruits");
+    const [columns, setColumns] = useState(4);
+    const [sortOption, setSortOption] = useState("default");
+    const [Fruits, setFruits] = useState(products.filter(product => product.category === "fruits"));
+
+    useEffect(() => {
+        let sortedArray = [...Fruits];
+
+        if (sortOption === "price-asc") {
+            sortedArray.sort((a, b) => a.price - b.price);
+        } else if (sortOption === "price-desc") {
+            sortedArray.sort((a, b) => b.price - a.price);
+        } else if (sortOption === "name-asc") {
+            sortedArray.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortOption === "name-desc") {
+            sortedArray.sort((a, b) => b.name.localeCompare(a.name));
+        }
+
+        setFruits(sortedArray);
+    }, [sortOption]);
+
+    const slideItems = [
+        { image: fruits1, name: "fruits1" },
+        { image: fruits2, name: "fruits2" },
+        { image: fruits3, name: "fruits3" },
+    ];
 
     return (
-        <div className="flex flex-col p-6 h-auto">
-            <h2 className="text-2xl font-bold mb-4">Fruits</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
+        <div className="p-6">
+            <SlideBar items={slideItems}/>
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Fruits</h2>
+            <FilterBar
+                columns={columns}
+                setColumns={setColumns}
+                setSortOption={setSortOption}
+            />
+            <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
                 {Fruits.map((product, index) => (
                     <ProductCard key={index} product={product} />
                 ))}
@@ -15,6 +51,5 @@ const FruitsPage = () => {
         </div>
     );
 };
-
 
 export default FruitsPage;

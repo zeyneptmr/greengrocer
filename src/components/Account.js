@@ -136,41 +136,50 @@ const Account = ({ isOpen, onClose }) => {
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
             if (isRegister) {
-                // Handle Sign Up
+                // Kayıt olma işlemi
                 const users = JSON.parse(localStorage.getItem("users")) || [];
                 const existingUser = users.find(user => user.email === email);
                 if (!existingUser) {
                     users.push({ name: formData.name, surname: formData.surname, email, password, phoneNumber });
                     localStorage.setItem("users", JSON.stringify(users));
+
+                    console.log("Users in localStorage after registration:", localStorage.getItem("users"));
                     setMessage("Registration successful! You can now log in.");
                 } else {
                     setMessage("This email is already registered.");
                 }
             } else {
-                // Handle Log In
+                // Giriş yapma işlemi
                 const users = JSON.parse(localStorage.getItem("users")) || [];
                 const existingUser = users.find(user => user.email === email && user.password === password);
                 if (existingUser) {
                     setMessage("Login successful!");
 
-                    // Check the role based on the email
+                    // **GİRİŞ YAPAN KULLANICIYI KAYDET**
+                    localStorage.setItem("loggedInUser", JSON.stringify(existingUser));
+
+                    console.log("Logged in user saved:", localStorage.getItem("loggedInUser"));
+
+
+                    // Kullanıcı rolüne göre yönlendirme yap
                     if (email === "admin@taptaze.com" || email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
-                        navigate("/admin"); // Admin page
-                    } else if ( email === "manager@taptaze.com" || email === "selinbudak@taptaze.com" ) {
-                        navigate("/manager"); // Manager page
-                    } else if ( email === "user@taptaze.com"|| email === "zeynep.temur@gmail.com") {
-                        navigate("/user"); // User page
+                        navigate("/admin"); // Admin sayfası
+                    } else if (email === "manager@taptaze.com" || email === "selinbudak@taptaze.com") {
+                        navigate("/manager"); // Manager sayfası
+                    } else if (email === "user@taptaze.com" || email === "zeynep.temur@gmail.com") {
+                        navigate("/user"); // User sayfası
                     } else {
                         setMessage("Unknown role. Please contact support.");
                     }
 
-                    onClose(); // Close the modal after successful login
+                    onClose(); // Modalı kapat
                 } else {
                     setMessage("No user found with this email and password.");
                 }
             }
         }
     };
+
 
     const countries = [
         { code: "+1", flag: "US" },

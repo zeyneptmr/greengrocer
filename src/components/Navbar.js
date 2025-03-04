@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import { ShoppingCart, Search, Heart, User, Home, ChevronDown } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ShoppingCart, Search, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
 import { Link, useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
-
-import { useFavorites } from "../helpers/FavoritesContext";
-
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
-
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -21,15 +17,24 @@ const menuItems = [
 
 const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
-    const { getTotalProductTypes } = useCart(); // Import product types from CartContext
-
-    const {favorites} = useFavorites();
-
+    const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
+    const { getTotalProductTypes } = useCart();
     const [query, setQuery] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(true);
     const navigate = useNavigate();
     const [hoveredMenu, setHoveredMenu] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
+    const [notifications, setNotifications] = useState(5); // Set initial notification count
+
+
+    // Giriş yapan kullanıcıyı kontrol et
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        setLoggedInUser(storedUser);
+    }, [navigate]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
+
 
     const handleSearch = (e) => {
         const searchTerm = e.target.value.toLowerCase();
@@ -53,19 +58,18 @@ const Navbar = () => {
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && filteredProducts.length > 0) {
             navigate("/search-results", { state: { results: filteredProducts } });
-            setShowSuggestions(false); // Enter'a basıldığında öneri listesini gizle
+            setShowSuggestions(false);
         }
     };
 
     const handleProductClick = (product) => {
-        navigate(`/product/${product.id}`);  // Ürünün ID'si ile yönlendir
-        setQuery("");  // Arama kutusunu temizle
-        setFilteredProducts([]);  // Önerileri temizle
-        setShowSuggestions(false); // Arama sonucu tıklandığında öneri listesini gizle
+        navigate(`/product/${product.id}`);
+        setQuery("");
+        setFilteredProducts([]);
+        setShowSuggestions(false);
     };
 
     const handleMenuClick = (menuName) => {
-        // Menü öğelerine tıklanınca yönlendirme yapılır
         switch (menuName) {
             case "Fruits":
                 navigate("/fruits");
@@ -91,11 +95,34 @@ const Navbar = () => {
     };
 
     const handleSubMenuClick = (menuName, subItemName) => {
-        // Alt menü öğelerine tıklanınca yönlendirme yapılır
         const formattedSubItem = subItemName.toLowerCase().replace(/ /g, "-");
         navigate(`/${menuName.toLowerCase()}/${formattedSubItem}`);
     };
 
+    const handleCartClick = () => {
+        console.log("loggedInUser:", loggedInUser); // Kullanıcı bilgisi konsolda görünüyor mu?
+
+        if (!loggedInUser) {
+            setIsCartAccessRestricted(true);
+        } else {
+            console.log("Navigating to /cart"); // Bu çalışıyor mu kontrol et
+            navigate("/cart");
+        }
+    };
+
+
+
+    const handleProfileMenuToggle = (e) => {
+        e.preventDefault(); // Varsayılan davranışı (yeni sayfaya yönlendirme) engelle
+        setIsProfileMenuOpen(!isProfileMenuOpen); // Profil menüsünün açılmasını veya kapanmasını sağla
+    };
+
+
+    const handleLogout = () => {
+        localStorage.removeItem("loggedInUser");
+        setLoggedInUser(null);
+        navigate("/login"); // Login sayfasına yönlendir
+    };
 
     return (
         <>
@@ -119,7 +146,6 @@ const Navbar = () => {
                             <Search size={20}/>
                         </button>
 
-                        {/* Öneri Listesi */}
                         {showSuggestions && query && filteredProducts.length > 0 && (
                             <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20">
                                 {filteredProducts.map((product) => (
@@ -136,39 +162,109 @@ const Navbar = () => {
                     </div>
                 </div>
 
-
                 <div className="flex items-center gap-3">
-                    <button onClick={() => setIsAccountOpen(true)}
-                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                        <User size={18}/>
-                        <span className="text-xs">Log In</span>
-                    </button>
-                    <Link to="/favorites">
-                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                            <Heart size={18} />
-                            <span className="text-xs">Favorites</span>
-                            {favorites.length > 0 && (
-                                <span className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    {favorites.length}
-                                </span>
+                    {loggedInUser ? (
+                        <div className="relative">
+                            <button
+                                onClick={handleProfileMenuToggle}
+                                className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
+                                <User size={18}/>
+                                <span className="text-xs">Profile</span> {/* Profile olarak değiştirildi */}
+                            </button>
+                            {isProfileMenuOpen && (
+                                <div
+                                    className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-48 z-50">
+                                    <ul>
+                                        <li
+                                            onClick={() => navigate("/account-settings")}
+                                            className="p-2 cursor-pointer hover:bg-gray-200"
+                                        >
+                                            Hesap Ayarlarım
+                                        </li>
+                                        <li
+                                            onClick={() => navigate("/orders")}
+                                            className="p-2 cursor-pointer hover:bg-gray-200"
+                                        >
+                                            Siparişlerim
+                                        </li>
+                                        <li
+                                            onClick={() => navigate("/address")}
+                                            className="p-2 cursor-pointer hover:bg-gray-200"
+                                        >
+                                            Adreslerim
+                                        </li>
+                                        <li
+                                            onClick={handleLogout}
+                                            className="p-2 cursor-pointer hover:bg-gray-200"
+                                        >
+                                            Çıkış Yap
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
+                        </div>
+                    ) : (
+                        <button onClick={() => setIsAccountOpen(true)}
+                                className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
+                            <User size={18}/>
+                            <span className="text-xs">Log In</span>
+                        </button>
+                    )}
+
+                    <Link to="/favorites">
+                        <button
+                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
+                            <Heart size={18}/>
+                            <span className="text-xs">Favorites</span>
                         </button>
                     </Link>
-                    <Link to="/cart">
+
+                    {/* Notification button, shown when the user is logged in */}
+                    {loggedInUser && notifications > 0 && (
                         <button
                             className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                            <ShoppingCart size={18}/>
-                            <span className="text-xs">Cart</span>
-                            {getTotalProductTypes() > 0 && (
-                                <span
-                                    className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    {getTotalProductTypes()}
-                                </span>
-                            )}
+                            <Bell size={18}/>
+                            <span className="text-xs">Notifications</span>
+                            <span
+                                className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {notifications}
+                            </span>
                         </button>
-                    </Link>
+                    )}
+
+                    <button
+                        onClick={handleCartClick}
+                        className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
+                        <ShoppingCart size={18}/>
+                        <span
+                            className="text-xs">{loggedInUser ? "My Cart" : "Cart"}</span> {/* Cart butonunun yazısı dinamik olarak değiştirildi */}
+                        {getTotalProductTypes() > 0 && (
+                            <span
+                                className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {getTotalProductTypes()}
+                            </span>
+                        )}
+                    </button>
                 </div>
             </nav>
+
+            {isCartAccessRestricted && (
+                <div
+                    className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <p className="text-lg font-semibold mb-4">Devam etmek için lütfen üye girişi yapın.</p>
+                        <button
+                            onClick={() => {
+                                setIsAccountOpen(true);
+                                setIsCartAccessRestricted(false);
+                            }}
+                            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                        >
+                            Üye Girişi Yap
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className="bg-green-500 text-white p-3 relative">
                 <div className="flex justify-center">
@@ -184,7 +280,7 @@ const Navbar = () => {
                                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-40"
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
-                                onClick={() => handleMenuClick(menu.name)} // Menü öğesine tıklayınca yönlendir
+                                onClick={() => handleMenuClick(menu.name)}
                             >
                                 <span className="flex items-center">{menu.name} <ChevronDown size={16}
                                                                                              className="ml-1"/></span>
@@ -194,7 +290,7 @@ const Navbar = () => {
                                             <li
                                                 key={subIndex}
                                                 className="p-2 hover:bg-gray-200 cursor-pointer"
-                                                onClick={() => handleSubMenuClick(menu.name, subItem)} // Alt menüye tıklanınca yönlendir
+                                                onClick={() => handleSubMenuClick(menu.name, subItem)}
                                             >
                                                 {subItem}
                                             </li>
@@ -206,9 +302,11 @@ const Navbar = () => {
                     </ul>
                 </div>
             </div>
+
             <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
         </>
     );
 };
 
 export default Navbar;
+

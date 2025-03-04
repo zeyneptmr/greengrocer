@@ -41,27 +41,28 @@ export default function ProductCard({ product, hideCartView=false }) {
                 {/* Ürün Fiyatı */}
                 <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
 
+
                 {/* Add Cart Button, Increase, Decrease */}
                 {!hideCartView && (
-                cartItem ? (
-                    <div className="flex items-center space-x-3 mt-4">
-                 <button
-                onClick={() => decreaseQuantity(product.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded-md">
-                -
-                </button>
-                    <span className="text-lg font-semibold">{cartItem.quantity}</span>
-                <button
-                    onClick={() => increaseQuantity(product.id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded-md">
-                +
-            </button>
-        </div>
-             ) : (
-        <Button className="mt-4" onClick={() => addToCart(product)}>
-            Sepete Ekle
-        </Button>
-            )
+                    cartItem ? (
+                        <div className="flex items-center space-x-3 mt-4">
+                            <button
+                                onClick={() => decreaseQuantity(product.id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded-md">
+                                -
+                            </button>
+                            <span className="text-lg font-semibold">{cartItem.quantity}</span>
+                            <button
+                                onClick={() => increaseQuantity(product.id)}
+                                className="bg-green-500 text-white px-3 py-1 rounded-md">
+                                +
+                            </button>
+                        </div>
+                    ) : (
+                        <Button className="mt-4" onClick={() => addToCart(product)}>
+                            Sepete Ekle
+                        </Button>
+                    )
                 )}
             </CardContent>
         </Card>

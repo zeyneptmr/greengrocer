@@ -21,6 +21,10 @@ import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
 
+
+import AddressPage from "./pages/AddressPage.js";
+import PaymentPage from "./pages/PaymentPage.js";
+
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
 import "./styles/App.css";
@@ -52,7 +56,8 @@ function MainContent(){
                     <Route path="/manager" element={<ManagerPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/displayproducts" element={<DisplayProductPage />} />
-                    <Route path="/product/:id" element={<ProductPage />} />
+                    <Route path="/address" element={<AddressPage />} />
+                    <Route path="/payment" element={<PaymentPage />} />
                 </Routes>
             </div>
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer />}

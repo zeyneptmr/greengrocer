@@ -24,11 +24,14 @@ export default function ContactForm() {
         topic: "",
         message: "",
     });
+
     const [messageError, setMessageError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [phoneError, setPhoneError] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+90"); // Default country code set to Turkey
+    const [bannerMessage, setBannerMessage] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     const countries = [
@@ -116,16 +119,52 @@ export default function ContactForm() {
             alert("Please correct the errors in the form..");
             return;
         }
-        console.log(formData);
+        localStorage.setItem("contactForm", JSON.stringify(formData));
+
+        // Show banner message
+        setBannerMessage("Your form has been successfully submitted!");
+        setIsModalOpen(true);
+
+        setTimeout(() => {
+            setIsModalOpen(false);
+            setBannerMessage(""); // Banner mesajını da temizle
+        }, 5000);
+
+        setFormData({
+            name: "",
+            surname: "",
+            email: "",
+            phone: "",
+            topic: "",
+            message: "",
+        });
     };
 
     return (
         <div className="flex flex-col items-center justify-center p-10">
             <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
 
+                {/* Banner Penceresi */}
+                {isModalOpen && (
+                    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white border-4 border-green-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-center w-96 animate-fade-in">
+                        <div className="bg-orange-500 w-full py-2 rounded-t-lg text-white font-bold">
+                            Success!
+                        </div>
+                        <div className="text-green-700 font-medium p-4">
+                            {bannerMessage}
+                        </div>
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="mt-2 px-4 py-1 bg-green-500 text-white font-semibold rounded-md hover:bg-green-700"
+                        >
+                            Close
+                        </button>
+                    </div>
+                )}
+
                 <div>
                     <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
-                    <p className="text-sm text-orange-500 mb-4">*To provide you with better service, you need to log in.</p>
+                    <p className="text-sm text-orange-500 mb-4"> </p>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <input
                             type="text"
