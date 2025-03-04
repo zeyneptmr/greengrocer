@@ -53,14 +53,7 @@ const Navbar = () => {
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && filteredProducts.length > 0) {
             navigate("/search-results", { state: { results: filteredProducts } });
-            setShowSuggestions(false);
-        }
-    };
-
-    const handleSearchClick = () => {
-        if (filteredProducts.length > 0) {
-            navigate("/search-results", { state: { results: filteredProducts } });
-            setShowSuggestions(false);
+            setShowSuggestions(false); // Enter'a basıldığında öneri listesini gizle
         }
     };
 
@@ -122,10 +115,7 @@ const Navbar = () => {
                             onChange={handleSearch}
                             onKeyDown={handleKeyDown}
                         />
-                        <button
-                            className="bg-green-600 text-white p-2 rounded z-10"
-                            onClick={handleSearchClick}
-                        >
+                        <button className="bg-green-600 text-white p-2 rounded z-10">
                             <Search size={20}/>
                         </button>
 
