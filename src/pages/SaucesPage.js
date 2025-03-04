@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import products from "../data/products";
 import FilterBar from "../components/FilterBar";
+import SlideBar from "../components/SliderBar";
+import sauces1 from '../assets/sauces1.jpg';
+import sauces2 from '../assets/sauces2.jpg';
 
 const SaucesPage = () => {
     const [columns, setColumns] = useState(4);
@@ -24,9 +27,15 @@ const SaucesPage = () => {
         setSauces(sortedArray);
     }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
 
+    const slideItems = [
+        { image: sauces1, name: "sauces1" },
+        { image: sauces2, name: "sauces2" },
+
+    ];
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Sauces</h2>
+            <SlideBar items={slideItems}/>
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Sauces</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}

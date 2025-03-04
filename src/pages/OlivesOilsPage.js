@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import products from "../data/products";
 import FilterBar from "../components/FilterBar";
+import SlideBar from "../components/SliderBar";
+import olivesoils1 from '../assets/olivesoils1.jpg';
+import olivesoils2 from '../assets/olivesoils2.jpg';
 
 const OlivesOilsPage = () => {
     const [columns, setColumns] = useState(4);
@@ -24,9 +27,15 @@ const OlivesOilsPage = () => {
         setOlivesOils(sortedArray);
     }, [sortOption]);
 
+    const slideItems = [
+        { image: olivesoils1, name: "olivesoils1" },
+        { image: olivesoils2, name: "olivesoils2" },
+    ];
+
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Olives & Oils</h2>
+            <SlideBar items={slideItems}/>
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Olives & Oils </h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
@@ -34,7 +43,7 @@ const OlivesOilsPage = () => {
             />
             <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
                 {OlivesOils.map((product, index) => (
-                    <ProductCard key={index} product={product} />
+                    <ProductCard key={index} product={product}/>
                 ))}
             </div>
         </div>

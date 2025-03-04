@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import products from "../data/products";
 import FilterBar from "../components/FilterBar";
+import SlideBar from "../components/SliderBar";
+import bakedgoods1 from '../assets/bakedgoods1.jpg.avif';
+import bakedgoods2 from '../assets/bakedgoods2.jpg';
+import bakedgoods3 from '../assets/bakedgoods3.jpg';
 
 const BakedGoodsPage = () => {
     const [columns, setColumns] = useState(4);
@@ -24,9 +28,16 @@ const BakedGoodsPage = () => {
         setBakedGoodsProducts(sortedArray);
     }, [sortOption]);
 
+    const slideItems = [
+        { image: bakedgoods1, name: "bakedgoods1" },
+        { image: bakedgoods2, name: "bakedgoods2" },
+        { image: bakedgoods3, name: "bakedgoods3" },
+    ];
+
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Baked Goods</h2>
+            <SlideBar items={slideItems}/>
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Baked Goods</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
@@ -34,7 +45,7 @@ const BakedGoodsPage = () => {
             />
             <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
                 {BakedGoodsProducts.map((product, index) => (
-                    <ProductCard key={index} product={product} />
+                    <ProductCard key={index} product={product}/>
                 ))}
             </div>
         </div>
