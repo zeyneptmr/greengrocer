@@ -98,7 +98,7 @@ const Navbar = () => {
     };
 
     const handleSubMenuClick = (menuName, subItemName) => {
-        // Alt menü öğelerine tıklanınca yönlendirme yapılır
+        //Redirection occurs when clicking on submenu items
         const formattedSubItem = subItemName.toLowerCase().replace(/ /g, "-");
         navigate(`/${menuName.toLowerCase()}/${formattedSubItem}`);
     };
@@ -129,7 +129,7 @@ const Navbar = () => {
                             <Search size={20}/>
                         </button>
 
-                        {/* Öneri Listesi */}
+                        {/* suggestion list */}
                         {showSuggestions && query && filteredProducts.length > 0 && (
                             <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20">
                                 {filteredProducts.map((product) => (
@@ -194,7 +194,7 @@ const Navbar = () => {
                                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-40"
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
-                                onClick={() => handleMenuClick(menu.name)} // Menü öğesine tıklayınca yönlendir
+                                onClick={() => handleMenuClick(menu.name)} // menu clicking redirection
                             >
                                 <span className="flex items-center">{menu.name} <ChevronDown size={16}
                                                                                              className="ml-1"/></span>
@@ -204,7 +204,7 @@ const Navbar = () => {
                                             <li
                                                 key={subIndex}
                                                 className="p-2 hover:bg-gray-200 cursor-pointer"
-                                                onClick={() => handleSubMenuClick(menu.name, subItem)} // Alt menüye tıklanınca yönlendir
+                                                onClick={() => handleSubMenuClick(menu.name, subItem)} //submenu clicking redirection
                                             >
                                                 {subItem}
                                             </li>
