@@ -14,7 +14,7 @@ import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import SearchResults from "./components/SearchResultPage";
-import ProductPage from "./helpers/SearchProduct";
+import ProductPage from "/Users/zeynep/greengrocer/src/helpers/ProductPage.js";
 import Cart from "./pages/Cart";
 import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
@@ -22,6 +22,10 @@ import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
 import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
+import UserAccountPage from "/Users/zeynep/greengrocer/src/pages/UserAccount.js";
+import ChangePasswordPage from "/Users/zeynep/greengrocer/src/pages/ChangePassword.js";
+import CreditCardPage from "/Users/zeynep/greengrocer/src/pages/CreditCard.js";
+import CustomerInfoPage from "/Users/zeynep/greengrocer/src/pages/CustomerInfo.js";
 
 
 
@@ -56,9 +60,14 @@ function MainContent(){
                         <Route path="/user" element={<Home/>}/>
                         <Route path="/manager" element={<ManagerPage/>}/>
                         <Route path="/admin" element={<AdminPage/>}/>
+                        <Route path="/product/:id" element={<ProductPage />} />
                         <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
                         <Route path="/address" element={<AddressPage/>}/>
                         <Route path="/payment" element={<PaymentPage/>}/>
+                        <Route path="/account" element={<UserAccountPage/>}/>
+                        <Route path="/change-password" element={<ChangePasswordPage/>}/>
+                        <Route path="/customer-info" element={<CustomerInfoPage/>}/>
+                        <Route path="/credit-card" element={<CreditCardPage/>}/>
                     </Routes>
             </div>
                 {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer/>}
