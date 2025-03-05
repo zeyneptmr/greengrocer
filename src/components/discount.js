@@ -1,7 +1,5 @@
-import { allproducts } from "../data/products";  // 'allproducts' olarak import et
+import { allproducts } from "../data/products";
 
-
-// Günlük rastgele 10 ürün belirleme fonksiyonu
 export const getDiscountedProducts = () => {
     const storedDate = localStorage.getItem("discountDate");
     const today = new Date().toDateString();
@@ -11,11 +9,10 @@ export const getDiscountedProducts = () => {
         if (storedProducts) return storedProducts;
     }
 
-    // Eğer yeni bir günse, yeni ürünleri belirle
     const shuffled = allproducts.sort(() => Math.random() - 0.5);
     const selectedProducts = shuffled.slice(0, 10).map(product => ({
         ...product,
-        discountedPrice: (product.price * 0.75).toFixed(2) // %25 indirimli fiyat
+        discountedPrice: (product.price * 0.85).toFixed(2) // %15 indirimli fiyat
     }));
 
     localStorage.setItem("discountedProducts", JSON.stringify(selectedProducts));

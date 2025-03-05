@@ -3,11 +3,13 @@ import { motion } from "framer-motion";
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import ProductCard from "../components/ProductCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import SlideBar from "../components/SliderBar";
 import { allproducts } from "../data/products";
-import { getDiscountedProducts } from "../components/discount"; // discount.js dosyasından fonksiyonu import et
+import { getDiscountedProducts } from "../components/discount";
+import { useFavorites } from "../helpers/FavoritesContext";
+import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
-
+import home2 from '../assets/home2.jpg';
 
 const banners = [banner1];
 // Function to shuffle the array
@@ -26,17 +28,20 @@ export default function HomePage() {
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content
     const [modalTitle, setModalTitle] = useState(""); // Modal title
+    const [index, setIndex] = useState(0);
+    const { favorites } = useFavorites();
+    const { cart } = useCart();
 
     useEffect(() => {
         setDiscountedProducts(getDiscountedProducts());
     }, []);
 
     useEffect(() => {
-        // Shuffle the products and select the first 15
-        setDailySelectedProducts(shuffleArray(allproducts).slice(0, 15));
+        const nonDiscountedProducts = allproducts.filter(
+            (product) => !getDiscountedProducts().some((discounted) => discounted.id === product.id)
+        );
+        setDailySelectedProducts(shuffleArray(nonDiscountedProducts).slice(0, 15));
     }, []);
-
-    const [index, setIndex] = useState(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -59,58 +64,38 @@ export default function HomePage() {
         setModalTitle("");
     };
 
+    const slideItems = [
+        { image: banner1, name: "banner1" },
+        { image: home2, name: "home2" },
+
+    ];
     return (
         <div className="p-6">
-            {/* Slider Section */}
-            <div className="relative w-full h-81 overflow-hidden rounded-2xl">
-                <motion.img
-                    key={index}
-                    src={banners[index]}
-                    className="w-full h-full object-cover"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                />
-                <button
-                    className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow"
-                    onClick={() => setIndex((prev) => (prev - 1 + banners.length) % banners.length)}
-                >
-                    <ChevronLeft />
-                </button>
-                <button
-                    className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow"
-                    onClick={() => setIndex((prev) => (prev + 1) % banners.length)}
-                >
-                    <ChevronRight />
-                </button>
-            </div>
-
+            <SlideBar items={slideItems}/>
             {/* Discounted Products */}
             <div className="p-6">
-                <div className="p-6">
-                    <h2 className="text-xl font-bold mt-6">Bugünün İndirimli Ürünleri</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
-                        {discountedProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                    {discountedProducts.map((product) => (
+                        <ProductCard key={product.id} product={product}/>
+                    ))}
                 </div>
             </div>
 
             {/* Products Section - Scrollable */}
-            <h2 className="text-2xl font-bold mt-6">Sizin İçin Seçtiklerimiz</h2>
+            <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>
             <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     {dailySelectedProducts.map((product, index) => (
                         <div key={index} className="flex-shrink-0">
-                            <ProductCard product={product} />
+                            <ProductCard product={product}/>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Coupons Section */}
-            <h2 className="text-xl font-bold mt-6">Kuponlar ve Kampanyalar</h2>
+            <h2 className="text-2xl font-bold mt-6">Coupons and Promotions</h2>
             <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
@@ -196,3 +181,4 @@ export default function HomePage() {
         </div>
     );
 }
+

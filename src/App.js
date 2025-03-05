@@ -22,7 +22,7 @@ import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
 import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
-import Sidebar from "/Users/zeynep/greengrocer/src/components/Sidebar.js";  // Sidebar bileşenini dahil et
+
 
 
 import { FavoritesProvider } from "./helpers/FavoritesContext";
@@ -57,9 +57,7 @@ function MainContent(){
                         <Route path="/manager" element={<ManagerPage/>}/>
                         <Route path="/admin" element={<AdminPage/>}/>
                         <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
-
                         <Route path="/address" element={<AddressPage/>}/>
-
                         <Route path="/payment" element={<PaymentPage/>}/>
                     </Routes>
             </div>
