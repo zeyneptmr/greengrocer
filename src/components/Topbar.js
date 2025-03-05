@@ -1,23 +1,28 @@
 import React from "react";
 import adminIcon from '../assets/admin.svg';
-//import managerIcon from '../assets/manager.svg';
-import logo from "../assets/logoyazısız.jpeg";
+import managerIcon from '../assets/mail.svg';  // Manager ikonu
+import { useLocation } from 'react-router-dom';
 
-const TopBar = ({ role }) => {
-    const isAdmin = role === "admin";
+const Topbar = () => {
+    const location = useLocation();
+
+    // localStorage'dan kullanıcı bilgisini alıyoruz
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const userName = loggedInUser ? loggedInUser.name : "User";  // Kullanıcının adı, eğer yoksa "User"
+
+    // Sayfaya göre başlık ve ikon ayarlıyoruz
+    const pageTitle = location.pathname.includes("manager") ? "Manager Panel" : "Admin Panel";
+    const icon = location.pathname.includes("manager") ? managerIcon : adminIcon;  // Sayfa yoluna göre ikon değişiyor
 
     return (
-        <header className="bg-white shadow-md p-4 flex justify-between items-center relative">
-            <h1 className="text-2xl font-semibold text-gray-700">Welcome, {isAdmin ? "Admin" : "Manager"}</h1>
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-                <img src={logo} alt="Logo" className="w-20 h-20" />
-            </div>
+        <header className="bg-white shadow-md p-4 flex justify-between items-center">
+            <h1 className="text-2xl font-semibold text-gray-700">{`Welcome, ${userName}`}</h1> {/* Kullanıcının adı */}
             <div className="flex items-center space-x-4">
-                <span className="text-gray-500">{isAdmin ? "Admin Panel" : "Manager Panel"}</span>
-                <img src={isAdmin ? adminIcon : logo} alt={isAdmin ? "Admin" : "Manager"} className="rounded-full w-20 h-20" />
+                <span className="text-gray-500">{pageTitle}</span>
+                <img src={icon} alt="User Icon" className="rounded-full w-20 h-20" /> {/* Dinamik ikon */}
             </div>
         </header>
     );
 };
 
-export default TopBar;
+export default Topbar;

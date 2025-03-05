@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useLocation } from "react-router-dom"; 
+import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -20,11 +20,10 @@ import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
-
-
-
-import AddressPage from "./pages/AddressPage.js";
+import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
+import Sidebar from "/Users/zeynep/greengrocer/src/components/Sidebar.js";  // Sidebar bileşenini dahil et
+
 
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
@@ -38,43 +37,49 @@ function MainContent(){
 
     return (
         <>
+
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
-                <Routes>
-                    <Route path="" element={<Home />} />
-                    <Route path="/about" element={<AboutUs />} />
-                    <Route path="/fruits" element={<FruitsPage />} />
-                    <Route path="/vegetables" element={<VegetablesPage />} />
-                    <Route path="/bakedgoods" element={<BakedGoodsPage />} />
-                    <Route path="/olives" element={<OlivesOilsPage />} />
-                    <Route path="/sauces" element={<SaucesPage />} />
-                    <Route path="/dairy" element={<DairyPage />} />
-                    <Route path="/favorites" element={<FavoritesPage />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/search-results" element={<SearchResults />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/user" element={<UserPage />} />
-                    <Route path="/manager" element={<ManagerPage />} />
-                    <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin/displayproducts" element={<DisplayProductPage />} />
-                    <Route path="/address" element={<AddressPage />} />
-                    <Route path="/payment" element={<PaymentPage />} />
-                </Routes>
-            </div>
-            {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer />}
-        </>
-    );
-}
+                    <Routes>
+                        <Route path="" element={<Home/>}/>
+                        <Route path="/about" element={<AboutUs/>}/>
+                        <Route path="/fruits" element={<FruitsPage/>}/>
+                        <Route path="/vegetables" element={<VegetablesPage/>}/>
+                        <Route path="/bakedgoods" element={<BakedGoodsPage/>}/>
+                        <Route path="/olives" element={<OlivesOilsPage/>}/>
+                        <Route path="/sauces" element={<SaucesPage/>}/>
+                        <Route path="/dairy" element={<DairyPage/>}/>
+                        <Route path="/favorites" element={<FavoritesPage/>}/>
+                        <Route path="/cart" element={<Cart/>}/>
+                        <Route path="/search-results" element={<SearchResults/>}/>
+                        <Route path="/contact" element={<ContactPage/>}/>
+                        <Route path="/user" element={<Home/>}/>
+                        <Route path="/manager" element={<ManagerPage/>}/>
+                        <Route path="/admin" element={<AdminPage/>}/>
+                        <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
 
-function App() {
+                        <Route path="/address" element={<AddressPage/>}/>
+
+                        <Route path="/payment" element={<PaymentPage/>}/>
+                    </Routes>
+            </div>
+                {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer/>}
+            </>
+            );
+            }
+
+            function App() {
     return (
         <FavoritesProvider>
             <CartProvider>
                 <Router>
-                    <MainContent />
+                    <div className="App">
+                        <MainContent/>
+                    </div>
                 </Router>
             </CartProvider>
         </FavoritesProvider>
+
     );
 }
 
