@@ -14,7 +14,7 @@ import SaucesPage from "./pages/SaucesPage";
 import ContactPage from "./pages/ContactPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import SearchResults from "./components/SearchResultPage";
-import ProductPage from "./helpers/SearchProduct";
+import ProductPage from "./helpers/ProductPage";
 import Cart from "./pages/Cart";
 import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
@@ -22,9 +22,6 @@ import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
 import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
-
-
-
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
 import "./styles/App.css";
@@ -37,7 +34,6 @@ function MainContent(){
 
     return (
         <>
-
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
                     <Routes>
@@ -52,8 +48,10 @@ function MainContent(){
                         <Route path="/favorites" element={<FavoritesPage/>}/>
                         <Route path="/cart" element={<Cart/>}/>
                         <Route path="/search-results" element={<SearchResults/>}/>
+                        <Route path="/product/:id" element={<ProductPage />} /> {/* Dinamik ürün yolu */}
                         <Route path="/contact" element={<ContactPage/>}/>
                         <Route path="/user" element={<Home/>}/>
+                        <Route path="/user" element={<UserPage />} /> {/* Düzeltildi, sadece bir kez tanımlandı */}
                         <Route path="/manager" element={<ManagerPage/>}/>
                         <Route path="/admin" element={<AdminPage/>}/>
                         <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
