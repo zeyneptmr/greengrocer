@@ -1,4 +1,4 @@
-import UserSidebar from "/Users/zeynep/greengrocer/src/components/UserSidebar.js";
+import UserSidebar from "../components/UserSidebar.js";
 
 const UserAccount = () => {
     return (
