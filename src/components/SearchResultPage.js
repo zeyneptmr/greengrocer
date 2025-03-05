@@ -1,9 +1,32 @@
+import React from "react";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import noResultsImage from '../assets/noresult.png';
 
 const SearchResults = () => {
     const location = useLocation();
     const results = location.state?.results || [];
+    const query = new URLSearchParams(window.location.search).get("query");
+
+    if (results.length === 0) {
+        return (
+            <div className="text-center p-6">
+
+                <h2 className="text-4xl mt-4">We couldn't find any results for "{query}" :(</h2>
+                <p className="mt-4 text-lg">
+                    Please make sure the word is spelled correctly.
+                    <br/>
+                    Try searching with a different keyword.
+                </p>
+
+                <img
+                    src={noResultsImage}
+                    alt="Product not found"
+                    className="w-1/10 mx-auto object-cover"  // Resmi daha küçük yapmak için genişlik sınıfı eklendi
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="p-6">
@@ -14,9 +37,7 @@ const SearchResults = () => {
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
-            ) : (
-                <p className="text-gray-500">No results found.</p>
-            )}
+            ) : null}
         </div>
     );
 };

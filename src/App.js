@@ -27,7 +27,7 @@ import ChangePasswordPage from "/Users/zeynep/greengrocer/src/pages/ChangePasswo
 import CreditCardPage from "/Users/zeynep/greengrocer/src/pages/CreditCard.js";
 import CustomerInfoPage from "/Users/zeynep/greengrocer/src/pages/CustomerInfo.js";
 
-
+import AddProductPage from "./pages/AddProductPage";
 
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
@@ -41,7 +41,6 @@ function MainContent(){
 
     return (
         <>
-
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
                     <Routes>
@@ -56,11 +55,12 @@ function MainContent(){
                         <Route path="/favorites" element={<FavoritesPage/>}/>
                         <Route path="/cart" element={<Cart/>}/>
                         <Route path="/search-results" element={<SearchResults/>}/>
+                        <Route path="/product/:id" element={<ProductPage />} /> {/* Dinamik ürün yolu */}
                         <Route path="/contact" element={<ContactPage/>}/>
                         <Route path="/user" element={<Home/>}/>
+                        <Route path="/user" element={<UserPage />} /> {/* Düzeltildi, sadece bir kez tanımlandı */}
                         <Route path="/manager" element={<ManagerPage/>}/>
                         <Route path="/admin" element={<AdminPage/>}/>
-                        <Route path="/product/:id" element={<ProductPage />} />
                         <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
                         <Route path="/address" element={<AddressPage/>}/>
                         <Route path="/payment" element={<PaymentPage/>}/>
