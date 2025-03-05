@@ -37,7 +37,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="max-w-full max-h-full object-cover"
+                        className="max-w-full max-h-full object-cover transition-all duration-300 ease-in-out"
                     />
                 </div>
 
@@ -45,33 +45,37 @@ export default function ProductCard({ product, hideCartView=false }) {
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
                 {/* Ürün Fiyatı */}
-                {product.discountedPrice ? (
-                    <p className="text-gray-600 text-md mt-1 line-through">{product.price} TL</p>
-                ) : (
-                    <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
-                )}
-                {product.discountedPrice && (
-                    <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
-                )}
+                <div className="flex justify-center items-center mt-1">
+                    {product.discountedPrice ? (
+                        <p className="text-gray-600 text-md line-through mr-2">{product.price} TL</p>
+                    ) : (
+                        <p className="text-gray-600 text-md">{product.price} TL</p>
+                    )}
+                    {product.discountedPrice && (
+                        <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
+                    )}
+                </div>
 
                 {/* Add Cart Button, Increase, Decrease */}
                 {!hideCartView && (
                     cartItem ? (
-                        <div className="flex items-center space-x-3 mt-4">
+                        <div className="flex items-center space-x-3 mt-4 justify-center">
                             <button
                                 onClick={() => decreaseQuantity(product.id)}
-                                className="bg-red-500 text-white px-3 py-1 rounded-md">
+                                className="bg-red-500 text-white px-3 py-1 rounded-md"
+                            >
                                 -
                             </button>
                             <span className="text-lg font-semibold">{cartItem.quantity}</span>
                             <button
                                 onClick={() => increaseQuantity(product.id)}
-                                className="bg-green-500 text-white px-3 py-1 rounded-md">
+                                className="bg-green-500 text-white px-3 py-1 rounded-md"
+                            >
                                 +
                             </button>
                         </div>
                     ) : (
-                        <Button className="mt-4" onClick={() => addToCart(product)}>
+                        <Button className="mt-4 w-full md:w-auto" onClick={() => addToCart(product)}>
                             Add to Cart
                         </Button>
                     )

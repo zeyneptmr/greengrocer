@@ -90,35 +90,53 @@ export default function HomePage() {
     return (
         <div className="p-6">
             <SlideBar items={slideItems}/>
+
             {/* Promosyon Panoları */}
-            <div className="flex justify-center gap-6 my-8">
-                <motion.div whileHover={{scale: 1.05}}
-                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+            <div className="flex flex-wrap justify-center gap-7 my-10">
+                <motion.div
+                    whileHover={{scale: 1.05}}
+                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
+                >
                     <img src={promo1} alt="Promo 1" className="w-32 h-32 mx-auto"/>
                 </motion.div>
-                <motion.div whileHover={{scale: 1.05}}
-                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+                <motion.div
+                    whileHover={{scale: 1.05}}
+                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
+                >
                     <img src={promo2} alt="Promo 2" className="w-32 h-32 mx-auto"/>
                 </motion.div>
-                <motion.div whileHover={{scale: 1.05}}
-                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+                <motion.div
+                    whileHover={{scale: 1.05}}
+                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
+                >
                     <img src={promo3} alt="Promo 3" className="w-32 h-32 mx-auto"/>
                 </motion.div>
             </div>
 
             {/* Discounted Products */}
             <div className="p-6">
-                <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                <h2 className="text-3xl font-bold mt-3 text-center sm:text-left">Today's Discounted Products</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
                     {discountedProducts.map((product) => (
                         <ProductCard key={product.id} product={product}/>
                     ))}
                 </div>
             </div>
 
+            <h2 className="text-3xl font-bold mt-16 text-center sm:text-left">Daha Fazlasını Keşfedin</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-6">
+                {categories.map((category, index) => (
+                    <Link to={category.path} key={index} className="flex flex-col items-center cursor-pointer">
+                        <img src={category.image} alt={category.name}
+                             className="w-32 h-32 rounded-lg shadow-lg transition-transform hover:scale-110"/>
+                        <p className="mt-4 text-lg font-semibold text-center">{category.name}</p>
+                    </Link>
+                ))}
+            </div>
+
             {/* Products Section - Scrollable */}
-            <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>
-            <div className="mt-4">
+            <h2 className="text-3xl font-bold mt-16 text-center sm:text-left">Chosen for You</h2>
+            <div className="mt-6">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     {dailySelectedProducts.map((product, index) => (
                         <div key={index} className="flex-shrink-0">
@@ -127,21 +145,11 @@ export default function HomePage() {
                     ))}
                 </div>
             </div>
-            <h2 className="text-3xl font-bold mt-6">Daha Fazlasını Keşfedin</h2>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
-                {categories.map((category, index) => (
-                    <Link to={category.path} key={index} className="flex flex-col items-center cursor-pointer">
-                        <img src={category.image} alt={category.name}
-                             className="w-24 h-24 rounded-lg shadow-lg transition-transform hover:scale-110"/>
-                        <p className="mt-2 text-lg font-semibold">{category.name}</p>
-                    </Link>
-                ))}
-            </div>
 
             {/* Coupons Section */}
-            <h2 className="text-2xl font-bold mt-6">Coupons and Promotions</h2>
+            <h2 className="text-2xl font-bold mt-16 text-center sm:text-left">Coupons and Promotions</h2>
             <div className="mt-4">
-                <div className="flex space-x-4 overflow-x-auto pb-4">
+                <div className="flex flex-wrap justify-center gap-4 overflow-x-auto pb-4">
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
                         <p className="text-center">50₺ üzeri alışverişe %10 indirim!</p>
                         <Button
@@ -178,7 +186,6 @@ export default function HomePage() {
                             Detaylar
                         </Button>
                     </Card>
-                    {/* New campaign */}
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
                         <p className="text-center">Yaz İndirimi: %30!</p>
                         <Button
@@ -188,7 +195,6 @@ export default function HomePage() {
                             Detaylar
                         </Button>
                     </Card>
-                    {/* New campaign */}
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
                         <p className="text-center">Sevdiğiniz Ürünlerde %15 İndirim!</p>
                         <Button

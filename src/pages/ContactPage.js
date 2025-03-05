@@ -141,12 +141,14 @@ export default function ContactForm() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center p-10">
-            <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
+        <div className="flex flex-col items-center justify-center p-6 sm:p-10">
+            <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10"
+                 style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)'}}>
 
                 {/* Banner Penceresi */}
                 {isModalOpen && (
-                    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white border-4 border-green-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-center w-96 animate-fade-in">
+                    <div
+                        className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white border-4 border-green-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-center w-96 animate-fade-in">
                         <div className="bg-orange-500 w-full py-2 rounded-t-lg text-white font-bold">
                             Success!
                         </div>
@@ -164,7 +166,7 @@ export default function ContactForm() {
 
                 <div>
                     <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
-                    <p className="text-sm text-orange-500 mb-4"> </p>
+                    <p className="text-sm text-orange-500 mb-4"></p>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <input
                             type="text"
@@ -195,8 +197,9 @@ export default function ContactForm() {
                         />
                         {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                        <div className="flex items-center space-x-2">
-                            <div className="flex items-center border border-gray-300 rounded-md p-2 w-[150px]">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+                            <div
+                                className="flex items-center border border-gray-300 rounded-md p-2 w-full sm:w-[150px]">
                                 <Flag
                                     code={countries.find(country => country.code === countryCode)?.flag || "US"}
                                     style={{width: "20px", height: "20px"}}
@@ -219,7 +222,7 @@ export default function ContactForm() {
                                 placeholder="Phone Number* (Format: 555-555-5555)"
                                 value={phoneNumber}
                                 onChange={handlePhoneChange}
-                                className={`w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
+                                className={`w-full sm:w-auto border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
                                 required
                             />
                         </div>
@@ -253,7 +256,8 @@ export default function ContactForm() {
                 </div>
 
                 {/* Customer Service Section */}
-                <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10" style={{ boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)' }}>
+                <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10"
+                     style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)'}}>
                     <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service</h2>
                     <p className="text-2xl font-bold text-orange-400">(0212) 533 65 32</p>
                     <p className="text-2xl text-green-700 font-semibold">TapTaze Food Services Inc.</p>

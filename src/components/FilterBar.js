@@ -9,13 +9,13 @@ const FilterBar = ({ columns, setColumns, setSortOption }) => {
     };
 
     return (
-        <div className="flex items-center justify-between border rounded-lg px-4 py-2 mb-4">
+        <div className="flex items-center justify-between border rounded-lg px-4 py-2 mb-4 flex-wrap">
             <div className="flex gap-2">
                 <button
                     onClick={() => setColumns(3)}
                     className={`p-2 rounded ${columns === 3 ? "bg-green-600 text-white" : "bg-gray-200"}`}
                 >
-                    <Grid3x3GapFill size={20} />
+                    <Grid3x3GapFill size={20}/>
                 </button>
 
                 <button
@@ -23,11 +23,11 @@ const FilterBar = ({ columns, setColumns, setSortOption }) => {
                     className={`p-2 rounded ${columns === 4 ? "bg-green-600 text-white" : "bg-gray-200"}`}
                 >
                     <div className="w-6 h-6 grid grid-cols-4 gap-0.25">
-                        {/* 4x4 grid için */}
+                        {/* 4x4 grid */}
                         {[...Array(16)].map((_, index) => (
                             <div
                                 key={index}
-                                className={`w-1 h-1 ${columns === 4 ? "bg-white" : "bg-black"} rounded`} // 4x4 ise beyaz, 3x3 ise siyah
+                                className={`w-1 h-1 ${columns === 4 ? "bg-white" : "bg-black"} rounded`} // 4x4 grid has white, 3x3 black
                             ></div>
                         ))}
                     </div>

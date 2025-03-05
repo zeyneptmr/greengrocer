@@ -35,15 +35,13 @@ const BakedGoodsPage = () => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
-            <h2 className="text-4xl font-bold mb-4 text-orange-500">Baked Goods</h2>
-            <FilterBar
-                columns={columns}
-                setColumns={setColumns}
-                setSortOption={setSortOption}
-            />
-            <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-orange-500 text-center">Baked Goods</h2>
+            <FilterBar columns={columns} setColumns={setColumns} setSortOption={setSortOption}/>
+            <div className={`grid gap-4 
+                ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
+                justify-items-center w-full`}>
                 {BakedGoodsProducts.map((product, index) => (
                     <ProductCard key={index} product={product}/>
                 ))}

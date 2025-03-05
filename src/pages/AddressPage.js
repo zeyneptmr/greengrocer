@@ -190,16 +190,17 @@ const AddressPage = () => {
 
         <div className="container mx-auto p-8">
             <button
-
                 onClick={toggleForm}
-                className="mb-4 p-3 bg-green-500 text-white rounded text-xl"
+                className="mb-4 p-3 bg-green-500 text-white rounded text-xl w-full sm:w-auto"
             >
                 + Add New Address
             </button>
 
             {isFormVisible && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-8 rounded-lg text-center relative w-[600px] border-2 border-orange-500">
+                <div
+                    className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div
+                        className="bg-white p-8 rounded-lg text-center relative w-full max-w-[600px] border-2 border-orange-500">
                         <button
                             className="absolute top-2 right-2 border-none bg-transparent cursor-pointer text-3xl"
                             onClick={toggleForm}
@@ -208,7 +209,7 @@ const AddressPage = () => {
                         </button>
                         <form onSubmit={handleSubmit}>
                             <h2 className="text-2xl mb-6">{editingIndex !== null ? 'Edit Address' : 'New Address'}</h2>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <input
                                     type="text"
                                     name="firstName"
@@ -227,7 +228,7 @@ const AddressPage = () => {
                                     value={formData.lastName}
                                     onChange={handleInputChange}
                                     placeholder="Surname"
-                                    className="p-3 border border-gray-300 rounded text-lg"
+                                    className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 />
                                 {errors.lastNameError && (
@@ -239,7 +240,7 @@ const AddressPage = () => {
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     placeholder="E-mail"
-                                    className={`p-3 border border-gray-300 rounded text-lg ${errors.emailError ? 'border-red-500' : ''}`}
+                                    className={`p-3 border border-gray-300 rounded text-lg w-full ${errors.emailError ? 'border-red-500' : ''}`}
                                     required
                                 />
                                 {errors.emailError && (
@@ -251,7 +252,7 @@ const AddressPage = () => {
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
                                     placeholder="Phone Number"
-                                    className={`p-3 border border-gray-300 rounded text-lg ${errors.phoneError ? 'border-red-500' : ''}`}
+                                    className={`p-3 border border-gray-300 rounded text-lg w-full ${errors.phoneError ? 'border-red-500' : ''}`}
                                     required
                                 />
                                 {errors.phoneError && (
@@ -261,7 +262,7 @@ const AddressPage = () => {
                                     type="text"
                                     name="city"
                                     value="İstanbul"
-                                    className="p-3 border border-gray-300 rounded text-lg bg-white"
+                                    className="p-3 border border-gray-300 rounded text-lg bg-white w-full"
                                     readOnly
                                 />
 
@@ -269,7 +270,7 @@ const AddressPage = () => {
                                     name="district"
                                     value={formData.district}
                                     onChange={handleDistrictChange}
-                                    className="p-3 border border-gray-300 rounded text-lg"
+                                    className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
                                     <option value="">İlçe Seçin</option>
@@ -281,7 +282,7 @@ const AddressPage = () => {
                                     name="neighborhood"
                                     value={formData.neighborhood}
                                     onChange={handleInputChange}
-                                    className="p-3 border border-gray-300 rounded text-lg"
+                                    className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
                                     <option value="">Mahalle Seçin</option>
@@ -295,7 +296,7 @@ const AddressPage = () => {
                                     value={formData.address}
                                     onChange={handleInputChange}
                                     placeholder="Address"
-                                    className="p-3 border border-gray-300 rounded col-span-2 text-lg"
+                                    className="p-3 border border-gray-300 rounded col-span-2 text-lg w-full"
                                     required
                                 />
                                 <textarea
@@ -303,13 +304,13 @@ const AddressPage = () => {
                                     value={formData.description}
                                     onChange={handleInputChange}
                                     placeholder="Notes"
-                                    className="p-3 border border-gray-300 rounded col-span-2 text-lg"
+                                    className="p-3 border border-gray-300 rounded col-span-2 text-lg w-full"
                                     required
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="mt-6 p-3 bg-green-600 text-white rounded text-xl"
+                                className="mt-6 p-3 bg-green-600 text-white rounded text-xl w-full"
                             >
                                 {editingIndex !== null ? 'Update' : 'Save'}
                             </button>
@@ -329,19 +330,21 @@ const AddressPage = () => {
                                 <p><strong>Receiver:</strong> {address.firstName} {address.lastName}</p>
                                 <p><strong>E-mail:</strong> {address.email}</p>
                                 <p><strong>Phone Number:</strong> {address.phone}</p>
-                                <p><strong>Address:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}</p>
+                                <p>
+                                    <strong>Address:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}
+                                </p>
                                 <p><strong>Notes:</strong> {address.description}</p>
                                 <button
-                                    className="mt-2 p-2 bg-green-moss text-white rounded w-1/6 "
+                                    className="mt-2 p-2 bg-green-moss text-white rounded w-full sm:w-auto"
                                     onClick={() => handleEdit(index)}
                                 >
-                                    <span>Edit</span> {/* Edit metni */}
+                                    <span>Edit</span>
                                 </button>
                                 <button
-                                    className="mt-2 ml-4 p-2 bg-orange-tangerine text-white rounded w-1/8 justify-center items-center"
+                                    className="mt-2 ml-4 p-2 bg-orange-tangerine text-white rounded w-full sm:w-auto justify-center items-center"
                                     onClick={() => handleDelete(index)}
                                 >
-                                    <FaTrash size={15} /> {/* İkonun boyutunu ayarlayabilirsiniz */}
+                                    <FaTrash size={15}/>
                                 </button>
                             </li>
                         ))}

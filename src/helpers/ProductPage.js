@@ -15,13 +15,13 @@ const ProductPage = () => {
                 <h2 className="text-4xl mt-4">We couldn't find any results for "{query}" :(</h2>
                 <p className="mt-4 text-lg">
                     Please make sure the word is spelled correctly.
-                    <br/>
+                    <br />
                     Please check the product name or try searching again.
                 </p>
                 <img
                     src={noResultsImage}
                     alt="Product not found"
-                    className="w-1/2 mx-auto object-cover"  // Resmi daha küçük yapmak için genişlik sınıfı eklendi
+                    className="w-full sm:w-1/2 mx-auto object-cover mt-6"  // Ensure image is responsive
                 />
             </div>
         );
@@ -30,8 +30,9 @@ const ProductPage = () => {
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold mb-4">Product Details</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-            <ProductCard product={product}/>
+            <div
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
+                <ProductCard product={product}/>
             </div>
         </div>
     );

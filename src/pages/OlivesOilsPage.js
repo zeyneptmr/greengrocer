@@ -41,7 +41,8 @@ const OlivesOilsPage = () => {
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
-            <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
+            <div
+                className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 justify-items-center">
                 {OlivesOils.map((product, index) => (
                     <ProductCard key={index} product={product}/>
                 ))}

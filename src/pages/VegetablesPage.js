@@ -39,15 +39,17 @@ const VegetablesPage = () => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
-            <h2 className="text-4xl font-bold mb-4 text-orange-500">Vegetables</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Vegetables</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
-            <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
+            <div className={`grid gap-4 
+                ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
+                justify-items-center w-full`}>
                 {Vegetables.map((product, index) => (
                     <ProductCard key={index} product={product}/>
                 ))}

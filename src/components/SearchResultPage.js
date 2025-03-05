@@ -11,7 +11,6 @@ const SearchResults = () => {
     if (results.length === 0) {
         return (
             <div className="text-center p-6">
-
                 <h2 className="text-4xl mt-4">We couldn't find any results for "{query}" :(</h2>
                 <p className="mt-4 text-lg">
                     Please make sure the word is spelled correctly.
@@ -22,7 +21,7 @@ const SearchResults = () => {
                 <img
                     src={noResultsImage}
                     alt="Product not found"
-                    className="w-1/10 mx-auto object-cover"  // Resmi daha küçük yapmak için genişlik sınıfı eklendi
+                    className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/10 mx-auto object-cover"  // Adjust width for responsiveness
                 />
             </div>
         );
@@ -30,11 +29,12 @@ const SearchResults = () => {
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Search Results </h2>
+            <h2 className="text-2xl font-bold mb-4">Search Results</h2>
             {results.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
+                <div
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
                     {results.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <ProductCard key={product.id} product={product}/>
                     ))}
                 </div>
             ) : null}

@@ -73,8 +73,11 @@ export default function Cart() {
                                             className="w-5 h-5"
                                         />
                                     )}
-                                    <img src={item.image} alt={item.name}
-                                         className="w-20 h-20 object-contain rounded-md"/>
+                                    <img
+                                        src={item.image}
+                                        alt={item.name}
+                                        className="w-20 h-20 object-contain rounded-md"
+                                    />
 
                                     <div>
                                         <h3 className="text-lg font-semibold">{item.name}</h3>
@@ -82,7 +85,8 @@ export default function Cart() {
                                 </div>
 
                                 <div className="flex flex-col items-center space-y-2">
-                                    <span className="text-lg font-bold">{(parseFloat(item.price) * item.quantity).toFixed(2)} TL</span>
+                                    <span
+                                        className="text-lg font-bold">{(parseFloat(item.price) * item.quantity).toFixed(2)} TL</span>
                                     <div className="flex items-center space-x-3">
                                         <button
                                             onClick={() => decreaseQuantity(item.id)}
@@ -101,7 +105,7 @@ export default function Cart() {
                                             onClick={() => removeItem(item.id)}
                                             className="bg-gray-500 text-white px-3 py-2 rounded-md"
                                         >
-                                            <FaTrash />
+                                            <FaTrash/>
                                         </button>
                                     </div>
                                 </div>
@@ -130,7 +134,8 @@ export default function Cart() {
             </div>
 
             {/* Cart Summary */}
-            <div className="w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6 mt-6 lg:mt-12 max-h-[400px] overflow-y-auto">
+            <div
+                className="w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6 mt-6 lg:mt-12 max-h-[400px] overflow-y-auto">
                 <h3 className="text-xl font-semibold mb-6">Cart Summary</h3>
                 <div className="flex justify-between text-gray-700 text-lg">
                     <span> </span>
@@ -143,18 +148,21 @@ export default function Cart() {
 
                 {/* Delivery Amount */}
                 <div className="flex justify-between text-gray-700 font-semibold text-lg mt-2">
-                    <span className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>Delivery Amount:</span>
-                    <span className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>{calculateShippingFee() === 0 ? '49 TL' : '49 TL'}</span>
+                    <span
+                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>Delivery Amount:</span>
+                    <span
+                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>{calculateShippingFee() === 0 ? '49 TL' : '49 TL'}</span>
                 </div>
 
                 {/* "Amount remaining for free delivery" */}
                 {calculateShippingFee() !== 0 && (
-                    <div className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
+                    <div
+                        className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
                         <span className="text-left">Add {500 - calculateTotalPrice()} TL worth of products to your cart for free delivery.</span>
                     </div>
                 )}
 
-                {/* Ücretsiz teslimat mesajı */}
+                {/* Free delivery message */}
                 {calculateShippingFee() === 0 && (
                     <div className="flex justify-between text-green-600 font-semibold text-lg mt-2">
                         <span>Free Delivery</span>
@@ -165,10 +173,11 @@ export default function Cart() {
                     <span>Total Amount:</span>
                     <span className="font-semibold">{calculateTotalAmount()} TL</span>
                 </div>
-                {/* Continue butonuna tıklandığında yönlendirme yapılır */}
+                {/* Continue button */}
                 <button
                     onClick={handleContinueClick}
-                    className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition">
+                    className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition"
+                >
                     Continue
                 </button>
             </div>
