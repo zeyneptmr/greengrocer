@@ -1,4 +1,3 @@
-
 import { Heart } from "lucide-react";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
@@ -25,6 +24,13 @@ export default function ProductCard({ product, hideCartView=false }) {
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
 
+            {/* Eğer ürün indirimliyse, indirim etiketini göster */}
+            {product.discountedPrice && (
+                <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                    15% Off
+                </div>
+            )}
+
             {/* Ürün Resmi */}
             <CardContent>
                 <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
@@ -39,8 +45,14 @@ export default function ProductCard({ product, hideCartView=false }) {
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
                 {/* Ürün Fiyatı */}
-                <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
-
+                {product.discountedPrice ? (
+                    <p className="text-gray-600 text-md mt-1 line-through">{product.price} TL</p>
+                ) : (
+                    <p className="text-gray-600 text-md mt-1">{product.price} TL</p>
+                )}
+                {product.discountedPrice && (
+                    <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
+                )}
 
                 {/* Add Cart Button, Increase, Decrease */}
                 {!hideCartView && (
@@ -60,7 +72,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                         </div>
                     ) : (
                         <Button className="mt-4" onClick={() => addToCart(product)}>
-                            Sepete Ekle
+                            Add to Cart
                         </Button>
                     )
                 )}

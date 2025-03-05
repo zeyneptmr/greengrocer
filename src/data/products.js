@@ -162,7 +162,7 @@ export const allproducts = [
     { id: 41, name: "Tulum Cheese Kg", price: "420.95", image: tulumcheeseImg, category: "dairy" },
     { id: 42, name: "Goat Cheese Kg", price: "590.00", image: goatcheeseImg, category: "dairy" },
     { id: 43, name: "Trakya Aged Cheese Kg", price: "580.58", image: TrakyaagedcheeseImg, category: "dairy" },
-    { id: 44, name: "Walnut Gouda Cheese Kg", price: "3.265.95", image: walnutgoudacheeseImg, category: "dairy" },
+    { id: 44, name: "Walnut Gouda Cheese Kg", price: "2265.95", image: walnutgoudacheeseImg, category: "dairy" },
     { id: 45, name: "Gouda Cheese with Truffle Kg", price: "750.00", image: goudacheesewithtruffleImg, category: "dairy" },
     { id: 46, name: "Gouda Cheese with Pesto Kg", price: "570.00", image: goudacheesewithpestoImg, category: "dairy" },
     { id: 47, name: "Delicious Cheese Balls Kg", price: "650.00", image: deliciouscheeseballsImg, category: "dairy" },

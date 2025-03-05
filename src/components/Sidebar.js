@@ -1,27 +1,58 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from "react-router-dom";
 import { Home, Users, Settings, LogOut, BarChart } from "lucide-react";
+import adminIcon from '../assets/admin.svg'; // Admin ikonu
+import Clock from "../components/Clock"; // Saat bileşeni
 
-const SideBar = ({ role }) => {
-    const isAdmin = role === "admin";
+
+const Sidebar = () => {
+    const location = useLocation(); // Yönlendirme yolunu almak için kullanılır
+    const [role, setRole] = useState("");
+
+    useEffect(() => {
+        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (loggedInUser) {
+            setRole(loggedInUser.role); // Giriş yapan kullanıcı rolünü al
+        }
+    }, []);
+
+    // Yönetici veya Manager rolünde olup olmadığını kontrol et
+    const isManager = location.pathname.includes("manager");
+    const isAdmin = location.pathname.includes("admin");
+
+    // Sidebar başlığını dinamik olarak değiştirebiliriz
+    const sidebarTitle = isManager ? "Manager Panel" : "Admin Panel";
 
     return (
         <aside className="w-64 bg-green-600 text-white flex flex-col p-4 h-screen">
-            <h2 className="text-2xl font-bold mb-6 text-center">{isAdmin ? "Admin Panel" : "Manager Panel"}</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">{sidebarTitle}</h2>
             <nav className="flex-1">
                 <ul className="space-y-4">
                     <li>
-                        <Link to={isAdmin ? "/admin" : "/manager"} className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                        <Link to="/admin" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
                             <Home size={20} />
-                            <span>{isAdmin ? "Admin Dashboard" : "Manager Dashboard"}</span>
+                            <span>Dashboard</span>
                         </Link>
                     </li>
-                    <li>
-                        <Link to={isAdmin ? "/admin/displayproducts" : "/manager/displayproducts"} className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                            <Users size={20} />
-                            <span>{isAdmin ? "Display Products" : "View Products"}</span>
-                        </Link>
-                    </li>
+
+                    {/* Eğer Manager sayfasına yönlendirildiyse, "Products" yerine "Stocks" göster */}
+                    {isManager ? (
+                        <li>
+                            <Link to="/admin/stocks" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                                <Users size={20} />
+                                <span>Stocks</span>
+                            </Link>
+                        </li>
+                    ) : (
+                        <li>
+                            <Link to="/admin/displayproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                                <Users size={20} />
+                                <span>Products</span>
+                            </Link>
+                        </li>
+                    )}
+
+                    {/* Eğer Admin sayfasına yönlendirildiyse, "Edit Products" menüsü olsun */}
                     {isAdmin && (
                         <li>
                             <Link to="/admin/editproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
@@ -30,10 +61,11 @@ const SideBar = ({ role }) => {
                             </Link>
                         </li>
                     )}
+
                     <li>
-                        <Link to={isAdmin ? "/admin/settings" : "/manager/settings"} className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                        <Link to="/admin/settings" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
                             <Settings size={20} />
-                            <span>{isAdmin ? "Admin Settings" : "Manager Settings"}</span>
+                            <span>Settings</span>
                         </Link>
                     </li>
                 </ul>
@@ -49,4 +81,4 @@ const SideBar = ({ role }) => {
     );
 };
 
-export default SideBar;
+export default Sidebar;

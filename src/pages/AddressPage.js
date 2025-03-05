@@ -61,6 +61,7 @@ const AddressPage = () => {
         }
     };
 
+    console.log(window.location.pathname);
 
     useEffect(() => {
         const savedAddresses = JSON.parse(localStorage.getItem('addresses')) || [];
