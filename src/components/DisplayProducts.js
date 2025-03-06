@@ -8,7 +8,7 @@ const DisplayProducts = ({ products }) => {
         <div className="p-6">
             {categories.map(category => (
                 <div key={category} className="mb-10">
-                    <h2 className="text-2xl font-bold text-green-700 mb-4 capitalize">{category}</h2>
+                    <h2 className="text-2xl font-bold text-green-700 mb-4 capitalize text-left">{category}</h2>
                     
                     <div className="flex space-x-4 overflow-x-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-200 p-2">
                         {products
