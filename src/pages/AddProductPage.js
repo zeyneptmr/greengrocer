@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Home, Users, Settings, LogOut, BarChart } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Upload } from "lucide-react";
+import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
-import allproducts from "../data/products"; 
+import ProductStorage from "../helpers/ProductStorage";
 
 const AddProductPage = () => {
     const [product, setProduct] = useState({
@@ -11,6 +11,19 @@ const AddProductPage = () => {
         category: "",
         image: "",
     });
+
+    
+    const [imagePreview, setImagePreview] = useState(null);
+
+
+    const [categories, setCategories] = useState([]);
+
+    
+    useEffect(() => {
+        
+        const uniqueCategories = ProductStorage.getCategories();
+        setCategories(uniqueCategories);
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,56 +46,50 @@ const AddProductPage = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        allproducts.push({ ...product, id: allproducts.length + 1 }); 
-        console.log("Yeni Ürün Eklendi:", product);
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+                setProduct(prev => ({
+                    ...prev,
+                    image: reader.result
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
 
-    const categories = [...new Set(allproducts.map(product => product.category.toUpperCase()))];
+        if (!product.name || !product.price || !product.category || !product.image) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+
+        const newProduct = ProductStorage.addProduct(product);
+        
+        
+        alert("Product added successfully!");
+
+
+        setProduct({
+            name: "",
+            price: "",
+            category: "",
+            image: "",
+        });
+        setImagePreview(null);
+    };
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
             {/* Sidebar */}
-            <aside className="w-64 bg-green-600 text-white flex flex-col p-4 flex-shrink-0">
-                <h2 className="text-2xl font-bold mb-6 text-center">Admin Panel</h2>
-                <nav className="flex-1 overflow-y-auto">
-                    <ul className="space-y-4">
-                        <li>
-                            <Link to="/admin" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <Home size={20} />
-                                <span>Dashboard</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/admin/displayproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <Users size={20} />
-                                <span>Products</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/admin/editproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <BarChart size={20} />
-                                <span>Edit Products</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/admin/settings" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <Settings size={20} />
-                                <span>Settings</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-                <div className="mt-auto mb-20 flex justify-center">
-                    <Link to="/">
-                        <button className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-transform duration-200 hover:scale-125">
-                            <LogOut size={24} className="text-white" />
-                        </button>
-                    </Link>
-                </div>
-            </aside>
+            <Sidebar />
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col overflow-hidden">
@@ -96,10 +103,10 @@ const AddProductPage = () => {
                 </header>
 
                 {/* Form Section */}
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-6 overflow-y-auto">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            
+                            {/* Product Name Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
                                 <input
@@ -113,6 +120,7 @@ const AddProductPage = () => {
                                 />
                             </div>
 
+                            {/* Price Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
                                 <label htmlFor="price" className="block text-sm font-medium text-gray-600 uppercase">Price</label>
                                 <div className="flex items-center">
@@ -130,10 +138,10 @@ const AddProductPage = () => {
                             </div>
                         </div>
 
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="category" className="block text-sm font-medium text-gray-600 uppercase">Category</label>
+                            {/* Category Dropdown */}
+                            <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center justify-center w-full">
+                                <label htmlFor="category" className="block text-sm font-medium text-gray-600 uppercase text-center">Category</label>
                                 <select
                                     id="category"
                                     name="category"
@@ -151,21 +159,41 @@ const AddProductPage = () => {
                                 </select>
                             </div>
 
+                            {/* Image Upload */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="image" className="block text-sm font-medium text-gray-600 uppercase">Product Image URL</label>
+                                <label htmlFor="image" className="block text-sm font-medium text-gray-600 uppercase mb-2">Product Image</label>
                                 <input
                                     id="image"
-                                    type="text"
-                                    name="image"
-                                    value={product.image}
-                                    onChange={handleChange}
-                                    className="mt-1 p-3 w-72 border border-gray-300 rounded-lg text-sm"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="hidden"
                                 />
+                                <label 
+                                    htmlFor="image" 
+                                    className="cursor-pointer flex items-center justify-center w-64 h-32 border-2 border-dashed border-gray-300 rounded-lg"
+                                >
+                                    {imagePreview ? (
+                                        <img 
+                                            src={imagePreview} 
+                                            alt="Preview" 
+                                            className="max-w-full max-h-full object-contain"
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col items-center text-gray-500">
+                                            <Upload size={32} />
+                                            <span className="mt-2">Resim Yükle</span>
+                                        </div>
+                                    )}
+                                </label>
                             </div>
                         </div>
 
-                      
-                        <button type="submit" className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm">
+                        {/* Submit Button */}
+                        <button 
+                            type="submit" 
+                            className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
+                        >
                             Ürünü Ekle
                         </button>
                     </form>
