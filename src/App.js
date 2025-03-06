@@ -31,8 +31,6 @@ import ChangePasswordPage from "./pages/ChangePassword";
 import CreditCardPage from "./pages/CreditCard";
 import CustomerInfoPage from "./pages/CustomerInfo";
 
-
-
 import AddProductPage from "./pages/AddProductPage";
 import EditSingleProduct from "./pages/EditSingleProduct";
 

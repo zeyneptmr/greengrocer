@@ -78,7 +78,7 @@ const CardEntryForm = () => {
     return (
         <div className="flex bg-gray-100 min-h-screen">
             <UserSidebar />
-            <div className="p-8 max-w-2xl mx-auto w-full bg-white shadow-lg rounded-xl mt-12 mb-12">
+            <div className="p-8 max-w-2xl mx-auto w-full bg-white shadow-lg rounded-xl mt-12 mb-12 min-h-[600px]">
                 <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Payment Methods</h2>
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                 <p className="text-orange-500 text-center mb-4">Please enter your debit or credit card information
@@ -182,7 +182,7 @@ const CardEntryForm = () => {
                             </div>
                         </div>
                         <button
-                            className="w-full bg-green-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 transition"
+                            className="w-full bg-orange-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 transition"
                             onClick={handleSubmit}
                         >
                             Save
