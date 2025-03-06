@@ -20,8 +20,10 @@ import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
+import UpdateProductsPage from "./pages/UpdateProductsPage";
 
 import AddProductPage from "./pages/AddProductPage";
+import EditSingleProduct from "./pages/EditSingleProduct";
 
 import AddressPage from "./pages/AddressPage";
 
@@ -59,6 +61,9 @@ function MainContent(){
                         <Route path="/manager" element={<ManagerPage/>}/>
                         <Route path="/admin" element={<AdminPage/>}/>
                         <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
+                        <Route path="/admin/addproducts" element={<AddProductPage />} />
+                        <Route path="/admin/updateproducts" element={<UpdateProductsPage />} />
+                        <Route path="/admin/update-product/:id" element={<EditSingleProduct />} />
                         <Route path="/address" element={<AddressPage/>}/>
                         <Route path="/payment" element={<PaymentPage/>}/>
                     </Routes>
