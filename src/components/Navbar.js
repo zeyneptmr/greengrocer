@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingCart, Search, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
+import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
 import { Link, useNavigate } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
 import { useFavorites } from "../helpers/FavoritesContext";
+import SearchBar from "./SearchBar";
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -20,9 +21,6 @@ const Navbar = () => {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
-    const [query, setQuery] = useState("");
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [showSuggestions, setShowSuggestions] = useState(true);
     const navigate = useNavigate();
     const [hoveredMenu, setHoveredMenu] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
@@ -37,83 +35,15 @@ const Navbar = () => {
         setLoggedInUser(storedUser);
     }, [navigate]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (!event.target.closest('.search-bar') && !event.target.closest('.suggestions')) {
-                setShowSuggestions(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    const handleSearch = (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        setQuery(searchTerm);
-
-        if (searchTerm.length > 0) {
-            setShowSuggestions(true);
-            const searchTerms = searchTerm.split(" ");
-            const filtered = products.filter((product) => {
-                const productName = product.name.toLowerCase();
-                return searchTerms.every((term) => {
-                    return productName.split(" ").some((word) => word.startsWith(term));
-                });
-            });
-            setFilteredProducts(filtered);
-        } else {
-            setFilteredProducts([]);
-            setShowSuggestions(false);
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            // Arama yapılmışsa ve ürünler varsa, arama sonuçlarına yönlendir
-            if (filteredProducts.length > 0) {
-                navigate("/search-results", { state: { results: filteredProducts } });
-                setShowSuggestions(false);  // Öneri listesini kapat
-                setQuery("");  // Arama çubuğunu temizle
-            }
-            // Eğer query var ama filteredProducts boşsa
-            else if (query) {
-                navigate(`/search-results?query=${query}`);  // Arama sonuçlarına yönlendir
-                setQuery("");  // Arama çubuğunu temizle
-            }
-        }
-    };
 
 
-    const handleSearchClick = () => {
-        if (filteredProducts.length > 0) {
-            navigate("/search-results", { state: { results: filteredProducts } });
-            setShowSuggestions(false);
-            setQuery("");
-        }
-        else if (query) {
-            navigate(`/search-results?query=${query}`);
-            setQuery("");
-        }
-    };
-
-    const NoResultsMessage = () => (
-        filteredProducts.length === 0 && query.length > 0 ? (
-            <div className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20 p-2 text-center text-red-500">
-                <p>Product not found!</p>
-            </div>
-        ) : null
-    );
-
-    const handleProductClick = (product) => {
+    {/*const handleProductClick = (product) => {
         navigate(`/product/${product.id}`);
 
         setQuery("");
         setFilteredProducts([]);
         setShowSuggestions(false);
-    };
+    };*/}
 
     const handleMenuClick = (menuName) => {
         switch (menuName) {
@@ -169,57 +99,23 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="h-20 w-full bg-white text-green-600 flex items-center px-4 relative">
+            <nav className="h-24 w-full bg-white text-green-600 flex items-center px-4 relative">
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
-                    <h1 className="text-3xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    <Link to ="">
+                    <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    </Link>
                 </div>
 
-                <div className="flex-grow flex justify-center relative">
-                    <div className="flex gap-2 w-1/2 relative">
-                        <input
-                            type="text"
-                            placeholder="Search product..."
-                            className="p-2 rounded bg-[#f7f7f7] text-black w-full border border-[#B6D1A7] z-10"
-                            value={query}
-                            onChange={handleSearch}
-                            onKeyDown={handleKeyDown}
-                        />
-                        <button
-                            className="bg-green-600 text-white p-2 rounded z-10"
-                            onClick={handleSearchClick}
-                        >
-                            <Search size={20}/>
-                        </button>
+                <SearchBar products={products} />
 
-                        {/* Öneri Listesi */}
-                        {showSuggestions && query && filteredProducts.length > 0 && (
-                            <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-30">
-                                {filteredProducts.map((product) => (
-                                    <li
-                                        key={product.id}
-                                        className="p-2 cursor-pointer hover:bg-gray-200 flex items-center gap-2"
-                                        onClick={() => handleProductClick(product)}
-                                    >
-                                        <img src={product.image} alt={product.name} className="w-8 h-8 rounded"/>
-                                        <div>
-                                            <p className="text-sm font-medium">{product.name}</p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                        <NoResultsMessage />
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-10 ml-auto"> {/* Push the buttons to the right */}
                     {loggedInUser ? (
                         <div className="relative">
                             <button
                                 onClick={handleProfileMenuToggle}
                                 className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                                <User size={18}/>
+                                <User size={44}/>
                                 <span className="text-xs">Profile</span> {/* Profile olarak değiştirildi */}
                             </button>
                             {isProfileMenuOpen && (
@@ -227,7 +123,7 @@ const Navbar = () => {
                                     className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-48 z-50">
                                     <ul>
                                         <li
-                                            onClick={() => navigate("/account-settings")}
+                                            onClick={() => navigate("/account")}
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
                                             Hesap Ayarlarım
@@ -257,19 +153,21 @@ const Navbar = () => {
                     ) : (
                         <button onClick={() => setIsAccountOpen(true)}
                                 className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
-                            <User size={18}/>
+                            <User size={44}/>
                             <span className="text-xs">Log In</span>
                         </button>
                     )}
 
                     <Link to="/favorites">
-                        <button className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                            <Heart size={18} />
+                        <button
+                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
+                            <Heart size={44}/>
                             <span className="text-xs">Favorites</span>
                             {favorites.length > 0 && (
-                                <span className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    {favorites.length}
-                                </span>
+                                <span
+                                    className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {favorites.length}
+                    </span>
                             )}
                         </button>
                     </Link>
@@ -278,30 +176,31 @@ const Navbar = () => {
                     {loggedInUser && notifications > 0 && (
                         <button
                             className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                            <Bell size={18}/>
+                            <Bell size={44}/>
                             <span className="text-xs">Notifications</span>
                             <span
                                 className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {notifications}
-                            </span>
+                    {notifications}
+                </span>
                         </button>
                     )}
 
                     <button
                         onClick={handleCartClick}
                         className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                        <ShoppingCart size={18}/>
+                        <ShoppingCart size={44}/>
                         <span
                             className="text-xs">{loggedInUser ? "My Cart" : "Cart"}</span> {/* Cart butonunun yazısı dinamik olarak değiştirildi */}
                         {getTotalProductTypes() > 0 && (
                             <span
                                 className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {getTotalProductTypes()}
-                            </span>
+                    {getTotalProductTypes()}
+                </span>
                         )}
                     </button>
                 </div>
             </nav>
+
 
             {isCartAccessRestricted && (
                 <div
@@ -324,7 +223,7 @@ const Navbar = () => {
             <div className="bg-green-500 text-white p-3 relative">
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
-                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500">
+                        <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500 flex items-center justify-center">
                             <Link to="/">
                                 <Home size={25} className="inline-block mr-1"/>
                             </Link>
@@ -332,13 +231,15 @@ const Navbar = () => {
                         {menuItems.map((menu, index) => (
                             <li
                                 key={index}
-                                className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20"
+                                className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20 p-1 rounded-md"
+                                onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
                                 onClick={() => handleMenuClick(menu.name)}
                             >
-                                <span className="flex items-center">{menu.name} <ChevronDown size={16}
-                                                                                             className="ml-1"/></span>
+                                <span className="flex items-center text-xl hover:text-xl">{menu.name} <ChevronDown
+                                    size={16} className="ml-1"/></span>
+
                                 {hoveredMenu === menu.name && (
                                     <ul className="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md py-2 w-48 text-center z-9999">
                                         {menu.subItems.map((subItem, subIndex) => (
@@ -358,7 +259,7 @@ const Navbar = () => {
                 </div>
             </div>
 
-            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
+            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)}/>
         </>
     );
 };

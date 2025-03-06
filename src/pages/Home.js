@@ -10,6 +10,18 @@ import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
 import home2 from '../assets/home2.jpg';
+import promo1 from '../assets/promo1.svg';
+import promo2 from '../assets/promo2.svg';
+import promo3 from '../assets/promo3.svg';
+import { Link } from "react-router-dom";
+import ChefRecommendationModal from "../components/ChefRecomendation";
+import chefImage from "../assets/chef.jpg";
+import vegetablesImg from "../assets/vegetables1.svg";
+import fruitsImg from "../assets/fruits1.svg";
+import bakedGoodsImg from "../assets/bakedgoods1.svg";
+import olivesOilsImg from "../assets/olivesoils1.svg";
+import saucesImg from "../assets/sauces1.svg";
+import dairyImg from "../assets/dairy1.svg";
 
 const banners = [banner1];
 // Function to shuffle the array
@@ -21,6 +33,14 @@ const shuffleArray = (array) => {
     }
     return shuffled;
 };
+const categories = [
+    { name: "Vegetables", image: vegetablesImg, path: "/vegetables" },
+    { name: "Fruits", image: fruitsImg, path: "/fruits" },
+    { name: "Baked Goods", image: bakedGoodsImg, path: "/bakedgoods" },
+    { name: "Olives & Oils", image: olivesOilsImg, path: "/olives" },
+    { name: "Sauces", image: saucesImg, path: "/sauces" },
+    { name: "Dairy", image: dairyImg, path: "/dairy" }
+];
 
 export default function HomePage() {
     const [discountedProducts, setDiscountedProducts] = useState([]);
@@ -28,6 +48,7 @@ export default function HomePage() {
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content
     const [modalTitle, setModalTitle] = useState(""); // Modal title
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
     const { cart } = useCart();
@@ -49,6 +70,21 @@ export default function HomePage() {
         }, 10000);
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.documentElement.style.overflow = "hidden"; // HTML'yi de engelle
+            document.body.style.overflow = "hidden"; // Body'yi engelle
+        } else {
+            document.documentElement.style.overflow = "";
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.documentElement.style.overflow = "";
+            document.body.style.overflow = "";
+        };
+    }, [isModalOpen]);
+
 
     // Handle opening the modal with specific content and title
     const openModal = (title, content) => {
@@ -72,6 +108,22 @@ export default function HomePage() {
     return (
         <div className="p-6">
             <SlideBar items={slideItems}/>
+            {/* Promosyon Panoları */}
+            <div className="flex justify-center gap-6 my-8">
+                <motion.div whileHover={{scale: 1.05}}
+                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+                    <img src={promo1} alt="Promo 1" className="w-32 h-32 mx-auto"/>
+                </motion.div>
+                <motion.div whileHover={{scale: 1.05}}
+                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+                    <img src={promo2} alt="Promo 2" className="w-32 h-32 mx-auto"/>
+                </motion.div>
+                <motion.div whileHover={{scale: 1.05}}
+                            className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow">
+                    <img src={promo3} alt="Promo 3" className="w-32 h-32 mx-auto"/>
+                </motion.div>
+            </div>
+
             {/* Discounted Products */}
             <div className="p-6">
                 <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
@@ -92,6 +144,52 @@ export default function HomePage() {
                         </div>
                     ))}
                 </div>
+            </div>
+            <h2 className="text-3xl font-bold mt-6">Daha Fazlasını Keşfedin</h2>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
+                {categories.map((category, index) => (
+                    <Link to={category.path} key={index} className="flex flex-col items-center cursor-pointer">
+                        <img src={category.image} alt={category.name}
+                             className="w-24 h-24 rounded-lg shadow-lg transition-transform hover:scale-110"/>
+                        <p className="mt-2 text-lg font-semibold">{category.name}</p>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="p-6 flex items-center justify-between relative w-full max-w-4xl mx-auto">
+                {/* Text Section (Left) */}
+                <div className="text-left flex-1 pr-10">
+                    <h2 className="text-3xl font-bold text-green-600 flex items-center gap-2">
+                        🍽️ Chef's Recommendation
+                    </h2>
+                    <p className="text-orange-500 text-lg mt-2 leading-relaxed">
+                        Not sure what to eat? Let the chef decide for you!
+                        Select your preferences and get a unique recipe recommendation
+                        based on what you feel like eating today!
+                    </p>
+                </div>
+
+                {/* Image Section (Right) */}
+                <button onClick={() => setIsModalOpen(true)} className="relative group">
+                    <div className="bg-green-100 p-3 rounded-lg shadow-lg">
+                        <img
+                            src={chefImage}
+                            alt="Chef's Recommendation"
+                            className="rounded-lg cursor-pointer w-72 h-auto transition-transform group-hover:scale-105"
+                        />
+                    </div>
+                    <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-sm px-4 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+            Click to see the chef's special!
+        </span>
+                </button>
+
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-[9999] bg-black bg-opacity-50 flex justify-center items-center">
+                        <div className="overflow-y-auto max-h-[80vh] bg-white rounded-lg shadow-lg">
+                            <ChefRecommendationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Coupons Section */}

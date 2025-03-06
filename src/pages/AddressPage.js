@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
+import UserSidebar from "../components/UserSidebar";
 
 
 const AddressPage = () => {
@@ -186,8 +187,10 @@ const AddressPage = () => {
     };
 
     return (
+
         <div className="container mx-auto p-8">
             <button
+
                 onClick={toggleForm}
                 className="mb-4 p-3 bg-green-500 text-white rounded text-xl"
             >

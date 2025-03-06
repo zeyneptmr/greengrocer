@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import products from "../data/products";
 import FilterBar from "../components/FilterBar";
@@ -6,6 +6,7 @@ import SlideBar from "../components/SliderBar";
 import fruits1 from '../assets/fruits1.jpg';
 import fruits2 from '../assets/fruits2.jpg';
 import fruits3 from '../assets/fruits3.jpg';
+import SearchBar from "../components/SearchBar";
 
 const FruitsPage = () => {
     const [columns, setColumns] = useState(4);
@@ -36,13 +37,23 @@ const FruitsPage = () => {
 
     return (
         <div className="p-6">
-            <SlideBar items={slideItems}/>
-            <h2 className="text-4xl font-bold mb-4 text-orange-500">Fruits</h2>
+            {/* SlideBar ve SearchBar'ı içeren div */}
+            <div className="relative">
+                {/* SlideBar */}
+                <SlideBar items={slideItems} />
+
+            </div>
+
+            {/* Başlık ve Filtreler */}
+            <h2 className="text-4xl font-bold mb-4 text-orange-500 mt-20">Fruits</h2>
+
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
+
+            {/* Ürün Kartları */}
             <div className={`grid gap-4 ${columns === 4 ? "grid-cols-4" : "grid-cols-3"} justify-items-center`}>
                 {Fruits.map((product, index) => (
                     <ProductCard key={index} product={product} />
