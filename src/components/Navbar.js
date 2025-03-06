@@ -206,7 +206,7 @@ const Navbar = () => {
                 <div
                     className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <p className="text-lg font-semibold mb-4">Devam etmek için lütfen üye girişi yapın.</p>
+                        <p className="text-lg font-semibold mb-4">Please Log In to Continue</p>
                         <button
                             onClick={() => {
                                 setIsAccountOpen(true);
@@ -214,7 +214,7 @@ const Navbar = () => {
                             }}
                             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                         >
-                            Üye Girişi Yap
+                            Log In
                         </button>
                     </div>
                 </div>
