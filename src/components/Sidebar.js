@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { Home, Users, Settings, LogOut, BarChart } from "lucide-react";
+import { Plus, NotebookText, Pen } from 'lucide-react';
 import adminIcon from '../assets/admin.svg'; // Admin ikonu
 import Clock from "../components/Clock"; // Saat bileşeni
 
@@ -46,8 +47,8 @@ const Sidebar = () => {
                     ) : (
                         <li>
                             <Link to="/admin/displayproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <Users size={20} />
-                                <span>Products</span>
+                                <NotebookText size={20} />
+                                <span>Display Products</span>
                             </Link>
                         </li>
                     )}
@@ -55,17 +56,17 @@ const Sidebar = () => {
                     {/* Eğer Admin sayfasına yönlendirildiyse, "Edit Products" menüsü olsun */}
                     {isAdmin && (
                         <li>
-                            <Link to="/admin/editproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                                <BarChart size={20} />
-                                <span>Edit Products</span>
+                            <Link to="/admin/addproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                                <Plus size={20} />
+                                <span>Add Products</span>
                             </Link>
                         </li>
                     )}
 
                     <li>
-                        <Link to="/admin/settings" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
-                            <Settings size={20} />
-                            <span>Settings</span>
+                        <Link to="/admin/updateproducts" className="flex items-center space-x-2 hover:bg-green-700 p-3 rounded-lg">
+                            <Pen size={20} />
+                            <span>Update Products</span>
                         </Link>
                     </li>
                 </ul>

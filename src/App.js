@@ -20,6 +20,9 @@ import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
+
+import UpdateProductsPage from "./pages/UpdateProductsPage";
+
 import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
 import UserAccountPage from "./pages/UserAccount";
@@ -28,7 +31,9 @@ import CreditCardPage from "./pages/CreditCard";
 import CustomerInfoPage from "./pages/CustomerInfo";
 
 
+
 import AddProductPage from "./pages/AddProductPage";
+import EditSingleProduct from "./pages/EditSingleProduct";
 
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
@@ -63,6 +68,9 @@ function MainContent(){
                     <Route path="/manager" element={<ManagerPage/>}/>
                     <Route path="/admin" element={<AdminPage/>}/>
                     <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
+                    <Route path="/admin/addproducts" element={<AddProductPage />} />
+                    <Route path="/admin/updateproducts" element={<UpdateProductsPage />} />
+                    <Route path="/admin/update-product/:id" element={<EditSingleProduct />} />
                     <Route path="/address" element={<AddressPage/>}/>
                     <Route path="/payment" element={<PaymentPage/>}/>
                     <Route path="/account" element={<UserAccountPage/>}/>
