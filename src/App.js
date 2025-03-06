@@ -20,6 +20,7 @@ import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
+import CardList from "./pages/CreditCard";
 
 import UpdateProductsPage from "./pages/UpdateProductsPage";
 
@@ -74,6 +75,7 @@ function MainContent(){
                     <Route path="/address" element={<AddressPage/>}/>
                     <Route path="/payment" element={<PaymentPage/>}/>
                     <Route path="/account" element={<UserAccountPage/>}/>
+                    <Route path="/cards" element={<CardList />} />
                     <Route path="/change-password" element={<ChangePasswordPage/>}/>
                     <Route path="/customer-info" element={<CustomerInfoPage/>}/>
                     <Route path="/credit-card" element={<CreditCardPage/>}/>
