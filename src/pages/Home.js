@@ -13,6 +13,7 @@ import home2 from '../assets/home2.jpg';
 import promo1 from '../assets/promo1.svg';
 import promo2 from '../assets/promo2.svg';
 import promo3 from '../assets/promo3.svg';
+import promo4 from '../assets/promo4.svg';
 import { Link } from "react-router-dom";
 import ChefRecommendationModal from "../components/ChefRecomendation";
 import chefImage from "../assets/chef.jpg";
@@ -105,56 +106,71 @@ export default function HomePage() {
         { image: home2, name: "home2" },
 
     ];
+    const [hovered, setHovered] = useState(null);
     return (
         <div className="p-6">
             <SlideBar items={slideItems}/>
 
-            {/* Promosyon Panoları */}
-            <div className="flex flex-wrap justify-center gap-7 my-10">
-                <motion.div
-                    whileHover={{scale: 1.05}}
-                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
-                >
-                    <img src={promo1} alt="Promo 1" className="w-32 h-32 mx-auto"/>
-                </motion.div>
-                <motion.div
-                    whileHover={{scale: 1.05}}
-                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
-                >
-                    <img src={promo2} alt="Promo 2" className="w-32 h-32 mx-auto"/>
-                </motion.div>
-                <motion.div
-                    whileHover={{scale: 1.05}}
-                    className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow"
-                >
-                    <img src={promo3} alt="Promo 3" className="w-32 h-32 mx-auto"/>
-                </motion.div>
+            <div className="flex justify-center gap-6 my-8">
+                {['Promo 1', 'Promo 2', 'Promo 3', 'Promo 4'].map((promo, index) => (
+                    <motion.div
+                        whileHover={{scale: 1.05}}
+                        className="relative bg-white p-4 shadow-lg rounded-lg hover:shadow-green-500/50 transition-shadow w-40 h-40 flex justify-center items-center"
+                        onHoverStart={() => setHovered(index)}
+                        onHoverEnd={() => setHovered(null)}
+                        key={promo}
+                    >
+                        {hovered === index ? (
+                            <motion.div
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                transition={{duration: 0.5}}
+                                className="absolute inset-0 bg-white flex justify-center items-center p-4 rounded-lg"
+                            >
+                                <p className="text-center text-lg font-semibold leading-6 text-black">
+                                    {[
+                                        'Fast delivery within the same day with suitable conditions',
+                                        'Wide range of completely organic and high quality products!',
+                                        'Carefully cultivated and safely selected for you',
+                                        'Safe shopping without worrying'
+                                    ][index]}
+                                </p>
+                            </motion.div>
+                        ) : (
+                            <motion.img
+                                src={[promo1, promo2, promo3, promo4][index]}
+                                alt={promo}
+                                className="w-24 h-24"
+                                initial={{opacity: 1}}
+                                animate={{opacity: 1}}
+                                transition={{duration: 0.5}}
+                            />
+                        )}
+                        <motion.p
+                            className="absolute bottom-[-2rem] text-center text-l font-semibold text-gray-700"
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.5}}
+                        >
+                            {['Fast Delivery', 'Freshness', 'Safe Products', 'Secure Payment'][index]}
+                        </motion.p>
+                    </motion.div>
+                ))}
             </div>
 
             {/* Discounted Products */}
             <div className="p-6">
-                <h2 className="text-3xl font-bold mt-3 text-center sm:text-left">Today's Discounted Products</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
+                <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                     {discountedProducts.map((product) => (
                         <ProductCard key={product.id} product={product}/>
                     ))}
                 </div>
             </div>
 
-            <h2 className="text-3xl font-bold mt-16 text-center sm:text-left">Daha Fazlasını Keşfedin</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-6">
-                {categories.map((category, index) => (
-                    <Link to={category.path} key={index} className="flex flex-col items-center cursor-pointer">
-                        <img src={category.image} alt={category.name}
-                             className="w-32 h-32 rounded-lg shadow-lg transition-transform hover:scale-110"/>
-                        <p className="mt-4 text-lg font-semibold text-center">{category.name}</p>
-                    </Link>
-                ))}
-            </div>
-
             {/* Products Section - Scrollable */}
-            <h2 className="text-3xl font-bold mt-16 text-center sm:text-left">Chosen for You</h2>
-            <div className="mt-6">
+            <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>
+            <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     {dailySelectedProducts.map((product, index) => (
                         <div key={index} className="flex-shrink-0">
@@ -163,6 +179,23 @@ export default function HomePage() {
                     ))}
                 </div>
             </div>
+
+            <br/>
+
+            <h2 className="text-3xl font-bold mt-6">Explore More</h2>
+            <br/>
+            <br/>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4 justify-items-center">
+                {categories.map((category, index) => (
+                    <Link to={category.path} key={index} className="flex flex-col items-center cursor-pointer">
+                        <img src={category.image} alt={category.name}
+                             className="w-32 h-32 rounded-lg shadow-lg transition-transform hover:scale-110"/>
+                        <p className="mt-3 text-xl font-semibold">{category.name}</p>
+                    </Link>
+                ))}
+            </div>
+                <br/>
+                <br/>
 
             <div className="p-6 flex items-center justify-between relative w-full max-w-4xl mx-auto">
                 {/* Text Section (Left) */}
@@ -186,7 +219,8 @@ export default function HomePage() {
                             className="rounded-lg cursor-pointer w-72 h-auto transition-transform group-hover:scale-105"
                         />
                     </div>
-                    <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-sm px-4 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span
+                        className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-sm px-4 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
             Click to see the chef's special!
         </span>
                 </button>
@@ -201,61 +235,63 @@ export default function HomePage() {
             </div>
 
             {/* Coupons Section */}
-            <h2 className="text-2xl font-bold mt-16 text-center sm:text-left">Coupons and Promotions</h2>
+            <h2 className="text-2xl font-bold mt-6">Coupons and Promotions</h2>
             <div className="mt-4">
-                <div className="flex flex-wrap justify-center gap-4 overflow-x-auto pb-4">
+                <div className="flex space-x-4 overflow-x-auto pb-4">
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">50₺ üzeri alışverişe %10 indirim!</p>
+                        <p className="text-center">25 ₺ discount on purchases over 500 ₺!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("50₺ üzeri alışverişe %10 indirim!", "Bu kampanyaya 50₺ üzeri alışverişlerde %10 indirim uygulanacaktır.")}
+                            onClick={() => openModal("25 ₺ discount on purchases over 500 ₺!", "In this campaign, 25₺ discount will be applied to purchases over 500₺..")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Ücretsiz kargo fırsatı!</p>
+                        <p className="text-center">Free Delivery Opportunity!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Ücretsiz Kargo Fırsatı", "Bu kampanya kapsamında, tüm siparişlerde ücretsiz kargo fırsatı sunulmaktadır.")}
+                            onClick={() => openModal("Free Delivery Opportunity", "Free delivery is offered for purchases of 500₺ and above..")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Üç al, bir bedava!</p>
+                        <p className="text-center">Buy Three pay for Two!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Üç al, bir bedava!", "Bu kampanya kapsamında, üç ürün almanız durumunda bir ürün bedava verilecektir.")}
+                            onClick={() => openModal("Buy Three pay for Two!", "Within the scope of this campaign, if you buy three products from the Sauce category, one product will be given free.")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Yeni Ürünlere %20 İndirim!</p>
+                        <p className="text-center">20% Discount on New Products!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Yeni Ürünlere %20 İndirim!", "Yeni gelen ürünlerde %20 indirim fırsatı sunulmaktadır.")}
+                            onClick={() => openModal("20% Discount on New Products!", "20% discount on new products.")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
+                    {/* New campaign */}
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Yaz İndirimi: %30!</p>
+                        <p className="text-center">Ramadan Discount: 25%!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Yaz İndirimi: %30!", "Yaz koleksiyonunda %30 indirim fırsatı!")}
+                            onClick={() => openModal("Ramadan Discount: 25%", "25% discount on Ramadan collection!")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
+                    {/* New campaign */}
                     <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Sevdiğiniz Ürünlerde %15 İndirim!</p>
+                        <p className="text-center">15% Discount on Your Favorite Products!</p>
                         <Button
                             className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Sevdiğiniz Ürünlerde %15 İndirim!", "Sevdiğiniz ürünlerde %15 indirim fırsatını kaçırmayın!")}
+                            onClick={() => openModal("15% Discount on Your Favorite Products!", "Don't miss the 15% discount opportunity on your favorite products!")}
                         >
-                            Detaylar
+                            Details
                         </Button>
                     </Card>
                 </div>
@@ -277,7 +313,7 @@ export default function HomePage() {
                             className="mt-4 bg-green-500 text-white p-2 rounded-md"
                             onClick={closeModal}
                         >
-                            Kapat
+                            Close
                         </button>
                     </div>
                 </div>

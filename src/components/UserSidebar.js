@@ -1,96 +1,51 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
 
 const Sidebar = () => {
     return (
-        <div className="w-64 bg-green-600 text-white rounded-lg shadow-lg p-4 mt-20"> {/* mt-16 ile menüyü daha aşağıya kaydırdık */}
-            <ul>
-                <li className="mb-12">
-                    <Link
-                        to="/customer-info"
-                        className="flex items-center space-x-3 hover:bg-green-700 p-2 rounded"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-10 h-10"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M15 12h3m-3 4h2m-6-8H9m3 4h3m0 4H9m4 0h3m0 4H9m4 0h3m-5-6H5m5 0h3M5 4h14M5 4v10h14V4z"
-                            />
-                        </svg>
-                        <span className="text-xl">Kullanıcı Bilgilerim</span>
-                    </Link>
-                </li>
-                <li className="mb-12">
-                    <Link
-                        to="/credit-card"
-                        className="flex items-center space-x-3 hover:bg-green-700 p-2 rounded"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-10 h-10"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M17 9l-7 7-7-7"
-                            />
-                        </svg>
-                        <span className="text-xl">Kayıtlı Kartlarım</span>
-                    </Link>
-                </li>
-                <li className="mb-12">
-                    <Link
-                        to="/change-password"
-                        className="flex items-center space-x-3 hover:bg-green-700 p-2 rounded"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-10 h-10"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M13 3h8a2 2 0 012 2v14a2 2 0 01-2 2h-8"
-                            />
-                        </svg>
-                        <span className="text-xl">Şifre Değişikliği</span>
+        <div className="w-80 bg-gradient-to-b from-green-700 to-green-600 p-6 text-white flex flex-col mt-10 mb-10 shadow-lg rounded-xl">
+            <h2 className="text-2xl font-semibold mb-6 text-center">User Panel</h2>
+            <ul className="space-y-6">
+            <li>
+                    <Link to="/customer-info"
+                          className="flex items-center space-x-4 hover:bg-green-500 p-4 rounded-lg transition duration-300">
+                        <FaUser className="w-6 h-6"/>
+                        <span className="text-lg">My Profile</span>
                     </Link>
                 </li>
                 <li>
-                    <Link
-                        to="/delete-account"
-                        className="flex items-center space-x-3 hover:bg-green-700 p-2 rounded"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-10 h-10"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
-                        <span className="text-xl">Hesabımı Sil</span>
+                    <Link to="/credit-card"
+                          className="flex items-center space-x-4 hover:bg-green-500 p-4 rounded-lg transition duration-300">
+                    <FaCreditCard className="w-6 h-6"/>
+                        <span className="text-lg">Saved Cards</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/change-password"
+                          className="flex items-center space-x-4 hover:bg-green-500 p-4 rounded-lg transition duration-300">
+                        <FaLock className="w-6 h-6"/>
+                        <span className="text-lg">Change Password</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/delete-account"
+                          className="flex items-center space-x-4 hover:bg-red-600 p-4 rounded-lg transition duration-300">
+                        <FaTrash className="w-6 h-6"/>
+                        <span className="text-lg">Delete Account</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/help"
+                          className="flex items-center space-x-4 hover:bg-blue-500 p-4 rounded-lg transition duration-300">                        <FaQuestionCircle className="w-6 h-6"/>
+                        <span className="text-lg">Help</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/logout"
+                          className="flex items-center space-x-4 hover:bg-gray-600 p-4 rounded-lg transition duration-300">
+                        <FaSignOutAlt className="w-6 h-6"/>
+                        <span className="text-lg">Logout</span>
                     </Link>
                 </li>
             </ul>
