@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import {ProductStorage} from "../helpers/ProductStorage";
 
 // Context
 const CartContext = createContext();
@@ -18,17 +19,37 @@ export function CartProvider({ children }) {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
-    const addToCart = (product) => {
+    const addToCart = (product, quantityToAdd = 1) => {
+        const products = ProductStorage.getProducts();
+        const productInStock = products.find((p) => p.id === product.id);
+
+        if (productInStock) {
+            // Stok miktarını kontrol et
+            if (quantityToAdd > productInStock.stock) {
+                alert(`Insufficient Stock Available!`);
+                return;  // Sepete eklemeyi engelle
+            }
+        }
+
         setCart((prevCart) => {
             const existingItem = prevCart.find((item) => item.id === product.id);
             let updatedCart;
 
             if (existingItem) {
+                // Mevcut ürünü güncelle
+                if (existingItem.quantity + quantityToAdd > productInStock.stock) {
+                    alert(`Insufficient Stock Available!`);
+                    return prevCart; // Yeterli stok yoksa değişiklik yapma
+                }
+
                 updatedCart = prevCart.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + quantityToAdd }
+                        : item
                 );
             } else {
-                updatedCart = [...prevCart, { ...product, quantity: 1 }];
+                // Yeni ürün ekle
+                updatedCart = [...prevCart, { ...product, quantity: quantityToAdd }];
             }
 
             console.log("Cart after adding:", updatedCart);  // 👉 Sepet ekleme sonrası kontrol
@@ -36,11 +57,25 @@ export function CartProvider({ children }) {
         });
     };
 
+
     const increaseQuantity = (id) => {
         setCart((prevCart) => {
-            const updatedCart = prevCart.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-            );
+            const updatedCart = prevCart.map((item) => {
+                if (item.id === id) {
+                    const productInStock = ProductStorage.getProducts().find((p) => p.id === item.id);
+
+                    // Stok kontrolü: Kullanıcı, sepetteki ürünü arttırmaya çalışıyorsa
+                    if (productInStock && item.quantity + 1 > productInStock.stock) {
+                        alert(`Insufficient Stock Available!`);
+                        return item; // Miktar artışını engelle
+                    }
+
+                    // Stok uygunse, miktarı arttır
+                    return { ...item, quantity: item.quantity + 1 };
+                }
+                return item;
+            });
+
             console.log("Cart after increasing quantity:", updatedCart);
             return updatedCart;
         });
@@ -49,14 +84,19 @@ export function CartProvider({ children }) {
     const decreaseQuantity = (id) => {
         setCart((prevCart) => {
             const updatedCart = prevCart
-                .map((item) =>
-                    item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-                )
+                .map((item) => {
+                    if (item.id === id && item.quantity > 1) {
+                        return { ...item, quantity: item.quantity - 1 };
+                    }
+                    return item;
+                })
                 .filter((item) => item.quantity > 0);
+
             console.log("Cart after decreasing quantity:", updatedCart);
             return updatedCart;
         });
     };
+
 
     const removeItem = (id) => {
         setCart((prevCart) => {

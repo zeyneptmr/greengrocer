@@ -3,26 +3,18 @@ import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
-import allproducts from "../data/products";
+import { ProductStorage } from "../helpers/ProductStorage";  // Storage modülünü kullan
 
 const DisplayProductsPage = () => {
-    
-    const getProductsFromStorage = () => {
-        try {
-            const storedProducts = localStorage.getItem('products');
-            return storedProducts ? JSON.parse(storedProducts) : allproducts;
-        } catch (error) {
-            console.error("Error loading products from localStorage:", error);
-            return allproducts;
-        }
-    };
 
-    const [products, setProducts] = useState(getProductsFromStorage());
-    const [filteredProducts, setFilteredProducts] = useState(products);
-   
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
     useEffect(() => {
-        localStorage.setItem('products', JSON.stringify(products));
-    }, [products]);
+        const storedProducts = ProductStorage.getProducts();
+        setProducts(storedProducts);
+        setFilteredProducts(storedProducts);
+    }, []);
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -34,7 +26,7 @@ const DisplayProductsPage = () => {
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
                     <h1 className="text-2xl font-semibold text-gray-700">All Products</h1>
-                    
+
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Admin Panel</span>
                         <img src={adminIcon} alt="Admin" className="rounded-full w-10 h-10" />
@@ -43,9 +35,9 @@ const DisplayProductsPage = () => {
 
                 {/* Admin Search Bar */}
                 <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
-                    <AdminSearchBar 
-                        products={products} 
-                        setFilteredProductsList={setFilteredProducts} 
+                    <AdminSearchBar
+                        products={products}
+                        setFilteredProductsList={setFilteredProducts}
                     />
                 </div>
 

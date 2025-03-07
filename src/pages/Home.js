@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from '../components/Card';
@@ -194,8 +195,8 @@ export default function HomePage() {
                     </Link>
                 ))}
             </div>
-                <br/>
-                <br/>
+            <br/>
+            <br/>
 
             <div className="p-6 flex items-center justify-between relative w-full max-w-4xl mx-auto">
                 {/* Text Section (Left) */}

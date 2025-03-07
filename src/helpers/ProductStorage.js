@@ -14,6 +14,8 @@ export const ProductStorage = {
         const existingProducts = localStorage.getItem(PRODUCTS_KEY);
         if (!existingProducts) {
             localStorage.setItem(PRODUCTS_KEY, JSON.stringify(allproducts));
+<<<<<<< HEAD
+=======
         }
     },
 
@@ -57,3 +59,100 @@ ProductStorage.initializeProducts();
 console.log(ProductStorage.getProducts());
 
 export default ProductStorage;
+
+{/*const InventoryPage = () => {
+    const [products, setProducts] = useState(ProductStorage.getProducts());
+    const [filteredProducts, setFilteredProducts] = useState(products);
+
+    const updateProductStock = (productId, newStock) => {
+        const updatedProduct = products.find(p => p.id === productId);
+        if (updatedProduct) {
+            updatedProduct.stock = newStock;
+            ProductStorage.updateProduct(updatedProduct);
+            setProducts(ProductStorage.getProducts());
+>>>>>>> b4c4da54d2190845070e91ce80b0fb82e91e6b50
+        }
+    },
+
+
+<<<<<<< HEAD
+    getProducts: () => {
+        const products = localStorage.getItem(PRODUCTS_KEY);
+        return products ? JSON.parse(products) : [];
+    },
+    saveProducts: (products) => {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    },
+    addProduct: (product) => {
+        const products = ProductStorage.getProducts();
+        let maxId = products.reduce((max, p) => (p.id && p.id > max ? p.id : max), 0);
+        const newProduct = { ...product, id: maxId + 1 };
+        products.push(newProduct);
+        ProductStorage.saveProducts(products);
+        return newProduct;
+    },
+    updateProduct: (updatedProduct) => {
+        const products = ProductStorage.getProducts();
+        const index = products.findIndex(p => p.id === updatedProduct.id);
+        if (index !== -1) {
+            products[index] = updatedProduct;
+            ProductStorage.saveProducts(products);
+            return updatedProduct;
+        }
+        return null;
+    },
+    deleteProduct: (productId) => {
+        const products = ProductStorage.getProducts().filter(p => p.id !== productId);
+        ProductStorage.saveProducts(products);
+        return products;
+    },
+    getCategories: () => {
+        return [...new Set(ProductStorage.getProducts().map(p => p.category.toUpperCase()))];
+    }
+};
+
+ProductStorage.initializeProducts();
+console.log(ProductStorage.getProducts());
+
+export default ProductStorage;
+=======
+    return (
+        <div className="flex h-screen bg-gray-100 overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 flex flex-col overflow-hidden">
+                <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
+                    <h1 className="text-2xl font-semibold text-gray-700">Product Inventory</h1>
+                    <div className="flex items-center space-x-4">
+                        <span className="text-gray-500">Manager Panel</span>
+                        <img src={managerIcon} alt="Admin" className="rounded-full w-14 h-18"/>
+                    </div>
+                </header>
+                <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
+                    <AdminSearchBar products={products} setFilteredProductsList={setFilteredProducts} />
+                </div>
+                <div className="p-6">
+                    {filteredProducts.map((product) => (
+                        <div key={product.id} className="bg-white p-4 mb-4 shadow-md rounded-md">
+                            <h3 className="font-semibold text-lg">{product.name}</h3>
+                            <p className="text-gray-500">Category: {product.category}</p>
+                            <p className="text-gray-500">Price: ${product.price}</p>
+                            <div className="flex items-center mt-4">
+                                <label className="mr-2 text-gray-600">Stock:</label>
+                                <input
+                                    type="number"
+                                    value={product.stock || 0}
+                                    onChange={(e) => updateProductStock(product.id, e.target.value)}
+                                    className="border border-gray-300 p-2 rounded"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </main>
+        </div>
+    );
+};  */}
+
+
+
+>>>>>>> b4c4da54d2190845070e91ce80b0fb82e91e6b50

@@ -111,7 +111,11 @@ const Navbar = () => {
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
                     <Link to ="">
+<<<<<<< HEAD
                     <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+=======
+                        <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+>>>>>>> b4c4da54d2190845070e91ce80b0fb82e91e6b50
                     </Link>
                 </div>
 
@@ -232,7 +236,11 @@ const Navbar = () => {
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500 flex items-center justify-center">
+<<<<<<< HEAD
                             <Link to="/">
+=======
+                            <Link to="">
+>>>>>>> b4c4da54d2190845070e91ce80b0fb82e91e6b50
                                 <Home size={25} className="inline-block mr-1"/>
                             </Link>
                         </li>

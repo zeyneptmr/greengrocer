@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { ProductStorage } from "../helpers/ProductStorage"; // ProductStorage'ı import et
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import olivesoils1 from '../assets/olivesoils1.jpg';
@@ -9,10 +9,10 @@ import olivesoils2 from '../assets/olivesoils2.jpg';
 const OlivesOilsPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
-    const [OlivesOils, setOlivesOils] = useState(products.filter(product => product.category === "olivesoils"));
+    const [olivesOils, setOlivesOils] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "olivesoils"));
 
     useEffect(() => {
-        let sortedArray = [...OlivesOils];
+        let sortedArray = [...olivesOils];
 
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
@@ -25,7 +25,7 @@ const OlivesOilsPage = () => {
         }
 
         setOlivesOils(sortedArray);
-    }, [sortOption]);
+    }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
 
     const slideItems = [
         { image: olivesoils1, name: "olivesoils1" },
@@ -34,8 +34,8 @@ const OlivesOilsPage = () => {
 
     return (
         <div className="p-6">
-            <SlideBar items={slideItems}/>
-            <h2 className="text-4xl font-bold mb-4 text-orange-500">Olives & Oils </h2>
+            <SlideBar items={slideItems} />
+            <h2 className="text-4xl font-bold mb-4 text-orange-500">Olives & Oils</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
@@ -43,8 +43,8 @@ const OlivesOilsPage = () => {
             />
             <div
                 className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 justify-items-center">
-                {OlivesOils.map((product, index) => (
-                    <ProductCard key={index} product={product}/>
+                {olivesOils.map((product, index) => (
+                    <ProductCard key={index} product={product} />
                 ))}
             </div>
         </div>
