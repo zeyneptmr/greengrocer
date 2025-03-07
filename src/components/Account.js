@@ -37,7 +37,7 @@ const Account = ({ isOpen, onClose }) => {
     };
 
     const handleNameChange = (e) => {
-        const value = e.target.value.replace(/[^a-zA-Z]/g, "");
+        const value = e.target.value.replace(/[^a-zA-ZçÇğĞıİöÖşŞüÜ]/g, "");
         setFormData((prevData) => ({
             ...prevData,
             name: value,
@@ -45,7 +45,7 @@ const Account = ({ isOpen, onClose }) => {
     };
 
     const handleSurnameChange = (e) => {
-        const value = e.target.value.replace(/[^a-zA-Z]/g, "");
+        const value = e.target.value.replace(/[^a-zA-ZçÇğĞıİöÖşŞüÜ]/g, "");
         setFormData((prevData) => ({
             ...prevData,
             surname: value,
