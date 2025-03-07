@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { ProductStorage } from "../helpers/ProductStorage"; // ProductStorage'ı import et
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import vegetables1 from '../assets/vegetables1.jpg';
@@ -12,10 +12,10 @@ import vegetables5 from '../assets/vegetables5.jpg';
 const VegetablesPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
-    const [Vegetables, setVegetables] = useState(products.filter(product => product.category === "vegetables"));
+    const [vegetables, setVegetables] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "vegetables"));
 
     useEffect(() => {
-        let sortedArray = [...Vegetables];
+        let sortedArray = [...vegetables];
 
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
@@ -50,7 +50,7 @@ const VegetablesPage = () => {
             <div className={`grid gap-4 
                 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
                 justify-items-center w-full`}>
-                {Vegetables.map((product, index) => (
+                {vegetables.map((product, index) => (
                     <ProductCard key={index} product={product}/>
                 ))}
             </div>

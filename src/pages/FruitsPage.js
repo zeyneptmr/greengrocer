@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { ProductStorage } from "../helpers/ProductStorage"; // ProductStorage'ı import et
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import fruits1 from '../assets/fruits1.jpg';
@@ -11,10 +11,14 @@ import SearchBar from "../components/SearchBar";
 const FruitsPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
-    const [Fruits, setFruits] = useState(products.filter(product => product.category === "fruits"));
+    const [fruits, setFruits] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "fruits"));
 
     useEffect(() => {
-        let sortedArray = [...Fruits];
+        // LocalStorage'dan alınan ürünleri kontrol et
+        console.log("LocalStorage'dan alınan tüm ürünler:", ProductStorage.getProducts());
+        console.log("Filtrelenmiş ve sıralanmış meyveler:", fruits);
+
+        let sortedArray = [...fruits];
 
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
@@ -37,25 +41,17 @@ const FruitsPage = () => {
 
     return (
         <div className="p-4 sm:p-6">
-            {/* SlideBar ve SearchBar'ı içeren div */}
-            <div className="relative">
-                {/* SlideBar */}
-                <SlideBar items={slideItems}/>
-            </div>
-
-            {/* Başlık ve Filtreler */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Fruits</h2>
-
+            <SlideBar items={slideItems}/>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Vegetables</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
-
-            {/* Ürün Kartları */}
-            <div
-                className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center`}>
-                {Fruits.map((product, index) => (
+            <div className={`grid gap-4 
+                ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
+                justify-items-center w-full`}>
+                {fruits.map((product, index) => (
                     <ProductCard key={index} product={product}/>
                 ))}
             </div>
