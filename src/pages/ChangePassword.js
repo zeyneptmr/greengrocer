@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Göz ikonları için
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -54,6 +54,18 @@ const ChangePassword = () => {
             return;
         }
 
+        // En az 8 karakter kontrolü (boşluklar dahil)
+        if (newPassword.length < 8) {
+            setErrorMessage("Password must be at least 8 characters long!");
+            return;
+        }
+
+        // Sadece boşluklardan oluşan şifreyi engelle
+        if (!/[^\s]/.test(newPassword)) {
+            setErrorMessage("Password cannot be only spaces!");
+            return;
+        }
+
         storedUser.password = newPassword;
         localStorage.setItem("loggedInUser", JSON.stringify(storedUser));
 
@@ -90,10 +102,9 @@ const ChangePassword = () => {
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                             />
                             <button
-                                className="absolute right-3 top-3 text-gray-600 hover:text-green-500"
-                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                             >
-                                {showCurrentPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+                                {showCurrentPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
                         </div>
                     </div>
@@ -107,10 +118,10 @@ const ChangePassword = () => {
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
                             <button
-                                className="absolute right-3 top-3 text-gray-600 hover:text-green-500"
+                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"
                                 onClick={() => setShowNewPassword(!showNewPassword)}
                             >
-                                {showNewPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+                                {showNewPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
                         </div>
                     </div>
@@ -124,10 +135,9 @@ const ChangePassword = () => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                             <button
-                                className="absolute right-3 top-3 text-gray-600 hover:text-green-500"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             >
-                                {showConfirmPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+                                {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
                         </div>
                     </div>

@@ -1,8 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
 
 const Sidebar = () => {
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("loggedInUser"); // Kullanıcı oturum bilgilerini temizle
+        navigate("/login");
+    };
+
     return (
         <div className="w-80 bg-gradient-to-b from-green-700 to-green-600 p-6 text-white flex flex-col mt-10 mb-10 shadow-lg rounded-xl">
             <h2 className="text-2xl font-semibold mb-6 text-center">User Panel</h2>
@@ -36,17 +44,18 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/help"
-                          className="flex items-center space-x-4 hover:bg-blue-500 p-4 rounded-lg transition duration-300">                        <FaQuestionCircle className="w-6 h-6"/>
+                    <Link to="/contact"
+                          className="flex items-center space-x-4 hover:bg-blue-500 p-4 rounded-lg transition duration-300">
+                        <FaQuestionCircle className="w-6 h-6"/>
                         <span className="text-lg">Help</span>
                     </Link>
                 </li>
                 <li>
-                    <Link to="/logout"
-                          className="flex items-center space-x-4 hover:bg-gray-600 p-4 rounded-lg transition duration-300">
+                    <button onClick={handleLogout}
+                            className="flex items-center space-x-4 w-full text-left hover:bg-gray-600 p-4 rounded-lg transition duration-300">
                         <FaSignOutAlt className="w-6 h-6"/>
                         <span className="text-lg">Logout</span>
-                    </Link>
+                    </button>
                 </li>
             </ul>
         </div>
