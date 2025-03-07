@@ -74,8 +74,8 @@ export default function HomePage() {
 
     useEffect(() => {
         if (isModalOpen) {
-            document.documentElement.style.overflow = "hidden"; // HTML'yi de engelle
-            document.body.style.overflow = "hidden"; // Body'yi engelle
+            document.documentElement.style.overflow = "hidden"; // HTML banned
+            document.body.style.overflow = "hidden"; // Body banned
         } else {
             document.documentElement.style.overflow = "";
             document.body.style.overflow = "";

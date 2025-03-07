@@ -14,7 +14,7 @@ const AboutUs = () => {
     };
 
     const items = [
-        { title: "Our Motion", text: "Our motion is Quality and Trust with the motto of bringing the freshest products just a TAP away..", color: "bg-green-700" },
+        { title: "Our Mission", text: "Our mission is Quality and Trust with the motto of bringing the freshest products just a TAP away..", color: "bg-green-700" },
         { title: "Our Products", text: "We offer you homemade, daily, fresh, organic and natural products.", color: "bg-orange-600" },
         { title: "For Future", text: "We aim for sustainable production and innovation that supports farmers.", color: "bg-yellow-500" },
     ];
