@@ -1,7 +1,7 @@
 import React from 'react';
 import UserSidebar from "../components/UserSidebar";
 
-const CreditCard = () => {
+const CustomerOrder = () => {
     return (
         <div className="flex">
 
@@ -14,4 +14,4 @@ const CreditCard = () => {
     );
 };
 
-export default CreditCard;
+export default CustomerOrder;

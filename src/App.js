@@ -35,6 +35,7 @@ import InventoryPage from "./pages/InventoryPage";
 import CustomerOrderPage from "./pages/CustomerOrderPage";
 import DeliveryPage from "./pages/DeliveryPage";
 import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
+import CardList from "./pages/CreditCard";
 import "./styles/App.css";
 
 
@@ -48,7 +49,7 @@ function MainContent(){
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
                 <Routes>
-                    <Route path="/home" element={<Home/>}/>
+                    <Route path="" element={<Home/>}/>
                     <Route path="/about" element={<AboutUs/>}/>
                     <Route path="/fruits" element={<FruitsPage/>}/>
                     <Route path="/vegetables" element={<VegetablesPage/>}/>
@@ -79,6 +80,7 @@ function MainContent(){
                     <Route path="/manager/customer-order" element={<CustomerOrderPage/>}/>
                     <Route path="/manager/delivery" element={<DeliveryPage/>}/>
                     <Route path="/manager/customer-feedback" element={<CustomerFeedbackPage/>}/>
+                    <Route path="/cards" element={<CardList />} />
                 </Routes>
             </div>
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer/>}
