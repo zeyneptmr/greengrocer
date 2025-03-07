@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
 import { useFavorites } from "../helpers/FavoritesContext";
 import SearchBar from "./SearchBar";
+ 
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -22,6 +23,7 @@ const Navbar = () => {
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
     const navigate = useNavigate();
+    const location = useLocation();
     const [hoveredMenu, setHoveredMenu] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
@@ -33,7 +35,13 @@ const Navbar = () => {
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
         setLoggedInUser(storedUser);
-    }, [navigate]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
+
+        const isEmployeeRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/manager');
+        if (isEmployeeRoute && !storedUser) {
+            navigate('/login');
+        }
+
+    }, [navigate,location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
 
 
 
@@ -94,7 +102,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         setLoggedInUser(null);
-        navigate("/home"); // Login sayfasına yönlendir
+        navigate("/login"); 
     };
 
     return (
@@ -102,8 +110,8 @@ const Navbar = () => {
             <nav className="h-24 w-full bg-white text-green-600 flex items-center px-4 relative">
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
-                    <Link to ="/home">
-                        <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    <Link to ="">
+                    <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
                     </Link>
                 </div>
 
@@ -206,7 +214,7 @@ const Navbar = () => {
                 <div
                     className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <p className="text-lg font-semibold mb-4">Please Log In to Continue</p>
+                        <p className="text-lg font-semibold mb-4">Devam etmek için lütfen üye girişi yapın.</p>
                         <button
                             onClick={() => {
                                 setIsAccountOpen(true);
@@ -214,7 +222,7 @@ const Navbar = () => {
                             }}
                             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                         >
-                            Log In
+                            Üye Girişi Yap
                         </button>
                     </div>
                 </div>
@@ -224,7 +232,7 @@ const Navbar = () => {
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500 flex items-center justify-center">
-                            <Link to="/home">
+                            <Link to="/">
                                 <Home size={25} className="inline-block mr-1"/>
                             </Link>
                         </li>
@@ -232,7 +240,6 @@ const Navbar = () => {
                             <li
                                 key={index}
                                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20 p-1 rounded-md"
-                                onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
                                 onClick={() => handleMenuClick(menu.name)}
@@ -265,4 +272,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 

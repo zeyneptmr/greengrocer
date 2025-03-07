@@ -1,24 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import { Home, Users, Settings, LogOut, Tag, Package, BarChart, MessageCircle } from "lucide-react";
 import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
 import Clock from "../components/Clock"; // Saat bileşeni
 import adminIcon from '../assets/admin.svg'; // Admin ikonu
 
 const Sidebar = () => {
-    const location = useLocation(); // Yönlendirme yolunu almak için kullanılır
+    const location = useLocation();
+    const navigate = useNavigate(); 
     const [role, setRole] = useState("");
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (loggedInUser) {
-            setRole(loggedInUser.role); // Giriş yapan kullanıcı rolünü al
+            setRole(loggedInUser.role); 
+        }else {
+            navigate('/login');
         }
-    }, []);
+
+    }, [navigate]);
+
+
+    const handleLogout = () => {
+        // Clear user from localStorage
+        localStorage.removeItem("loggedInUser");
+        
+        // Navigate to login page
+        navigate("/login");
+    };
 
     // Yönetici veya Manager rolünde olup olmadığını kontrol et
     const isManager = location.pathname.includes("manager");
     const isAdmin = location.pathname.includes("admin");
+    
 
 
 
@@ -103,11 +118,11 @@ const Sidebar = () => {
                 </ul>
             </nav>
             <div className="mt-auto mb-20 flex justify-center">
-                <Link to="/home">
-                    <button className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-transform duration-200 hover:scale-125">
-                        <LogOut size={24} className="text-white" />
-                    </button>
-                </Link>
+                <button 
+                    onClick={handleLogout} 
+                    className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-transform duration-200 hover:scale-125">
+                    <LogOut size={24} className="text-white" />
+                </button>
             </div>
         </aside>
     );
