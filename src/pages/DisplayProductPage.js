@@ -19,7 +19,6 @@ const DisplayProductsPage = () => {
 
     const [products, setProducts] = useState(getProductsFromStorage());
     const [filteredProducts, setFilteredProducts] = useState(products);
-
    
     useEffect(() => {
         localStorage.setItem('products', JSON.stringify(products));

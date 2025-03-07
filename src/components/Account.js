@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Flag from "react-world-flags"; // Import the flag component
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook from react-router-dom
 
+
 const Account = ({ isOpen, onClose }) => {
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);

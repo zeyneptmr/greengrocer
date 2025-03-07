@@ -1,6 +1,6 @@
 import React from "react";
 import adminIcon from '../assets/admin.svg';
-import managerIcon from '../assets/mail.svg';  // Manager ikonu
+import managerIcon from '../assets/manager.svg';  // Manager ikonu
 import { useLocation } from 'react-router-dom';
 
 const Topbar = () => {
@@ -19,7 +19,7 @@ const Topbar = () => {
             <h1 className="text-2xl font-semibold text-gray-700">{`Welcome, ${userName}`}</h1> {/* Kullanıcının adı */}
             <div className="flex items-center space-x-4">
                 <span className="text-gray-500">{pageTitle}</span>
-                <img src={icon} alt="User Icon" className="rounded-full w-20 h-20" /> {/* Dinamik ikon */}
+                <img src={icon} alt="User Icon" className="rounded-full w-32 h-28" /> {/* Dinamik ikon */}
             </div>
         </header>
     );

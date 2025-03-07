@@ -20,23 +20,21 @@ import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";
-
 import UpdateProductsPage from "./pages/UpdateProductsPage";
-
 import AddressPage from "./pages/AddressPage";
 import PaymentPage from "./pages/PaymentPage.js";
 import UserAccountPage from "./pages/UserAccount";
 import ChangePasswordPage from "./pages/ChangePassword";
 import CreditCardPage from "./pages/CreditCard";
 import CustomerInfoPage from "./pages/CustomerInfo";
-
-
-
 import AddProductPage from "./pages/AddProductPage";
 import EditSingleProduct from "./pages/EditSingleProduct";
-
 import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
+import InventoryPage from "./pages/InventoryPage";
+import CustomerOrderPage from "./pages/CustomerOrderPage";
+import DeliveryPage from "./pages/DeliveryPage";
+import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import "./styles/App.css";
 
 
@@ -50,7 +48,7 @@ function MainContent(){
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
                 <Routes>
-                    <Route path="" element={<Home/>}/>
+                    <Route path="/home" element={<Home/>}/>
                     <Route path="/about" element={<AboutUs/>}/>
                     <Route path="/fruits" element={<FruitsPage/>}/>
                     <Route path="/vegetables" element={<VegetablesPage/>}/>
@@ -63,7 +61,7 @@ function MainContent(){
                     <Route path="/search-results" element={<SearchResults/>}/>
                     <Route path="/product/:id" element={<ProductPage />} /> {/* Dinamik ürün yolu */}
                     <Route path="/contact" element={<ContactPage/>}/>
-                    <Route path="/user" element={<Home/>}/>
+                    <Route path="/user/home" element={<Home/>}/>
                     <Route path="/user" element={<UserPage />} /> {/* Düzeltildi, sadece bir kez tanımlandı */}
                     <Route path="/manager" element={<ManagerPage/>}/>
                     <Route path="/admin" element={<AdminPage/>}/>
@@ -77,6 +75,10 @@ function MainContent(){
                     <Route path="/change-password" element={<ChangePasswordPage/>}/>
                     <Route path="/customer-info" element={<CustomerInfoPage/>}/>
                     <Route path="/credit-card" element={<CreditCardPage/>}/>
+                    <Route path="/manager/inventory" element={<InventoryPage/>}/>
+                    <Route path="/manager/customer-order" element={<CustomerOrderPage/>}/>
+                    <Route path="/manager/delivery" element={<DeliveryPage/>}/>
+                    <Route path="/manager/customer-feedback" element={<CustomerFeedbackPage/>}/>
                 </Routes>
             </div>
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Footer/>}

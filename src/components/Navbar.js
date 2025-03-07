@@ -94,7 +94,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         setLoggedInUser(null);
-        navigate("/login"); // Login sayfasına yönlendir
+        navigate("/home"); // Login sayfasına yönlendir
     };
 
     return (
@@ -102,8 +102,8 @@ const Navbar = () => {
             <nav className="h-24 w-full bg-white text-green-600 flex items-center px-4 relative">
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
-                    <Link to ="">
-                    <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    <Link to ="/home">
+                        <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
                     </Link>
                 </div>
 
@@ -224,7 +224,7 @@ const Navbar = () => {
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
                         <li className="cursor-pointer transform transition-all duration-300 hover:scale-125 hover:text-orange-500 flex items-center justify-center">
-                            <Link to="/">
+                            <Link to="/home">
                                 <Home size={25} className="inline-block mr-1"/>
                             </Link>
                         </li>
@@ -265,5 +265,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
 

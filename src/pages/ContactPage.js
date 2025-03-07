@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Flag from "react-world-flags"; // Import the flag component
 
@@ -20,7 +21,7 @@ export default function ContactForm() {
         name: "",
         surname: "",
         email: "",
-        phone: "",
+        //phone: "",
         topic: "",
         message: "",
     });
@@ -119,10 +120,23 @@ export default function ContactForm() {
             alert("Please correct the errors in the form..");
             return;
         }
-        localStorage.setItem("contactForm", JSON.stringify(formData));
+        const existingForms = JSON.parse(localStorage.getItem("contactForms")) || [];
 
-        // Show banner message
-        setBannerMessage("Your form has been successfully submitted!");
+
+        const newFormData = {
+            ...formData,
+            phoneNumber: phoneNumber, // Telefon numarasını ekle
+            timestamp: new Date().toLocaleString() // Tarih ve saat ekleme
+        };
+
+        // Yeni form verisini dizinin sonuna ekle
+        existingForms.push(newFormData);
+
+        // Güncellenmiş diziyi tekrar localStorage'a kaydet
+        localStorage.setItem("contactForms", JSON.stringify(existingForms));
+
+        // Başarı mesajını göster
+        setBannerMessage("Formunuz başarıyla gönderildi!");
         setIsModalOpen(true);
 
         setTimeout(() => {
@@ -134,7 +148,6 @@ export default function ContactForm() {
             name: "",
             surname: "",
             email: "",
-            phone: "",
             topic: "",
             message: "",
         });
