@@ -27,6 +27,7 @@ import UserAccountPage from "./pages/UserAccount";
 import ChangePasswordPage from "./pages/ChangePassword";
 import CreditCardPage from "./pages/CreditCard";
 import CustomerInfoPage from "./pages/CustomerInfo";
+import DeleteAccount from "./pages/DeleteAccount";
 import AddProductPage from "./pages/AddProductPage";
 import EditSingleProduct from "./pages/EditSingleProduct";
 import { FavoritesProvider } from "./helpers/FavoritesContext";
@@ -76,6 +77,7 @@ function MainContent(){
                     <Route path="/change-password" element={<ChangePasswordPage/>}/>
                     <Route path="/customer-info" element={<CustomerInfoPage/>}/>
                     <Route path="/credit-card" element={<CreditCardPage/>}/>
+                    <Route path="delete-account" element={<DeleteAccount/>}/>
                     <Route path="/manager/inventory" element={<InventoryPage/>}/>
                     <Route path="/manager/customer-order" element={<CustomerOrderPage/>}/>
                     <Route path="/manager/delivery" element={<DeliveryPage/>}/>
