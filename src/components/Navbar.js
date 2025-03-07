@@ -222,10 +222,17 @@ const Navbar = () => {
 
 
             {isCartAccessRestricted && (
-                <div
-                    className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <p className="text-lg font-semibold mb-4">Devam etmek için lütfen üye girişi yapın.</p>
+                <div className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="relative bg-white p-6 rounded-lg shadow-lg text-center">
+                        {/* Çarpı Butonu (Popup'ın Üzerinde, Sol Üst Köşede) */}
+                        <button
+                            onClick={() => setIsCartAccessRestricted(false)}
+                            className="absolute -top-4 left-0 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-red-800"
+                        >
+                            ✖
+                        </button>
+
+                        <p className="text-lg font-semibold mb-4">Please log in to continue !</p>
                         <button
                             onClick={() => {
                                 setIsAccountOpen(true);
@@ -233,11 +240,13 @@ const Navbar = () => {
                             }}
                             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                         >
-                            Üye Girişi Yap
+                            Log In
                         </button>
                     </div>
                 </div>
             )}
+
+
 
             <div className="bg-green-500 text-white p-3 relative">
                 <div className="flex justify-center">
