@@ -49,7 +49,7 @@ function MainContent(){
             {!hiddenPages.some(path => currentPage.pathname.startsWith(path)) && <Navbar />}
             <div className="content">
                 <Routes>
-                    <Route path="" element={<Home/>}/>
+                    <Route path="/*" element={<Home />} />
                     <Route path="/about" element={<AboutUs/>}/>
                     <Route path="/fruits" element={<FruitsPage/>}/>
                     <Route path="/vegetables" element={<VegetablesPage/>}/>

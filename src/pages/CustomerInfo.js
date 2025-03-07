@@ -9,13 +9,17 @@ const CustomerInfo = () => {
         phoneNumber: ''
     });
 
+    const [initialUser, setInitialUser] = useState(null); // Başlangıç verisini saklamak için
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [isUpdated, setIsUpdated] = useState(false); // Buton aktif mi?
 
     useEffect(() => {
         const storedUsers = JSON.parse(localStorage.getItem('users'));
         if (storedUsers && storedUsers.length > 0) {
             setUser(storedUsers[0]);
+            setInitialUser(storedUsers[0]);
+
         }
     }, []);
 
@@ -37,10 +41,11 @@ const CustomerInfo = () => {
             if (rawNumbers.length > 8) formattedPhone += ` ${rawNumbers.slice(8, 10)}`;
 
             setUser({ ...user, phoneNumber: formattedPhone });
-            return;
+        } else {
+            setUser({ ...user, [name]: value });
         }
 
-        setUser({ ...user, [name]: value });
+        setIsUpdated(JSON.stringify({ ...user, [name]: value }) !== JSON.stringify(initialUser));
     };
 
     const handleUpdate = () => {
@@ -50,14 +55,25 @@ const CustomerInfo = () => {
             return;
         }
 
+        const rawPhoneNumber = user.phoneNumber.replace(/\D/g, ""); // Sadece rakamları al
+        if (rawPhoneNumber.length !== 10) {
+            setError("Phone number must be exactly 10 digits!");
+            setSuccess(false);
+            return;
+        }
+
+        if (!isUpdated) return; // Değişiklik yoksa işlem yapma
+
         setError('');
         localStorage.setItem('users', JSON.stringify([user]));
+        setInitialUser(user);
         setSuccess(true);
+        setIsUpdated(false); // Güncellendikten sonra buton tekrar devre dışı
         setTimeout(() => setSuccess(false), 3000);
     };
 
     return (
-        <div className="flex bg-gray-100 min-h-screen">
+        <div className="flex bg-green-50 min-h-screen">
             <UserSidebar/>
 
             <div className="p-8 max-w-2xl mx-auto w-full bg-white shadow-lg rounded-xl mt-12 mb-12 min-h-[600px]">
@@ -65,8 +81,10 @@ const CustomerInfo = () => {
                 <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl border-t-4 border-orange-500">
                     {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                     {success && (
-                        <div className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded relative mb-4 text-center">
-                            <strong className="font-bold">Information is TapTaze !</strong> Changes have been updated successfully.
+                        <div
+                            className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded relative mb-4 text-center">
+                            <strong className="font-bold">Information is TapTaze !</strong> Changes have been updated
+                            successfully.
                         </div>
                     )}
 
@@ -113,7 +131,11 @@ const CustomerInfo = () => {
                     </div>
                     <button
                         onClick={handleUpdate}
-                        className="w-full bg-orange-600 text-white py-3 px-4 rounded-lg text-lg font-bold hover:bg-orange-700 transition-all"
+                        disabled={!isUpdated} // Eğer değişiklik yapılmadıysa buton devre dışı
+                        className={`w-full py-3 px-4 rounded-lg text-lg font-bold transition-all 
+                            ${isUpdated 
+                            ? "bg-orange-600 text-white hover:bg-orange-700" 
+                            : "bg-gray-400 text-gray-200 cursor-not-allowed"}`}
                     >
                         Update
                     </button>

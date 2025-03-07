@@ -9,7 +9,7 @@ const UserPage = () => {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (loggedInUser) {
             console.log("User is logged in:", loggedInUser);
-            navigate("/home"); // Home sayfasına yönlendir
+            navigate("/user/home"); // Home sayfasına yönlendir
         } else {
             console.log("No user logged in.");
             navigate("/login"); // Eğer kullanıcı yoksa login sayfasına yönlendir
