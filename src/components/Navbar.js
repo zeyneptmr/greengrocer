@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
 import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
 import { useFavorites } from "../helpers/FavoritesContext";
 import SearchBar from "./SearchBar";
+ 
 
 const menuItems = [
     { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
@@ -22,20 +23,32 @@ const Navbar = () => {
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
     const navigate = useNavigate();
+    const location = useLocation();
     const [hoveredMenu, setHoveredMenu] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
+    const profileMenuRef = useRef();
     const [notifications, setNotifications] = useState(5); // Set initial notification count
     const {favorites} = useFavorites();
-
 
     // Giriş yapan kullanıcıyı kontrol et
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
         setLoggedInUser(storedUser);
-    }, [navigate]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
 
+        const isEmployeeRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/manager');
+        if (isEmployeeRoute && !storedUser) {
+            navigate('/login');
+        }
 
+    }, [navigate,location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     {/*const handleProductClick = (product) => {
         navigate(`/product/${product.id}`);
@@ -88,13 +101,19 @@ const Navbar = () => {
 
     const handleProfileMenuToggle = (e) => {
         e.preventDefault(); // Varsayılan davranışı (yeni sayfaya yönlendirme) engelle
-        setIsProfileMenuOpen(!isProfileMenuOpen); // Profil menüsünün açılmasını veya kapanmasını sağla
+        setIsProfileMenuOpen((prev) => !prev);
+    };
+
+    const handleClickOutside = (e) => {
+        if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+            setIsProfileMenuOpen(false);
+        }
     };
 
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         setLoggedInUser(null);
-        navigate("/home"); // Login sayfasına yönlendir
+        navigate("/login"); 
     };
 
     return (
@@ -103,7 +122,7 @@ const Navbar = () => {
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
                     <Link to ="">
-                        <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
                     </Link>
                 </div>
 
@@ -111,7 +130,7 @@ const Navbar = () => {
 
                 <div className="flex items-center gap-10 ml-auto"> {/* Push the buttons to the right */}
                     {loggedInUser ? (
-                        <div className="relative">
+                        <div className="relative" ref={profileMenuRef}>
                             <button
                                 onClick={handleProfileMenuToggle}
                                 className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110">
@@ -123,28 +142,28 @@ const Navbar = () => {
                                     className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-48 z-50">
                                     <ul>
                                         <li
-                                            onClick={() => navigate("/account")}
+                                            onClick={() => { navigate("/account"); setIsProfileMenuOpen(false); }}
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
-                                            Hesap Ayarlarım
+                                            Account settings
                                         </li>
                                         <li
-                                            onClick={() => navigate("/orders")}
+                                            onClick={() => { navigate("/orders"); setIsProfileMenuOpen(false); }}
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
-                                            Siparişlerim
+                                            Orders
                                         </li>
                                         <li
-                                            onClick={() => navigate("/address")}
+                                            onClick={() => { navigate("/address"); setIsProfileMenuOpen(false); }}
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
-                                            Adreslerim
+                                            Addresses
                                         </li>
                                         <li
-                                            onClick={handleLogout}
+                                            onClick={() => { handleLogout(); setIsProfileMenuOpen(false); }}
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
-                                            Çıkış Yap
+                                            Log Out
                                         </li>
                                     </ul>
                                 </div>
@@ -203,10 +222,17 @@ const Navbar = () => {
 
 
             {isCartAccessRestricted && (
-                <div
-                    className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-                        <p className="text-lg font-semibold mb-4">Please Log In to Continue</p>
+                <div className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="relative bg-white p-6 rounded-lg shadow-lg text-center">
+                        {/* Çarpı Butonu (Popup'ın Üzerinde, Sol Üst Köşede) */}
+                        <button
+                            onClick={() => setIsCartAccessRestricted(false)}
+                            className="absolute -top-4 left-0 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-red-800"
+                        >
+                            ✖
+                        </button>
+
+                        <p className="text-lg font-semibold mb-4">Please log in to continue !</p>
                         <button
                             onClick={() => {
                                 setIsAccountOpen(true);
@@ -220,6 +246,8 @@ const Navbar = () => {
                 </div>
             )}
 
+
+
             <div className="bg-green-500 text-white p-3 relative">
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
@@ -232,7 +260,6 @@ const Navbar = () => {
                             <li
                                 key={index}
                                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20 p-1 rounded-md"
-                                onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseEnter={() => setHoveredMenu(menu.name)}
                                 onMouseLeave={() => setHoveredMenu(null)}
                                 onClick={() => handleMenuClick(menu.name)}
@@ -265,4 +292,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 

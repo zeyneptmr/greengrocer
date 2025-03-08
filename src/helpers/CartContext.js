@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {ProductStorage} from "../helpers/ProductStorage";
+import { ProductStorage } from "../helpers/ProductStorage";
 
 // Context
 const CartContext = createContext();
@@ -12,22 +12,26 @@ export function CartProvider({ children }) {
     };
 
     const [cart, setCart] = useState(getInitialCart);
+    const [notification, setNotification] = useState(null);
 
-    // Local Storage - Güncelleme her değişiklikte tetikleniyor
     useEffect(() => {
-        console.log("Cart updated:", cart);  // 👉 Güncellenmiş sepeti konsola yazdır
+        console.log("Cart updated:", cart);
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
+
+    const showNotification = (message) => {
+        setNotification(message);
+        setTimeout(() => setNotification(null), 3000);
+    };
 
     const addToCart = (product, quantityToAdd = 1) => {
         const products = ProductStorage.getProducts();
         const productInStock = products.find((p) => p.id === product.id);
 
         if (productInStock) {
-            // Stok miktarını kontrol et
             if (quantityToAdd > productInStock.stock) {
-                alert(`Insufficient Stock Available!`);
-                return;  // Sepete eklemeyi engelle
+                showNotification("Insufficient Stock Available!");
+                return;
             }
         }
 
@@ -36,10 +40,9 @@ export function CartProvider({ children }) {
             let updatedCart;
 
             if (existingItem) {
-                // Mevcut ürünü güncelle
                 if (existingItem.quantity + quantityToAdd > productInStock.stock) {
-                    alert(`Insufficient Stock Available!`);
-                    return prevCart; // Yeterli stok yoksa değişiklik yapma
+                    showNotification("Insufficient Stock Available!");
+                    return prevCart;
                 }
 
                 updatedCart = prevCart.map((item) =>
@@ -48,29 +51,23 @@ export function CartProvider({ children }) {
                         : item
                 );
             } else {
-                // Yeni ürün ekle
                 updatedCart = [...prevCart, { ...product, quantity: quantityToAdd }];
             }
 
-            console.log("Cart after adding:", updatedCart);  // 👉 Sepet ekleme sonrası kontrol
+            console.log("Cart after adding:", updatedCart);
             return updatedCart;
         });
     };
-
 
     const increaseQuantity = (id) => {
         setCart((prevCart) => {
             const updatedCart = prevCart.map((item) => {
                 if (item.id === id) {
                     const productInStock = ProductStorage.getProducts().find((p) => p.id === item.id);
-
-                    // Stok kontrolü: Kullanıcı, sepetteki ürünü arttırmaya çalışıyorsa
                     if (productInStock && item.quantity + 1 > productInStock.stock) {
-                        alert(`Insufficient Stock Available!`);
-                        return item; // Miktar artışını engelle
+                        showNotification("Insufficient Stock Available!");
+                        return item;
                     }
-
-                    // Stok uygunse, miktarı arttır
                     return { ...item, quantity: item.quantity + 1 };
                 }
                 return item;
@@ -97,7 +94,6 @@ export function CartProvider({ children }) {
         });
     };
 
-
     const removeItem = (id) => {
         setCart((prevCart) => {
             const updatedCart = prevCart.filter((item) => item.id !== id);
@@ -111,27 +107,31 @@ export function CartProvider({ children }) {
         setCart([]);
     };
 
-    // **🚀 Güncellenmiş Fiyat Hesaplama (TL'yi düzgün işle)**
     const calculateTotalPrice = () => {
         return cart.reduce((total, item) => {
             let price = item.price.toString().replace('TL', '').replace(/\s/g, '').replace(',', '.');
-            price = parseFloat(price) || 0; // Eğer NaN olursa, 0 olarak kabul et
+            price = parseFloat(price) || 0;
             return total + (price * item.quantity);
-        }, 0).toFixed(2); // Ondalıklı format
+        }, 0).toFixed(2);
     };
 
     const getTotalProductTypes = () => {
-        return cart.length; // Number of different products
+        return cart.length;
     };
 
     return (
         <CartContext.Provider value={{ cart, addToCart, increaseQuantity, decreaseQuantity, removeItem, clearCart, calculateTotalPrice, getTotalProductTypes }}>
             {children}
+            {notification && (
+                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white px-6 py-2 rounded-lg shadow-lg animate-fadeInOut">
+                    {notification}
+                </div>
+            )}
+
         </CartContext.Provider>
     );
 }
 
-// Special Hook
 export function useCart() {
     return useContext(CartContext);
 }
