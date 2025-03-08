@@ -24,11 +24,8 @@
     "react-router-dom": "^7.2.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.10.0",
-
-    "react-toastify": "^11.0.5",
-
     "react-slick": "^0.30.3",
-
+    "react-toastify": "^11.0.5",
     "react-world-flags": "^1.6.0",
     "recharts": "^2.15.1",
     "slick-carousel": "^1.8.1",

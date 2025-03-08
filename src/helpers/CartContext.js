@@ -82,7 +82,7 @@ export function CartProvider({ children }) {
         setCart((prevCart) => {
             const updatedCart = prevCart
                 .map((item) => {
-                    if (item.id === id && item.quantity > 1) {
+                    if (item.id === id && item.quantity > 0) {
                         return { ...item, quantity: item.quantity - 1 };
                     }
                     return item;
@@ -123,7 +123,7 @@ export function CartProvider({ children }) {
         <CartContext.Provider value={{ cart, addToCart, increaseQuantity, decreaseQuantity, removeItem, clearCart, calculateTotalPrice, getTotalProductTypes }}>
             {children}
             {notification && (
-                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white px-6 py-2 rounded-lg shadow-lg animate-fadeInOut">
+                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white px-6 py-2 rounded-lg shadow-lg z-50 animate-fadeInOut">
                     {notification}
                 </div>
             )}

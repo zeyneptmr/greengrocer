@@ -133,8 +133,8 @@ const CustomerInfo = () => {
                         onClick={handleUpdate}
                         disabled={!isUpdated} // Eğer değişiklik yapılmadıysa buton devre dışı
                         className={`w-full py-3 px-4 rounded-lg text-lg font-bold transition-all 
-                            ${isUpdated 
-                            ? "bg-orange-600 text-white hover:bg-orange-700" 
+                            ${isUpdated
+                            ? "bg-orange-600 text-white hover:bg-orange-700"
                             : "bg-gray-400 text-gray-200 cursor-not-allowed"}`}
                     >
                         Update
@@ -146,3 +146,5 @@ const CustomerInfo = () => {
 };
 
 export default CustomerInfo;
+
+

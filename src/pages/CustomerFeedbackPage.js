@@ -17,15 +17,9 @@ const ContactFormsPage = () => {
         setForms(storedForms);
     }, []);
 
-    const handleFavorite = (index) => {
-        const updatedForms = [...forms];
-        updatedForms[index].isFavorite = !updatedForms[index].isFavorite;
-        setForms(updatedForms);
-        localStorage.setItem("contactForms", JSON.stringify(updatedForms));
-    };
-
     const handleReply = (index) => {
-        console.log(`Form ${index + 1} yanıtlandı.`);
+        // E-posta uygulamasını açmak için mailto bağlantısı
+        window.location.href = "mailto:someone@example.com";
     };
 
     const handleMarkAsRead = (index) => {
@@ -47,14 +41,14 @@ const ContactFormsPage = () => {
     };
 
     const settings = {
-        dots: true,
-        infinite: true, // Enable infinite scrolling (wrap effect)
+        dots: true, // Navigasyon noktalarını göster
+        infinite: false, // Döngüyü kapat, sadece mevcut formlar gösterilsin
         speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        beforeChange: handleBeforeChange, // Track the form index
-        nextArrow: <div className="slick-next custom-arrow">Next</div>, // Custom next arrow
-        prevArrow: <div className="slick-prev custom-arrow">Prev</div>, // Custom previous arrow
+        slidesToShow: 1, // Sadece bir form göster
+        slidesToScroll: 1, // Bir kaydırma işlemiyle bir formu kaydır
+        beforeChange: handleBeforeChange, // Formun değişmeden önceki işlemi
+        nextArrow: <div className="slick-next custom-arrow">Next</div>, // Özelleştirilmiş sonraki ok
+        prevArrow: <div className="slick-prev custom-arrow">Prev</div>, // Özelleştirilmiş önceki ok
     };
 
     return (
@@ -73,42 +67,47 @@ const ContactFormsPage = () => {
                         <p className="text-gray-500">No contact forms submitted yet.</p>
                     ) : (
                         <div>
-                                {/* Form index and total forms display */}
-                                    <div className="text-sm text-gray-600 mb-4">
-                                        <span>Form {currentIndex + 1} of {forms.length}</span>
-                                    </div>
+                            {/* Form index and total forms display */}
+                            <div className="text-sm text-gray-600 mb-4">
+                                <span>Form {currentIndex + 1} of {forms.length}</span>
+                            </div>
 
-                                    {/* Slider Component */}
-                                    <Slider {...settings}>
-                                        {forms.map((form, index) => (
-                                            <div key={index} className="bg-white shadow-md rounded-lg flex w-50">
-                                                <div className={`w-2 rounded-l-lg ${form.isFavorite ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
-                                                <div className="p-4 flex-1 relative text-sm">
-                                                    <p><strong>Name:</strong> {form.name}</p>
-                                                    <p><strong>Surname:</strong> {form.surname}</p>
-                                                    <p><strong>Email:</strong> {form.email}</p>
-                                                    <p><strong>Phone Number:</strong> {form.phoneNumber}</p>
-                                                    <p><strong>Topic:</strong> {form.topic}</p>
-                                                    <p><strong>Message:</strong> {form.message}</p>
-                                                    <p><strong>Submitted At:</strong> {form.timestamp}</p>
-                                                    <div className="absolute top-4 right-4 flex space-x-2">
-                                                        <button onClick={() => handleFavorite(index)} className="bg-yellow-500 text-white rounded-full p-2 hover:bg-yellow-400 focus:outline-none" title="Favorile">
-                                                            <FaStar />
-                                                        </button>
-                                                        <button onClick={() => handleReply(index)} className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-400 focus:outline-none" title="Yanıtla">
-                                                            <FaReply />
-                                                        </button>
-                                                        <button onClick={() => handleMarkAsRead(index)} className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400 focus:outline-none" title="Okundu olarak işaretle">
-                                                            <FaCheck />
-                                                        </button>
-                                                        <button onClick={() => handleDelete(index)} className="bg-red-500 text-white rounded-full p-2 hover:bg-red-400 focus:outline-none" title="Sil">
-                                                            <FaTrash />
-                                                        </button>
-                                                    </div>
-                                                </div>
+                            {/* Slider Component */}
+                            <Slider {...settings}>
+                                {forms.map((form, index) => (
+                                    <div key={index}
+                                         className={`bg-white shadow-md rounded-lg flex w-50 ${form.isRead ? 'bg-gray-300' : ''}`}>
+                                        <div className="p-4 flex-1 relative text-sm">
+                                            <p><strong>Name:</strong> {form.name}</p>
+                                            <p><strong>Surname:</strong> {form.surname}</p>
+                                            <p><strong>Email:</strong> {form.email}</p>
+                                            <p><strong>Phone Number:</strong> {form.phoneNumber}</p>
+                                            <p><strong>Topic:</strong> {form.topic}</p>
+                                            <p><strong>Message:</strong> {form.message}</p>
+                                            <p><strong>Submitted At:</strong> {form.timestamp}</p>
+
+                                            {form.isRead && <p className="text-gray-500 text-right">Read</p>}
+                                            <div className="absolute top-4 right-4 flex space-x-2">
+                                                <button onClick={() => handleReply(index)}
+                                                        className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-400 focus:outline-none"
+                                                        title="Yanıtla">
+                                                    <FaReply/>
+                                                </button>
+                                                <button onClick={() => handleMarkAsRead(index)}
+                                                        className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400 focus:outline-none"
+                                                        title="Okundu olarak işaretle">
+                                                    <FaCheck/>
+                                                </button>
+                                                <button onClick={() => handleDelete(index)}
+                                                        className="bg-red-500 text-white rounded-full p-2 hover:bg-red-400 focus:outline-none"
+                                                        title="Sil">
+                                                    <FaTrash/>
+                                                </button>
                                             </div>
-                                        ))}
-                                    </Slider>
+                                        </div>
+                                    </div>
+                                ))}
+                            </Slider>
                         </div>
                     )}
                     <UserRatingsChart />
@@ -144,3 +143,4 @@ const UserRatingsChart = () => {
 };
 
 export default ContactFormsPage;
+
