@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Upload } from "lucide-react";
+import { Upload, CheckCircle } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
 import ProductStorage from "../helpers/ProductStorage";
@@ -15,7 +15,7 @@ const AddProductPage = () => {
     
     const [imagePreview, setImagePreview] = useState(null);
 
-
+    const [showNotification, setShowNotification] = useState(false);
     const [categories, setCategories] = useState([]);
 
     
@@ -24,6 +24,19 @@ const AddProductPage = () => {
         const uniqueCategories = ProductStorage.getCategories();
         setCategories(uniqueCategories);
     }, []);
+
+
+    useEffect(() => {
+        if (showNotification) {
+            const timer = setTimeout(() => {
+                setShowNotification(false);
+            }, 3000);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [showNotification]);
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -74,7 +87,7 @@ const AddProductPage = () => {
         const newProduct = ProductStorage.addProduct(product);
         
         
-        alert("Product added successfully!");
+        setShowNotification(true);
 
 
         setProduct({
@@ -87,7 +100,15 @@ const AddProductPage = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-100 overflow-hidden">
+        <div className="flex h-screen bg-gray-100 overflow-hidden relative">
+
+            {showNotification && (
+                <div className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center shadow-md z-50">
+                    <CheckCircle className="h-6 w-6 text-green-600 mr-3" />
+                    <span>Product added successfully!</span>
+                </div>
+            )}
+
             {/* Sidebar */}
             <Sidebar />
 
@@ -182,7 +203,7 @@ const AddProductPage = () => {
                                     ) : (
                                         <div className="flex flex-col items-center text-gray-500">
                                             <Upload size={32} />
-                                            <span className="mt-2">Resim Yükle</span>
+                                            <span className="mt-2">Upload Image</span>
                                         </div>
                                     )}
                                 </label>
@@ -194,7 +215,7 @@ const AddProductPage = () => {
                             type="submit" 
                             className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
                         >
-                            Ürünü Ekle
+                            Add Product
                         </button>
                     </form>
                 </div>
