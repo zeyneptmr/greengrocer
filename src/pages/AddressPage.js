@@ -10,7 +10,7 @@ const AddressPage = () => {
         lastName: '',
         email: '',
         phone: '',
-        city: 'İstanbul', // İstanbul varsayılan olarak seçili
+        city: 'İstanbul',
         district: '',
         neighborhood: '',
         address: '',
@@ -22,7 +22,7 @@ const AddressPage = () => {
     const [errors, setErrors] = useState({});
     const [editingIndex, setEditingIndex] = useState(null); // For editing
 
-    // İstanbul'un ilçeleri ve mahalleleri
+
     const cityData = {
         'İstanbul': {
             districts: {
