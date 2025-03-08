@@ -1,13 +1,38 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
+import ProductStorage from "../helpers/ProductStorage";
 
-const SearchBar = ({ products }) => {
+
+const SearchBar = ({ }) => {
     const [query, setQuery] = useState("");
+    const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1); // Seçili indeks
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const loadProducts = () => {
+            const storedProducts = ProductStorage.getProducts();
+            setProducts(storedProducts);
+        };
+
+        loadProducts();
+
+        // Listen for storage events to update products if they change in another tab/window
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'products') {
+                loadProducts();
+            }
+        });
+
+        return () => {
+            window.removeEventListener('storage', loadProducts);
+        };
+    }, []);
+
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import Flag from "react-world-flags"; // Import the flag component
-import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook from react-router-dom
-
+import Flag from "react-world-flags";
+import { useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Account = ({ isOpen, onClose }) => {
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
@@ -56,7 +58,7 @@ const Account = ({ isOpen, onClose }) => {
     };
 
     const handleEmailChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value.replace(/[^a-zA-Z0-9@._-]/g, "");
         setFormData((prevData) => ({
             ...prevData,
             email: value,
@@ -94,29 +96,26 @@ const Account = ({ isOpen, onClose }) => {
     };
 
     const handlePhoneChange = (e) => {
-        const value = e.target.value.replace(/\D/g, "");
-        let formattedValue = "";
+        let rawValue = e.target.value.replace(/\D/g, "");
 
-        if (value.length > 0) formattedValue += "(" + value.substring(0, 3);
-        if (value.length >= 4) formattedValue += ") " + value.substring(3, 6);
-        if (value.length >= 7) formattedValue += "-" + value.substring(6, 10);
+        if (rawValue.length > 10) {
+            rawValue = rawValue.substring(0, 10);
+        }
+
+        let formattedValue = "";
+        if (rawValue.length > 0) formattedValue += `(${rawValue.substring(0, 3)}`;
+        if (rawValue.length >= 4) formattedValue += `) ${rawValue.substring(3, 6)}`;
+        if (rawValue.length >= 7) formattedValue += `-${rawValue.substring(6, 10)}`;
 
         setFormData((prevData) => ({
             ...prevData,
             phoneNumber: formattedValue,
         }));
 
-        if (value.length === 10) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                phoneError: null,
-            }));
-        } else {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                phoneError: "Please enter a valid phone number!",
-            }));
-        }
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            phoneError: rawValue.length === 10 ? null : "Please enter a valid phone number!",
+        }));
     };
 
     const handleCountryCodeChange = (e) => {
@@ -246,10 +245,11 @@ const Account = ({ isOpen, onClose }) => {
                             />
                             {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
                             <div className="flex items-center space-x-2">
-                                <div className="flex items-center border border-gray-300 rounded-md w-[150px] h-[60px] p-2">
+                                <div
+                                    className="flex items-center border border-gray-300 rounded-md w-[150px] h-[60px] p-2">
                                     <Flag
                                         code={countries.find(country => country.code === formData.countryCode)?.flag || "US"}
-                                        style={{ width: "20px", height: "30px" }}
+                                        style={{width: "20px", height: "30px"}}
                                     />
                                     <select
                                         value={formData.countryCode}
@@ -274,28 +274,54 @@ const Account = ({ isOpen, onClose }) => {
                                 />
                             </div>
                             {errors.phoneError && <p className="text-red-500 text-sm mt-1">{errors.phoneError}</p>}
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                value={formData.password}
-                                onChange={handlePasswordChange}
-                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.passwordError ? "border-red-500" : "border-gray-300"}`}
-                                required
-                            />
-                            {errors.passwordError && <p className="text-red-500 text-sm mt-1">{errors.passwordError}</p>}
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="Confirm password"
-                                value={formData.confirmPassword}
-                                onChange={handleConfirmPasswordChange}
-                                className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
-                                required
-                            />
-                            {errors.confirmPasswordError && <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
-                            <button type="submit" className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">Sign Up</button>
-                            <p className="mt-2">Already have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(false)}>Log In</span></p>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handlePasswordChange}
+                                    className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.passwordError ? "border-red-500" : "border-gray-300"}`}
+                                    required
+                                />
+                                <span
+                                    className="absolute top-5 right-4 cursor-pointer text-gray-500"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <FaEyeSlash size={20}/> : <FaEye size={20}/>}
+                                </span>
+                            </div>
+
+                            {errors.passwordError &&
+                                <p className="text-red-500 text-sm mt-1">{errors.passwordError}</p>}
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    placeholder="Confirm password"
+                                    value={formData.confirmPassword}
+                                    onChange={handleConfirmPasswordChange}
+                                    className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
+                                    required
+                                />
+                                <span
+                                    className="absolute top-5 right-4 cursor-pointer text-gray-500"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <FaEyeSlash size={20}/> : <FaEye size={20}/>}
+                                </span>
+                            </div>
+
+                            {errors.confirmPasswordError &&
+                                <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
+                            <button
+                                type="submit"
+                                className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
+                                Sign Up
+                            </button>
+                            <p className="mt-2">Already have an account? <span
+                                className="text-green-600 underline cursor-pointer"
+                                onClick={() => setIsRegister(false)}>Log In</span></p>
                         </>
                     ) : (
                         <>
@@ -310,16 +336,29 @@ const Account = ({ isOpen, onClose }) => {
                                 required
                             />
                             {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                value={formData.password}
-                                onChange={handlePasswordChange}
-                                className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
-                                required
-                            />
-                            <button type="submit" className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">Log In</button>
+
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handlePasswordChange}
+                                    className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
+                                    required
+                                />
+                                <span
+                                    className="absolute top-5 right-4 cursor-pointer text-gray-500"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                {showPassword ? <FaEyeSlash size={20}/> : <FaEye size={20}/>}
+                                </span>
+                            </div>
+
+                            <button type="submit"
+                                    className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
+                                Log In
+                            </button>
                             <p className="mt-2">Don't have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span></p>
                         </>
                     )}

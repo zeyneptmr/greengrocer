@@ -191,19 +191,6 @@ const Navbar = () => {
                         </button>
                     </Link>
 
-                    {/* Notification button, shown when the user is logged in */}
-                    {loggedInUser && notifications > 0 && (
-                        <button
-                            className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
-                            <Bell size={44}/>
-                            <span className="text-xs">Notifications</span>
-                            <span
-                                className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {notifications}
-                </span>
-                        </button>
-                    )}
-
                     <button
                         onClick={handleCartClick}
                         className="flex flex-col items-center bg-transparent text-green-600 p-1 rounded transition-transform hover:scale-110 relative">
