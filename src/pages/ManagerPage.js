@@ -90,7 +90,7 @@ const ManagerPage = () => {
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <h3 className="text-xl font-bold text-green-700">Total Sales</h3>
-                        <p className="text-xl text-gray-500 font-medium">$45,300</p>
+                        <p className="text-xl text-gray-500 font-medium">₺45,300</p>
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">

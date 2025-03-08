@@ -23,23 +23,23 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
     }, []);
 
     useEffect(() => {
-       
+
         if (query) {
             const searchTerms = query.toLowerCase().split(" ");
             const filtered = products.filter((product) => {
                 const productName = product.name.toLowerCase();
                 const productCategory = product.category.toLowerCase();
-                
-                
-                return searchTerms.some((term) => 
-                    productName.includes(term) || 
-                    productCategory.includes(term) 
-                   
+
+
+                return searchTerms.some((term) =>
+                    productName.includes(term) ||
+                    productCategory.includes(term)
+
                 );
             });
-            
-            setSuggestions(filtered.slice(0, 5)); 
-            setFilteredProductsList(filtered); 
+
+            setSuggestions(filtered.slice(0, 5));
+            setFilteredProductsList(filtered);
         } else {
             setSuggestions([]);
             setFilteredProductsList(products);
@@ -54,27 +54,27 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            e.preventDefault(); 
-            
+            e.preventDefault();
+
             if (selectedIndex >= 0 && suggestions[selectedIndex]) {
-               
+
                 handleProductClick(suggestions[selectedIndex]);
             } else {
-               
-                setShowSuggestions(false); 
-                
+
+                setShowSuggestions(false);
+
                 const searchResult = document.getElementById("search-results");
                 if (searchResult) {
                     searchResult.scrollIntoView({ behavior: 'smooth' });
                 }
             }
         } else if (e.key === "ArrowDown") {
-            e.preventDefault(); 
+            e.preventDefault();
             setSelectedIndex((prevIndex) =>
                 prevIndex < suggestions.length - 1 ? prevIndex + 1 : prevIndex
             );
         } else if (e.key === "ArrowUp") {
-            e.preventDefault(); 
+            e.preventDefault();
             setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
         }
     };
@@ -88,7 +88,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                 element.classList.remove('bg-green-100');
             }, 2000);
         }
-        setShowSuggestions(false); 
+        setShowSuggestions(false);
     };
 
     const clearSearch = () => {
@@ -98,11 +98,11 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
         setShowSuggestions(false);
     };
 
-  
+
     const handleSearchButtonClick = () => {
-        setShowSuggestions(false); 
-        
-        
+        setShowSuggestions(false);
+
+
         const searchResult = document.getElementById("search-results");
         if (searchResult) {
             searchResult.scrollIntoView({ behavior: 'smooth' });
@@ -121,9 +121,9 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                         onChange={handleSearch}
                         onKeyDown={handleKeyDown}
                     />
-                    <Search 
-                        size={20} 
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" 
+                    <Search
+                        size={20}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                     />
                     {query && (
                         <button
@@ -153,16 +153,16 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                             }`}
                             onClick={() => handleProductClick(product)}
                         >
-                            <img 
-                                src={product.image} 
-                                alt={product.name} 
+                            <img
+                                src={product.image}
+                                alt={product.name}
                                 className="w-8 h-8 rounded object-cover"
                             />
                             <div className="flex-grow">
                                 <p className="text-sm font-medium">{product.name}</p>
                                 <p className="text-xs text-gray-500">{product.category}</p>
                             </div>
-                            <span className="text-xs text-green-600">${product.price}</span>
+                            <span className="text-xs text-green-600">₺{product.price}</span>
                         </li>
                     ))}
                 </ul>

@@ -119,7 +119,7 @@ const Inventory = () => {
                                     />
                                 </div>
                                 <h3 className="text-lg font-semibold">{product.name}</h3>
-                                <p className="text-gray-500">Price: ${product.price}</p>
+                                <p className="text-gray-500">Price: ₺{product.price}</p>
                                 <div className="flex items-center space-x-2 mt-4">
                                     <span className="text-gray-700">Stock: {product.stock}</span>
                                     <input
