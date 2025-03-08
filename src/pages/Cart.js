@@ -41,8 +41,21 @@ export default function Cart() {
 
     // Continue butonuna tıklayınca yönlendirme yapılacak fonksiyon
     const handleContinueClick = () => {
-        navigate("/payment"); // /address sayfasına yönlendir
+        const groupedCart = cart.reduce((acc, item) => {
+            const existingItem = acc.find(i => i.id === item.id);
+            if (existingItem) {
+                existingItem.quantity += item.quantity; // Miktarı düzgün şekilde artır
+            } else {
+                acc.push({ ...item });
+            }
+            return acc;
+        }, []);
+
+        localStorage.setItem('cart', JSON.stringify(groupedCart));
+        navigate("/payment");
     };
+
+
 
     return (
         <div className="p-6 flex flex-col lg:flex-row gap-6">

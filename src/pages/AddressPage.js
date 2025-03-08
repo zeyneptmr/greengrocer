@@ -30,9 +30,10 @@ const AddressPage = () => {
         'İstanbul': {
             districts: {
                 'Kadıköy': ['Yeldeğirmeni', 'Moda', 'Fenerbahçe', 'Acıbadem', 'Kozyatağı', 'Erenköy', 'Göztepe', 'Bostancı', 'İMES'],
+                'Eyüp': ['Alibeyköy', 'Güzeltepe', 'Çırçır', 'Defterdar', 'Emniyettepe', 'Göktürk', 'İslambey', 'Kemerburgaz', 'Muratpaşa', 'Silahtarağa'],
                 'Şişli': ['Nişantaşı', 'Teşvikiye', 'Fulya', 'Bomonti', 'Harbiye', 'Istanbul', 'Osmanbey', 'Mecidiyeköy', 'Kuledibi'],
                 'Beşiktaş': ['Levent', 'Etiler', 'Arnavutköy', 'Bebek', 'Akatlar', 'Kültür', 'Kruvaziyer', 'Beşiktaş Merkez'],
-                'Fatih': ['Süleymaniye', 'Çarşamba', 'Aksaray', 'Emin Ali Paşa', 'Topkapı', 'Beyazıt', 'İskenderpaşa', 'Fener', 'Balat'],
+                'Fatih': [ 'Şehremini','Süleymaniye', 'Çarşamba', 'Aksaray', 'Emin Ali Paşa', 'Topkapı', 'Beyazıt', 'İskenderpaşa', 'Fener', 'Balat'],
                 'Beyoğlu': ['Taksim', 'Beyoğlu', 'Cihangir', 'Galata', 'Karaköy', 'Kurtuluş', 'Pera', 'Asmalımescit'],
                 'Üsküdar': ['Bulgurlu', 'Çamlıca', 'Kısıklı', 'Bağlarbaşı', 'Mimar Sinan', 'Alemdağ', 'Cevizlik', 'Kuzguncuk', 'Selimiye'],
                 'Pendik': ['Kaynarca', 'İMES', 'Çamçeşme', 'Yunus', 'Şeyhli', 'Pendik Merkez', 'Dumlupınar'],
@@ -49,7 +50,7 @@ const AddressPage = () => {
                 'Arnavutköy': ['Yassıören', 'İstanbul Havaalanı', 'Kınalı', 'Boğazköy', 'İslambey', 'Arnavutköy Merkez'],
                 'Büyükçekmece': ['Kamiloba', 'İstanbul', 'Mimarsinan', 'Halkalı', 'Gölcük', 'Büyükçekmece Merkez'],
                 'Çatalca': ['Merkez', 'Haramidere', 'Olimpiyat', 'Durusu', 'Atatürk', 'Kestanelik'],
-                'Sultanbeyli': ['Selçuk', 'Yenidoğan', 'Fatih', 'Huzur', 'Mevlana', 'Cumhuriyet'],
+                'Sultanbeyli': ['Selçuk', 'Yenidoğan', 'Fatih', 'Huzur', 'Mevlana', 'Cumhuriyet' ],
                 'Şile': ['Büyükada', 'Kavaklı', 'Ulupelit', 'Ayazma', 'Yazlık', 'Şile Merkez'],
                 'Beylikdüzü': ['Barış', 'Cumhuriyet', 'Yakuplu', 'Beylikdüzü Merkez', 'Gürpınar'],
                 'Çekmeköy': ['Seyir Terası', 'Mevlana', 'Mimar Sinan', 'Altınşehir', 'Huzur', 'Alemdağ'],
@@ -305,7 +306,6 @@ const AddressPage = () => {
                                     onChange={handleInputChange}
                                     placeholder="Notes"
                                     className="p-3 border border-gray-300 rounded col-span-2 text-lg w-full"
-                                    required
                                 />
                             </div>
                             <button

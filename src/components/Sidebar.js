@@ -58,21 +58,9 @@ const Sidebar = () => {
                     {isManager ? (
                         <>
                             <li>
-                                <Link to="/manager/discounts" className="flex items-center space-x-3  hover:bg-green-700 p-3 rounded-lg">
-                                    <Tag size={25} />
-                                    <span>Kampanyalar</span>
-                                </Link>
-                            </li>
-                            <li>
                                 <Link to="/manager/customer-order" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
                                     <ClipboardList size={25} />
                                     <span>Customer Orders</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/manager/delivery" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
-                                    <Truck size={25} />
-                                    <span>Delivery</span>
                                 </Link>
                             </li>
                             <li>
