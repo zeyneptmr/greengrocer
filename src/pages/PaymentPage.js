@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
@@ -94,7 +92,7 @@ const PaymentPage = () => {
             {/* Sol taraf - Adresler */}
             <div className="w-2/3">
                 <div className="border p-1 rounded-lg mb-2">
-                    <h3 className="font-semibold mb-2 mt-4 ">Teslimat Adresin</h3>
+                    <h3 className="font-semibold mb-2 mt-4 ">Delivery Address</h3>
                     {addresses.length > 0 ? (
                         addresses.map((address, index) => (
                             <label key={index}
@@ -115,22 +113,22 @@ const PaymentPage = () => {
                             </label>
                         ))
                     ) : (
-                        <p>Adres bulunamadı. Lütfen bir adres ekleyin.</p>
+                        <p>Address not found. Please add an address.</p>
                     )}
                     <div className="border rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 mt-2"
                          onClick={() => navigate("/address")}>
-                        + Yeni Adres Ekle
+                        + Add New Address
                     </div>
                 </div>
 
                 {/* Ödeme Yöntemi */}
                 <div className="border p-6 rounded-lg mb-4">
-                    <h3 className="font-semibold mb-2 ">Ödeme Yöntemin</h3>
+                    <h3 className="font-semibold mb-2 ">Payment Method</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div
                             className="border rounded-lg p-4 flex justify-center items-center cursor-pointer hover:bg-gray-100"
                             onClick={() => navigate("/credit-card")}>
-                            + Yeni Kart Ekle
+                            + Add New Card
                         </div>
                         {savedCards.length > 0 ? (
                             savedCards.map((card, index) => (
@@ -144,12 +142,12 @@ const PaymentPage = () => {
                                         {selectedCard === index && <FaCheckCircle className="text-green-500"/>}
                                     </div>
                                     <p className="text-lg mb-4">**** **** **** {card.cardNumber.slice(-4)} </p>
-                                    <p className="text-sm text-gray-500 ">Son Kullanma
-                                        Tarihi: {card.expiryMonth}/{card.expiryYear} </p>
+                                    <p className="text-sm text-gray-500 ">Expiration
+                                        Date: {card.expiryMonth}/{card.expiryYear} </p>
                                 </div>
                             ))
                         ) : (
-                            <p>Kayıtlı kart bulunamadı. Lütfen bir kart ekleyin.</p>
+                            <p>No registered card found. Please add a card.</p>
                         )}
                     </div>
                 </div>
@@ -158,7 +156,7 @@ const PaymentPage = () => {
             {/* Sağ taraf - Sepet Özeti */}
             {/* Sağ taraf - Sepet Özeti */}
             <div className="w-1/3 border p-4 rounded-lg bg-white shadow-md max-h-[400px] flex flex-col justify-between">
-                <h3 className="font-semibold mb-6">Sepet Özeti</h3>
+                <h3 className="font-semibold mb-6">Cart Summary</h3>
                 <div className="max-h-[300px] overflow-auto mb-4">
                     {cart.map((item, index) => (
                         <div key={index} className="flex items-center mb-2">
@@ -196,7 +194,7 @@ const PaymentPage = () => {
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
                         <FaShoppingCart className="text-orange-500 text-4xl mb-4"/>
-                        <p className="font-semibold text-xl">Siparişiniz başarıyla oluşturuldu</p>
+                        <p className="font-semibold text-xl">Your order has been successfully created.</p>
                     </div>
                 </div>
             )}
@@ -205,12 +203,12 @@ const PaymentPage = () => {
                 <div
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <p className="font-semibold text-xl text-red-500">Lütfen adres ve ödeme yöntemi seçiniz.</p>
+                        <p className="font-semibold text-xl text-red-500">Please choose address and payment method.</p>
                         <button
                             onClick={() => setShowPopUp(false)}
                             className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600"
                         >
-                            Tamam
+                            Okey
                         </button>
                     </div>
                 </div>
@@ -219,12 +217,12 @@ const PaymentPage = () => {
                 <div
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <p className="font-semibold text-xl text-red-500">En az 50 TL ilk ürün eklemelisiniz.</p>
+                        <p className="font-semibold text-xl text-red-500">You must add at least 50 TL worth of first product.</p>
                         <button
                             onClick={() => setIsLowCostWarning(false)}
                             className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600"
                         >
-                            Tamam
+                            Okey
                         </button>
                     </div>
                 </div>

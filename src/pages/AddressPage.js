@@ -75,36 +75,52 @@ const AddressPage = () => {
         if (!formData.email.includes('@')) {
             newErrors.emailError = 'Geçerli bir e-posta girin.';
         }
-        if (!formData.phone.match(/^\d{10}$/)) {
-            newErrors.phoneError = 'Telefon numarasını 10 haneli girin.';
+        if (!formData.phone.match(/^\d{3} \d{3} \d{4}$/)) {
+            newErrors.phoneError = 'Telefon numarasını eksiksiz girin (555 555 5555).';
         }
-        if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ]+$/.test(formData.firstName)) {
-            newErrors.firstNameError = 'İsim sadece harflerden oluşmalı.';
+        if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.firstName)) {
+            newErrors.firstNameError = 'The name can only contain letters and spaces.';
         }
-        if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ]+$/.test(formData.lastName)) {
-            newErrors.lastNameError = 'Soyisim sadece harflerden oluşmalı.';
+
+        if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.lastName)) {
+            newErrors.lastNameError = 'The lastname can only contain letters and spaces.';
         }
         return newErrors;
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        let newValue = value;
+
+        if (name === "firstName" || name === "lastName") {
+            newValue = newValue.replace(/[^A-Za-zçÇğĞıİöÖşŞüÜ\s]/g, '');
+        }
+
         setFormData({
             ...formData,
-            [name]: value
+            [name]: newValue
         });
     };
 
     const handlePhoneChange = (e) => {
-        let formattedPhone = e.target.value.replace(/[^\d]/g, '');
-        if (formattedPhone.length > 10) {
-            formattedPhone = formattedPhone.slice(0, 10);
+        let numbers = e.target.value.replace(/\D/g, '');
+        if (numbers.length > 10) numbers = numbers.slice(0, 10);
+
+        let formattedPhone = "";
+        if (numbers.length > 6) {
+            formattedPhone = `${numbers.slice(0, 3)} ${numbers.slice(3, 6)} ${numbers.slice(6)}`;
+        } else if (numbers.length > 3) {
+            formattedPhone = `${numbers.slice(0, 3)} ${numbers.slice(3)}`;
+        } else {
+            formattedPhone = numbers;
         }
+
         setFormData({
             ...formData,
             phone: formattedPhone
         });
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
