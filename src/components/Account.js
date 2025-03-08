@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Flag from "react-world-flags"; // Import the flag component
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook from react-router-dom
 
-
 const Account = ({ isOpen, onClose }) => {
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
@@ -56,7 +55,7 @@ const Account = ({ isOpen, onClose }) => {
     };
 
     const handleEmailChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value.replace(/[^a-zA-Z0-9@._-]/g, "");
         setFormData((prevData) => ({
             ...prevData,
             email: value,

@@ -7,6 +7,7 @@ import MegaphoneIcon from '../assets/megaphone.svg';
 import FacebookIcon from '../assets/facebook.svg';
 import InstagramIcon from '../assets/instagram.svg';
 import YoutubeIcon from '../assets/youtube.svg';
+import ContactUsIcon from '../assets/contactus.svg';
 
 function Footer() {
   return (
@@ -16,7 +17,7 @@ function Footer() {
           
           {/* Contact */}
           <div className="flex-1 min-w-[200px] ml-[-30px]">
-            <h4 className="text-lg font-bold">CONTACT</h4>
+            <h3 className="text-lg font-bold">CONTACT</h3>
             <div className="mt-4 space-y-2">
               <div className="flex items-center">
                 <img src={LocationIcon} alt="Location" className="w-5 mr-2" />
@@ -49,7 +50,7 @@ function Footer() {
 
           {/* Company Section */}
           <div className="flex-1 text-center">
-            <h4 className="text-lg font-bold">COMPANY</h4>
+            <h3 className="text-lg font-bold">COMPANY</h3>
             <div className="mt-4">
               <a
                 href="/about"
@@ -60,8 +61,14 @@ function Footer() {
               </a>
             </div>
 
-            <div className="mt-2">
-              <a href="/contact" className="font-bold hover:text-yellow-400 transition">Contact Us</a>
+            <div className="mt-4">
+              <a
+                  href="/contact"
+                  className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
+              >
+                <img src={ContactUsIcon} alt="ContactUs Icon" className="w-5"/>
+                <span>Contact Us</span>
+              </a>
             </div>
 
             <div className="mt-6 flex justify-center space-x-6">

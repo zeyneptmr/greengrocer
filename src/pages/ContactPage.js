@@ -58,7 +58,7 @@ export default function ContactForm() {
     ];
 
     const validateEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const regex = /^[a-zA-Z0-9@._-]+$/; // Only allows English characters, numbers, @, ., _
         return regex.test(email);
     };
 
@@ -83,18 +83,19 @@ export default function ContactForm() {
     };
 
     const handlePhoneChange = (e) => {
-        const value = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
+        let value = e.target.value.replace(/\D/g, ""); // Sadece rakamları al
         let formattedValue = "";
 
-        if (value.length > 0) formattedValue += "(" + value.substring(0, 3);
-        if (value.length >= 4) formattedValue += ") " + value.substring(3, 6);
-        if (value.length >= 7) formattedValue += "-" + value.substring(6, 10);
+        if (value.length > 0) formattedValue = `(${value.substring(0, 3)}`;
+        if (value.length >= 4) formattedValue += `) ${value.substring(3, 6)}`;
+        if (value.length >= 7) formattedValue += `-${value.substring(6, 10)}`;
 
         setPhoneNumber(formattedValue);
-        if (value.length === 10) {
-            setPhoneError(null);
-        } else {
+
+        if (value.length < 10) {
             setPhoneError("Please enter a valid phone number!");
+        } else {
+            setPhoneError(null);
         }
     };
 
@@ -232,7 +233,7 @@ export default function ContactForm() {
                             <input
                                 type="tel"
                                 name="phone"
-                                placeholder="Phone Number* (Format: 555-555-5555)"
+                                placeholder="Phone Number* "
                                 value={phoneNumber}
                                 onChange={handlePhoneChange}
                                 className={`w-full sm:w-auto border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}

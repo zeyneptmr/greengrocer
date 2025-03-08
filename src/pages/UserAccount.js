@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaUserCircle, FaCog, FaArrowRight, FaLock } from "react-icons/fa";
 import UserSidebar from "../components/UserSidebar.js";
-import {useLocation} from "react-router-dom";
 
 const UserAccount = () => {
-
-    const location = useLocation();
-
-    // localStorage'dan kullanıcı bilgisini alıyoruz
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userName = loggedInUser ? loggedInUser.name : "User";  // Kullanıcının adı, eğer yoksa "User"
 
     return (
         <div className="flex bg-green-50 min-h-screen">
@@ -19,7 +12,7 @@ const UserAccount = () => {
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <FaUserCircle className="text-green-600 text-6xl mx-auto mb-3" />
                         <h1 className="text-3xl font-bold text-gray-800">
-                            Welcome! {`${userName}`}
+                            Welcome!
                         </h1>
                         <p className="text-gray-600 mt-2 text-lg">
                         Use the <strong>User Panel</strong> to manage your account settings.
