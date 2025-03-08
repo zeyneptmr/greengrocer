@@ -4,10 +4,12 @@ import { Home, Users, Settings, LogOut, BarChart, Edit, Trash2 } from "lucide-re
 import adminIcon from '../assets/admin.svg';
 import Sidebar from "../components/Sidebar";
 import ProductStorage from "../helpers/ProductStorage";
+import AdminSearchBar from "../components/AdminSearchBar";
 
 const UpdateProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [categorizedProducts, setCategorizedProducts] = useState({});
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
     useEffect(() => {
        
@@ -18,6 +20,12 @@ const UpdateProductsPage = () => {
         const grouped = categorizeProducts(allProducts);
         setCategorizedProducts(grouped);
     }, []);
+
+
+    useEffect(() => {
+        const grouped = categorizeProducts(filteredProducts);
+        setCategorizedProducts(grouped);
+    }, [filteredProducts]);
 
     const categorizeProducts = (products) => {
         return products.reduce((acc, product) => {
@@ -64,47 +72,64 @@ const UpdateProductsPage = () => {
                     </div>
                 </header>
 
+                {/* Search Bar */}
+                <div className="bg-white shadow-md p-4">
+                    <AdminSearchBar 
+                        products={products} 
+                        setFilteredProductsList={setFilteredProducts} 
+                    />
+                </div>
+
                 {/* Products Section */}
-                <div className="p-6 space-y-8 overflow-y-auto">
-                
-                    {Object.entries(categorizedProducts).map(([category, products]) => (
-                        <div key={category} className="bg-white rounded-lg shadow-md p-4">
-                            <h3 className="text-lg font-bold mb-4 text-gray-700">{category}</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {products.map((product) => (
-                                    <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                                        <div className="w-full h-32 flex justify-center items-center">
-                                            <img 
-                                                src={product.image} 
-                                                alt={product.name} 
-                                                className="w-auto h-32 object-contains"
-                                            />
+                <div id="search-results" className="p-6 space-y-8 overflow-y-auto">
+                    {Object.keys(categorizedProducts).length > 0 ? (
+                        Object.entries(categorizedProducts).map(([category, categoryProducts]) => (
+                            <div key={category} className="bg-white rounded-lg shadow-md p-4">
+                                <h3 className="text-lg font-bold mb-4 text-gray-700">{category}</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {categoryProducts.map((product) => (
+                                        <div 
+                                            id={`product-${product.id}`}
+                                            key={product.id} 
+                                            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-colors duration-500"
+                                        >
+                                            <div className="w-full h-32 flex justify-center items-center">
+                                                <img 
+                                                    src={product.image} 
+                                                    alt={product.name} 
+                                                    className="w-auto h-32 object-contains"
+                                                />
+                                            </div>
+                                            <div className="p-4">
+                                                <h4 className="text-md font-semibold mb-1">{product.name}</h4>
+                                                <p className="text-green-600 font-medium">{parseFloat(product.price).toFixed(2)} TL</p>
+                                            </div>
+                                            <div className="flex border-t border-gray-200">
+                                                <Link 
+                                                    to={`/admin/update-product/${product.id}`}
+                                                    className="flex-1 py-2 text-center bg-green-500 text-white hover:bg-green-600 flex items-center justify-center"
+                                                >
+                                                    <Edit size={16} className="mr-1" />
+                                                    EDIT
+                                                </Link>
+                                                <button 
+                                                    onClick={() => handleDelete(product.id)}
+                                                    className="flex-1 py-2 text-center bg-red-500 text-white hover:bg-red-600 flex items-center justify-center"
+                                                >
+                                                    <Trash2 size={16} className="mr-1" />
+                                                    DELETE
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="p-4">
-                                            <h4 className="text-md font-semibold mb-1">{product.name}</h4>
-                                            <p className="text-green-600 font-medium">{parseFloat(product.price).toFixed(2)} TL</p>
-                                        </div>
-                                        <div className="flex border-t border-gray-200">
-                                            <Link 
-                                                to={`/admin/update-product/${product.id}`}
-                                                className="flex-1 py-2 text-center bg-green-500 text-white hover:bg-green-600 flex items-center justify-center"
-                                            >
-                                                <Edit size={16} className="mr-1" />
-                                                EDIT
-                                            </Link>
-                                            <button 
-                                                onClick={() => handleDelete(product.id)}
-                                                className="flex-1 py-2 text-center bg-red-500 text-white hover:bg-red-600 flex items-center justify-center"
-                                            >
-                                                <Trash2 size={16} className="mr-1" />
-                                                DELETE
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+                            <p className="text-lg text-gray-600">No products found matching your search criteria.</p>
                         </div>
-                    ))}
+                    )}
                 </div>
             </main>
         </div>
