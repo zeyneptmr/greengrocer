@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Göz ikonları için
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -60,7 +60,6 @@ const ChangePassword = () => {
             return;
         }
 
-        // Sadece boşluklardan oluşan şifreyi engelle
         if (!/[^\s]/.test(newPassword)) {
             setErrorMessage("Password cannot be only spaces!");
             return;

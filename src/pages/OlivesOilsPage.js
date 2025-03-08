@@ -25,7 +25,7 @@ const OlivesOilsPage = () => {
         }
 
         setOlivesOils(sortedArray);
-    }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
+    }, [sortOption]);
 
     const slideItems = [
         { image: olivesoils1, name: "olivesoils1" },

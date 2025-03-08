@@ -139,7 +139,7 @@ const Account = ({ isOpen, onClose }) => {
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
             if (isRegister) {
-                // Kayıt olma işlemi
+                // Register
                 const users = JSON.parse(localStorage.getItem("users")) || [];
                 const existingUser = users.find(user => user.email === email);
                 if (!existingUser) {
@@ -152,30 +152,26 @@ const Account = ({ isOpen, onClose }) => {
                     setMessage("This email is already registered.");
                 }
             } else {
-                // Giriş yapma işlemi
+                // Log In
                 const users = JSON.parse(localStorage.getItem("users")) || [];
                 const existingUser = users.find(user => user.email === email && user.password === password);
                 if (existingUser) {
                     setMessage("Login successful!");
 
-                    // **GİRİŞ YAPAN KULLANICIYI KAYDET**
                     localStorage.setItem("loggedInUser", JSON.stringify(existingUser));
 
                     console.log("Logged in user saved:", localStorage.getItem("loggedInUser"));
 
-
-                    // Kullanıcı rolüne göre yönlendirme yap
                     if (email === "admin@taptaze.com" || email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
-                        navigate("/admin"); // Admin sayfası
+                        navigate("/admin");
                     } else if (email === "manager@taptaze.com" || email === "selinbudak@taptaze.com") {
-                        navigate("/manager"); // Manager sayfası
+                        navigate("/manager");
                     } else if (email === "user@taptaze.com" || email === "zeynep.temur@gmail.com") {
-                        navigate("/user"); // User sayfası
+                        navigate("/user");
                     } else {
                         setMessage("Unknown role. Please contact support.");
                     }
-
-                    onClose(); // Modalı kapat
+                    onClose();
                 } else {
                     setMessage("No user found with this email and password.");
                 }

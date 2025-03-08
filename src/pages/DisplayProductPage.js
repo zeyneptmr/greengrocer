@@ -3,10 +3,9 @@ import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
-import { ProductStorage } from "../helpers/ProductStorage";  // Storage modülünü kullan
+import { ProductStorage } from "../helpers/ProductStorage";
 
 const DisplayProductsPage = () => {
-
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
 

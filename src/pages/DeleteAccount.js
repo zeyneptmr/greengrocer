@@ -29,17 +29,15 @@ const DeleteAccount = () => {
         const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (!storedUser) return;
 
-        // Kullanıcı listesinde bu kullanıcıyı kaldır
         let users = JSON.parse(localStorage.getItem("users")) || [];
         users = users.filter(user => user.email !== storedUser.email);
         localStorage.setItem("users", JSON.stringify(users));
 
-        // Kullanıcıya ait tüm verileri temizle
-        localStorage.removeItem("loggedInUser"); // Oturumu kapat
-        localStorage.removeItem("cart"); // Sepeti temizle
-        localStorage.removeItem("favorites"); // Favorileri temizle
-        localStorage.removeItem("savedCards"); // Kayıtlı kartları temizle
-        localStorage.removeItem("defaultCardIndex"); // Varsayılan kart seçimini kaldır
+        localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("cart");
+        localStorage.removeItem("favorites");
+        localStorage.removeItem("savedCards");
+        localStorage.removeItem("defaultCardIndex");
 
         navigate("/");
     };

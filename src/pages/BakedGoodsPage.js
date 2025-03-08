@@ -26,7 +26,7 @@ const BakedGoodsPage = () => {
         }
 
         setBakedGoodsProducts(sortedArray);
-    }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
+    }, [sortOption]);
 
     const slideItems = [
         { image: bakedgoods1, name: "bakedgoods1" },

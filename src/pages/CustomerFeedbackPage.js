@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
-import { FaStar, FaReply, FaCheck, FaTrash } from 'react-icons/fa';
+import { FaReply, FaCheck, FaTrash } from 'react-icons/fa';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -18,7 +18,6 @@ const ContactFormsPage = () => {
     }, []);
 
     const handleReply = (index) => {
-        // E-posta uygulamasını açmak için mailto bağlantısı
         window.location.href = "mailto:someone@example.com";
     };
 
@@ -41,14 +40,14 @@ const ContactFormsPage = () => {
     };
 
     const settings = {
-        dots: true, // Navigasyon noktalarını göster
-        infinite: false, // Döngüyü kapat, sadece mevcut formlar gösterilsin
+        dots: true,
+        infinite: false,
         speed: 500,
-        slidesToShow: 1, // Sadece bir form göster
-        slidesToScroll: 1, // Bir kaydırma işlemiyle bir formu kaydır
-        beforeChange: handleBeforeChange, // Formun değişmeden önceki işlemi
-        nextArrow: <div className="slick-next custom-arrow">Next</div>, // Özelleştirilmiş sonraki ok
-        prevArrow: <div className="slick-prev custom-arrow">Prev</div>, // Özelleştirilmiş önceki ok
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        beforeChange: handleBeforeChange,
+        nextArrow: <div className="slick-next custom-arrow">Next</div>,
+        prevArrow: <div className="slick-prev custom-arrow">Prev</div>,
     };
 
     return (

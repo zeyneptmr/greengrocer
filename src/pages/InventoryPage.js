@@ -8,7 +8,6 @@ import { FaCheckCircle } from 'react-icons/fa';
 import { FaTimesCircle } from 'react-icons/fa';
 
 const Inventory = () => {
-    // LocalStorage'dan ürünleri çekmek
     const getProductsFromStorage = () => {
         try {
             const storedProducts = localStorage.getItem('products');
@@ -19,32 +18,25 @@ const Inventory = () => {
         }
     };
 
-    // State'ler
     const [products, setProducts] = useState(getProductsFromStorage());
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [stockInput, setStockInput] = useState(100); // Stok girişi için state
+    const [stockInput, setStockInput] = useState(100);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(''); // Error message state
 
-    // Ürünleri localStorage'a kaydetmek
-    {/* useEffect(() => {
-        localStorage.setItem('products', JSON.stringify(products));
-    }, [products]);  */}
 
-    // Stok miktarını güncelleme fonksiyonu
     const updateProductStock = (id, newStock) => {
         const updatedProducts = products.map(product =>
             product.id === id ? { ...product, stock: isNaN(newStock) ? 0 : newStock } : product
         );
-        setProducts(updatedProducts); // Stok güncellendikten sonra state'i güncelliyoruz
+        setProducts(updatedProducts);
     };
 
-    // Tüm stokları aynı anda güncelleme fonksiyonu
     const updateAllProductStocks = (newStock) => {
         if (isNaN(newStock) || newStock === '') {
             setErrorMessage('Please enter a valid number.');
             setTimeout(() => {
-                setErrorMessage(''); // Error mesajını 3 saniye sonra kaldır
+                setErrorMessage('');
             }, 3000);// Set error message
             return; // Exit if the input is invalid
         }
@@ -52,32 +44,29 @@ const Inventory = () => {
             ...product,
             stock: newStock
         }));
-        setProducts(updatedProducts); // Tüm ürünlerin stoklarını güncelliyoruz
+        setProducts(updatedProducts);
     };
 
-    // Stok ekleme fonksiyonu (Kullanıcının girdiği miktar kadar stok ekler)
     const addStockToAllProducts = (addAmount) => {
 
         const amountToAdd = parseInt(addAmount);
         if (isNaN(amountToAdd)) {
-            // Eğer girilen miktar geçersizse (NaN ise), hiçbir şey yapma
             return;
         }
         const updatedProducts = products.map(product => ({
             ...product,
-            stock: product.stock + addAmount // Mevcut stok + girilen miktar
+            stock: product.stock + addAmount
         }));
-        setProducts(updatedProducts); // Tüm ürünlerin stoklarını arttırıyoruz
+        setProducts(updatedProducts);
     };
 
-    // Tüm stokları kaydetme fonksiyonu
     const saveAllStocks = () => {
-        localStorage.setItem('products', JSON.stringify(products)); // Tüm ürünleri güncellenmiş stoklarla kaydet
+        localStorage.setItem('products', JSON.stringify(products));
         setSuccessMessage(true);
 
         setTimeout(() => {
             setSuccessMessage(false);
-        }, 3000);// Kullanıcıya başarı mesajı
+        }, 3000);
     };
 
     return (
@@ -140,7 +129,7 @@ const Inventory = () => {
                             <input
                                 type="number"
                                 value={stockInput}
-                                onChange={(e) => setStockInput(parseInt(e.target.value))} // Stok miktarını güncelle
+                                onChange={(e) => setStockInput(parseInt(e.target.value))}
                                 min="0"
                                 className="w-32 p-2 border border-gray-300 rounded"
                             />
@@ -154,24 +143,22 @@ const Inventory = () => {
                             </div>
                         )}
 
-                        {/* Butonlar için düzen */}
                         <div className="flex justify-end space-x-4 mt-4">
                             <button
-                                onClick={() => updateAllProductStocks(stockInput)} // Kullanıcının girdiği değeri kullan
+                                onClick={() => updateAllProductStocks(stockInput)}
                                 className="px-6 py-3 bg-orange-500 text-white rounded-3xl text-lg shadow-md hover:bg-orange-600 transition-transform transform hover:scale-105"
                             >
                                 Set All Stocks
                             </button>
 
                             <button
-                                onClick={() => addStockToAllProducts(stockInput)} // Stokları ekle
+                                onClick={() => addStockToAllProducts(stockInput)}
                                 className="px-6 py-3 bg-yellow-500 text-white rounded-3xl text-lg shadow-md hover:bg-yellow-600 transition-transform transform hover:scale-105"
                             >
                                 Add Stock to All
                             </button>
                         </div>
 
-                        {/* Save All Stocks butonu */}
                         <button
                             onClick={saveAllStocks}
                             className="mt-6 px-6 py-3 bg-green-600 text-white rounded-3xl text-lg shadow-md hover:bg-green-forest transition-transform transform hover:scale-105"

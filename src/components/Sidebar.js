@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import { Home, Users, Settings, LogOut, Tag, Package, BarChart, MessageCircle } from "lucide-react";
+import { Home, Users, LogOut, MessageCircle } from "lucide-react";
 import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
-import Clock from "../components/Clock"; // Saat bileşeni
-import adminIcon from '../assets/admin.svg'; // Admin ikonu
 
 const Sidebar = () => {
     const location = useLocation();
@@ -30,16 +27,14 @@ const Sidebar = () => {
         navigate("/login");
     };
 
-    // Yönetici veya Manager rolünde olup olmadığını kontrol et
+    // Controls user's role
     const isManager = location.pathname.includes("manager");
     const isAdmin = location.pathname.includes("admin");
-    
-
 
 
     const dashboardLink = location.pathname.includes("manager") ? "/manager" : "/admin";
 
-    // Sidebar başlığını dinamik olarak değiştirebiliriz
+    // Change Dynamically
     const sidebarTitle = isManager ? "Manager Panel" : "Admin Panel";
 
     return (

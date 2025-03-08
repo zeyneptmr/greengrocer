@@ -7,7 +7,7 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("loggedInUser"); // Kullanıcı oturum bilgilerini temizle
+        localStorage.removeItem("loggedInUser");
         navigate("/login");
     };
 

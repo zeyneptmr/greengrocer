@@ -7,15 +7,14 @@ import { useCart } from "../helpers/CartContext";
 import products from "../data/products";
 import { useFavorites } from "../helpers/FavoritesContext";
 import SearchBar from "./SearchBar";
- 
 
 const menuItems = [
-    { name: "Fruits", subItems: ["Dried Fruit", "Fresh Fruit"] },
-    { name: "Vegetables", subItems: ["Dried Vegetables", "Fresh Vegetables"] },
-    { name: "Baked Goods", subItems: ["Breads", "Pastries", "Cakes"] },
-    { name: "Olives & Oils", subItems: ["Oils", "Butters", "Olives"] },
-    { name: "Sauces", subItems: ["Tomato Paste", "Sauces", "Jam", "Vinegar"] },
-    { name: "Dairy", subItems: ["Milk & Drinks", "Cheese", "Yoghurt"] },
+    { name: "Fruits" },
+    { name: "Vegetables" },
+    { name: "Baked Goods" },
+    { name: "Olives & Oils" },
+    { name: "Sauces" },
+    { name: "Dairy" },
 ];
 
 const Navbar = () => {
@@ -28,8 +27,7 @@ const Navbar = () => {
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
     const profileMenuRef = useRef();
-    const [notifications, setNotifications] = useState(5); // Set initial notification count
-    const {favorites} = useFavorites();
+    const { favorites } = useFavorites();
 
     // Giriş yapan kullanıcıyı kontrol et
     useEffect(() => {
@@ -41,7 +39,7 @@ const Navbar = () => {
             navigate('/login');
         }
 
-    }, [navigate,location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
+    }, [navigate, location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -49,14 +47,6 @@ const Navbar = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
-    {/*const handleProductClick = (product) => {
-        navigate(`/product/${product.id}`);
-
-        setQuery("");
-        setFilteredProducts([]);
-        setShowSuggestions(false);
-    };*/}
 
     const handleMenuClick = (menuName) => {
         switch (menuName) {
@@ -81,11 +71,6 @@ const Navbar = () => {
             default:
                 break;
         }
-    };
-
-    const handleSubMenuClick = (menuName, subItemName) => {
-        const formattedSubItem = subItemName.toLowerCase().replace(/ /g, "-");
-        navigate(`/${menuName.toLowerCase()}/${formattedSubItem}`);
     };
 
     const handleCartClick = () => {
@@ -113,7 +98,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         setLoggedInUser(null);
-        navigate("/login"); 
+        navigate("/login");
     };
 
     return (
@@ -121,8 +106,8 @@ const Navbar = () => {
             <nav className="h-24 w-full bg-white text-green-600 flex items-center px-4 relative">
                 <div className="h-full flex items-center">
                     <img src={logo} alt="Tap-Taze Logo" className="h-full w-auto"/>
-                    <Link to ="">
-                    <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
+                    <Link to="">
+                        <h1 className="text-6xl font-bold text-green-600 ml-3">TapTaze</h1>
                     </Link>
                 </div>
 
@@ -146,12 +131,6 @@ const Navbar = () => {
                                             className="p-2 cursor-pointer hover:bg-gray-200"
                                         >
                                             Account settings
-                                        </li>
-                                        <li
-                                            onClick={() => { navigate("/orders"); setIsProfileMenuOpen(false); }}
-                                            className="p-2 cursor-pointer hover:bg-gray-200"
-                                        >
-                                            Orders
                                         </li>
                                         <li
                                             onClick={() => { navigate("/address"); setIsProfileMenuOpen(false); }}
@@ -185,8 +164,8 @@ const Navbar = () => {
                             {favorites.length > 0 && (
                                 <span
                                     className="absolute top-[-5px] right-[5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {favorites.length}
-                    </span>
+                                    {favorites.length}
+                                </span>
                             )}
                         </button>
                     </Link>
@@ -200,13 +179,12 @@ const Navbar = () => {
                         {getTotalProductTypes() > 0 && (
                             <span
                                 className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {getTotalProductTypes()}
-                </span>
+                                {getTotalProductTypes()}
+                            </span>
                         )}
                     </button>
                 </div>
             </nav>
-
 
             {isCartAccessRestricted && (
                 <div className="absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
@@ -233,8 +211,6 @@ const Navbar = () => {
                 </div>
             )}
 
-
-
             <div className="bg-green-500 text-white p-3 relative">
                 <div className="flex justify-center">
                     <ul className="flex space-x-6 relative">
@@ -247,26 +223,9 @@ const Navbar = () => {
                             <li
                                 key={index}
                                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-110 hover:text-orange-500 z-20 p-1 rounded-md"
-                                onMouseEnter={() => setHoveredMenu(menu.name)}
-                                onMouseLeave={() => setHoveredMenu(null)}
                                 onClick={() => handleMenuClick(menu.name)}
                             >
-                                <span className="flex items-center text-xl hover:text-xl">{menu.name} <ChevronDown
-                                    size={16} className="ml-1"/></span>
-
-                                {hoveredMenu === menu.name && (
-                                    <ul className="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md py-2 w-48 text-center z-9999">
-                                        {menu.subItems.map((subItem, subIndex) => (
-                                            <li
-                                                key={subIndex}
-                                                className="p-2 hover:bg-gray-200 cursor-pointer"
-                                                onClick={() => handleSubMenuClick(menu.name, subItem)}
-                                            >
-                                                {subItem}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                                <span className="flex items-center text-xl">{menu.name}</span>
                             </li>
                         ))}
                     </ul>
@@ -279,5 +238,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-

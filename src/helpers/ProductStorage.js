@@ -1,10 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import UserSidebar from "../components/UserSidebar";
-import managerIcon from "../assets/manager.svg";
-import Sidebar from "../components/Sidebar";
-import adminIcon from "../assets/admin.svg";
-import AdminSearchBar from "../components/AdminSearchBar";
-import DisplayProducts from "../components/DisplayProducts";
 import allproducts from "../data/products";
 
 const PRODUCTS_KEY = 'products';
@@ -16,7 +9,6 @@ export const ProductStorage = {
             localStorage.setItem(PRODUCTS_KEY, JSON.stringify(allproducts));
         }
     },
-
 
     getProducts: () => {
         const products = localStorage.getItem(PRODUCTS_KEY);

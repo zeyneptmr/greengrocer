@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
-import { FaEdit } from 'react-icons/fa';
-import UserSidebar from "../components/UserSidebar";
-
 
 const AddressPage = () => {
     const navigate = useNavigate();
@@ -121,7 +118,6 @@ const AddressPage = () => {
         });
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
@@ -158,7 +154,6 @@ const AddressPage = () => {
     const toggleForm = () => {
         setIsFormVisible(!isFormVisible);
         if (isFormVisible) {
-            // Eğer form kapanıyorsa, formu sıfırla
             setFormData({
                 firstName: '',
                 lastName: '',
@@ -184,15 +179,6 @@ const AddressPage = () => {
         const updatedAddresses = addresses.filter((_, i) => i !== index);
         setAddresses(updatedAddresses);
         localStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-    };
-
-    const handleCityChange = (e) => {
-        setFormData({
-            ...formData,
-            city: e.target.value,
-            district: '', // Reset district and neighborhood when city changes
-            neighborhood: ''
-        });
     };
 
     const handleDistrictChange = (e) => {

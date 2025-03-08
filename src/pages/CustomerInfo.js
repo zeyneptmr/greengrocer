@@ -9,10 +9,10 @@ const CustomerInfo = () => {
         phoneNumber: ''
     });
 
-    const [initialUser, setInitialUser] = useState(null); // Başlangıç verisini saklamak için
+    const [initialUser, setInitialUser] = useState(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
-    const [isUpdated, setIsUpdated] = useState(false); // Buton aktif mi?
+    const [isUpdated, setIsUpdated] = useState(false);
 
     useEffect(() => {
         const storedUsers = JSON.parse(localStorage.getItem('users'));
@@ -55,20 +55,20 @@ const CustomerInfo = () => {
             return;
         }
 
-        const rawPhoneNumber = user.phoneNumber.replace(/\D/g, ""); // Sadece rakamları al
+        const rawPhoneNumber = user.phoneNumber.replace(/\D/g, "");
         if (rawPhoneNumber.length !== 10) {
             setError("Phone number must be exactly 10 digits!");
             setSuccess(false);
             return;
         }
 
-        if (!isUpdated) return; // Değişiklik yoksa işlem yapma
+        if (!isUpdated) return;
 
         setError('');
         localStorage.setItem('users', JSON.stringify([user]));
         setInitialUser(user);
         setSuccess(true);
-        setIsUpdated(false); // Güncellendikten sonra buton tekrar devre dışı
+        setIsUpdated(false);
         setTimeout(() => setSuccess(false), 3000);
     };
 
@@ -131,7 +131,7 @@ const CustomerInfo = () => {
                     </div>
                     <button
                         onClick={handleUpdate}
-                        disabled={!isUpdated} // Eğer değişiklik yapılmadıysa buton devre dışı
+                        disabled={!isUpdated}
                         className={`w-full py-3 px-4 rounded-lg text-lg font-bold transition-all 
                             ${isUpdated
                             ? "bg-orange-600 text-white hover:bg-orange-700"

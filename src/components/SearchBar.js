@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import ProductStorage from "../helpers/ProductStorage";
 
-
 const SearchBar = ({ }) => {
     const [query, setQuery] = useState("");
     const [products, setProducts] = useState([]);
@@ -81,12 +80,10 @@ const SearchBar = ({ }) => {
                 setQuery("");
             }
         } else if (e.key === "ArrowDown") {
-            // Aşağı tuşuna basıldığında indeksi artır
             setSelectedIndex((prevIndex) =>
                 prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : prevIndex
             );
         } else if (e.key === "ArrowUp") {
-            // Yukarı tuşuna basıldığında indeksi azalt
             setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
         }
     };
@@ -132,7 +129,7 @@ const SearchBar = ({ }) => {
                     <Search size={24}/>
                 </button>
 
-                {/* Öneri Listesi */}
+                {/* Suggestion List */}
                 {showSuggestions && query && filteredProducts.length > 0 && (
                     <ul className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-30 suggestions">
                         {filteredProducts.map((product, index) => (
@@ -152,7 +149,6 @@ const SearchBar = ({ }) => {
                     </ul>
                 )}
 
-                {/* Sonuç bulunamazsa mesaj göster */}
                 {filteredProducts.length === 0 && query.length > 0 && (
                     <div
                         className="absolute top-12 left-0 w-full bg-white border border-gray-300 rounded-md shadow-md z-20 p-2 text-center text-red-500">

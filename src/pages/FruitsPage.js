@@ -6,7 +6,6 @@ import SlideBar from "../components/SliderBar";
 import fruits1 from '../assets/fruits1.jpg';
 import fruits2 from '../assets/fruits2.jpg';
 import fruits3 from '../assets/fruits3.jpg';
-import SearchBar from "../components/SearchBar";
 
 const FruitsPage = () => {
     const [columns, setColumns] = useState(4);
@@ -14,10 +13,6 @@ const FruitsPage = () => {
     const [fruits, setFruits] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "fruits"));
 
     useEffect(() => {
-        // LocalStorage'dan alınan ürünleri kontrol et
-        console.log("LocalStorage'dan alınan tüm ürünler:", ProductStorage.getProducts());
-        console.log("Filtrelenmiş ve sıralanmış meyveler:", fruits);
-
         let sortedArray = [...fruits];
 
         if (sortOption === "price-asc") {

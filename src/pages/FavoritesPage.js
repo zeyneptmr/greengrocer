@@ -2,8 +2,6 @@ import { useFavorites } from "../helpers/FavoritesContext";
 import ProductCard from "../components/ProductCard";
 import heartImg from "../assets/sadheart.png";
 
-
-
 const FavoritesPage = () => {
     const { favorites } = useFavorites();
 

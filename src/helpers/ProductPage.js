@@ -1,15 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { ProductStorage } from "../helpers/ProductStorage"; // Veritabanı veya storage'dan veri almak için
-import ProductCard from "../components/ProductCard";  // Kart bileşenini içe aktar
+import { ProductStorage } from "../helpers/ProductStorage";
+import ProductCard from "../components/ProductCard";
 import noResultsImage from '../assets/noresult.png';
 
 const ProductPage = () => {
     const { id } = useParams();  // URL'den ID'yi al
-    const products = ProductStorage.getProducts();  // localStorage'dan ürünleri al
-    console.log(products); // Ürünlerin doğru şekilde alınıp alınmadığını kontrol etmek için ekleyin
-    const product = products.find((p) => p.id === parseInt(id));  // ID'ye göre ürünü bul
-    const query = new URLSearchParams(window.location.search).get("query"); // URL parametrelerinden arama sorgusunu al
+    const products = ProductStorage.getProducts();
+    console.log(products);
+    const product = products.find((p) => p.id === parseInt(id));
+    const query = new URLSearchParams(window.location.search).get("query");
 
     if (!product) {
         return (

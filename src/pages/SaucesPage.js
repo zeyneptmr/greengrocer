@@ -25,7 +25,7 @@ const SaucesPage = () => {
         }
 
         setSauces(sortedArray);
-    }, [sortOption]); // sortOption değiştiğinde sıralama yapılır
+    }, [sortOption]);
 
     const slideItems = [
         { image: sauces1, name: "sauces1" },

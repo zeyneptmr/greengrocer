@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import adminIcon from '../assets/admin.svg';
 import Clock from "../components/Clock";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import ProductStorage from "../helpers/ProductStorage"; // Update this path to match your project structure
+import ProductStorage from "../helpers/ProductStorage";
 
 const AdminPage = () => {
     const location = useLocation();

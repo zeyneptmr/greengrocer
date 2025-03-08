@@ -1,12 +1,6 @@
-import { useState } from "react";
-import { Grid3x3GapFill, GridFill } from "react-bootstrap-icons";
+import { Grid3x3GapFill } from "react-bootstrap-icons";
 
 const FilterBar = ({ columns, setColumns, setSortOption }) => {
-    const [selected, setSelected] = useState(false);
-
-    const toggleSelection = () => {
-        setSelected(!selected);
-    };
 
     return (
         <div className="flex items-center justify-between border rounded-lg px-4 py-2 mb-4 flex-wrap">

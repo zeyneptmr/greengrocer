@@ -11,12 +11,11 @@ export default function ProductCard({ product, hideCartView=false }) {
 
     const isFavorite = favorites.some((fav) => fav.id === product.id);
 
-    // Sepette bu ürün var mı?
     const cartItem = cart.find((item) => item.id === product.id);
 
     return (
         <Card className="relative flex flex-col items-center">
-            {/* Favorilere ekleme butonu */}
+            {/* Favorites Button */}
             <button
                 onClick={() => toggleFavorite(product)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
@@ -24,14 +23,13 @@ export default function ProductCard({ product, hideCartView=false }) {
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
 
-            {/* Eğer ürün indirimliyse, indirim etiketini göster */}
             {product.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
                     15% Off
                 </div>
             )}
 
-            {/* Ürün Resmi */}
+            {/* Product Image*/}
             <CardContent>
                 <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
                     <img
@@ -41,10 +39,10 @@ export default function ProductCard({ product, hideCartView=false }) {
                     />
                 </div>
 
-                {/* Ürün Adı */}
+                {/* Product Name*/}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
-                {/* Ürün Fiyatı */}
+                {/* Product Price */}
                 <div className="flex justify-center items-center mt-1">
                     {product.discountedPrice ? (
                         <p className="text-gray-600 text-md line-through mr-2">{product.price} TL</p>

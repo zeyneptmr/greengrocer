@@ -16,12 +16,10 @@ export default function ContactForm() {
         "Other",
     ];
 
-
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
         email: "",
-        //phone: "",
         topic: "",
         message: "",
     });
@@ -83,7 +81,7 @@ export default function ContactForm() {
     };
 
     const handlePhoneChange = (e) => {
-        let value = e.target.value.replace(/\D/g, ""); // Sadece rakamları al
+        let value = e.target.value.replace(/\D/g, "");
         let formattedValue = "";
 
         if (value.length > 0) formattedValue = `(${value.substring(0, 3)}`;
@@ -130,19 +128,16 @@ export default function ContactForm() {
             timestamp: new Date().toLocaleString() // Tarih ve saat ekleme
         };
 
-        // Yeni form verisini dizinin sonuna ekle
         existingForms.push(newFormData);
 
-        // Güncellenmiş diziyi tekrar localStorage'a kaydet
         localStorage.setItem("contactForms", JSON.stringify(existingForms));
 
-        // Başarı mesajını göster
         setBannerMessage("Formunuz başarıyla gönderildi!");
         setIsModalOpen(true);
 
         setTimeout(() => {
             setIsModalOpen(false);
-            setBannerMessage(""); // Banner mesajını da temizle
+            setBannerMessage("");
         }, 5000);
 
         setFormData({
@@ -159,7 +154,7 @@ export default function ContactForm() {
             <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10"
                  style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)'}}>
 
-                {/* Banner Penceresi */}
+                {/* Banner*/}
                 {isModalOpen && (
                     <div
                         className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white border-4 border-green-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-center w-96 animate-fade-in">

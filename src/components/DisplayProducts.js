@@ -3,8 +3,7 @@ import React from "react";
 const DisplayProducts = ({ products }) => {
    
     const getCategoryKey = (category) => category.toLowerCase();
-    
-   
+
     const uniqueCategories = [];
     const categoryMap = new Map();
     

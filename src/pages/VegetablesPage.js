@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ProductStorage } from "../helpers/ProductStorage"; // ProductStorage'ı import et
+import { ProductStorage } from "../helpers/ProductStorage";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";

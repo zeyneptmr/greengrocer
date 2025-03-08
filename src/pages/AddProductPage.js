@@ -14,13 +14,11 @@ const AddProductPage = () => {
 
     
     const [imagePreview, setImagePreview] = useState(null);
-
     const [showNotification, setShowNotification] = useState(false);
     const [categories, setCategories] = useState([]);
 
     
     useEffect(() => {
-        
         const uniqueCategories = ProductStorage.getCategories();
         setCategories(uniqueCategories);
     }, []);
@@ -35,7 +33,6 @@ const AddProductPage = () => {
             return () => clearTimeout(timer);
         }
     }, [showNotification]);
-
 
 
     const handleChange = (e) => {
@@ -83,12 +80,9 @@ const AddProductPage = () => {
             return;
         }
 
-
         const newProduct = ProductStorage.addProduct(product);
-        
-        
-        setShowNotification(true);
 
+        setShowNotification(true);
 
         setProduct({
             name: "",
@@ -171,7 +165,7 @@ const AddProductPage = () => {
                                     className="mt-1 p-2 w-64 border border-gray-300 rounded-lg text-sm"
                                     required
                                 >
-                                    <option value="">Kategori Seç</option>
+                                    <option value="">Choose Category</option>
                                     {categories.map((category, index) => (
                                         <option key={index} value={category}>
                                             {category}

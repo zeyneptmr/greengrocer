@@ -234,69 +234,6 @@ export default function HomePage() {
                 )}
             </div>
 
-            {/* Coupons Section */}
-            <h2 className="text-2xl font-bold mt-6">Coupons and Promotions</h2>
-            <div className="mt-4">
-                <div className="flex space-x-4 overflow-x-auto pb-4">
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">25 ₺ discount on purchases over 500 ₺!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("25 ₺ discount on purchases over 500 ₺!", "In this campaign, 25₺ discount will be applied to purchases over 500₺..")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Free Delivery Opportunity!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Free Delivery Opportunity", "Free delivery is offered for purchases of 500₺ and above..")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Buy Three pay for Two!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Buy Three pay for Two!", "Within the scope of this campaign, if you buy three products from the Sauce category, one product will be given free.")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">20% Discount on New Products!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("20% Discount on New Products!", "20% discount on new products.")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                    {/* New campaign */}
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">Ramadan Discount: 25%!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("Ramadan Discount: 25%", "25% discount on Ramadan collection!")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                    {/* New campaign */}
-                    <Card className="p-4 flex flex-col justify-between items-center cursor-pointer">
-                        <p className="text-center">15% Discount on Your Favorite Products!</p>
-                        <Button
-                            className="bg-green-500 text-white mt-4"
-                            onClick={() => openModal("15% Discount on Your Favorite Products!", "Don't miss the 15% discount opportunity on your favorite products!")}
-                        >
-                            Details
-                        </Button>
-                    </Card>
-                </div>
-            </div>
-
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

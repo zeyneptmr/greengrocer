@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import backgroundImg from "../assets/backgroundanimation.mp4";
+import backgroundImg from "../assets/store.jpg";
 
 const AboutUs = () => {
     const [activeItems, setActiveItems] = useState([]);
@@ -45,16 +45,16 @@ const AboutUs = () => {
                 </h1>
             </div>
 
-            <div className="flex flex-col gap-12 items-center justify-center w-full flex-grow"> {/* gap-16 yerine gap-20 kullanarak mesafeyi artırdık */}
+            <div className="flex flex-col gap-12 items-center justify-center w-full flex-grow">
                 {items.map((item, index) => (
                     <motion.div
                         key={index}
                         className={`relative flex items-center justify-center w-40 h-40 text-white rounded-full cursor-pointer ${item.color}`}
                         animate={{
                             x: activeItems.includes(index) ? (index === 1 ? 200 : -200) : 0,
-                            opacity: activeItems.includes(index) || activeItems.length === 0 ? 1 : 0.75, // Opaklık %75 olacak
-                            scale: activeItems.includes(index) ? 1.1 : 1, // Yazıyı 2 tık büyüt
-                            boxShadow: activeItems.includes(index) ? "0px 0px 10px 3px rgba(0, 0, 0, 0.5)" : "0px 0px 8px rgba(0, 0, 0, 0.3)", // Siyah gölge
+                            opacity: activeItems.includes(index) || activeItems.length === 0 ? 1 : 0.75,
+                            scale: activeItems.includes(index) ? 1.1 : 1,
+                            boxShadow: activeItems.includes(index) ? "0px 0px 10px 3px rgba(0, 0, 0, 0.5)" : "0px 0px 8px rgba(0, 0, 0, 0.3)",
                         }}
                         transition={{ type: "spring", stiffness: 200, damping: 15 }}
                         onClick={() => toggleActive(index)}

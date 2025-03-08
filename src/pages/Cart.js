@@ -7,7 +7,7 @@ export default function Cart() {
     const { cart, increaseQuantity, decreaseQuantity, calculateTotalPrice, getTotalProductTypes, removeItem, clearCart } = useCart();
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
-    const navigate = useNavigate(); // useNavigate hook'u tanımlandı
+    const navigate = useNavigate(); //
 
     const toggleSelectItem = (id) => {
         setSelectedItems((prev) =>
@@ -20,31 +20,28 @@ export default function Cart() {
         setSelectedItems([]);
     };
 
-    // Shipping Fee hesaplama fonksiyonu
+    // Shipping Fee
     const calculateShippingFee = () => {
         const totalPrice = calculateTotalPrice();
         return totalPrice >= 500 ? 0 : 49;
     };
 
-    // Toplam tutar ve shipping cost hesaplama fonksiyonu
+    // Total Cost and Shipping Cost
     const calculateTotalAmount = () => {
-        const totalPrice = Number(calculateTotalPrice()); // Sayıya çevir
-        const shippingFee = Number(calculateShippingFee()); // Sayıya çevir
+        const totalPrice = Number(calculateTotalPrice());
+        const shippingFee = Number(calculateShippingFee());
         return (totalPrice + shippingFee).toFixed(2);
     };
 
-    // Console log'ları
-    console.log("Total Price:", calculateTotalPrice()); // Bunu ekle
-    console.log("Shipping Fee:", calculateShippingFee()); // Bunu ekle
-    console.log("Total Amount (before fix):", calculateTotalPrice() + calculateShippingFee()); // Bunu ekle
+    console.log("Total Price:", calculateTotalPrice());
+    console.log("Shipping Fee:", calculateShippingFee());
+    console.log("Total Amount (before fix):", calculateTotalPrice() + calculateShippingFee());
 
-
-    // Continue butonuna tıklayınca yönlendirme yapılacak fonksiyon
     const handleContinueClick = () => {
         const groupedCart = cart.reduce((acc, item) => {
             const existingItem = acc.find(i => i.id === item.id);
             if (existingItem) {
-                existingItem.quantity += item.quantity; // Miktarı düzgün şekilde artır
+                existingItem.quantity += item.quantity;
             } else {
                 acc.push({ ...item });
             }
@@ -54,8 +51,6 @@ export default function Cart() {
         localStorage.setItem('cart', JSON.stringify(groupedCart));
         navigate("/payment");
     };
-
-
 
     return (
         <div className="p-6 flex flex-col lg:flex-row gap-6">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Home, Users, Settings, LogOut, BarChart, Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import adminIcon from '../assets/admin.svg';
 import Sidebar from "../components/Sidebar";
 import ProductStorage from "../helpers/ProductStorage";

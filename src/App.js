@@ -34,11 +34,9 @@ import { FavoritesProvider } from "./helpers/FavoritesContext";
 import { CartProvider } from "./helpers/CartContext";
 import InventoryPage from "./pages/InventoryPage";
 import CustomerOrderPage from "./pages/CustomerOrderPage";
-import DeliveryPage from "./pages/DeliveryPage";
 import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import CardList from "./pages/CreditCard";
 import "./styles/App.css";
-
 
 function MainContent(){
     const currentPage = useLocation();
@@ -61,10 +59,10 @@ function MainContent(){
                     <Route path="/favorites" element={<FavoritesPage/>}/>
                     <Route path="/cart" element={<Cart/>}/>
                     <Route path="/search-results" element={<SearchResults/>}/>
-                    <Route path="/product/:id" element={<ProductPage />} /> {/* Dinamik ürün yolu */}
+                    <Route path="/product/:id" element={<ProductPage />} />
                     <Route path="/contact" element={<ContactPage/>}/>
                     <Route path="/user/home" element={<Home/>}/>
-                    <Route path="/user" element={<UserPage />} /> {/* Düzeltildi, sadece bir kez tanımlandı */}
+                    <Route path="/user" element={<UserPage />} />
                     <Route path="/manager" element={<ManagerPage/>}/>
                     <Route path="/admin" element={<AdminPage/>}/>
                     <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>
@@ -80,7 +78,6 @@ function MainContent(){
                     <Route path="delete-account" element={<DeleteAccount/>}/>
                     <Route path="/manager/inventory" element={<InventoryPage/>}/>
                     <Route path="/manager/customer-order" element={<CustomerOrderPage/>}/>
-                    <Route path="/manager/delivery" element={<DeliveryPage/>}/>
                     <Route path="/manager/customer-feedback" element={<CustomerFeedbackPage/>}/>
                     <Route path="/cards" element={<CardList />} />
                 </Routes>
