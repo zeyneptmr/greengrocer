@@ -3,6 +3,8 @@ import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+import axios from "axios";
+
 const Account = ({ isOpen, onClose }) => {
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
@@ -138,47 +140,37 @@ const Account = ({ isOpen, onClose }) => {
         if (isRegister && !phoneValid) setErrors((prevErrors) => ({ ...prevErrors, phoneError: "Please enter a valid phone number!" }));
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
+            const userData = { name: formData.name, surname: formData.surname, email, password, phoneNumber };
             if (isRegister) {
-                // Register
-                const users = JSON.parse(localStorage.getItem("users")) || [];
-                const existingUser = users.find(user => user.email === email);
-                if (!existingUser) {
-                    users.push({ name: formData.name, surname: formData.surname, email, password, phoneNumber });
-                    localStorage.setItem("users", JSON.stringify(users));
-
-                    console.log("Users in localStorage after registration:", localStorage.getItem("users"));
-                    setMessage("Registration successful! You can now log in.");
-                } else {
-                    setMessage("This email is already registered.");
-                }
+                // Register - Backend'e veri gönderme
+                axios.post("http://localhost:8080/api/users/register", userData)
+                    .then(response => {
+                        console.log("Response Data:", response.data);
+                        setMessage(response.data);  // Backend'den gelen mesajı ekranda göster
+                        if (response.data === "Registration successful!") {
+                            navigate("/login"); // Kayıt başarılıysa login sayfasına yönlendir
+                        }
+                    })
+                    .catch(error => {
+                        console.error("There was an error registering the user!", error);
+                        setMessage("An error occurred while registering the user.");
+                    });
             } else {
-                // Log In
-                const users = JSON.parse(localStorage.getItem("users")) || [];
-                const existingUser = users.find(user => user.email === email && user.password === password);
-                if (existingUser) {
-                    setMessage("Login successful!");
-
-                    localStorage.setItem("loggedInUser", JSON.stringify(existingUser));
-
-                    console.log("Logged in user saved:", localStorage.getItem("loggedInUser"));
-
-                    if (email === "admin@taptaze.com" || email === "merveyildiz@taptaze.com" || email === "zeynepkurtulus@taptaze.com") {
-                        navigate("/admin");
-                    } else if (email === "manager@taptaze.com" || email === "selinbudak@taptaze.com") {
-                        navigate("/manager");
-                    } else if (email === "user@taptaze.com" || email === "zeynep.temur@gmail.com") {
-                        navigate("/user");
-                    } else {
-                        setMessage("Unknown role. Please contact support.");
-                    }
-                    onClose();
-                } else {
-                    setMessage("No user found with this email and password.");
-                }
+                // Log In - Backend'den doğrulama yapma
+                axios.post("http://localhost:8080/api/users/login", { email, password })
+                    .then(response => {
+                        setMessage(response.data);
+                        if (response.data === "Login successful!") {
+                            navigate("/dashboard");  // Login başarılıysa ana sayfaya yönlendir
+                        }
+                    })
+                    .catch(error => {
+                        console.error("There was an error logging in!", error);
+                        setMessage("Invalid email or password.");
+                    });
             }
         }
     };
-
 
     const countries = [
         { code: "+1", flag: "US" },
