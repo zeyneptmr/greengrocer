@@ -1,8 +1,9 @@
 package org.example.greengrocer.repository;
 
+import java.util.Optional;
+
 import org.example.greengrocer.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     // Email'in var olup olmadığını kontrol eder

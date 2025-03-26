@@ -46,9 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean validateToken(String token) {
         try {
             Jwts.parser()
-                .verifyWith(SECRET_KEY)
-                .build()
-                .parseSignedClaims(token);
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -57,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String extractEmailFromToken(String token) {
         return Jwts.parser()
+<<<<<<< HEAD
                 .verifyWith(SECRET_KEY)
                 .build()
                 .parseSignedClaims(token)
@@ -64,3 +65,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .getSubject();
     }
 }
+=======
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+}
+>>>>>>> 07b3b716a8401d77abaf818fb575916bee38aa37
