@@ -1,7 +1,8 @@
 package org.example.greengrocer.model;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
@@ -75,7 +76,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends SimpleGrantedAuthority> getAuthorities() {
         // Burada basit bir rol ekliyoruz. İhtiyaca göre daha fazla rol ekleyebilirsiniz.
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
