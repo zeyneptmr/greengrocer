@@ -1,23 +1,30 @@
 package org.example.greengrocer.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.example.greengrocer.model.User;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class TokenProvider {
-
-    private static final String SECRET_KEY = "secret_key";  // Güvenli bir anahtar kullanmalısınız!
+    // Güvenli, uzun ve karmaşık bir anahtar kullanmalısınız!
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
+        "YourVeryLongAndSecureSecretKeyThatShouldBeAtLeast32CharactersLong"
+        .getBytes(StandardCharsets.UTF_8)
+    );
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))  // 1 gün geçerlilik süresi
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
+            .subject(user.getEmail())
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + 86400000))  // 1 gün geçerlilik süresi
+            .signWith(SECRET_KEY)
+            .compact();
     }
 }

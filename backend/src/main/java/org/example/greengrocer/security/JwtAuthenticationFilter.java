@@ -1,39 +1,37 @@
 package org.example.greengrocer.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
+
 import org.example.greengrocer.model.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import jakarta.servlet.Filter;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    private static final String SECRET_KEY = "secret_key";  // Güvenli bir anahtar kullanın
+    // Güvenli bir anahtar oluşturulması gerekiyor
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor("YourLongAndSecureSecretKeyHerePleaseMakeItLong".getBytes(StandardCharsets.UTF_8));
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         String token = getTokenFromRequest(request);
-
         if (token != null && validateToken(token)) {
             String email = extractEmailFromToken(token);
-            User user = new User();  // Veritabanından kullanıcıyı almayı burada sağlayabilirsiniz.
-
+            User user = new User();  // Gerçek projede veritabanından kullanıcıyı almanız gerekir.
             // Eğer token geçerliyse, SecurityContext'e kullanıcıyı ekliyoruz
             SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(email));
         }
-
         filterChain.doFilter(request, response);
     }
 
@@ -47,7 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser()
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -56,9 +57,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String extractEmailFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody()
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 }
