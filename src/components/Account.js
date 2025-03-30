@@ -141,14 +141,15 @@ const Account = ({ isOpen, onClose }) => {
 
         if (emailValid && (!isRegister || (passwordsMatch && password.length >= 8 && phoneValid))) {
             const userData = { name: formData.name, surname: formData.surname, email, password, phoneNumber };
+
             if (isRegister) {
                 // Register - Backend'e veri gönderme
-                axios.post("http://localhost:8080/api/users/register", userData)
+                axios.post("http://localhost:8080/api/users/register", userData, { withCredentials: true })
                     .then(response => {
                         console.log("Response Data:", response.data);
-                        setMessage(response.data);  // Backend'den gelen mesajı ekranda göster
+                        setMessage(response.data);
                         if (response.data === "Registration successful!") {
-                            navigate("/login"); // Kayıt başarılıysa login sayfasına yönlendir
+                            navigate("/login");
                         }
                     })
                     .catch(error => {
@@ -156,21 +157,38 @@ const Account = ({ isOpen, onClose }) => {
                         setMessage("An error occurred while registering the user.");
                     });
             } else {
-                // Log In - Backend'den doğrulama yapma
-                axios.post("http://localhost:8080/api/users/login", { email, password })
+                // Login - Backend'e giriş isteği gönderme
+                axios.post("http://localhost:8080/api/users/login", { email, password }, { withCredentials: true })
                     .then(response => {
-                        setMessage(response.data);
-                        if (response.data === "Login successful!") {
-                            navigate("/dashboard");  // Login başarılıysa ana sayfaya yönlendir
+                        console.log("Login Response:", response.data);
+                        if (response.data.token) {
+                            localStorage.setItem("token", response.data.token); // JWT'yi sakla
+                            const userRole = response.data.role ; // Eğer rol yoksa 'USER' varsayılanını kullan
+
+                            console.log("Token: " , response.data.token );
+                            console.log("Role: " , userRole );
+
+                            // Kullanıcı rolüne göre yönlendirme
+                            if (userRole === "ADMIN") {
+                                navigate("/admin");
+                            } else if (userRole === "MANAGER") {
+                                navigate("/manager");
+                            } else {
+                                console.log("Navigating to User");
+                                navigate("/user");
+                            }
+                        } else {
+                            setMessage("Invalid email or password.");
                         }
                     })
                     .catch(error => {
-                        console.error("There was an error logging in!", error);
-                        setMessage("Invalid email or password.");
+                        console.error("Login error:", error);
+                        setMessage("An error occurred during login.");
                     });
             }
         }
     };
+
 
     const countries = [
         { code: "+1", flag: "US" },

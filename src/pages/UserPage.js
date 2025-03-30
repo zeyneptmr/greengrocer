@@ -5,13 +5,15 @@ const UserPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (loggedInUser) {
-            console.log("User is logged in:", loggedInUser);
-            navigate("/user/home");
+        const role = localStorage.getItem("role"); // Rol bilgisini al
+        if (role === "ADMIN") {
+            navigate("/admin");
+        } else if (role === "MANAGER") {
+            navigate("/manager");
+        } else if (role === "USER") {
+            navigate("/user");
         } else {
-            console.log("No user logged in.");
-            navigate("/login");
+            navigate("/login"); // Eğer rol yoksa giriş sayfasına at
         }
     }, [navigate]);
 
