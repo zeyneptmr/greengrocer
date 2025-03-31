@@ -21,6 +21,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String role;
 
     private String name;
     private String surname;
@@ -30,6 +31,15 @@ public class User implements UserDetails {
 
     private String password;
     private String phoneNumber;
+
+    // Getter ve setter metodları
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public User() {}
 
@@ -84,8 +94,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Burada basit bir rol ekliyoruz. İhtiyaca göre daha fazla rol ekleyebilirsiniz.
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        // Burada kullanıcıya ait role'yi dönüyoruz.
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
     }
 
     @Override

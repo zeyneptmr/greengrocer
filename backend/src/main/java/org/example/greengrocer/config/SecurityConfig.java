@@ -3,15 +3,14 @@ package org.example.greengrocer.config;
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -19,11 +18,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserRepository userRepository) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userRepository = userRepository;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -35,16 +41,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index.html").permitAll()
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-                .requestMatchers("/api/products/**").permitAll()  // Bu satırı ekleyin
+                .requestMatchers("/api/products/**").permitAll()
                 .anyRequest().authenticated()
             )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    
+
         return http.build();
     }
-    
 }

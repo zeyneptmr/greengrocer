@@ -1,17 +1,15 @@
 package org.example.greengrocer.security;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import javax.crypto.SecretKey;
+import java.util.List;
 
 import org.example.greengrocer.model.User;
+import org.example.greengrocer.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,48 +17,45 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    // Güvenli bir anahtar oluşturulması gerekiyor
-    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor("YourLongAndSecureSecretKeyHerePleaseMakeItLong".getBytes(StandardCharsets.UTF_8));
+
+    private final TokenProvider tokenProvider;
+    private final UserRepository userRepository;
+
+    public JwtAuthenticationFilter(TokenProvider tokenProvider, UserRepository userRepository) {
+        this.tokenProvider = tokenProvider;
+        this.userRepository = userRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        
         String token = getTokenFromRequest(request);
-        if (token != null && validateToken(token)) {
-            String email = extractEmailFromToken(token);
-            User user = new User();  // Gerçek projede veritabanından kullanıcıyı almanız gerekir.
-            // Eğer token geçerliyse, SecurityContext'e kullanıcıyı ekliyoruz
-            SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(email));
+        
+        try {
+            if (token != null && tokenProvider.validateToken(token)) {
+                String email = tokenProvider.getEmailFromToken(token);
+                
+               
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + email));
+
+                String role = user.getRole();
+                List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
+
+               
+                JwtAuthentication authentication = new JwtAuthentication(email, role, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
         }
+        
         filterChain.doFilter(request, response);
     }
-
+    
     private String getTokenFromRequest(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return null;
-    }
-
-    private boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                .verifyWith(SECRET_KEY)
-                .build()
-                .parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private String extractEmailFromToken(String token) {
-        return Jwts.parser()
-                .verifyWith(SECRET_KEY)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        String bearerToken = request.getHeader("Authorization");
+        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
 }

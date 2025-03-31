@@ -7,6 +7,7 @@ import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000") // CORS yapılandırması (Frontend'in çalıştığı port)
 public class UserController {
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;  // BCrypt için
 
     @Autowired
     private UserRepository userRepository;
@@ -32,6 +36,8 @@ public class UserController {
             if (userRepository.existsByEmail(user.getEmail())) {
                 return ResponseEntity.badRequest().body("Bu e-posta zaten kayıtlı.");
             }
+            // Şifreyi hash'leyerek kaydet
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             // Kullanıcıyı kaydet
             userRepository.save(user);
             return ResponseEntity.ok("Kayıt başarılı!");
@@ -47,10 +53,18 @@ public class UserController {
             // Optional kullanıyoruz
             Optional<User> existingUserOpt = userRepository.findByEmail(user.getEmail());
 
-            if (existingUserOpt.isPresent() && existingUserOpt.get().getPassword().equals(user.getPassword())) {
-                // Token oluşturuluyor
-                String token = tokenProvider.generateToken(existingUserOpt.get());
-                return ResponseEntity.ok(new LoginResponse(token));  // Token'ı dönüyoruz
+            if (existingUserOpt.isPresent() &&
+                    passwordEncoder.matches(user.getPassword(), existingUserOpt.get().getPassword())) {
+
+                User authenticatedUser = existingUserOpt.get();
+                String role = authenticatedUser.getRole();
+
+                // Token oluşturuluyor, email ve rol bilgisi ile
+                String token = tokenProvider.generateToken(authenticatedUser.getEmail(), role);
+
+                // LoginResponse döndürüyoruz
+                LoginResponse response = new LoginResponse(token, role);
+                return ResponseEntity.ok(response);  // Token ve rolü döndürüyoruz
             }
 
             return ResponseEntity.badRequest().body("Geçersiz e-posta veya şifre.");
@@ -62,9 +76,11 @@ public class UserController {
     // Token'ı döndüren sınıf (login response)
     public static class LoginResponse {
         private String token;
+        private String role; // Yeni eklenen alan
 
-        public LoginResponse(String token) {
+        public LoginResponse(String token, String role) {
             this.token = token;
+            this.role = role;
         }
 
         public String getToken() {
@@ -73,6 +89,14 @@ public class UserController {
 
         public void setToken(String token) {
             this.token = token;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
         }
     }
 }

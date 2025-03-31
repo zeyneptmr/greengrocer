@@ -1,19 +1,28 @@
 package org.example.greengrocer.security;
 
+import java.util.List;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class JwtAuthentication extends AbstractAuthenticationToken {
 
     private final String email;
+    private final String role;  // Role bilgisini de tutmak için ekledik
 
-    public JwtAuthentication(String email) {
-        super(null);  // Yetkilendirilmiş kullanıcı bilgileri
+    public JwtAuthentication(String email, String role, List<SimpleGrantedAuthority> authorities) {
+        super(authorities);
         this.email = email;
+        this.role = role;
         setAuthenticated(true);
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getRole() {
+        return role;  // Role bilgisini döndüren bir getter ekledik
     }
 
     @Override
