@@ -36,6 +36,17 @@ public class UserController {
             if (userRepository.existsByEmail(user.getEmail())) {
                 return ResponseEntity.badRequest().body("Bu e-posta zaten kayıtlı.");
             }
+
+            // Manager ve Admin kontrolü, eğer veritabanında yoksa, belirli e-posta adreslerine özel roller verilecek
+            if (!userRepository.existsByRole("ADMIN") && user.getEmail().equals("admin@taptaze.com")) {
+                user.setRole("ADMIN");
+            } else if (!userRepository.existsByRole("MANAGER") && user.getEmail().equals("manager@taptaze.com")) {
+                user.setRole("MANAGER");
+            } else {
+                // Admin veya Manager'dan başka bir kullanıcı kaydediliyorsa, sadece "USER" rolü verilecek
+                user.setRole("USER");
+            }
+
             // Şifreyi hash'leyerek kaydet
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             // Kullanıcıyı kaydet
@@ -99,4 +110,4 @@ public class UserController {
             this.role = role;
         }
     }
-}
+} 

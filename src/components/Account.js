@@ -1,7 +1,9 @@
+
 import { useState, useEffect } from "react";
 import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Navigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -19,6 +21,8 @@ const Account = ({ isOpen, onClose }) => {
         phoneNumber: "",
         countryCode: "+90", // Default country code
     });
+
+
     const [errors, setErrors] = useState({
         emailError: null,
         passwordError: null,
@@ -26,17 +30,33 @@ const Account = ({ isOpen, onClose }) => {
         phoneError: null,
     });
     const [message, setMessage] = useState(""); // Message to display success or error
+    const [token, setToken] = useState(null); // Token'ı state içinde tutuyoruz
+    const [role, setRole] = useState(localStorage.getItem('role') || ''); // İlk başta cache'deki rolü al
 
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
-            document.documentElement.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "auto";
-            document.documentElement.style.overflow = "auto";
-
         }
     }, [isOpen]);
+
+
+    /*useEffect(() => {
+        if (!role) return;
+
+        console.log("Role detected:", role);
+        if (role === "ADMIN") {
+            navigate("/admin", { replace: true });
+        } else if (role === "MANAGER") {
+            navigate("/manager", { replace: true });
+
+        } else if (role === "USER") {
+            navigate("/user", { replace: true });
+        }
+    }, [role, navigate]); */
+
+
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -162,20 +182,20 @@ const Account = ({ isOpen, onClose }) => {
                     .then(response => {
                         console.log("Login Response:", response.data);
                         if (response.data.token) {
-                            localStorage.setItem("token", response.data.token); // JWT'yi sakla
                             const userRole = response.data.role ; // Eğer rol yoksa 'USER' varsayılanını kullan
-
-                            console.log("Token: " , response.data.token );
+                            setToken(response.data.token);  // Token'ı state'e kaydediyoruz
+                            setRole(response.data.role);    // Kullanıcı rolünü state'e kaydediyoruz
+                            console.log("Navigating to:", userRole);
+                            localStorage.setItem("loggedInUser", JSON.stringify(response.data));
+                            localStorage.setItem('role', userRole); // Rolü cache'e kaydediyoruz
                             console.log("Role: " , userRole );
 
-                            // Kullanıcı rolüne göre yönlendirme
                             if (userRole === "ADMIN") {
-                                navigate("/admin");
+                                navigate("/admin", { replace: true });
                             } else if (userRole === "MANAGER") {
-                                navigate("/manager");
-                            } else {
-                                console.log("Navigating to User");
-                                navigate("/user");
+                                navigate("/manager", { replace: true });
+                            } else if (userRole === "USER") {
+                                navigate("/user/home", { replace: true });
                             }
                         } else {
                             setMessage("Invalid email or password.");

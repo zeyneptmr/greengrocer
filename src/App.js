@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -38,6 +39,7 @@ import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import CardList from "./pages/CreditCard";
 import "./styles/App.css";
 
+
 function MainContent(){
     const currentPage = useLocation();
 
@@ -61,8 +63,7 @@ function MainContent(){
                     <Route path="/search-results" element={<SearchResults/>}/>
                     <Route path="/product/:id" element={<ProductPage />} />
                     <Route path="/contact" element={<ContactPage/>}/>
-                    <Route path="/user/home" element={<Home/>}/>
-                    <Route path="/user" element={<UserPage />} />
+                    <Route path="/user" element={<Home/>}/>
                     <Route path="/manager" element={<ManagerPage/>}/>
                     <Route path="/admin" element={<AdminPage/>}/>
                     <Route path="/admin/displayproducts" element={<DisplayProductPage/>}/>

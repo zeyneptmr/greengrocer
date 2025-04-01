@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Users, LogOut, MessageCircle } from "lucide-react";
 import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
+import axios from "axios";
 
 const Sidebar = () => {
     const location = useLocation();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [role, setRole] = useState("");
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (loggedInUser) {
-            setRole(loggedInUser.role); 
+            setRole(loggedInUser.role);
         }else {
             navigate('/login');
         }
@@ -22,7 +23,7 @@ const Sidebar = () => {
     const handleLogout = () => {
         // Clear user from localStorage
         localStorage.removeItem("loggedInUser");
-        
+
         // Navigate to login page
         navigate("/login");
     };
@@ -101,8 +102,8 @@ const Sidebar = () => {
                 </ul>
             </nav>
             <div className="mt-auto mb-20 flex justify-center">
-                <button 
-                    onClick={handleLogout} 
+                <button
+                    onClick={handleLogout}
                     className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-transform duration-200 hover:scale-125">
                     <LogOut size={24} className="text-white" />
                 </button>
