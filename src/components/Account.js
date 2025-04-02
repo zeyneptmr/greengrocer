@@ -5,9 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 
+import ForgotPassword from './ForgotPassword';
+
 import axios from "axios";
 
 const Account = ({ isOpen, onClose }) => {
+    const [isForgotPassword, setIsForgotPassword] = useState(false); // Modal için state
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -345,7 +348,12 @@ const Account = ({ isOpen, onClose }) => {
                                 className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
                                 Sign Up
                             </button>
+
+
+                            {/* ForgotPassword Modal */}
+                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)} />}
                             <p className="mt-2">Already have an account? <span
+
                                 className="text-green-600 underline cursor-pointer"
                                 onClick={() => setIsRegister(false)}>Log In</span></p>
                         </>
@@ -361,6 +369,7 @@ const Account = ({ isOpen, onClose }) => {
                                 className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
                                 required
                             />
+
                             {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
 
                             <div className="relative">
@@ -386,6 +395,14 @@ const Account = ({ isOpen, onClose }) => {
                                 Log In
                             </button>
                             <p className="mt-2">Don't have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span></p>
+                            <p className="mt-2">
+                                 <span
+                                className="text-orange-500 underline cursor-pointer"
+                                onClick={() => setIsForgotPassword(true)}>Forgot Password?</span>
+                            </p>
+
+                            {/* ForgotPassword Modal */}
+                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)} />}
                         </>
                     )}
                 </form>

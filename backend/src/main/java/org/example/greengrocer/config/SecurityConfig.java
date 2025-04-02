@@ -45,7 +45,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index.html").permitAll()
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
+                    .requestMatchers("/api/mail/sendVerificationCode", "/api/mail/verifyCode").permitAll()
+                    .requestMatchers("/api/products/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Email'e göre kullanıcıyı bulur (Optional döndürülmeli)
     Optional<User> findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
 
     // Role'e göre kullanıcı var mı diye kontrol eder
     boolean existsByRole(String role);  // Burada yeni eklenen metod
