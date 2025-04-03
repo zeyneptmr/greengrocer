@@ -4,19 +4,15 @@ import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt }
 
 const Sidebar = () => {
 
+    //const [role, setRole] = useState("");
+    //const [token, setToken] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState(null);
     const navigate = useNavigate();
-    const [role, setRole] = useState("");
-    const [token, setToken] = useState(null);
-    const [loggedInUser, setLoggedInUser] = useState(null); // Gi
 
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
-        localStorage.removeItem('role');
-        localStorage.removeItem('token');  // Eğer token'ı ayrı kaydediyorsanız
 
         // Diğer çıkış işlemleri, örneğin state'leri sıfırlama
-        setToken(null);  // State'teki token'i sıfırlıyoruz
-        setRole(null);   // State'teki rolü sıfırlıyoruz
         setLoggedInUser(null);
         navigate("/login");
     };

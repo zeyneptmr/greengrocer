@@ -15,7 +15,7 @@ const Account = ({ isOpen, onClose }) => {
     const [isRegister, setIsRegister] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(true); // Login modalının açık olup olmadığını kontrol etFo
+    //const [isLoginModalOpen, setIsLoginModalOpen] = useState(true); // Login modalının açık olup olmadığını kontrol etFo
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
@@ -34,8 +34,8 @@ const Account = ({ isOpen, onClose }) => {
     });
 
     const [message, setMessage] = useState(""); // Message to display success or error
-    const [token, setToken] = useState(null);
-    const [role, setRole] = useState(localStorage.getItem('role') || '');
+    //const [token, setToken] = useState(null);
+    //const [role, setRole] = useState(localStorage.getItem('role') || '');
 
     useEffect(() => {
         if (isOpen) {
@@ -204,17 +204,12 @@ const Account = ({ isOpen, onClose }) => {
                 axios.post("http://localhost:8080/api/users/login", { email, password }, { withCredentials: true })
                     .then(response => {
                         console.log("Login Response:", response.data);
-                        if (response.data.token) {
+                        if (response.data.role) {
+                            console.log("role: ", response.data.role)
 
-                            setToken(response.data.token);
-                            setRole(response.data.role);
-
-                            localStorage.setItem("loggedInUser", JSON.stringify(response.data));
-                            localStorage.setItem('role', response.data.role);
-
-                            console.log("Role: " , response.data.role );
-                            console.log("Navigating to:", response.data.role);
-
+                            if(response.data.role === "USER") {
+                                localStorage.setItem("loggedInUser", JSON.stringify(response.data.role));
+                            }
                             onClose();
 
                             if (response.data.role === "ADMIN") {
@@ -224,6 +219,17 @@ const Account = ({ isOpen, onClose }) => {
                             } else if (response.data.role === "USER") {
                                 navigate("/user/home", { replace: true });
                             }
+
+                            // Kullanıcı bilgilerini doğrulamak için /me endpoint'ini çağır
+                            axios.get("http://localhost:8080/api/users/me", { withCredentials: true })
+                                .then(authResponse => {
+                                    //console.log("Authenticated user:", authResponse.data);
+                                    // Eğer kullanıcı doğrulandıysa, sayfaya yönlendirme yapılabilir
+                                })
+                                .catch(error => {
+                                    console.error("Error during authentication check:", error);
+                                    // Hata durumunda yapılacak işlemler
+                                });
 
                             setFormData({
                                 name: "",
@@ -250,7 +256,7 @@ const Account = ({ isOpen, onClose }) => {
                         }
                     })
                     .catch(error => {
-                        console.error("Login error:", error);
+                        console.error("Login error:", error.response ? error.response.data : error.message);
                         setMessage("Invalid email or password!");
                         setTimeout(() => {
                             setMessage("");  // 5 saniye sonra mesajı temizle

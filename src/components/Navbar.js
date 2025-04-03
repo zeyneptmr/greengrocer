@@ -23,13 +23,11 @@ const Navbar = () => {
     const { getTotalProductTypes } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
-    const [hoveredMenu, setHoveredMenu] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
     const profileMenuRef = useRef();
     const { favorites } = useFavorites();
-    const [token, setToken] = useState(null);
-    const [role, setRole] = useState(localStorage.getItem('role') || '');
+    //const [hoveredMenu, setHoveredMenu] = useState(null);
 
     // Giriş yapan kullanıcıyı kontrol et
     useEffect(() => {
@@ -99,12 +97,8 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
-        localStorage.removeItem('role');
-        localStorage.removeItem('token');
 
         setLoggedInUser(null);
-        setToken(null);  // State'teki token'i sıfırlıyoruz
-        setRole(null);
         navigate("/");
     };
 

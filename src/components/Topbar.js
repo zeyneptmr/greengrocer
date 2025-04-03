@@ -6,13 +6,11 @@ import { useLocation } from 'react-router-dom';
 const Topbar = () => {
     const location = useLocation();
 
-    // Import information of user from localStorage
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userName = loggedInUser ? loggedInUser.name : "User";
-
     // Adjust icon and title dynamically according to page
-    const pageTitle = location.pathname.includes("manager") ? "Manager Panel" : "Admin Panel";
-    const icon = location.pathname.includes("manager") ? managerIcon : adminIcon;
+    const isManagerPage = location.pathname.includes("manager");
+    const pageTitle = isManagerPage ? "Manager Panel" : "Admin Panel";
+    const icon = isManagerPage ? managerIcon : adminIcon;
+    const userName = isManagerPage ? "Manager" : "Admin";
 
     return (
         <header className="bg-white shadow-md p-4 flex justify-between items-center">

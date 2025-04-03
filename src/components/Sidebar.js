@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Users, LogOut, MessageCircle } from "lucide-react";
@@ -5,47 +6,42 @@ import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
 import axios from "axios";
 
 const Sidebar = () => {
-    const location = useLocation();
+    //const location = useLocation();
+    //const [token, setToken] = useState(null);
+    //const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
+
     const navigate = useNavigate();
     const [role, setRole] = useState("");
-    const [token, setToken] = useState(null);
-    const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
-
 
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (loggedInUser) {
-            setRole(loggedInUser.role);
-        }else {
-            navigate('/login');
-        }
-
+        // Kullanıcı bilgilerini doğrulamak için /me endpoint'ini çağır
+        axios.get("http://localhost:8080/api/users/me", { withCredentials: true })
+            .then(response => {
+                if (response.data && response.data.role) {
+                    setRole(response.data.role);
+                } else {
+                    navigate('/login'); // Eğer doğrulama başarısızsa login sayfasına yönlendir
+                }
+            })
+            .catch(error => {
+                console.error("Error during authentication check:", error);
+                navigate('/login'); // Hata durumunda login sayfasına yönlendir
+            });
     }, [navigate]);
 
 
     const handleLogout = () => {
-        // Clear user from localStorage
-        localStorage.removeItem("loggedInUser");
-        localStorage.removeItem('role');
-        localStorage.removeItem('token');
-
-        setLoggedInUser(null);
-        setToken(null);  // State'teki token'i sıfırlıyoruz
+        //setToken(null);  // State'teki token'i sıfırlıyoruz
         setRole(null);
 
         // Navigate to login page
         navigate("/login");
     };
 
-    // Controls user's role
-    const isManager = location.pathname.includes("manager");
-    const isAdmin = location.pathname.includes("admin");
+    // Dinamik sidebar başlığını ve yönlendirme linkini ayarlıyoruz
+    const sidebarTitle = role === "MANAGER" ? "Manager Panel" : role === "ADMIN" ? "Admin Panel" : "User Home";
 
-
-    const dashboardLink = location.pathname.includes("manager") ? "/manager" : "/admin";
-
-    // Change Dynamically
-    const sidebarTitle = isManager ? "Manager Panel" : "Admin Panel";
+    const dashboardLink = role === "MANAGER" ? "/manager" : role === "ADMIN" ? "/admin" : "/user/home";
 
     return (
         <aside className="gap-4 w-64 bg-green-600 text-white flex flex-col p-4 h-screen">
@@ -59,7 +55,7 @@ const Sidebar = () => {
                         </Link>
                     </li>
 
-                    {isManager ? (
+                    {role === "MANAGER" ?  (
                         <li>
                             <Link to="/manager/inventory" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
                                 <Users size={25} />
@@ -75,7 +71,7 @@ const Sidebar = () => {
                         </li>
                     )}
 
-                    {isManager ? (
+                    {role === "MANAGER" ?  (
                         <>
                             <li>
                                 <Link to="/manager/customer-order" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
@@ -91,7 +87,7 @@ const Sidebar = () => {
                             </li>
                         </>
                     ) : (
-                        isAdmin && (
+                        role === "ADMIN" && (
                             <>
                                 <li>
                                     <Link to="/admin/addproducts" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
