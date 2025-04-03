@@ -36,11 +36,21 @@ const FruitsPage = () => {
 
     const getImageFromPath = (path) => {
         if (!path) return null;
-        
-        // Path'den dosya adını alın
-        const filename = path.split('/').pop(); // "avocado.jpg"
-        
-        // images objesinden eşleşen resmi bulun
+
+        if (path.startsWith("data:image")) {
+            return path;  // Doğrudan Base64 resmini döndür
+        }
+        // Extract filename from the path
+        const filename = path.split('/').pop(); // "dairy1.jpg"
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Image not found: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+
+        // Find the matching image from the images object
         return images[filename] || '/placeholder.png';
     };
     

@@ -10,10 +10,9 @@ const SearchBar = () => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    
+
     const API_BASE_URL = "http://localhost:8080";
 
-    
     const importAll = (r) => {
         let images = {};
         r.keys().forEach((item) => {
@@ -21,21 +20,35 @@ const SearchBar = () => {
         });
         return images;
     };
-    
-  
+
+
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-    
-   
+
+
     const getImageFromPath = (path) => {
         if (!path) return null;
-        
-        
+
+        if (path.startsWith("data:image")) {
+            return path;  // Doğrudan Base64 resmini döndür
+        }
+
         const filename = path.split('/').pop();
-       
-        return images[filename] || '/placeholder.png';
+        console.log("Filename extracted:", filename);
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));  // Dosya adıyla eşleşen anahtar
+
+        if (!imagePath) {
+            console.error(`Resim bulunamadı: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+
+        console.log("Image path:", imagePath); // Bu noktada imagePath doğru olmalı
+        return images[imagePath] || '/placeholder.png';
     };
 
-    
+
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -44,7 +57,7 @@ const SearchBar = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                
+
                 // Transform backend product format to match frontend format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
@@ -85,7 +98,7 @@ const SearchBar = () => {
         if (searchTerm.length > 0) {
             setShowSuggestions(true);
             setLoading(true);
-            
+
             try {
                 // Server-side search using backend API
                 const response = await fetch(`${API_BASE_URL}/api/products/search/name?productName=${searchTerm}`);
@@ -93,7 +106,7 @@ const SearchBar = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                
+
                 // Transform backend product format to match frontend format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
@@ -103,7 +116,7 @@ const SearchBar = () => {
                     image: getImageFromPath(product.imagePath),
                     category: product.category
                 }));
-                
+
                 setFilteredProducts(transformedProducts);
             } catch (error) {
                 console.error("Error searching products:", error);
@@ -130,7 +143,7 @@ const SearchBar = () => {
 
         if (e.key === "Enter") {
             e.preventDefault();
-            
+
             if (selectedIndex >= 0 && selectedIndex < filteredProducts.length) {
                 // Açık bir şekilde seçilen ürünü al
                 const selectedProduct = filteredProducts[selectedIndex];

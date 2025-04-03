@@ -1,13 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
 
 const Sidebar = () => {
 
     const navigate = useNavigate();
+    const [role, setRole] = useState("");
+    const [token, setToken] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState(null); // Gi
 
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
+        localStorage.removeItem('role');
+        localStorage.removeItem('token');  // Eğer token'ı ayrı kaydediyorsanız
+
+        // Diğer çıkış işlemleri, örneğin state'leri sıfırlama
+        setToken(null);  // State'teki token'i sıfırlıyoruz
+        setRole(null);   // State'teki rolü sıfırlıyoruz
+        setLoggedInUser(null);
         navigate("/login");
     };
 

@@ -31,7 +31,21 @@ const SaucesPage = () => {
 
     const getImageFromPath = (path) => {
         if (!path) return null;
-        const filename = path.split('/').pop();
+
+        if (path.startsWith("data:image")) {
+            return path;  // Doğrudan Base64 resmini döndür
+        }
+        // Extract filename from the path
+        const filename = path.split('/').pop(); // "dairy1.jpg"
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Image not found: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+
+        // Find the matching image from the images object
         return images[filename] || '/placeholder.png';
     };
 

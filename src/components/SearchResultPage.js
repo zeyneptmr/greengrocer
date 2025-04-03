@@ -29,12 +29,20 @@ const SearchResults = () => {
     
     const getImageFromPath = (path) => {
         if (!path) return null;
-        
+
+        if (path.startsWith("data:image")) {
+            return path;  // dogrudan Base64 resmini döndür
+        }
         // Get filename from path
         const filename = path.split('/').pop();
-        
-        // Find matching image from images object
-        return images[filename] || '/placeholder.png';
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Resim bulunamadı: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+        // find matching image from images object
+        return images[imagePath] || '/placeholder.png';
     };
 
 

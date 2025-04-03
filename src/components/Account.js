@@ -205,21 +205,23 @@ const Account = ({ isOpen, onClose }) => {
                     .then(response => {
                         console.log("Login Response:", response.data);
                         if (response.data.token) {
-                            const userRole = response.data.role ;
+
                             setToken(response.data.token);
                             setRole(response.data.role);
-                            console.log("Navigating to:", userRole);
+
                             localStorage.setItem("loggedInUser", JSON.stringify(response.data));
-                            localStorage.setItem('role', userRole);
-                            console.log("Role: " , userRole );
+                            localStorage.setItem('role', response.data.role);
+
+                            console.log("Role: " , response.data.role );
+                            console.log("Navigating to:", response.data.role);
 
                             onClose();
 
-                            if (userRole === "ADMIN") {
+                            if (response.data.role === "ADMIN") {
                                 navigate("/admin", { replace: true });
-                            } else if (userRole === "MANAGER") {
+                            } else if (response.data.role === "MANAGER") {
                                 navigate("/manager", { replace: true });
-                            } else if (userRole === "USER") {
+                            } else if (response.data.role === "USER") {
                                 navigate("/user/home", { replace: true });
                             }
 

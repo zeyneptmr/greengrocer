@@ -8,6 +8,9 @@ const Sidebar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [role, setRole] = useState("");
+    const [token, setToken] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
+
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
@@ -23,6 +26,12 @@ const Sidebar = () => {
     const handleLogout = () => {
         // Clear user from localStorage
         localStorage.removeItem("loggedInUser");
+        localStorage.removeItem('role');
+        localStorage.removeItem('token');
+
+        setLoggedInUser(null);
+        setToken(null);  // State'teki token'i sıfırlıyoruz
+        setRole(null);
 
         // Navigate to login page
         navigate("/login");
