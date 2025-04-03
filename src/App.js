@@ -37,7 +37,7 @@ import InventoryPage from "./pages/InventoryPage";
 import CustomerOrderPage from "./pages/CustomerOrderPage";
 import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import CardList from "./pages/CreditCard";
-import ResetPassword from "/Users/zeynep/greengrocer/src/components/ResetPassword.js";
+import ResetPassword from "./components/ResetPassword";
 import "./styles/App.css";
 
 

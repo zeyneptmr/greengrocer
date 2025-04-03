@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ResetPassword from '/Users/zeynep/greengrocer/src/components/ResetPassword.js'; // Update the path according to your project structure
+import ResetPassword from './ResetPassword'; // Update the path according to your project structure
 
 import axios from 'axios';
 
