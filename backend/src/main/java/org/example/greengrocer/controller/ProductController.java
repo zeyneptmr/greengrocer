@@ -12,41 +12,64 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "http://localhost:3000")  // React ile iletişim için
 public class ProductController {
-
+    
     private final ProductService productService;
-
-    @Autowired  // Bağımlılığı enjekte et
+    
+    @Autowired  
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
+    
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         Optional<Product> product = productService.getProductById(id);
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
         return productService.addProduct(product);
     }
-
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        product.setId(id);
+        Product updatedProduct = productService.updateProduct(product);
+        return ResponseEntity.ok(updatedProduct);
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Search endpoints
+    @GetMapping("/search/name")
+    public List<Product> searchByProductName(@RequestParam String productName) {
+        return productService.searchByProductName(productName);
+    }
+    
+    @GetMapping("/search/category")
+    public List<Product> searchByCategory(@RequestParam String category) {
+        return productService.searchByCategory(category);
+    }
+
+
+
 }

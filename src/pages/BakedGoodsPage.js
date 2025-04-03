@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { ProductStorage } from "../helpers/ProductStorage"; // ProductStorage'ı import et
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
@@ -7,45 +6,129 @@ import bakedgoods1 from '../assets/bakedgoods1.jpg.avif';
 import bakedgoods2 from '../assets/bakedgoods2.jpg';
 import bakedgoods3 from '../assets/bakedgoods3.jpg';
 
+const importAll = (r) => {
+    let images = {};
+    r.keys().forEach((item) => {
+      images[item.replace('./', '')] = r(item);
+    });
+    return images;
+};
+
+
+const formatPrice = (price) => {
+    if (typeof price === "number") {
+        return price.toFixed(2); 
+    }
+    return parseFloat(price).toFixed(2); 
+};
+
+
 const BakedGoodsPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
-    const [bakedGoodsProducts, setBakedGoodsProducts] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "bakedgoods"));
+    const [bakedGoodsProducts, setBakedGoodsProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+        
+        // Get filename from path
+        const filename = path.split('/').pop();
+        
+        // Find matching image from images object
+        return images[filename] || '/placeholder.png';
+    };
+    
+    // Fetch products from API
     useEffect(() => {
+        const fetchBakedGoods = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('http://localhost:8080/api/products');
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                // Filter only baked goods products
+                const bakedGoods = data.filter(product => 
+                    product.category.toLowerCase() === "bakedgoods"
+                );
+                
+                setBakedGoodsProducts(bakedGoods);
+                setError(null);
+            } catch (err) {
+                setError('Failed to fetch products: ' + err.message);
+                console.error('Error fetching products:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchBakedGoods();
+    }, []);
+    
+    useEffect(() => {
+        if (bakedGoodsProducts.length === 0) return;
+        
         let sortedArray = [...bakedGoodsProducts];
-
+        
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.name.localeCompare(b.name));
+            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.name.localeCompare(a.name));
+            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
         }
-
+        
         setBakedGoodsProducts(sortedArray);
     }, [sortOption]);
-
+    
     const slideItems = [
         { image: bakedgoods1, name: "bakedgoods1" },
         { image: bakedgoods2, name: "bakedgoods2" },
         { image: bakedgoods3, name: "bakedgoods3" },
     ];
-
+    
     return (
         <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-orange-500 text-center">Baked Goods</h2>
             <FilterBar columns={columns} setColumns={setColumns} setSortOption={setSortOption}/>
-            <div className={`grid gap-4 
-                ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
-                justify-items-center w-full`}>
-                {bakedGoodsProducts.map((product, index) => (
-                    <ProductCard key={index} product={product}/>
-                ))}
-            </div>
+            
+            {loading && <p className="text-center py-8">Loading products...</p>}
+            {error && <p className="text-center text-red-500 py-8">{error}</p>}
+            
+            {!loading && !error && (
+                <div className={`grid gap-4 
+                    ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
+                    justify-items-center w-full`}>
+                    {bakedGoodsProducts.length > 0 ? (
+                        bakedGoodsProducts.map((product) => (
+                            <ProductCard 
+                                key={product.id} 
+                                product={{
+                                    id: product.id,
+                                    name: product.productName,
+                                    price: formatPrice(product.price),
+                                    image: getImageFromPath(product.imagePath),
+                                    stock: product.stock,
+                                    category: product.category
+                                }}
+                            />
+                        ))
+                    ) : (
+                        <p className="col-span-full text-center py-8">No baked goods products available</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

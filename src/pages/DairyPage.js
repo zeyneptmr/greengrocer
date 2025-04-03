@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { ProductStorage } from "../helpers/ProductStorage";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
@@ -7,24 +6,86 @@ import dairy1 from '../assets/dairy1.jpg';
 import dairy2 from '../assets/dairy2.jpg';
 import dairy3 from '../assets/dairy3.jpg';
 
+const importAll = (r) => {
+    let images = {};
+    r.keys().forEach((item) => {
+        images[item.replace('./', '')] = r(item);
+    });
+    return images;
+};
+
+const formatPrice = (price) => {
+    if (typeof price === "number") {
+        return price.toFixed(2); 
+    }
+    return parseFloat(price).toFixed(2); 
+};
+
 const DairyPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
-    const [dairyProducts, setDairyProducts] = useState(ProductStorage.getProducts().filter(product => product.category.toLowerCase() === "dairy"));
+    const [dairyProducts, setDairyProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+        
+        // Extract filename from the path
+        const filename = path.split('/').pop(); // "dairy1.jpg"
+        
+        // Find the matching image from the images object
+        return images[filename] || '/placeholder.png';
+    };
+
+    // Fetch dairy products from API
+    useEffect(() => {
+        const fetchDairyProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('http://localhost:8080/api/products');
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                // Filter only dairy products
+                const dairyItems = data.filter(product => 
+                    product.category.toLowerCase() === "dairy"
+                );
+                
+                setDairyProducts(dairyItems);
+                setError(null);
+            } catch (err) {
+                setError('Failed to fetch products: ' + err.message);
+                console.error('Error fetching products:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchDairyProducts();
+    }, []);
 
     useEffect(() => {
+        if (dairyProducts.length === 0) return;
+        
         let sortedArray = [...dairyProducts];
-
+        
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.name.localeCompare(b.name));
+            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.name.localeCompare(a.name));
+            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
         }
-
+        
         setDairyProducts(sortedArray);
     }, [sortOption]);
 
@@ -35,17 +96,39 @@ const DairyPage = () => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
-            <h2 className="text-4xl font-bold mb-4 text-orange-500">Dairy</h2>
-            <FilterBar columns={columns} setColumns={setColumns} setSortOption={setSortOption}/>
-            <div className={`grid gap-4 
-                ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
-                justify-items-center w-full`}>
-                {dairyProducts.map((product, index) => (
-                    <ProductCard key={index} product={product}/>
-                ))}
-            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Dairy</h2>
+            <FilterBar
+                columns={columns}
+                setColumns={setColumns}
+                setSortOption={setSortOption}
+            />
+            
+            {loading && <p className="text-center py-8">Loading products...</p>}
+            {error && <p className="text-center text-red-500 py-8">{error}</p>}
+            
+            {!loading && !error && (
+                <div className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
+                    {dairyProducts.length > 0 ? (
+                        dairyProducts.map((product) => (
+                            <ProductCard 
+                                key={product.id} 
+                                product={{
+                                    id: product.id,
+                                    name: product.productName,
+                                    price: formatPrice(product.price),
+                                    image: getImageFromPath(product.imagePath),
+                                    stock: product.stock,
+                                    category: product.category
+                                }}
+                            />
+                        ))
+                    ) : (
+                        <p className="col-span-full text-center py-8">No dairy products available</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

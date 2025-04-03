@@ -10,27 +10,53 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
-
+    
     private final ProductRepository productRepository;
-
-    @Autowired  // Bağımlılığı enjekte et
+    
+    @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-
+    
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-
+    
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
-
+    
     public Product addProduct(Product product) {
         return productRepository.save(product);
     }
-
+    
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
+    }
+    
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+    
+    public Product updateStock(Long id, int newStock) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            product.setStock(newStock);
+            return productRepository.save(product);
+        }
+        return null;
+    }
+
+     // Search methods
+     public List<Product> searchByProductName(String productName) {
+        return productRepository.findByProductNameContainingIgnoreCase(productName);
+    }
+    
+    public List<Product> searchByCategory(String category) {
+        return productRepository.findByCategoryContainingIgnoreCase(category);
+    }
+
+
+
 }
