@@ -36,7 +36,7 @@ const Navbar = () => {
 
         const isEmployeeRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/manager');
         if (isEmployeeRoute && !storedUser) {
-            navigate('/login');
+            navigate("/");
         }
 
     }, [navigate, location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
@@ -98,7 +98,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         setLoggedInUser(null);
-        navigate("/login");
+        navigate("/");
     };
 
     return (

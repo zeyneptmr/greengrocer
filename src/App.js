@@ -37,6 +37,7 @@ import InventoryPage from "./pages/InventoryPage";
 import CustomerOrderPage from "./pages/CustomerOrderPage";
 import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import CardList from "./pages/CreditCard";
+import ResetPassword from "/Users/zeynep/greengrocer/src/components/ResetPassword.js";
 import "./styles/App.css";
 
 
@@ -60,6 +61,7 @@ function MainContent(){
                     <Route path="/dairy" element={<DairyPage/>}/>
                     <Route path="/favorites" element={<FavoritesPage/>}/>
                     <Route path="/cart" element={<Cart/>}/>
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/search-results" element={<SearchResults/>}/>
                     <Route path="/product/:id" element={<ProductPage />} />
                     <Route path="/contact" element={<ContactPage/>}/>
