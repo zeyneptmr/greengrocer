@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/index.html").permitAll()
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
                     .requestMatchers("/api/mail/sendVerificationCode", "/api/mail/verifyCode").permitAll()
+                    .requestMatchers("/api/mail/resetPassword").permitAll()
                     .requestMatchers("/api/products/**").permitAll()
                 .anyRequest().authenticated()
             )

@@ -15,6 +15,7 @@ const Account = ({ isOpen, onClose }) => {
     const [isRegister, setIsRegister] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(true); // Login modalının açık olup olmadığını kontrol etFo
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
@@ -25,16 +26,16 @@ const Account = ({ isOpen, onClose }) => {
         countryCode: "+90", // Default country code
     });
 
-
     const [errors, setErrors] = useState({
         emailError: null,
         passwordError: null,
         confirmPasswordError: null,
         phoneError: null,
     });
+
     const [message, setMessage] = useState(""); // Message to display success or error
-    const [token, setToken] = useState(null); // Token'ı state içinde tutuyoruz
-    const [role, setRole] = useState(localStorage.getItem('role') || ''); // İlk başta cache'deki rolü al
+    const [token, setToken] = useState(null);
+    const [role, setRole] = useState(localStorage.getItem('role') || '');
 
     useEffect(() => {
         if (isOpen) {
@@ -43,8 +44,6 @@ const Account = ({ isOpen, onClose }) => {
             document.body.style.overflow = "auto";
         }
     }, [isOpen]);
-
-
     /*useEffect(() => {
         if (!role) return;
 
@@ -58,7 +57,6 @@ const Account = ({ isOpen, onClose }) => {
             navigate("/user", { replace: true });
         }
     }, [role, navigate]); */
-
 
 
     const validateEmail = (email) => {
@@ -172,12 +170,34 @@ const Account = ({ isOpen, onClose }) => {
                         console.log("Response Data:", response.data);
                         setMessage(response.data);
                         if (response.data === "Registration successful!") {
-                            navigate("/login");
+                            setFormData({
+                                name: "",
+                                surname: "",
+                                email: "",
+                                password: "",
+                                confirmPassword: "",
+                                phoneNumber: "",
+                                countryCode: "+90",
+                            });
+
+                            setErrors({
+                                emailError: "",
+                                phoneError: "",
+                                passwordError: "",
+                                confirmPasswordError: "",
+                            });
+
+                            setTimeout(() => {
+                                    setIsRegister(false);
+                                    setMessage(""); // Kullanıcıyı giriş ekranına yönlendir
+                            }, 4000);
+
+                            return <Navigate to="/*" />;
                         }
                     })
                     .catch(error => {
-                        console.error("There was an error registering the user!", error);
-                        setMessage("An error occurred while registering the user.");
+                        console.error("An account with this email already exists!", error);
+                        setMessage("An account with this email already exists!");
                     });
             } else {
                 // Login - Backend'e giriş isteği gönderme
@@ -185,13 +205,15 @@ const Account = ({ isOpen, onClose }) => {
                     .then(response => {
                         console.log("Login Response:", response.data);
                         if (response.data.token) {
-                            const userRole = response.data.role ; // Eğer rol yoksa 'USER' varsayılanını kullan
-                            setToken(response.data.token);  // Token'ı state'e kaydediyoruz
-                            setRole(response.data.role);    // Kullanıcı rolünü state'e kaydediyoruz
+                            const userRole = response.data.role ;
+                            setToken(response.data.token);
+                            setRole(response.data.role);
                             console.log("Navigating to:", userRole);
                             localStorage.setItem("loggedInUser", JSON.stringify(response.data));
-                            localStorage.setItem('role', userRole); // Rolü cache'e kaydediyoruz
+                            localStorage.setItem('role', userRole);
                             console.log("Role: " , userRole );
+
+                            onClose();
 
                             if (userRole === "ADMIN") {
                                 navigate("/admin", { replace: true });
@@ -200,13 +222,37 @@ const Account = ({ isOpen, onClose }) => {
                             } else if (userRole === "USER") {
                                 navigate("/user/home", { replace: true });
                             }
+
+                            setFormData({
+                                name: "",
+                                surname: "",
+                                email: "",
+                                password: "",
+                                confirmPassword: "",
+                                phoneNumber: "",
+                                countryCode: "+90",
+                            });
+
+                            setErrors({
+                                emailError: "",
+                                phoneError: "",
+                                passwordError: "",
+                                confirmPasswordError: "",
+                            });
+
                         } else {
                             setMessage("Invalid email or password.");
+                            setTimeout(() => {
+                                setMessage("");  // 5 saniye sonra mesajı temizle
+                            }, 3000);
                         }
                     })
                     .catch(error => {
                         console.error("Login error:", error);
-                        setMessage("An error occurred during login.");
+                        setMessage("Invalid email or password!");
+                        setTimeout(() => {
+                            setMessage("");  // 5 saniye sonra mesajı temizle
+                        }, 3000);
                     });
             }
         }
@@ -345,13 +391,15 @@ const Account = ({ isOpen, onClose }) => {
                                 <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
                             <button
                                 type="submit"
+
                                 className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
+
                                 Sign Up
+
                             </button>
 
-
                             {/* ForgotPassword Modal */}
-                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)} />}
+                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)}/>}
                             <p className="mt-2">Already have an account? <span
 
                                 className="text-green-600 underline cursor-pointer"
@@ -397,19 +445,27 @@ const Account = ({ isOpen, onClose }) => {
                             <p className="mt-2">Don't have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span></p>
                             <p className="mt-2">
                                  <span
-                                className="text-orange-500 underline cursor-pointer"
-                                onClick={() => setIsForgotPassword(true)}>Forgot Password?</span>
+                                     className="text-green-700 underline cursor-pointer"
+                                     onClick={() => {
+                                         setIsForgotPassword(true); // Forgot Password modalını aç
+                                     }}
+                                 >
+                        Forgot Password?
+                    </span>
                             </p>
 
                             {/* ForgotPassword Modal */}
-                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)} />}
+                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)}/>}
                         </>
                     )}
                 </form>
                 {message && <p className="text-center mt-3 text-green-600">{message}</p>} {/* Display message */}
             </div>
+
         </div>
+
     );
+
 };
 
 export default Account;

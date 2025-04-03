@@ -34,7 +34,7 @@ public class UserController {
         try {
             // E-posta kontrolü
             if (userRepository.existsByEmail(user.getEmail())) {
-                return ResponseEntity.badRequest().body("Bu e-posta zaten kayıtlı.");
+                return ResponseEntity.badRequest().body("This email is already registered.");
             }
 
             // Manager ve Admin kontrolü, eğer veritabanında yoksa, belirli e-posta adreslerine özel roller verilecek
@@ -51,7 +51,7 @@ public class UserController {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             // Kullanıcıyı kaydet
             userRepository.save(user);
-            return ResponseEntity.ok("Kayıt başarılı!");
+            return ResponseEntity.ok("Registration successful!");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Bir hata oluştu: " + e.getMessage());
         }
