@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ResetPassword from './ResetPassword'; // Update the path according to your project structure
 
@@ -14,9 +14,17 @@ const ForgotPassword = ({ onClose }) => {
     const [serverCode, setServerCode] = useState('');
     const navigate = useNavigate();
     const [codeVerified, setCodeVerified] = useState(false); // Başarı mesajı durumu
-
     const [isResetPassword, setIsResetPassword] = useState(false);
 
+    useEffect(() => {
+        // Modal açıldığında scroll'u kapat
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            // Modal kapanırken scroll'u geri aç
+            document.body.style.overflow = 'auto';
+        };
+    }, []);
     // Email input change handler
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
@@ -222,6 +230,7 @@ const ForgotPassword = ({ onClose }) => {
                     {/* Send Code Again Link */}
                     <div className="text-center mt-3">
                         <button
+                            type="button"
                             onClick={handleResendCode}
                             className="text-sm text-green-800 underline hover:text-orange-600"
                         >
