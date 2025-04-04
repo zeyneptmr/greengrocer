@@ -147,13 +147,13 @@ const ForgotPassword = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500">
-                <h2 className="text-3xl font-bold text-green-600 mt-2 ">Reset Password</h2>
-                <div className="flex flex-col items-center  mt-10 space-y-4">
-                    <p className="text-lg text-[#006400] font-roboto whitespace-nowrap">Enter your email address
-                        to reset password</p>
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
+            <div className="bg-gradient-to-br from-green-50 via-white to-orange-50 p-8 rounded-2xl shadow-xl w-[460px] relative border-2 border-orange-400">
+                <h2 className="text-3xl font-extrabold text-green-700 mb-6"> 🔐Reset Password</h2>
 
+                <div className="flex flex-col items-center space-y-4">
+                    <p className="text-md text-[#006400] font-semibold text-center">
+                        Please enter your email to receive a verification code </p>
                     {/* Email input or verification code input based on state */}
                     {!isCodeSent ? (
                         <>
@@ -162,20 +162,22 @@ const ForgotPassword = ({ onClose }) => {
                                 value={email}
                                 onChange={handleEmailChange}
                                 onKeyDown={(e) => handleKeyPress(e)}
-                                className="w-full p-5 border border-gray-300 rounded-md text-lg mb-4"
-                                placeholder="Enter your email"
+                                placeholder="you@example.com"
+                                required
+                                onInvalid={(e) => e.preventDefault()} // Tarayıcı mesajını engelliyoruz
+                                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-lg"
                             />
                             {/* Error message */}
                             {emailError && (
-                                <div className="text-red-500 text-sm text-center mb-4">
+                                <div className="text-red-500 text-sm text-center">
                                     {emailError}
                                 </div>
                             )}
                         </>
                     ) : (
                         <>
-                            <p>Enter the verification code sent to your email:</p>
-                            <div className="flex justify-center space-x-2">
+                            <p className="text-green-800 font-medium">Enter the 6-digit code sent to your email</p>
+                            <div className="flex justify-center space-x-2 mt-2">
                                 {[...Array(6)].map((_, index) => (
                                     <input
                                         key={index}
@@ -185,51 +187,52 @@ const ForgotPassword = ({ onClose }) => {
                                         onChange={(e) => handleVerificationCodeChange(e, index)}
                                         onKeyDown={(e) => handleKeyPress(e, index)} // Handle "Enter" in code inputs
                                         maxLength={1}
-                                        className="w-12 p-2 border-b-2 border-gray-300 text-center text-lg focus:outline-none"
+                                        className="w-12 h-12 text-center text-xl border-b-4 border-green-400 rounded focus:outline-none focus:border-orange-500 transition"
                                         placeholder="—"
                                     />
                                 ))}
-                                {codeError && <div className="text-red-500 text-sm">{codeError}</div>}
                             </div>
-                            <div className="text-center mt-4">
-                                <p className="text-sm">Time left: {countdown}s</p>
-                            </div>
-
+                            {codeError && <div className="text-red-500 text-sm mt-2">{codeError}</div>}
+                            <p className="text-sm text-orange-600 mt-3">⏱️ Time left: {countdown}s</p>
                         </>
                     )}
                 </div>
 
-                <div className="flex flex-col items-center mt-auto mb-10">
+                <div className="mt-6">
                     {!isCodeSent ? (
                         <button
-                            type="submit"
                             onClick={handleSendCode}
                             disabled={!!emailError} // Disable the button if there is an email error
-                            className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg mt-4"
+                            className={`w-full py-3 rounded-lg text-white font-semibold shadow-md transition-transform duration-300 ${
+                                emailError
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-green-600 hover:bg-green-700 hover:scale-105'
+                            }`}
                         >
-                            Continue
+                            Send Verification Code
                         </button>
                     ) : (
                         <button
                             onClick={handleVerifyCode}
-                            className="w-4/5 p-4 bg-green-600 text-white rounded-md"
+                            className="w-full py-3 rounded-lg bg-orange-500 text-white font-semibold shadow-md hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
                         >
                             Verify Code
                         </button>
                     )}
                     {/* Send Code Again Link */}
-                    <div className="mt-2">
+                    <div className="text-center mt-3">
                         <button
                             onClick={handleResendCode}
-                            className="text-green-800 underline cursor-pointer">
-                            Send Code Again
+                            className="text-sm text-green-800 underline hover:text-orange-600"
+                        >
+                            Resend Code
                         </button>
                     </div>
                 </div>
 
                 <button
                     onClick={onClose}
-                    className="absolute top-2 right-2 text-xl text-gray-500"
+                    className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-red-500 transition"
                 >
                     &times;
                 </button>
