@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +14,6 @@ const Account = ({ isOpen, onClose }) => {
     const [isRegister, setIsRegister] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    //const [isLoginModalOpen, setIsLoginModalOpen] = useState(true); // Login modalının açık olup olmadığını kontrol etFo
     const [formData, setFormData] = useState({
         name: "",
         surname: "",
@@ -34,8 +32,6 @@ const Account = ({ isOpen, onClose }) => {
     });
 
     const [message, setMessage] = useState(""); // Message to display success or error
-    //const [token, setToken] = useState(null);
-    //const [role, setRole] = useState(localStorage.getItem('role') || '');
 
     useEffect(() => {
         if (isOpen) {
@@ -44,20 +40,6 @@ const Account = ({ isOpen, onClose }) => {
             document.body.style.overflow = "auto";
         }
     }, [isOpen]);
-    /*useEffect(() => {
-        if (!role) return;
-
-        console.log("Role detected:", role);
-        if (role === "ADMIN") {
-            navigate("/admin", { replace: true });
-        } else if (role === "MANAGER") {
-            navigate("/manager", { replace: true });
-
-        } else if (role === "USER") {
-            navigate("/user", { replace: true });
-        }
-    }, [role, navigate]); */
-
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -266,7 +248,6 @@ const Account = ({ isOpen, onClose }) => {
         }
     };
 
-
     const countries = [
         { code: "+1", flag: "US" },
         { code: "+44", flag: "GB" },
@@ -399,17 +380,11 @@ const Account = ({ isOpen, onClose }) => {
                                 <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
                             <button
                                 type="submit"
-
                                 className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
-
                                 Sign Up
-
                             </button>
 
-                            {/* ForgotPassword Modal */}
-                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)}/>}
                             <p className="mt-2">Already have an account? <span
-
                                 className="text-green-600 underline cursor-pointer"
                                 onClick={() => setIsRegister(false)}>Log In</span></p>
                         </>
@@ -455,25 +430,27 @@ const Account = ({ isOpen, onClose }) => {
                                  <span
                                      className="text-green-700 underline cursor-pointer"
                                      onClick={() => {
-                                         setIsForgotPassword(true); // Forgot Password modalını aç
+                                         setIsForgotPassword(true);
                                      }}
                                  >
-                        Forgot Password?
-                    </span>
+                                Forgot Password?
+                                </span>
                             </p>
-
-                            {/* ForgotPassword Modal */}
-                            {isForgotPassword && <ForgotPassword onClose={() => setIsForgotPassword(false)}/>}
                         </>
                     )}
                 </form>
                 {message && <p className="text-center mt-3 text-green-600">{message}</p>} {/* Display message */}
             </div>
 
+            {/* ForgotPassword Modal */}
+            {isForgotPassword && 
+                <ForgotPassword 
+                    onClose={() => setIsForgotPassword(false)}
+                    closeParentModal={onClose} 
+                />
+            }
         </div>
-
     );
-
 };
 
 export default Account;

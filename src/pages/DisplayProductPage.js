@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
-import { ProductStorage } from "../helpers/ProductStorage";
 
 const DisplayProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const storedProducts = ProductStorage.getProducts();
-        setProducts(storedProducts);
-        setFilteredProducts(storedProducts);
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                // Replace with your actual API endpoint
+                const response = await axios.get('http://localhost:8080/api/products');
+                setProducts(response.data);
+                setFilteredProducts(response.data);
+            } catch (err) {
+                setError(err.response?.data?.message || err.message);
+                console.error('Error fetching products:', err);
+                setProducts([]);
+                setFilteredProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
     }, []);
 
     return (
@@ -42,7 +59,15 @@ const DisplayProductsPage = () => {
 
                 {/* Products Section */}
                 <div id="search-results" className="overflow-y-auto">
-                    {filteredProducts.length > 0 ? (
+                    {loading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <div className="text-green-700 text-lg">Products are loading...</div>
+                        </div>
+                    ) : error ? (
+                        <div className="text-center py-10">
+                            <p className="text-red-500 text-lg">Error: {error}</p>
+                        </div>
+                    ) : filteredProducts.length > 0 ? (
                         <DisplayProducts products={filteredProducts} />
                     ) : (
                         <div className="text-center py-10">

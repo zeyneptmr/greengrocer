@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const ResetPassword = () => {
+const ResetPassword = ({ onClose, closeParentModal }) => {
     const [newPassword, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(true); // Modal durumunu kontrol etmek için state
-    const [successMessage, setSuccessMessage] = useState(''); // Başarı mesajı
-    const [isSuccess, setIsSuccess] = useState(false); // Success durumunu kontrol etmek için state
+    const [successMessage, setSuccessMessage] = useState(''); 
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, []);
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
@@ -37,16 +43,25 @@ const ResetPassword = () => {
 
         setError('');
 
-        // Backend'e reset password isteği gönderme
         try {
-            const response = await axios.post(`http://localhost:8080/api/mail/resetPassword?newPassword=${newPassword}`);
+            const response = await axios.post(
+                `http://localhost:8080/api/mail/resetPassword?newPassword=${newPassword}`,
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            );
+            
             console.log("Response:", response);
             if (response.status === 200) {
                 console.log("it is ok:");
                 setSuccessMessage(response.data.message || 'Password reset successfully.');
                 setIsSuccess(true);
                 setTimeout(() => {
-                    closeModal(); // Modalı otomatik olarak kapat
+                    handleCloseAll(); 
                 }, 2000);
             } else {
                 console.error('Error occurred:', error);
@@ -60,29 +75,37 @@ const ResetPassword = () => {
         }
     };
 
-    // Modalı kapatacak fonksiyon
-    const closeModal = () => {
-        setIsModalOpen(false); // Modal'ı kapatmak için state'i false yapıyoruz
+
+    const handleClose = () => {
+        onClose(); 
     };
 
-    if (!isModalOpen) return null;
+
+    const handleCloseAll = () => {
+        onClose(); 
+        if (closeParentModal) closeParentModal(); 
+    };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500 z-60">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500">
                 <button
-                    onClick={closeModal}
+                    onClick={handleCloseAll}
                     className="absolute top-2 right-2 text-2xl text-gray-500 hover:text-gray-800"
                 >
                     &times;
                 </button>
-                <h2 className="text-3xl font-bold text-green-600 mt-2">Reset Password</h2>
-                <div className="flex flex-col items-center mt-10 space-y-4">
+                <h2 className="text-3xl font-bold text-green-600 mt-4 text-center">Reset Password</h2>
+                <div className="flex flex-col items-center mt-8 space-y-4">
+                    <p className="text-md font-medium text-[#006400] text-center">
+                        Please enter your new password below
+                    </p>
+
                     <input
                         type="password"
                         value={newPassword}
                         onChange={handlePasswordChange}
-                        className="w-full p-4 border border-gray-300 rounded-md text-lg"
+                        className="w-full p-4 border border-gray-300 rounded-md text-lg focus:ring-2 focus:ring-green-500"
                         placeholder="Enter new password"
                     />
                     {error && newPassword.length < 8 && (
@@ -104,7 +127,7 @@ const ResetPassword = () => {
                     )}
                     <button
                         onClick={handleResetPassword}
-                        className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg mt-4"
+                        className="w-full p-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-transform transform hover:scale-105 hover:shadow-md"
                     >
                         Reset Password
                     </button>
@@ -112,9 +135,10 @@ const ResetPassword = () => {
 
                 {/* Success Message */}
                 {isSuccess && (
-                    <div className="mt-4 p-2 bg-green-200 text-green-700 border-2 border-green-500 rounded-md flex items-center justify-center">
-                        <span className="mr-2">✔️</span>
-                        <span>{successMessage}</span>
+                    <div
+                        className="mt-6 p-3 bg-green-100 text-green-800 border border-green-500 rounded-md flex items-center justify-center space-x-2">
+                        <span className="text-xl">✅</span>
+                        <span className="text-sm font-medium">{successMessage}</span>
                     </div>
                 )}
             </div>

@@ -8,6 +8,45 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const searchRef = useRef(null);
 
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+          images[item.replace('./', '')] = r(item);
+        });
+        return images;
+    };
+    const formatPrice = (price) => {
+        if (typeof price === "number") {
+            return price.toFixed(2); 
+        }
+        return parseFloat(price).toFixed(2); 
+    };
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+
+        if (path.startsWith("data:image")) {
+            return path; 
+        }
+
+        const filename = path.split('/').pop();
+        console.log("Filename extracted:", filename);
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));  
+
+        if (!imagePath) {
+            console.error(`Resim bulunamadı: ${filename}`);
+            return '/placeholder.png';  
+        }
+
+        console.log("Image path:", imagePath); 
+        return images[imagePath] || '/placeholder.png';
+    };
+
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -23,18 +62,16 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
     }, []);
 
     useEffect(() => {
-
         if (query) {
             const searchTerms = query.toLowerCase().split(" ");
             const filtered = products.filter((product) => {
-                const productName = product.name.toLowerCase();
+        
+                const productName = product.productName.toLowerCase();
                 const productCategory = product.category.toLowerCase();
-
 
                 return searchTerms.some((term) =>
                     productName.includes(term) ||
                     productCategory.includes(term)
-
                 );
             });
 
@@ -57,10 +94,8 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
             e.preventDefault();
 
             if (selectedIndex >= 0 && suggestions[selectedIndex]) {
-
                 handleProductClick(suggestions[selectedIndex]);
             } else {
-
                 setShowSuggestions(false);
 
                 const searchResult = document.getElementById("search-results");
@@ -98,10 +133,8 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
         setShowSuggestions(false);
     };
 
-
     const handleSearchButtonClick = () => {
         setShowSuggestions(false);
-
 
         const searchResult = document.getElementById("search-results");
         if (searchResult) {
@@ -130,7 +163,6 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                             onClick={clearSearch}
                         >
-                            ×
                         </button>
                     )}
                 </div>
@@ -154,15 +186,15 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                             onClick={() => handleProductClick(product)}
                         >
                             <img
-                                src={product.image}
-                                alt={product.name}
+                                src={getImageFromPath(product.imagePath)}
+                                alt={product.productName}
                                 className="w-8 h-8 rounded object-cover"
                             />
                             <div className="flex-grow">
-                                <p className="text-sm font-medium">{product.name}</p>
+                                <p className="text-sm font-medium">{product.productName}</p>
                                 <p className="text-xs text-gray-500">{product.category}</p>
                             </div>
-                            <span className="text-xs text-green-600">₺{product.price}</span>
+                            <span className="text-xs text-green-600">₺{formatPrice(product.price)}</span>
                         </li>
                     ))}
                 </ul>

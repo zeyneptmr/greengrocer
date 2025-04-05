@@ -93,14 +93,14 @@ const SearchBar = () => {
     const handleSearch = async (e) => {
         const searchTerm = e.target.value.toLowerCase();
         setQuery(searchTerm);
-        setSelectedIndex(-1); // Reset selected index when typing
+        setSelectedIndex(-1); 
 
         if (searchTerm.length > 0) {
             setShowSuggestions(true);
             setLoading(true);
 
             try {
-                // Server-side search using backend API
+            
                 const response = await fetch(`${API_BASE_URL}/api/products/search/name?productName=${searchTerm}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -120,7 +120,7 @@ const SearchBar = () => {
                 setFilteredProducts(transformedProducts);
             } catch (error) {
                 console.error("Error searching products:", error);
-                // Fallback to client-side filtering if API fails
+        
                 const searchTerms = searchTerm.split(" ");
                 const filtered = products.filter((product) => {
                     const productName = product.name.toLowerCase();
@@ -139,21 +139,22 @@ const SearchBar = () => {
     };
 
     const handleKeyDown = (e) => {
-        if (filteredProducts.length === 0) return;
-
         if (e.key === "Enter") {
             e.preventDefault();
-
+    
             if (selectedIndex >= 0 && selectedIndex < filteredProducts.length) {
-                // Açık bir şekilde seçilen ürünü al
+            
                 const selectedProduct = filteredProducts[selectedIndex];
                 handleProductClick(selectedProduct);
-            } else if (filteredProducts.length > 0) {
-                navigate("/search-results", { state: { results: filteredProducts } });
-                setShowSuggestions(false);
-                setQuery("");
             } else if (query) {
-                navigate(`/search-results?query=${query}`);
+                
+                navigate(`/search-results`, { 
+                    state: { 
+                        results: filteredProducts,
+                        query: query 
+                    }
+                });
+                setShowSuggestions(false);
                 setQuery("");
             }
         } else if (e.key === "ArrowDown") {
@@ -172,12 +173,14 @@ const SearchBar = () => {
     };
 
     const handleSearchClick = () => {
-        if (filteredProducts.length > 0) {
-            navigate("/search-results", { state: { results: filteredProducts } });
+        if (query) {
+            navigate("/search-results", { 
+                state: { 
+                    results: filteredProducts,
+                    query: query 
+                }
+            });
             setShowSuggestions(false);
-            setQuery("");
-        } else if (query) {
-            navigate(`/search-results?query=${query}`);
             setQuery("");
         }
     };

@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Upload, CheckCircle } from "lucide-react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
-import ProductStorage from "../helpers/ProductStorage";
+
+// Base API URL
+const API_URL = "http://localhost:8080";
 
 const AddProductPage = () => {
     const [product, setProduct] = useState({
-        name: "",
+        productName: "",
         price: "",
         category: "",
-        image: "",
+        imagePath: "",
     });
 
-    
     const [imagePreview, setImagePreview] = useState(null);
     const [showNotification, setShowNotification] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    
+
     useEffect(() => {
-        const uniqueCategories = ProductStorage.getCategories();
-        setCategories(uniqueCategories);
+        fetchCategories();
     }, []);
-
 
     useEffect(() => {
         if (showNotification) {
@@ -34,6 +35,19 @@ const AddProductPage = () => {
         }
     }, [showNotification]);
 
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/products`);
+            const products = response.data;
+            
+            
+            const uniqueCategories = [...new Set(products.map(product => product.category))];
+            setCategories(uniqueCategories);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -62,35 +76,58 @@ const AddProductPage = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
+                
+                const imagePath = `../assets/${file.name}`;
                 setProduct(prev => ({
                     ...prev,
-                    image: reader.result
+                    imagePath: imagePath
                 }));
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setIsLoading(true);
 
-        if (!product.name || !product.price || !product.category || !product.image) {
+        
+        if (!product.productName || !product.price || !product.category || !product.imagePath) {
             alert("Please fill in all fields.");
+            setIsLoading(false);
             return;
         }
 
-        const newProduct = ProductStorage.addProduct(product);
+        try {
+            
+            const productToSave = {
+                productName: product.productName,
+                price: parseFloat(product.price),
+                category: product.category,
+                imagePath: product.imagePath,
+                stock: 100  
+            };
 
-        setShowNotification(true);
+        
+            await axios.post(`${API_URL}/api/products`, productToSave);
 
-        setProduct({
-            name: "",
-            price: "",
-            category: "",
-            image: "",
-        });
-        setImagePreview(null);
+    
+            setShowNotification(true);
+
+        
+            setProduct({
+                productName: "",
+                price: "",
+                category: "",
+                imagePath: "",
+            });
+            setImagePreview(null);
+        } catch (error) {
+            console.error("Error adding product:", error);
+            alert("Failed to add product. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -123,12 +160,12 @@ const AddProductPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {/* Product Name Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
+                                <label htmlFor="productName" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
                                 <input
-                                    id="name"
+                                    id="productName"
                                     type="text"
-                                    name="name"
-                                    value={product.name}
+                                    name="productName"
+                                    value={product.productName}
                                     onChange={handleChange}
                                     className="mt-1 p-2 w-64 border border-gray-300 rounded-lg text-sm"
                                     required
@@ -208,8 +245,9 @@ const AddProductPage = () => {
                         <button 
                             type="submit" 
                             className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
+                            disabled={isLoading}
                         >
-                            Add Product
+                            {isLoading ? 'Adding Product...' : 'Add Product'}
                         </button>
                     </form>
                 </div>
