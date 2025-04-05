@@ -14,7 +14,6 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
     const [serverCode, setServerCode] = useState('');
     const navigate = useNavigate();
     const [codeVerified, setCodeVerified] = useState(false); // Başarı mesajı durumu
-
     const [isResetPassword, setIsResetPassword] = useState(false);
 
 
