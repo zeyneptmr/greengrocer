@@ -18,4 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Role'e göre kullanıcı var mı diye kontrol eder
     boolean existsByRole(String role);  // Burada yeni eklenen metod
+
+    // Role'e göre kullanıcı sayısını döndüren yeni metot
+    long countByRole(String role);  // Yeni eklenen metot
 }

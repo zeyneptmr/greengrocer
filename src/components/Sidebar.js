@@ -1,8 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Users, LogOut, MessageCircle } from "lucide-react";
+import { Package, Box, Home, Users, LogOut, MessageCircle } from "lucide-react";
 import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
+import { FaTag, FaPercent, FaBolt, FaDollarSign, FaBox, } from 'react-icons/fa';
+import { MdAttachMoney, MdLocalOffer, MdTag, MdPercent , MdStore, MdShoppingBasket} from 'react-icons/md';
+
 import axios from "axios";
 
 const Sidebar = () => {
@@ -58,7 +61,7 @@ const Sidebar = () => {
                     {role === "MANAGER" ?  (
                         <li>
                             <Link to="/manager/inventory" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
-                                <Users size={25} />
+                                <Package size={25} />
                                 <span>Inventory</span>
                             </Link>
                         </li>
@@ -67,30 +70,43 @@ const Sidebar = () => {
                             <Link to="/admin/displayproducts" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
                                 <NotebookText size={25} />
                                 <span>Display Products</span>
+
                             </Link>
                         </li>
+
                     )}
 
                     {role === "MANAGER" ?  (
                         <>
                             <li>
-                                <Link to="/manager/customer-order" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
-                                    <ClipboardList size={25} />
+                                <Link to="/manager/discounts"
+                                      className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
+                                    <MdPercent size={25}/>
+                                    <span>Discounts</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/manager/customer-order"
+                                      className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
+                                    <ClipboardList size={25}/>
                                     <span>Customer Orders</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/manager/customer-feedback" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
-                                    <MessageCircle size={25} />
+                                <Link to="/manager/customer-feedback"
+                                      className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
+                                    <MessageCircle size={25}/>
                                     <span>Customer Feedback</span>
                                 </Link>
                             </li>
+
                         </>
                     ) : (
                         role === "ADMIN" && (
                             <>
                                 <li>
-                                    <Link to="/admin/addproducts" className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
+                                    <Link to="/admin/addproducts"
+                                          className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
                                         <Plus size={20} />
                                         <span>Add Products</span>
                                     </Link>
