@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Clock from "../components/Clock";
@@ -140,7 +139,7 @@ const AdminPage = () => {
                                     key={category.name} 
                                     className={`rounded-lg p-4 border ${getCategoryColor(index)} flex justify-between items-center`}
                                 >
-                                    <div>
+                                    <div className="w-full">
                                         <h3 className="font-semibold text-lg">{category.name}</h3>
                                         <p className="text-sm opacity-75">Category</p>
                                     </div>
