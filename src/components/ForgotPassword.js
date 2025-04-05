@@ -61,10 +61,10 @@ const handleSendCode = async () => {
             setIsCodeSent(true);
             setCountdown(300);
             
-            // Önceki zamanlayıcıyı temizle (varsa)
+   
             clearInterval(window.countdownTimer);
             
-            // Global değişkende zamanlayıcıyı tut ki sonradan temizleyebilelim
+ 
             window.countdownTimer = setInterval(() => {
                 setCountdown((prev) => {
                     if (prev <= 1) {
@@ -91,7 +91,7 @@ const handleSendCode = async () => {
     }
 };
 
-  // Resend verification code and reset countdown
+  
 const handleResendCode = async () => {
     try {
         const response = await axios.post(
@@ -107,13 +107,13 @@ const handleResendCode = async () => {
 
         if (response.status === 200) {
             setServerCode(response.data.code);
-            setCountdown(300);  // Direkt olarak 300 saniye ayarla
-            setVerificationCode(''); // Önceki doğrulama kodunu temizle
+            setCountdown(300);  
+            setVerificationCode(''); 
             
-            // Mevcut zamanlayıcıyı temizle (önemli)
+
             clearInterval(window.countdownTimer);
             
-            // Yeni zamanlayıcı oluştur
+          
             window.countdownTimer = setInterval(() => {
                 setCountdown((prev) => {
                     if (prev <= 1) {
@@ -145,11 +145,11 @@ const handleResendCode = async () => {
             return;
         }
 
-        // Backend'e email ve doğrulama kodunu gönder
+        
         try {
             const response = await axios.post(
                 `http://localhost:8080/api/mail/verifyCode?email=${email}&code=${verificationCode}`,
-                {},  // Boş body, query parametreleri URL üzerinden gönderiyoruz
+                {},  
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -157,22 +157,21 @@ const handleResendCode = async () => {
                     withCredentials: true,
                 }
             );
-
-            console.log(response);  // Yanıtı logla
+            console.log(response);  
 
             if (response.data.error) {
-                setCodeError(response.data.error);  // Backend'ten gelen hata mesajını kullanın
-                setCodeVerified(false);  // Hata olduğunda, başarı mesajını gizle
+                setCodeError(response.data.error);  
+                setCodeVerified(false);  
             } else {
-                setCodeVerified(true);  // Başarı mesajını göster
+                setCodeVerified(true);  
                 setTimeout(() => {
                     setIsResetPassword(true);
-                }, 2000);  // 2 saniye sonra yönlendir
+                }, 2000);  
             }
         } catch (error) {
             console.error(error);
             setCodeError('An error occurred while verifying the code.');
-            setCodeVerified(false);  // Hata durumunda başarı mesajını gizle
+            setCodeVerified(false);  
         }
     };
 
@@ -182,7 +181,6 @@ const handleResendCode = async () => {
         newCode[index] = e.target.value;
         setVerificationCode(newCode.join(''));
 
-        // Move focus to the next input if the code is valid
         if (e.target.value && index < 5) {
             document.getElementById(`input-${index + 1}`).focus();
         }
@@ -191,14 +189,12 @@ const handleResendCode = async () => {
     const handleKeyPress = (e, index) => {
         if (e.key === 'Enter') {
             if (!isCodeSent) {
-                // Trigger the send code if email is entered and valid
                 handleSendCode();
             } else {
-                // Move to the next input for verification code if not the last input
+                
                 if (index < 5) {
                     document.getElementById(`input-${index + 1}`).focus();
                 } else {
-                    // Verify the code when "Enter" is pressed on the last input
                     handleVerifyCode();
                 }
             }
@@ -278,7 +274,7 @@ const handleResendCode = async () => {
                         {/* Error message */}
                         {codeError && <div className="text-red-500 text-sm mt-1">{codeError}</div>}
                         
-                        {/* Countdown Timer - MOVED ABOVE the buttons */}
+                        {/* Countdown Timer */}
                         <div className="text-center my-2">
                             <p className="text-sm">Time left: {countdown}s</p>
                         </div>

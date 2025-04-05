@@ -43,7 +43,6 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
 
         setError('');
 
-        // Backend'e reset password isteği gönderme
         try {
             const response = await axios.post(
                 `http://localhost:8080/api/mail/resetPassword?newPassword=${newPassword}`,
@@ -62,7 +61,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                 setSuccessMessage(response.data.message || 'Password reset successfully.');
                 setIsSuccess(true);
                 setTimeout(() => {
-                    handleCloseAll(); // Close all modals
+                    handleCloseAll(); 
                 }, 2000);
             } else {
                 console.error('Error occurred:', error);
@@ -76,15 +75,15 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
         }
     };
 
-    // Handle the close button click - close this modal
+
     const handleClose = () => {
-        onClose(); // Close this modal
+        onClose(); 
     };
 
-    // Handle the X button click - close all modals
+
     const handleCloseAll = () => {
-        onClose(); // Close this modal
-        if (closeParentModal) closeParentModal(); // Also close all parent modals
+        onClose(); 
+        if (closeParentModal) closeParentModal(); 
     };
 
     return (
