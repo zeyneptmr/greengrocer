@@ -3,6 +3,8 @@ import { Upload, CheckCircle } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
 import ProductStorage from "../helpers/ProductStorage";
+import axios from "axios"; // axios import edildi
+
 
 const AddProductPage = () => {
     const [product, setProduct] = useState({
@@ -12,17 +14,27 @@ const AddProductPage = () => {
         image: "",
     });
 
-    
     const [imagePreview, setImagePreview] = useState(null);
     const [showNotification, setShowNotification] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    
+    // Kategorileri API'den çekme
     useEffect(() => {
-        const uniqueCategories = ProductStorage.getCategories();
-        setCategories(uniqueCategories);
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/products/categories`);
+                setCategories(response.data);
+            } catch (error) {
+                console.error("Kategoriler yüklenirken hata:", error);
+                // Hata durumunda yedek olarak local storage'dan kategorileri al
+                const localCategories = ProductStorage.getCategories();
+                setCategories(localCategories);
+            }
+        };
+        
+        fetchCategories();
     }, []);
-
 
     useEffect(() => {
         if (showNotification) {
@@ -33,7 +45,6 @@ const AddProductPage = () => {
             return () => clearTimeout(timer);
         }
     }, [showNotification]);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -71,26 +82,48 @@ const AddProductPage = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
-
         if (!product.name || !product.price || !product.category || !product.image) {
-            alert("Please fill in all fields.");
+            alert("Please fill in all fields");
             return;
         }
 
-        const newProduct = ProductStorage.addProduct(product);
+        setIsLoading(true);
 
-        setShowNotification(true);
-
-        setProduct({
-            name: "",
-            price: "",
-            category: "",
-            image: "",
-        });
-        setImagePreview(null);
+        try {
+            // Ürünü API'ye gönderme
+            const productData = {
+                name: product.name,
+                price: parseFloat(product.price),
+                category: product.category,
+                image: product.image, // Base64 formatında resim gönderiliyor
+            };
+            
+            await axios.post(`http://localhost:8080/api/products/`, productData);
+            
+            // Başarı bildirimi gösterme
+            setShowNotification(true);
+            
+            // Formu temizleme
+            setProduct({
+                name: "",
+                price: "",
+                category: "",
+                image: "",
+            });
+            setImagePreview(null);
+        } catch (error) {
+            console.error("Ürün eklenirken hata:", error);
+            alert("The product could not be added. Please try again.");
+            
+            // Hata durumunda yedek olarak local storage'a kaydet
+            ProductStorage.addProduct(product);
+            setShowNotification(true);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -191,7 +224,7 @@ const AddProductPage = () => {
                                     {imagePreview ? (
                                         <img 
                                             src={imagePreview} 
-                                            alt="Preview" 
+                                            alt="Önizleme" 
                                             className="max-w-full max-h-full object-contain"
                                         />
                                     ) : (
@@ -208,8 +241,9 @@ const AddProductPage = () => {
                         <button 
                             type="submit" 
                             className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
+                            disabled={isLoading}
                         >
-                            Add Product
+                            {isLoading ? "Product is Adding." : " Add Product"}
                         </button>
                     </form>
                 </div>
