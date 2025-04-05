@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ResetPassword from './ResetPassword'; // Update the path according to your project structure
+import ResetPassword from './ResetPassword';
 
 import axios from 'axios';
 
-const ForgotPassword = ({ onClose }) => {
+const ForgotPassword = ({ onClose, closeParentModal }) => {
     const [email, setEmail] = useState('');
     const [isCodeSent, setIsCodeSent] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
@@ -16,6 +16,14 @@ const ForgotPassword = ({ onClose }) => {
     const [codeVerified, setCodeVerified] = useState(false); // Başarı mesajı durumu
 
     const [isResetPassword, setIsResetPassword] = useState(false);
+
+
+    useEffect(() => {
+        return () => {
+            clearInterval(window.countdownTimer);
+        };
+    }, []);
+
 
     // Email input change handler
     const handleEmailChange = (e) => {
@@ -30,53 +38,106 @@ const ForgotPassword = ({ onClose }) => {
         }
     };
 
-    // Send verification code
-    const handleSendCode = async () => {
-        if (!email) {
-            setEmailError('Please provide a valid email address.');
-            return;
-        }
-        try {
-            const response = await axios.post(
-                `http://localhost:8080/api/mail/sendVerificationCode?email=${email}`,  // Email'i URL'de query parametre olarak gönder
-                {},  // Body boş
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                }
-            );
-
-            console.log(response);  // Yanıtı logla
-            if (response.status === 200) {
-                setServerCode(response.data.code);
-                setIsCodeSent(true);
-                setCountdown(300);
-                const timer = setInterval(() => {
-                    setCountdown((prev) => {
-                        if (prev <= 1) {
-                            clearInterval(timer);
-                            return 0;
-                        }
-                        return prev - 1;
-                    });
-                }, 1000);
-            } else {
-                setEmailError(response.data.message || 'Email not found.');
+   // Send verification code
+const handleSendCode = async () => {
+    if (!email) {
+        setEmailError('Please provide a valid email address.');
+        return;
+    }
+    try {
+        const response = await axios.post(
+            `http://localhost:8080/api/mail/sendVerificationCode?email=${email}`,
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
             }
-        } catch (error) {
-            console.error(error);
-            setEmailError(error.response?.data?.message || 'Server error. Please try again later.');
-        }
-    };
+        );
 
-    // Resend verification code and reset countdown
-    const handleResendCode = async () => {
-        setCountdown(60);  // Reset countdown to 60 seconds
-        setVerificationCode(''); // Clear the previous verification code
-        handleSendCode();  // Resend the verification code
-    };
+        console.log(response);
+        if (response.status === 200) {
+            setServerCode(response.data.code);
+            setIsCodeSent(true);
+            setCountdown(300);
+            
+            // Önceki zamanlayıcıyı temizle (varsa)
+            clearInterval(window.countdownTimer);
+            
+            // Global değişkende zamanlayıcıyı tut ki sonradan temizleyebilelim
+            window.countdownTimer = setInterval(() => {
+                setCountdown((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(window.countdownTimer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        } else {
+            setEmailError(response.data.message || 'Email not found.');
+        }
+    } catch (error) {
+        if (error.response) {
+            const data = error.response.data;
+            if (data && typeof data.error === 'string') {
+                setEmailError(data.error); 
+            } else {
+                setEmailError('Something went wrong. Please try again.');
+            }
+        } else {
+            setEmailError('Cannot connect to the server.');
+        }
+    }
+};
+
+  // Resend verification code and reset countdown
+const handleResendCode = async () => {
+    try {
+        const response = await axios.post(
+            `http://localhost:8080/api/mail/sendVerificationCode?email=${email}`,
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+            }
+        );
+
+        if (response.status === 200) {
+            setServerCode(response.data.code);
+            setCountdown(300);  // Direkt olarak 300 saniye ayarla
+            setVerificationCode(''); // Önceki doğrulama kodunu temizle
+            
+            // Mevcut zamanlayıcıyı temizle (önemli)
+            clearInterval(window.countdownTimer);
+            
+            // Yeni zamanlayıcı oluştur
+            window.countdownTimer = setInterval(() => {
+                setCountdown((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(window.countdownTimer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+    } catch (error) {
+        if (error.response) {
+            const data = error.response.data;
+            if (data && typeof data.error === 'string') {
+                setEmailError(data.error); 
+            } else {
+                setEmailError('Something went wrong. Please try again.');
+            }
+        } else {
+            setEmailError('Cannot connect to the server.');
+        }
+    }
+};
 
     // Verify code input handler
     const handleVerifyCode = async () => {
@@ -116,7 +177,6 @@ const ForgotPassword = ({ onClose }) => {
         }
     };
 
-
     // Handle input for verification code
     const handleVerificationCodeChange = (e, index) => {
         const newCode = verificationCode.split('');
@@ -146,89 +206,104 @@ const ForgotPassword = ({ onClose }) => {
         }
     };
 
+    const handleClose = () => {
+        onClose(); 
+    };
+
+
+    const handleCloseAll = () => {
+        onClose(); 
+        if (closeParentModal) closeParentModal();
+    };
+
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500">
                 <h2 className="text-3xl font-bold text-green-600 mt-2 ">Reset Password</h2>
-                <div className="flex flex-col items-center  mt-10 space-y-4">
-                    <p className="text-lg text-[#006400] font-roboto whitespace-nowrap">Enter your email address
-                        to reset password</p>
-
-                    {/* Email input or verification code input based on state */}
-                    {!isCodeSent ? (
-                        <>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={handleEmailChange}
-                                onKeyDown={(e) => handleKeyPress(e)}
-                                className="w-full p-5 border border-gray-300 rounded-md text-lg mb-4"
-                                placeholder="Enter your email"
-                            />
-                            {/* Error message */}
-                            {emailError && (
-                                <div className="text-red-500 text-sm text-center mb-4">
-                                    {emailError}
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            <p>Enter the verification code sent to your email:</p>
-                            <div className="flex justify-center space-x-2">
-                                {[...Array(6)].map((_, index) => (
-                                    <input
-                                        key={index}
-                                        id={`input-${index}`}
-                                        type="text"
-                                        value={verificationCode[index] || ''}
-                                        onChange={(e) => handleVerificationCodeChange(e, index)}
-                                        onKeyDown={(e) => handleKeyPress(e, index)} // Handle "Enter" in code inputs
-                                        maxLength={1}
-                                        className="w-12 p-2 border-b-2 border-gray-300 text-center text-lg focus:outline-none"
-                                        placeholder="—"
-                                    />
-                                ))}
-                                {codeError && <div className="text-red-500 text-sm">{codeError}</div>}
+                
+                {!isCodeSent ? (
+                    <div className="flex flex-col items-center mt-10 space-y-4">
+                        <p className="text-lg text-[#006400] font-roboto whitespace-nowrap">
+                            Enter your email address to reset password
+                        </p>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            onKeyDown={(e) => handleKeyPress(e)}
+                            className="w-full p-5 border border-gray-300 rounded-md text-lg mb-4"
+                            placeholder="Enter your email"
+                        />
+                        {/* Error message */}
+                        {emailError && (
+                            <div className="text-red-500 text-sm text-center mb-4">
+                                {emailError}
                             </div>
-                            <div className="text-center mt-4">
-                                <p className="text-sm">Time left: {countdown}s</p>
-                            </div>
-
-                        </>
-                    )}
-                </div>
-
-                <div className="flex flex-col items-center mt-auto mb-10">
-                    {!isCodeSent ? (
-                        <button
-                            type="submit"
-                            onClick={handleSendCode}
-                            disabled={!!emailError} // Disable the button if there is an email error
-                            className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg mt-4"
-                        >
-                            Continue
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleVerifyCode}
-                            className="w-4/5 p-4 bg-green-600 text-white rounded-md"
-                        >
-                            Verify Code
-                        </button>
-                    )}
-                    {/* Send Code Again Link */}
-                    <div className="mt-2">
-                        <button
-                            onClick={handleResendCode}
-                            className="text-green-800 underline cursor-pointer">
-                            Send Code Again
-                        </button>
+                        )}
+                        
+                        {/* Continue Button */}
+                        <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center">
+                            <button
+                                type="submit"
+                                onClick={handleSendCode}
+                                disabled={!!emailError} // Disable the button if there is an email error
+                                className="w-4/5 p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                            >
+                                Continue
+                            </button>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="flex flex-col items-center mt-6 space-y-3">
+                        <p className="text-lg text-[#006400] font-roboto whitespace-nowrap">
+                            Enter the verification code sent to your email:
+                        </p>
+                        
+                        {/* Verification Code Inputs */}
+                        <div className="flex justify-center space-x-2 mt-2">
+                            {[...Array(6)].map((_, index) => (
+                                <input
+                                    key={index}
+                                    id={`input-${index}`}
+                                    type="text"
+                                    value={verificationCode[index] || ''}
+                                    onChange={(e) => handleVerificationCodeChange(e, index)}
+                                    onKeyDown={(e) => handleKeyPress(e, index)}
+                                    maxLength={1}
+                                    className="w-12 p-2 border-b-2 border-gray-300 text-center text-lg focus:outline-none"
+                                    placeholder="—"
+                                />
+                            ))}
+                        </div>
+                        
+                        {/* Error message */}
+                        {codeError && <div className="text-red-500 text-sm mt-1">{codeError}</div>}
+                        
+                        {/* Countdown Timer - MOVED ABOVE the buttons */}
+                        <div className="text-center my-2">
+                            <p className="text-sm">Time left: {countdown}s</p>
+                        </div>
+                        
+                        {/* Buttons Container */}
+                        <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center">
+                            <button
+                                onClick={handleVerifyCode}
+                                className="w-4/5 p-4 bg-green-600 text-white rounded-md mb-2"
+                            >
+                                Verify Code
+                            </button>
+                            <button
+                                onClick={handleResendCode}
+                                className="text-green-800 underline cursor-pointer mt-2"
+                            >
+                                Send Code Again
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <button
-                    onClick={onClose}
+                    onClick={handleCloseAll}
                     className="absolute top-2 right-2 text-xl text-gray-500"
                 >
                     &times;
@@ -237,9 +312,13 @@ const ForgotPassword = ({ onClose }) => {
 
             {/* Conditionally render the ResetPassword modal */}
             {isResetPassword && (
-                <ResetPassword onClose={() => setIsResetPassword(false)} />
+                <ResetPassword 
+                    onClose={() => {
+                        setIsResetPassword(false);
+                    }}
+                    closeParentModal={handleCloseAll}
+                />
             )}
-
         </div>
     );
 };

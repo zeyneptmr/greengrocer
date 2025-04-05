@@ -29,6 +29,7 @@
     "react-toastify": "^11.0.5",
     "react-world-flags": "^1.6.0",
     "recharts": "^2.15.1",
+    "redis": "^4.7.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ResetPassword = () => {
+const ResetPassword = ({ onClose, closeParentModal }) => {
     const [newPassword, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(true); // Modal durumunu kontrol etmek için state
-    const [successMessage, setSuccessMessage] = useState(''); // Başarı mesajı
-    const [isSuccess, setIsSuccess] = useState(false); // Success durumunu kontrol etmek için state
+    const [successMessage, setSuccessMessage] = useState(''); 
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
@@ -39,14 +38,24 @@ const ResetPassword = () => {
 
         // Backend'e reset password isteği gönderme
         try {
-            const response = await axios.post(`http://localhost:8080/api/mail/resetPassword?newPassword=${newPassword}`);
+            const response = await axios.post(
+                `http://localhost:8080/api/mail/resetPassword?newPassword=${newPassword}`,
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            );
+            
             console.log("Response:", response);
             if (response.status === 200) {
                 console.log("it is ok:");
                 setSuccessMessage(response.data.message || 'Password reset successfully.');
                 setIsSuccess(true);
                 setTimeout(() => {
-                    closeModal(); // Modalı otomatik olarak kapat
+                    handleCloseAll(); // Close all modals
                 }, 2000);
             } else {
                 console.error('Error occurred:', error);
@@ -60,18 +69,22 @@ const ResetPassword = () => {
         }
     };
 
-    // Modalı kapatacak fonksiyon
-    const closeModal = () => {
-        setIsModalOpen(false); // Modal'ı kapatmak için state'i false yapıyoruz
+    // Handle the close button click - close this modal
+    const handleClose = () => {
+        onClose(); // Close this modal
     };
 
-    if (!isModalOpen) return null;
+    // Handle the X button click - close all modals
+    const handleCloseAll = () => {
+        onClose(); // Close this modal
+        if (closeParentModal) closeParentModal(); // Also close all parent modals
+    };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500 z-60">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500">
                 <button
-                    onClick={closeModal}
+                    onClick={handleCloseAll}
                     className="absolute top-2 right-2 text-2xl text-gray-500 hover:text-gray-800"
                 >
                     &times;
