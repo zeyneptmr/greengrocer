@@ -42,11 +42,6 @@ public class ProductController {
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<Product> addProduct(@RequestBody ProductDTO productDTO) {
-        Product product = productService.addProduct(productDTO.getProduct(), productDTO.getPrice(), productDTO.getDiscountPrice(), productDTO.getDiscountRate());
-        return ResponseEntity.status(201).body(product);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {

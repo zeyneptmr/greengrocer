@@ -8,23 +8,20 @@ import org.example.greengrocer.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.example.greengrocer.model.DiscountedProduct;
-
-
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
     
     private final ProductRepository productRepository;
-    private final DiscountedProductService discountedProductService;
+
 
 
     @Autowired
-    public ProductService(ProductRepository productRepository,  DiscountedProductService discountedProductService)
+    public ProductService(ProductRepository productRepository)
     {
         this.productRepository = productRepository;
-        this.discountedProductService = discountedProductService;
+
     }
     
     public List<Product> getAllProducts() {
@@ -35,23 +32,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    @Transactional
-    // Yeni bir ürün eklerken, ona bağlı DiscountedProduct ekle
-    public Product addProduct(Product product, double oldPrice, double discountedPrice, int discountRate) {
-        // Ürünü kaydet
-        Product savedProduct = productRepository.save(product);
-
-        // İlgili DiscountedProduct'ı oluştur ve kaydet
-        DiscountedProduct discountedProduct = new DiscountedProduct();
-        discountedProduct.setProduct(product); // varsa, ilişkili ürün
-        discountedProduct.setDiscountRate(discountRate);
-        discountedProduct.setDiscountedPrice(discountedPrice);
-        discountedProduct.setDuration(duration); // bu alan varsa ekle
-
-        discountedProductService.addDiscountedProduct(discountedProduct);
-
-        return savedProduct;
-    }
     
     public Product updateProduct(Product product) {
         return productRepository.save(product);
