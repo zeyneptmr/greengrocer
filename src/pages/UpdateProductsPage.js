@@ -1,35 +1,83 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Edit, Trash2 } from "lucide-react";
+import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import Sidebar from "../components/Sidebar";
-import ProductStorage from "../helpers/ProductStorage";
 import AdminSearchBar from "../components/AdminSearchBar";
 
 const UpdateProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [categorizedProducts, setCategorizedProducts] = useState({});
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+          images[item.replace('./', '')] = r(item);
+        });
+        return images;
+    };
+
+    const formatPrice = (price) => {
+        if (typeof price === "number") {
+            return price.toFixed(2); 
+        }
+        return parseFloat(price).toFixed(2); 
+    };
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+
+        if (path.startsWith("data:image")) {
+            return path;  // Doğrudan Base64 resmini döndür
+        }
+
+        const filename = path.split('/').pop();
+        console.log("Filename extracted:", filename);
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));  // Dosya adıyla eşleşen anahtar
+
+        if (!imagePath) {
+            console.error(`Resim bulunamadı: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+
+        console.log("Image path:", imagePath); // Bu noktada imagePath doğru olmalı
+        return images[imagePath] || '/placeholder.png';
+    };
+
+    
 
     useEffect(() => {
-       
-        const allProducts = ProductStorage.getProducts();
-        setProducts(allProducts);
-        
-     
-        const grouped = categorizeProducts(allProducts);
-        setCategorizedProducts(grouped);
+        fetchProducts();
     }, []);
 
-
     useEffect(() => {
-        const grouped = categorizeProducts(filteredProducts);
+        const grouped = categorizeProducts(filteredProducts.length > 0 ? filteredProducts : products);
         setCategorizedProducts(grouped);
-    }, [filteredProducts]);
+    }, [filteredProducts, products]);
+
+    const fetchProducts = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:8080/api/products');
+            setProducts(response.data);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching products:", err);
+            setError("Failed to load products. Please try again later.");
+            setLoading(false);
+        }
+    };
 
     const categorizeProducts = (products) => {
         return products.reduce((acc, product) => {
-         
             const category = product.category.toUpperCase();
             
             if (!acc[category]) {
@@ -40,21 +88,34 @@ const UpdateProductsPage = () => {
         }, {});
     };
 
-    const handleDelete = (productId) => {
+    const handleDelete = async (productId) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
-           
-            const updatedProducts = ProductStorage.deleteProduct(productId);
-            
-           
-            setProducts(updatedProducts);
-            
-           
-            const grouped = categorizeProducts(updatedProducts);
-            setCategorizedProducts(grouped);
-            
-            alert("The product was successfully deleted!");
+            try {
+                await axios.delete(`http://localhost:8080/api/products/${productId}`);
+                
+                // Refetch products or update state
+                const updatedProducts = products.filter(product => product.id !== productId);
+                setProducts(updatedProducts);
+                
+                alert("The product was successfully deleted!");
+            } catch (err) {
+                console.error("Error deleting product:", err);
+                alert("Failed to delete product. Please try again.");
+            }
         }
     };
+
+    if (loading) return (
+        <div className="flex h-screen items-center justify-center bg-gray-100">
+            <div className="text-xl font-semibold text-gray-700">Loading products...</div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="flex h-screen items-center justify-center bg-gray-100">
+            <div className="text-xl font-semibold text-red-600">{error}</div>
+        </div>
+    );
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -95,14 +156,14 @@ const UpdateProductsPage = () => {
                                         >
                                             <div className="w-full h-32 flex justify-center items-center">
                                                 <img 
-                                                    src={product.image} 
-                                                    alt={product.name} 
-                                                    className="w-auto h-32 object-contains"
+                                                    src={getImageFromPath(product.imagePath)} 
+                                                    alt={product.productName} 
+                                                    className="w-auto h-32 object-contain"
                                                 />
                                             </div>
                                             <div className="p-4">
-                                                <h4 className="text-md font-semibold mb-1">{product.name}</h4>
-                                                <p className="text-green-600 font-medium">{parseFloat(product.price).toFixed(2)} TL</p>
+                                                <h4 className="text-md font-semibold mb-1">{product.productName}</h4>
+                                                <p className="text-green-600 font-medium">{formatPrice(product.price)} TL</p>
                                             </div>
                                             <div className="flex border-t border-gray-200">
                                                 <Link 
@@ -137,3 +198,8 @@ const UpdateProductsPage = () => {
 };
 
 export default UpdateProductsPage;
+
+
+
+
+

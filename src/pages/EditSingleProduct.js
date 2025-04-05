@@ -1,35 +1,102 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ProductStorage from "../helpers/ProductStorage";
+import axios from "axios";
 import Sidebar from "../components/Sidebar"; 
 
 const EditProductPage = () => {
     const { id } = useParams(); 
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
+
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+          images[item.replace('./', '')] = r(item);
+        });
+        return images;
+    };
+
+    const formatPrice = (price) => {
+        if (price === undefined || price === null) return "";
+        return parseFloat(price).toFixed(2);
+    };
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+
+        // Base64 kontrolü
+        if (path.startsWith("data:image")) {
+            return path;
+        }
+
+        const filename = path.split('/').pop();
+        console.log("Filename extracted:", filename);
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Resim bulunamadı: ${filename}`);
+            return '/placeholder.png';
+        }
+
+        console.log("Image path:", imagePath);
+        return images[imagePath] || '/placeholder.png';
+    };
 
     const [product, setProduct] = useState({
-        name: "",
+        productName: "",
         price: "",
         category: "",
-        image: "",
+        imagePath: "",
+        stock: 0
     });
 
     const [categories, setCategories] = useState([]); 
 
     useEffect(() => {
-     
-        setCategories(ProductStorage.getCategories());
-
-     
-        const productId = parseInt(id, 10);
-        if (!isNaN(productId)) {
-            const allProducts = ProductStorage.getProducts();
-            const foundProduct = allProducts.find((p) => p.id === productId);
-            if (foundProduct) {
-                setProduct(foundProduct);
-            }
-        }
+        fetchProduct();
+        extractCategories();
     }, [id]);
+
+   
+    useEffect(() => {
+        if (product.imagePath) {
+            const imageUrl = getImageFromPath(product.imagePath);
+            setPreviewImage(imageUrl);
+        }
+    }, [product.imagePath]);
+
+    const extractCategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/products');
+            const uniqueCategories = [...new Set(response.data.map(product => product.category))];
+            setCategories(uniqueCategories);
+        } catch (err) {
+            console.error("Error fetching categories:", err);
+            setError("Failed to load categories. Please try again later.");
+        }
+    };
+
+    const fetchProduct = async () => {
+        try {
+            setLoading(true);
+            const productId = parseInt(id, 10);
+            if (!isNaN(productId)) {
+                const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
+                setProduct(response.data);
+            }
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching product:", err);
+            setError("Failed to load product. Please try again later.");
+            setLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
@@ -38,20 +105,54 @@ const EditProductPage = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setSelectedFile(file);
+            
+            const newImagePath = `../assets/${file.name}`;
+            setProduct({ ...product, imagePath: newImagePath });
+            
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProduct({ ...product, image: reader.result });
+                setPreviewImage(reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        ProductStorage.updateProduct(product);
-        alert("Product updated successfully!");
-        navigate("/admin/updateproducts");
+        
+        try {
+            
+            const productData = { ...product };
+            
+            // Ürünü güncelle
+            await axios.put(`http://localhost:8080/api/products/${product.id}`, productData);
+            
+            alert("Product updated successfully!");
+            navigate("/admin/updateproducts");
+        } catch (err) {
+            console.error("Error updating product:", err);
+            alert("Failed to update product. Please try again.");
+        }
     };
+
+    if (loading) return (
+        <div className="flex min-h-screen bg-gray-100">
+            <Sidebar />
+            <div className="flex-1 flex items-center justify-center">
+                <div className="text-xl font-semibold text-gray-700">Loading product data...</div>
+            </div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="flex min-h-screen bg-gray-100">
+            <Sidebar />
+            <div className="flex-1 flex items-center justify-center">
+                <div className="text-xl font-semibold text-red-600">{error}</div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -69,10 +170,11 @@ const EditProductPage = () => {
                             <label className="block text-gray-600 text-sm font-medium">Product Name</label>
                             <input
                                 type="text"
-                                name="name"
-                                value={product.name}
+                                name="productName"
+                                value={product.productName}
                                 onChange={handleChange}
                                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                                required
                             />
                         </div>
 
@@ -82,10 +184,12 @@ const EditProductPage = () => {
                             <input
                                 type="number"
                                 name="price"
-                                value={product.price}
+                                value={formatPrice(product.price)}
                                 onChange={handleChange}
                                 min="0"
+                                step="0.01"
                                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                                required
                             />
                         </div>
 
@@ -97,6 +201,7 @@ const EditProductPage = () => {
                                 value={product.category}
                                 onChange={handleChange}
                                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+                                required
                             >
                                 <option value="" disabled>Select Category</option> 
                                 {categories.map((cat, index) => (
@@ -116,14 +221,19 @@ const EditProductPage = () => {
                                 onChange={handleFileChange}
                                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
                             />
+                            {selectedFile && (
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Selected file: {selectedFile.name}
+                                </p>
+                            )}
                         </div>
 
                         {/* Image Preview */}
-                        {product.image && (
+                        {previewImage && (
                             <div className="flex justify-center">
                                 <img
-                                    src={product.image}
-                                    alt="Product"
+                                    src={previewImage}
+                                    alt="Product Preview"
                                     className="w-40 h-40 object-cover rounded-lg shadow-md"
                                 />
                             </div>
