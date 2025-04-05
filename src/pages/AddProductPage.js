@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Upload, CheckCircle } from "lucide-react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
-import ProductStorage from "../helpers/ProductStorage";
-import axios from "axios"; // axios import edildi
 
+// Base API URL
+const API_URL = "http://localhost:8080";
 
 const AddProductPage = () => {
     const [product, setProduct] = useState({
-        name: "",
+        productName: "",
         price: "",
         category: "",
-        image: "",
+        imagePath: "",
     });
 
     const [imagePreview, setImagePreview] = useState(null);
@@ -19,20 +20,8 @@ const AddProductPage = () => {
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Kategorileri API'den çekme
+
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/products/categories`);
-                setCategories(response.data);
-            } catch (error) {
-                console.error("Kategoriler yüklenirken hata:", error);
-                // Hata durumunda yedek olarak local storage'dan kategorileri al
-                const localCategories = ProductStorage.getCategories();
-                setCategories(localCategories);
-            }
-        };
-        
         fetchCategories();
     }, []);
 
@@ -45,6 +34,20 @@ const AddProductPage = () => {
             return () => clearTimeout(timer);
         }
     }, [showNotification]);
+
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/products`);
+            const products = response.data;
+            
+            
+            const uniqueCategories = [...new Set(products.map(product => product.category))];
+            setCategories(uniqueCategories);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,9 +76,11 @@ const AddProductPage = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
+                
+                const imagePath = `../assets/${file.name}`;
                 setProduct(prev => ({
                     ...prev,
-                    image: reader.result
+                    imagePath: imagePath
                 }));
             };
             reader.readAsDataURL(file);
@@ -84,43 +89,42 @@ const AddProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+
         
-        if (!product.name || !product.price || !product.category || !product.image) {
-            alert("Please fill in all fields");
+        if (!product.productName || !product.price || !product.category || !product.imagePath) {
+            alert("Please fill in all fields.");
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
-
         try {
-            // Ürünü API'ye gönderme
-            const productData = {
-                name: product.name,
+            
+            const productToSave = {
+                productName: product.productName,
                 price: parseFloat(product.price),
                 category: product.category,
-                image: product.image, // Base64 formatında resim gönderiliyor
+                imagePath: product.imagePath,
+                stock: 100  
             };
-            
-            await axios.post(`http://localhost:8080/api/products/`, productData);
-            
-            // Başarı bildirimi gösterme
+
+        
+            await axios.post(`${API_URL}/api/products`, productToSave);
+
+    
             setShowNotification(true);
-            
-            // Formu temizleme
+
+        
             setProduct({
-                name: "",
+                productName: "",
                 price: "",
                 category: "",
-                image: "",
+                imagePath: "",
             });
             setImagePreview(null);
         } catch (error) {
-            console.error("Ürün eklenirken hata:", error);
-            alert("The product could not be added. Please try again.");
-            
-            // Hata durumunda yedek olarak local storage'a kaydet
-            ProductStorage.addProduct(product);
-            setShowNotification(true);
+            console.error("Error adding product:", error);
+            alert("Failed to add product. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -156,12 +160,12 @@ const AddProductPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {/* Product Name Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
+                                <label htmlFor="productName" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
                                 <input
-                                    id="name"
+                                    id="productName"
                                     type="text"
-                                    name="name"
-                                    value={product.name}
+                                    name="productName"
+                                    value={product.productName}
                                     onChange={handleChange}
                                     className="mt-1 p-2 w-64 border border-gray-300 rounded-lg text-sm"
                                     required
@@ -224,7 +228,7 @@ const AddProductPage = () => {
                                     {imagePreview ? (
                                         <img 
                                             src={imagePreview} 
-                                            alt="Önizleme" 
+                                            alt="Preview" 
                                             className="max-w-full max-h-full object-contain"
                                         />
                                     ) : (
@@ -243,7 +247,7 @@ const AddProductPage = () => {
                             className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Product is Adding." : " Add Product"}
+                            {isLoading ? 'Adding Product...' : 'Add Product'}
                         </button>
                     </form>
                 </div>
