@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import UserSidebar from "../components/UserSidebar";
 import { CheckCircle, Circle, Trash2 } from "lucide-react";
+import axios from "axios";
 
 const CardEntryForm = () => {
+    const [defaultCardId, setDefaultCardId] = useState(null);
     const [cardNumber, setCardNumber] = useState("");
     const [holderName, setHolderName] = useState("");
     const [expiryMonth, setExpiryMonth] = useState("");
@@ -16,13 +18,14 @@ const CardEntryForm = () => {
 
 
     useEffect(() => {
-        const storedCards = JSON.parse(localStorage.getItem("savedCards")) || [];
-        setSavedCards(storedCards);
-        const storedDefault = JSON.parse(localStorage.getItem("defaultCardIndex"));
-        if (storedDefault !== null) {
-            setDefaultCardIndex(storedDefault);
-        }
+        axios.get("http://localhost:5000/cards")
+            .then((res) => {
+                setSavedCards(res.data.cards);
+                setDefaultCardIndex(res.data.defaultCardIndex);
+            })
+            .catch((err) => console.error("Failed to fetch cards:", err));
     }, []);
+
 
     const handleCardNumberChange = (e) => {
         let value = e.target.value.replace(/\D/g, "");
@@ -36,22 +39,16 @@ const CardEntryForm = () => {
         setHolderName(value.toUpperCase());
     };
 
-    const handleDeleteCard = (index) => {
-        const updatedCards = savedCards.filter((_, i) => i !== index);
-        setSavedCards(updatedCards);
-        localStorage.setItem("savedCards", JSON.stringify(updatedCards));
-
-        if (updatedCards.length === 0) {
-            setDefaultCardIndex(null);
-            localStorage.removeItem("defaultCardIndex");
-        } else if (defaultCardIndex === index) {
-            setDefaultCardIndex(0);
-            localStorage.setItem("defaultCardIndex", JSON.stringify(0));
-        } else if (defaultCardIndex > index) {
-            setDefaultCardIndex(defaultCardIndex - 1);
-            localStorage.setItem("defaultCardIndex", JSON.stringify(defaultCardIndex - 1));
-        }
+    const handleDeleteCard = (id) => {
+        axios.delete(`http://localhost:5000/cards/${id}`)
+            .then((res) => {
+                setSavedCards(res.data.cards);
+                setDefaultCardId(res.data.defaultCardId);
+            })
+            .catch((err) => console.error("Delete failed:", err));
     };
+
+
 
     const handleSubmit = () => {
         if (!holderName || !cardNumber || !expiryMonth || !expiryYear || !cvv) {
@@ -60,31 +57,36 @@ const CardEntryForm = () => {
         }
         setError("");
 
-        const newCard = { cardNumber, holderName, expiryMonth, expiryYear };
-        const updatedCards = [...savedCards, newCard];
-        setSavedCards(updatedCards);
-        localStorage.setItem("savedCards", JSON.stringify(updatedCards));
+        const newCard = { cardNumber, holderName, expiryMonth, expiryYear, cvv };
 
-        if (savedCards.length === 0) {
-            setDefaultCardIndex(0);
-            localStorage.setItem("defaultCardIndex", JSON.stringify(0));
-        }
-
-        setSuccessMessage("Card information saved successfully!");
-        setTimeout(() => setSuccessMessage(""), 3000);
-
-        setShowForm(false);
-        setCardNumber("");
-        setHolderName("");
-        setExpiryMonth("");
-        setExpiryYear("");
-        setCvv("");
+        axios.post("http://localhost:5000/cards", newCard)
+            .then((res) => {
+                setSavedCards(res.data.cards);
+                setDefaultCardIndex(res.data.defaultCardIndex);
+                setSuccessMessage("Card information saved successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000);
+                setShowForm(false);
+                setCardNumber("");
+                setHolderName("");
+                setExpiryMonth("");
+                setExpiryYear("");
+                setCvv("");
+            })
+            .catch((err) => {
+                console.error("Card save failed:", err);
+                setError("Failed to save card.");
+            });
     };
 
-    const setDefaultCard = (index) => {
-        setDefaultCardIndex(index);
-        localStorage.setItem("defaultCardIndex", JSON.stringify(index));
+
+    const setDefaultCard = (id) => {
+        axios.put("http://localhost:5000/cards/default", { id })
+            .then(() => {
+                setDefaultCardId(id);
+            })
+            .catch((err) => console.error("Setting default card failed:", err));
     };
+
 
     return (
         <div className="flex bg-green-50 min-h-screen">
@@ -113,7 +115,7 @@ const CardEntryForm = () => {
                                 {savedCards.map((card, index) => (
                                     <div key={index} className="mb-4 flex justify-between items-center border-b pb-2">
                                         <button
-                                            onClick={() => setDefaultCard(index)}
+                                            onClick={() => setDefaultCard(card.id)}
                                             className="text-2xl"
                                         >
                                             {defaultCardIndex === index ? <CheckCircle size={24} /> : <Circle size={24} />}
@@ -125,7 +127,7 @@ const CardEntryForm = () => {
                                         </div>
                                         <button
                                             className="text-red-500 hover:text-red-700"
-                                            onClick={() => handleDeleteCard(index)}
+                                            onClick={() => handleDeleteCard(card.id)}
                                         >
                                             <Trash2 size={24} />
 

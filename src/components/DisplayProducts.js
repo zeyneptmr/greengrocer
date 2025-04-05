@@ -84,7 +84,7 @@ const DisplayProducts = ({ products }) => {
                                     />
                                     <h3 className="text-lg font-semibold text-gray-800 mt-2">{product.productName}</h3>
                                     <p className="text-gray-600 text-md">{formatPrice(product.price)} TL</p>
-                                    <p className="text-gray-500 text-sm">Stok: {product.stock}</p>
+                                    <p className="text-gray-500 text-sm">Stock: {product.stock}</p>
                                 </div>
                             ))}
                         </div>

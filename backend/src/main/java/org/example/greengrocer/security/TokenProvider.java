@@ -17,7 +17,7 @@ public class TokenProvider {
     private final SecretKey secretKey;
     private final long expirationMs;
     
-    // Secret Key ve Expiration süresini application.properties dosyasından alıyoruz
+    // Secret Key ve Expiration süresini application.propertcies dosyasından alıyoruz
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expirationMs}") long expirationMs

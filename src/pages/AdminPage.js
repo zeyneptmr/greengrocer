@@ -3,37 +3,59 @@ import { useLocation } from 'react-router-dom';
 import Clock from "../components/Clock";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import ProductStorage from "../helpers/ProductStorage";
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:8080';
 
 const AdminPage = () => {
     const location = useLocation();
     const pageTitle = location.pathname.includes("manager") ? "Manager Panel" : "Admin Panel";
     const [categoryStats, setCategoryStats] = useState([]);
     const [totalProducts, setTotalProducts] = useState(0);
+    const [totalSales, setTotalSales] = useState("0 TL");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
     useEffect(() => {
-        // Get products from local storage
-        const products = ProductStorage.getProducts();
-        setTotalProducts(products.length);
+        const fetchProductData = async () => {
+            try {
+                setLoading(true);
+                
+                const productsResponse = await axios.get(`${API_BASE_URL}/api/products`);
+                const products = productsResponse.data;
+                
+                setTotalProducts(products.length);
+                
+                
+                const categoryMap = {};
+                products.forEach(product => {
+                    const category = product.category.toUpperCase();
+                    categoryMap[category] = (categoryMap[category] || 0) + 1;
+                });
+                
         
-        // Calculate category counts
-        const categoryMap = {};
-        products.forEach(product => {
-            const category = product.category.toUpperCase();
-            categoryMap[category] = (categoryMap[category] || 0) + 1;
-        });
+                const categoryArray = Object.entries(categoryMap).map(([name, count]) => ({
+                    name,
+                    count
+                })).sort((a, b) => b.count - a.count);
+                
+                setCategoryStats(categoryArray);
+                
+  
+                setTotalSales("45,500 TL");
+                
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching product data:", err);
+                setError("Failed to load product data. Please try again later.");
+                setLoading(false);
+            }
+        };
         
-        // Convert to array for display
-        const categoryArray = Object.entries(categoryMap).map(([name, count]) => ({
-            name,
-            count
-        })).sort((a, b) => b.count - a.count); // Sort by count descending
-        
-        setCategoryStats(categoryArray);
-        
+        fetchProductData();
     }, []);
 
-    // Define category colors for visual variety
+
     const getCategoryColor = (index) => {
         const colors = [
             "bg-blue-200 text-blue-800 border-blue-200",
@@ -42,17 +64,48 @@ const AdminPage = () => {
             "bg-orange-200 text-orange-800 border-orange-200",
             "bg-red-200 text-red-800 border-red-200",
             "bg-yellow-200 text-yellow-800 border-yellow-200"
-            
         ];
         return colors[index % colors.length];
     };
 
-    return (
-        <div className="flex h-screen bg-gray-100">
-            {/* Sidebar - Admin Panel */}
+    if (loading) {
+        return (
+            <div className="flex h-screen bg-gray-100">
                 <div className="h-full">
                     <Sidebar />
                 </div>
+                <main className="flex-1 flex flex-col items-center justify-center">
+                    <div className="text-xl text-green-700">Loading data...</div>
+                </main>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex h-screen bg-gray-100">
+                <div className="h-full">
+                    <Sidebar />
+                </div>
+                <main className="flex-1 flex flex-col items-center justify-center">
+                    <div className="text-xl text-red-600">{error}</div>
+                    <button 
+                        className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        onClick={() => window.location.reload()}
+                    >
+                        Retry
+                    </button>
+                </main>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex h-screen bg-gray-100">
+            {/* Sidebar - Admin Panel */}
+            <div className="h-full">
+                <Sidebar />
+            </div>
             
             <main className="flex-1 flex flex-col h-screen overflow-auto bg-gray-100">
                 {/* TopBar Component */}
@@ -67,7 +120,7 @@ const AdminPage = () => {
                         
                         <div className="bg-white shadow-md rounded-lg p-6">
                             <h3 className="text-2xl font-bold text-green-700">Total Sales</h3>
-                            <p className="text-2xl text-gray-500 font-medium">45,300 TL</p>
+                            <p className="text-2xl text-gray-500 font-medium">{totalSales}</p>
                         </div>
                         
                         <div className="bg-white shadow-md rounded-lg p-6">
@@ -86,7 +139,7 @@ const AdminPage = () => {
                                     key={category.name} 
                                     className={`rounded-lg p-4 border ${getCategoryColor(index)} flex justify-between items-center`}
                                 >
-                                    <div>
+                                    <div className="w-full">
                                         <h3 className="font-semibold text-lg">{category.name}</h3>
                                         <p className="text-sm opacity-75">Category</p>
                                     </div>
