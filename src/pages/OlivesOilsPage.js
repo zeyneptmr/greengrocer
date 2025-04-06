@@ -17,7 +17,7 @@ const formatPrice = (price) => {
     if (typeof price === "number") {
         return price.toFixed(2); 
     }
-    return parseFloat(price).toFixed(2); 
+    return parseFloat(price).toFixed(2);
 };
 
 const OlivesOilsPage = () => {
@@ -26,6 +26,10 @@ const OlivesOilsPage = () => {
     const [olivesOils, setOlivesOils] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8); //
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
@@ -97,6 +101,17 @@ const OlivesOilsPage = () => {
         
         setOlivesOils(sortedArray);
     }, [sortOption]);
+
+    // Pagination hesaplamaları
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = olivesOils.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(olivesOils.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
     
     const slideItems = [
         { image: olivesoils1, name: "olivesoils1" },
@@ -117,24 +132,45 @@ const OlivesOilsPage = () => {
             {error && <p className="text-center text-red-500 py-8">{error}</p>}
             
             {!loading && !error && (
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 justify-items-center">
-                    {olivesOils.length > 0 ? (
-                        olivesOils.map((product) => (
-                            <ProductCard 
-                                key={product.id} 
-                                product={{
-                                    id: product.id,
-                                    name: product.productName,
-                                    price: formatPrice(product.price),
-                                    image: getImageFromPath(product.imagePath),
-                                    stock: product.stock,
-                                    category: product.category
-                                }}
-                            />
-                        ))
-                    ) : (
-                        <p className="col-span-full text-center py-8">No olive oil products available</p>
-                    )}
+                <div>
+                    <div
+                        className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 justify-items-center">
+                        {olivesOils.length > 0 ? (
+                            olivesOils.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={{
+                                        id: product.id,
+                                        name: product.productName,
+                                        price: formatPrice(product.price),
+                                        image: getImageFromPath(product.imagePath),
+                                        stock: product.stock,
+                                        category: product.category
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <p className="col-span-full text-center py-8">No olive oil products available</p>
+                        )}
+                    </div>
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center mt-8">
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                            disabled={currentPage === 1}
+                        >
+                            &lt; Previous
+                        </button>
+                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next &gt;
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

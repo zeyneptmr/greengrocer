@@ -14,7 +14,7 @@ const Sidebar = () => {
 
         // Diğer çıkış işlemleri, örneğin state'leri sıfırlama
         setLoggedInUser(null);
-        navigate("/login");
+        navigate("/");
     };
 
     return (
