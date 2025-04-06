@@ -129,6 +129,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/count/users")
+    public ResponseEntity<Long> getUserCount() {
+        try {
+            long userCount = userRepository.countByRole("USER");
+            return ResponseEntity.ok(userCount);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0L);  // Return 0 if there's an error
+        }
+    }
 
 
     // Token'ı döndüren sınıf (login response)
@@ -157,4 +166,4 @@ public class UserController {
             this.role = role;
         }
     }
-} 
+}
