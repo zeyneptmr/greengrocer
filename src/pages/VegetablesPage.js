@@ -11,19 +11,17 @@ import vegetables5 from '../assets/vegetables5.jpg';
 const importAll = (r) => {
     let images = {};
     r.keys().forEach((item) => {
-      images[item.replace('./', '')] = r(item);
+        images[item.replace('./', '')] = r(item);
     });
     return images;
-  };
-
-
-  const formatPrice = (price) => {
-    if (typeof price === "number") {
-        return price.toFixed(2); 
-    }
-    return parseFloat(price).toFixed(2); 
 };
 
+const formatPrice = (price) => {
+    if (typeof price === "number") {
+        return price.toFixed(2);
+    }
+    return parseFloat(price).toFixed(2);
+};
 
 const VegetablesPage = () => {
     const [columns, setColumns] = useState(4);
@@ -32,46 +30,33 @@ const VegetablesPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8);
 
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
     const getImageFromPath = (path) => {
         if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
-        }
-        // Extract filename from the path
-        const filename = path.split('/').pop(); // "dairy1.jpg"
-
+        if (path.startsWith("data:image")) return path;
+        const filename = path.split('/').pop();
         const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
         if (!imagePath) {
             console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
+            return '/placeholder.png';
         }
-
-        // Find the matching image from the images object
         return images[filename] || '/placeholder.png';
     };
-    
-    
+
     useEffect(() => {
         const fetchVegetables = async () => {
             try {
                 setLoading(true);
                 const response = await fetch('http://localhost:8080/api/products');
-                
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-                
+                if (!response.ok) throw new Error(`Error: ${response.status}`);
                 const data = await response.json();
-            
-                const vegetableProducts = data.filter(product => 
+                const vegetableProducts = data.filter(product =>
                     product.category.toLowerCase() === "vegetables"
                 );
-                
                 setVegetables(vegetableProducts);
                 setError(null);
             } catch (err) {
@@ -81,15 +66,12 @@ const VegetablesPage = () => {
                 setLoading(false);
             }
         };
-        
         fetchVegetables();
     }, []);
-    
+
     useEffect(() => {
         if (vegetables.length === 0) return;
-        
         let sortedArray = [...vegetables];
-        
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
         } else if (sortOption === "price-desc") {
@@ -99,10 +81,19 @@ const VegetablesPage = () => {
         } else if (sortOption === "name-desc") {
             sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
         }
-        
         setVegetables(sortedArray);
     }, [sortOption]);
-    
+
+    // Pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = vegetables.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(vegetables.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     const slideItems = [
         { image: vegetables1, name: "vegetables1" },
         { image: vegetables2, name: "vegetables2" },
@@ -110,7 +101,7 @@ const VegetablesPage = () => {
         { image: vegetables4, name: "vegetables4" },
         { image: vegetables5, name: "vegetables5" },
     ];
-    
+
     return (
         <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
@@ -120,31 +111,52 @@ const VegetablesPage = () => {
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
-            
+
             {loading && <p className="text-center py-8">Loading products...</p>}
             {error && <p className="text-center text-red-500 py-8">{error}</p>}
-            
+
             {!loading && !error && (
-                <div className={`grid gap-4 
-                    ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
-                    justify-items-center w-full`}>
-                    {vegetables.length > 0 ? (
-                        vegetables.map((product) => (
-                            <ProductCard 
-                                key={product.id} 
-                                product={{
-                                    id: product.id,
-                                    name: product.productName,
-                                    price: formatPrice(product.price),
-                                    image: getImageFromPath(product.imagePath),
-                                    stock: product.stock,
-                                    category: product.category
-                                }}
-                            />
-                        ))
-                    ) : (
-                        <p className="col-span-full text-center py-8">No vegetable products available</p>
-                    )}
+                <div>
+                    <div className={`grid gap-4 
+                        ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} 
+                        justify-items-center w-full`}>
+                        {currentItems.length > 0 ? (
+                            currentItems.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={{
+                                        id: product.id,
+                                        name: product.productName,
+                                        price: formatPrice(product.price),
+                                        image: getImageFromPath(product.imagePath),
+                                        stock: product.stock,
+                                        category: product.category
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <p className="col-span-full text-center py-8">No vegetable products available</p>
+                        )}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center mt-8">
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                            disabled={currentPage === 1}
+                        >
+                            &lt; Previous
+                        </button>
+                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next &gt;
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
