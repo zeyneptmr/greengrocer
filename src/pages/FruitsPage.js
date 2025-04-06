@@ -22,7 +22,6 @@ const importAll = (r) => {
     return parseFloat(price).toFixed(2); 
 };
 
-
 const FruitsPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
