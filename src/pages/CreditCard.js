@@ -14,7 +14,7 @@ const CardEntryForm = () => {
     const [savedCards, setSavedCards] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
-    const [defaultCardIndex, setDefaultCardIndex] = useState(null);
+    const [cardToDelete, setCardToDelete] = useState(null);
 
     // Kartları getir
     const fetchSavedCards = () => {
@@ -22,7 +22,7 @@ const CardEntryForm = () => {
             .then((res) => {
                 setSavedCards(res.data);
             })
-            .catch((err) => console.error("Kartlar alınamadı:", err));
+            .catch((err) => console.error("An error occur while fetching cards:", err));
     };
 
     useEffect(() => {
@@ -46,12 +46,28 @@ const CardEntryForm = () => {
             .then(() => {
             fetchSavedCards();
         })
-            .catch((err) => console.error("Kart silinemedi:", err));
+            .catch((err) => console.error("An error occur while deleting cards ", err));
+    };
+
+
+    const confirmDeleteCard = (id) => {
+        setCardToDelete(id);
+    };
+
+    const handleConfirmDelete = () => {
+        handleDeleteCard(cardToDelete);
+        setSuccessMessage("Card deleted successfully!");
+        setTimeout(() => setSuccessMessage(""), 3000);
+        setCardToDelete(null);
+    };
+
+    const handleCancelDelete = () => {
+        setCardToDelete(null);
     };
 
     const handleSubmit = () => {
         if (!holderName || !cardNumber || !expiryMonth || !expiryYear || !cvv) {
-            setError("Lütfen tüm alanları doldurun.");
+            setError("Please fill out the fields completely.");
             return;
         }
         setError("");
@@ -59,14 +75,11 @@ const CardEntryForm = () => {
         // Kart numarasını temizle ve sadece son 4 hanesini al
         const cardNumberWithoutSpaces = cardNumber.replace(/\s+/g, ''); // boşlukları kaldır
         if (cardNumberWithoutSpaces.length !== 16) {
-            setError("Geçersiz kart numarası. Kart numarası 16 haneli olmalıdır.");
+            setError("Invalid card number. Card number must be 16 digits.");
             return;
         }
 
-        console.log('Card number without spaces:', cardNumberWithoutSpaces);
-
-
-
+        //console.log('Card number without spaces:', cardNumberWithoutSpaces);
 
         const newCard = {
             cardNumberLast4: cardNumberWithoutSpaces.substring(cardNumberWithoutSpaces.length - 4),  // Son 4 haneyi gönder
@@ -76,12 +89,12 @@ const CardEntryForm = () => {
             cvv
         };
 
-        console.log('Sending card data:', newCard);
+        //console.log('Sending card data:', newCard);
 
         axios.post("http://localhost:8080/api/cards", newCard, { withCredentials: true })
             .then(() => {
                 fetchSavedCards();
-                setSuccessMessage("Kart başarıyla kaydedildi!");
+                setSuccessMessage("Card saved successfully!");
                 setTimeout(() => setSuccessMessage(""), 3000);
                 setShowForm(false);
                 setCardNumber("");
@@ -91,13 +104,11 @@ const CardEntryForm = () => {
                 setCvv("");
             })
             .catch((err) => {
-                console.error("Kart kaydedilemedi:", err.response?.data);
-                alert(⁠ Kart kaydedilemedi: ${err.response?.data} ⁠);
-                setError("Kart kaydedilemedi.");
+                console.error("Card could not be saved:", err.response?.data);
+                alert(⁠ Card could not be saved: ${err.response?.data} ⁠);
+                setError("Card could not be saved.");
             });
     };
-
-
 
     const setDefaultCard = (id) => {
         axios.put("http://localhost:8080/api/cards/default", { id }, { withCredentials: true })
@@ -105,9 +116,8 @@ const CardEntryForm = () => {
                 setDefaultCardId(id);
                 fetchSavedCards();
             })
-            .catch((err) => console.error("Varsayılan kart ayarlanamadı:", err));
+            .catch((err) => console.error("Could not set default card!", err));
     };
-
 
     return (
         <div className="flex flex-col md:flex-row bg-green-50 min-h-screen">
@@ -142,7 +152,7 @@ const CardEntryForm = () => {
                                         className="mb-4 flex justify-between items-center border-b pb-2"
                                     >
                                         <button onClick={() => setDefaultCard(card.id)} className="text-2xl">
-                                            {defaultCardIndex === index ? (
+                                            {card.isDefault ? (
                                                 <CheckCircle size={24} className="text-green-600" />
                                             ) : (
                                                 <Circle size={24} className="text-gray-400" />
@@ -157,7 +167,7 @@ const CardEntryForm = () => {
                                         </div>
                                         <button
                                             className="text-red-500 hover:text-red-700 transition"
-                                            onClick={() => handleDeleteCard(card.id)}
+                                            onClick={() => confirmDeleteCard(card.id)}
                                         >
                                             <Trash2 size={24} />
                                         </button>
@@ -166,6 +176,22 @@ const CardEntryForm = () => {
                             </div>
                         )}
                     </div>
+
+                    {cardToDelete !== null && (
+                        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+                            <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+                                <p className="mb-4 text-lg">Are you sure you want to delete the card?</p>
+                                <div className="flex justify-center gap-4">
+                                    <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                        Delete
+                                    </button>
+                                    <button onClick={handleCancelDelete} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {showForm && (
                         <div className="mt-10 p-6 bg-gray-50 border rounded-2xl shadow-sm">
@@ -226,7 +252,7 @@ const CardEntryForm = () => {
                                     <input
                                         type="text"
                                         value={cvv}
-                                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
+                                        onChange={(e) => setCvv("*")}
                                         maxLength="3"
                                         className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                                         placeholder="XXX"
