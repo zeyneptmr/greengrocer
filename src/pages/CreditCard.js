@@ -62,7 +62,7 @@ const CardEntryForm = () => {
 
         if (cardToDeleteData.isDefault) {
             // Eğer varsayılan kart silinmeye çalışılıyorsa, hata mesajı göster
-            setError("The default card cannot be deleted. Please set another card as default first.");
+            setError("Default card cannot be deleted. Please set another card as default first!");
             setTimeout(() => setError(""), 3000);
             setCardToDelete(null);
 

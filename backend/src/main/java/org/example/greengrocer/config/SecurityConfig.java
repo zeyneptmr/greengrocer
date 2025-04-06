@@ -53,6 +53,7 @@ public class SecurityConfig {
                     .requestMatchers("/update-price").permitAll()
                     .requestMatchers("/api/discountedProducts/**").permitAll()
                     .requestMatchers("/api/cards/**").permitAll()
+                    .requestMatchers("/api/addresses/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
