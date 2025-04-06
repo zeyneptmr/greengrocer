@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final DiscountedProductService discountedProductService;
     
@@ -21,11 +21,11 @@ public class ProductService {
         this.productRepository = productRepository;
         this.discountedProductService = discountedProductService;
     }
-    
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-    
+
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
@@ -71,15 +71,37 @@ public class ProductService {
         }
         return null;
     }
-    
+
+    @Transactional
+    public Product applyDiscount(Long productId, double oldPrice, double discountedPrice, int discountRate) {
+        Optional<Product> productOpt = productRepository.findById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+
+            // İlgili DiscountedProduct'ı oluştur ve kaydet
+            DiscountedProduct discountedProduct = new DiscountedProduct();
+            discountedProduct.setProduct(product);
+            discountedProduct.setOldPrice(oldPrice);
+            discountedProduct.setDiscountedPrice(discountedPrice);
+            discountedProduct.setDiscountRate(discountRate);
+
+            discountedProductService.addDiscountedProduct(discountedProduct);
+
+            // Ürünün fiyatını indirimli fiyatla güncelle
+            product.setPrice(discountedPrice);
+            return productRepository.save(product);
+        }
+        return null;
+    }
+
     public Product updateProduct(Product product) {
         return productRepository.save(product);
     }
-    
+
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
-    
+
     public Product updateStock(Long id, int newStock) {
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
@@ -94,7 +116,7 @@ public class ProductService {
     public List<Product> searchByProductName(String productName) {
         return productRepository.findByProductNameContainingIgnoreCase(productName);
     }
-    
+
     public List<Product> searchByCategory(String category) {
         return productRepository.findByCategoryContainingIgnoreCase(category);
     }

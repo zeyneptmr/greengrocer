@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import Clock from "../components/Clock";
@@ -6,10 +6,13 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { motion } from "framer-motion";
 
+import axios from "axios";
+
 const ManagerPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [ordersData, setOrdersData] = useState([]);
+    const [userCount, setUserCount] = useState(0);
 
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -25,6 +28,18 @@ const ManagerPage = () => {
         "2025-03-21": 2,
         "2025-03-25": 6
     };
+
+    useEffect(() => {
+        // Kullanıcı sayısını almak için API'ye GET isteği gönderiyoruz
+        axios
+            .get("http://localhost:8080/api/users/count/users")
+            .then((response) => {
+                setUserCount(response.data);  // Gelen veriyi state'e set ediyoruz
+            })
+            .catch((error) => {
+                console.error("Error fetching user count:", error);
+            });
+    }, []);
 
     // Function to generate calendar days for a selected month
     const generateCalendarDays = (year, month) => {
@@ -94,8 +109,8 @@ const ManagerPage = () => {
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
-                        <h3 className="text-xl font-bold text-green-700">Total Users</h3>
-                        <p className="text-xl text-gray-500 font-medium">8,450</p>
+                        <h3 className="text-xl font-bold text-green-700">Total Customers</h3>
+                        <p className="text-xl text-gray-500 font-medium">{userCount}</p>
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
