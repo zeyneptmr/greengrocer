@@ -87,17 +87,19 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] h-[380px] border-2 border-orange-500">
-                <button
-                    onClick={handleCloseAll}
-                    className="absolute top-2 right-2 text-2xl text-gray-500 hover:text-gray-800"
-                >
-                    &times;
-                </button>
-                <h2 className="text-3xl font-bold text-green-600 mt-4 text-center">Reset Password</h2>
-                <div className="flex flex-col items-center mt-8 space-y-4">
-                    <p className="text-md font-medium text-[#006400] text-center">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
+            <button
+                onClick={onClose}
+                className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-red-500 transition"
+            >
+                &times;
+            </button>
+
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-[460px] relative border-2 border-orange-400">
+                <h2 className="text-3xl font-extrabold text-green-700 mb-6 text-center">🔐 Reset Password</h2>
+
+                <div className="flex flex-col items-center space-y-4">
+                <p className="text-md font-medium text-[#006400] text-center">
                         Please enter your new password below
                     </p>
 
@@ -117,7 +119,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                         type="password"
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
-                        className="w-full p-4 border border-gray-300 rounded-md text-lg"
+                        className="w-full p-4 border border-gray-300 rounded-md text-lg focus:ring-2 focus:ring-green-500"
                         placeholder="Confirm new password"
                     />
                     {error && newPassword.length >= 8 && confirmPassword && newPassword !== confirmPassword && (
