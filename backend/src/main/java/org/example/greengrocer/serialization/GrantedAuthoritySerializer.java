@@ -1,11 +1,12 @@
-package com.example.greengrocer.serialization;  // Projenizin uygun paketine göre değiştirin
+package org.example.greengrocer.serialization;  // Projenizin uygun paketine göre değiştirin
+
+import java.io.IOException;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.io.IOException;
 
 public class GrantedAuthoritySerializer extends JsonSerializer<GrantedAuthority> {
     @Override
