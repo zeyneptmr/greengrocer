@@ -22,7 +22,6 @@ const importAll = (r) => {
     return parseFloat(price).toFixed(2); 
 };
 
-
 const FruitsPage = () => {
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
@@ -30,8 +29,11 @@ const FruitsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8); //
 
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
 
     const getImageFromPath = (path) => {
@@ -57,9 +59,6 @@ const FruitsPage = () => {
     
     // Fetch products from API
     useEffect(() => {
-
-       
-
         const fetchFruits = async () => {
             try {
                 setLoading(true);
@@ -106,6 +105,17 @@ const FruitsPage = () => {
         
         setFruits(sortedArray);
     }, [sortOption]);
+
+    // Pagination hesaplamaları
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = fruits.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(fruits.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
     
     const slideItems = [
         { image: fruits1, name: "fruits1" },
@@ -127,26 +137,46 @@ const FruitsPage = () => {
             {error && <p className="text-center text-red-500 py-8">{error}</p>}
             
             {!loading && !error && (
-                <div className={`grid gap-4 
+                <div>
+                    <div className={`grid gap-4 
                     ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"}
                     justify-items-center w-full`}>
-                    {fruits.length > 0 ? (
-                        fruits.map((product) => (
-                            <ProductCard 
-                                key={product.id} 
-                                product={{
-                                    id: product.id,
-                                    name: product.productName,
-                                    price: formatPrice(product.price),
-                                    image: getImageFromPath(product.imagePath),
-                                    stock: product.stock,
-                                    category: product.category
-                                }}
-                            />
-                        ))
-                    ) : (
-                        <p className="col-span-full text-center py-8">No fruit products available</p>
-                    )}
+                        {currentItems.length > 0 ? (
+                            currentItems.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={{
+                                        id: product.id,
+                                        name: product.productName,
+                                        price: formatPrice(product.price),
+                                        image: getImageFromPath(product.imagePath),
+                                        stock: product.stock,
+                                        category: product.category
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <p className="col-span-full text-center py-8">No fruit products available</p>
+                        )}
+                    </div>
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center mt-8">
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                            disabled={currentPage === 1}
+                        >
+                            &lt; Previous
+                        </button>
+                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next &gt;
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

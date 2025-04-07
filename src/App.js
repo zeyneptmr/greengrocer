@@ -40,7 +40,6 @@ import ResetPassword from "./components/ResetPassword";
 import DiscountPage from "./pages/DiscountPage";
 import "./styles/App.css";
 
-
 function MainContent(){
     const currentPage = useLocation();
 

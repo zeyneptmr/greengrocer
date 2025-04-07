@@ -281,8 +281,9 @@ const Account = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg text-center relative w-[460px] border-2 border-orange-500">
-                <button className="absolute top-2 right-2 border-none bg-transparent cursor-pointer text-2xl" onClick={onClose}>&times;</button>
+            <div className="bg-white p-5 rounded-2xl text-center relative w-[460px] border-2 border-orange-500">
+                <button className="absolute top-2 right-2 border-none bg-transparent cursor-pointer text-2xl"
+                        onClick={onClose}>&times;</button>
                 <form onSubmit={handleSubmit}>
                     {isRegister ? (
                         <>
@@ -432,7 +433,9 @@ const Account = ({ isOpen, onClose }) => {
                                     className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
                                 Log In
                             </button>
-                            <p className="mt-2">Don't have an account? <span className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span></p>
+                            <p className="mt-2">Don't have an account? <span
+                                className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span>
+                            </p>
                             <p className="mt-2">
                                  <span
                                      className="text-green-700 underline cursor-pointer"
@@ -450,10 +453,10 @@ const Account = ({ isOpen, onClose }) => {
             </div>
 
             {/* ForgotPassword Modal */}
-            {isForgotPassword && 
-                <ForgotPassword 
+            {isForgotPassword &&
+                <ForgotPassword
                     onClose={() => setIsForgotPassword(false)}
-                    closeParentModal={onClose} 
+                    closeParentModal={onClose}
                 />
             }
         </div>

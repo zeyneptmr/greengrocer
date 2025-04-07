@@ -1,11 +1,15 @@
+
 package org.example.greengrocer.model;
 
 import java.util.Collection;
 import java.util.Collections;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -93,6 +97,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Burada kullanıcıya ait role'yi dönüyoruz.
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));

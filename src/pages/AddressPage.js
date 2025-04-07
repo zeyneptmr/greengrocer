@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaEdit } from 'react-icons/fa';
+import {FaCheckCircle } from 'react-icons/fa';
+import axios from 'axios';
 
 const AddressPage = () => {
     const navigate = useNavigate();
@@ -17,10 +19,12 @@ const AddressPage = () => {
         description: ''
     });
 
+    const [successMessage, setSuccessMessage] = useState("");
     const [addresses, setAddresses] = useState([]);
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [errors, setErrors] = useState({});
     const [editingIndex, setEditingIndex] = useState(null); // For editing
+    const [error, setError] = useState("");
 
 
     const cityData = {
@@ -60,27 +64,36 @@ const AddressPage = () => {
         }
     };
 
-    console.log(window.location.pathname);
+    // Adresleri backend'den çekiyoruz
+    const fetchAddresses = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/addresses', {
+                withCredentials: true,  // Cookie'leri gönder
+            });
+            setAddresses(response.data);
+        } catch (error) {
+            console.error('Error while fetching addresses:', error);
+        }
+    };
 
     useEffect(() => {
-        const savedAddresses = JSON.parse(localStorage.getItem('addresses')) || [];
-        setAddresses(savedAddresses);
+        fetchAddresses();
     }, []);
+
 
     const validateForm = () => {
         const newErrors = {};
         if (!formData.email.includes('@')) {
-            newErrors.emailError = 'Geçerli bir e-posta girin.';
+            newErrors.emailError = 'Enter an valid e-mail.';
         }
         if (!formData.phone.match(/^\d{3} \d{3} \d{4}$/)) {
-            newErrors.phoneError = 'Telefon numarasını eksiksiz girin (555 555 5555).';
+            newErrors.phoneError = 'Enter an valid phone number (555 555 5555).';
         }
         if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.firstName)) {
-            newErrors.firstNameError = 'The name can only contain letters and spaces.';
+            newErrors.firstNameError = 'Enter valid name';
         }
-
         if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.lastName)) {
-            newErrors.lastNameError = 'The lastname can only contain letters and spaces.';
+            newErrors.lastNameError = 'Enter valid surname';
         }
         return newErrors;
     };
@@ -118,34 +131,51 @@ const AddressPage = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length === 0) {
-            const updatedAddresses = [...addresses];
-            if (editingIndex !== null) {
-                updatedAddresses[editingIndex] = formData; // Update the existing address
-            } else {
-                updatedAddresses.push(formData); // Add new address
+            try {
+                if (editingIndex !== null && editingIndex !== undefined) {
+                    // Adres güncelleniyor
+                    const addressId = addresses[editingIndex]?.id;
+                    if (!addressId) {
+                        console.error("Address ID is undefined");
+                        return;
+                    }
+
+                    await axios.put(`http://localhost:8080/api/addresses/${addressId}`, formData, {
+                        withCredentials: true,
+                    });
+
+                } else {
+                    // Yeni adres ekleniyor
+                    await axios.post('http://localhost:8080/api/addresses', formData, {
+                        withCredentials: true,
+                    });
+                }
+
+                await fetchAddresses(); // 🔄 Yalnızca bu, yeterli
+
+                // Formu sıfırla
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    city: 'İstanbul',
+                    district: '',
+                    neighborhood: '',
+                    address: '',
+                    description: ''
+                });
+                setEditingIndex(null);
+                setIsFormVisible(false);
+
+            } catch (error) {
+                console.error('Error while adding/updating address:', error);
+                console.log(error.response?.data);
             }
-            setAddresses(updatedAddresses);
-            localStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-
-            console.log('Updated addresses saved to localStorage:', JSON.parse(localStorage.getItem('addresses')));
-
-            setFormData({
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                city: 'İstanbul', // Reset to default city
-                district: '',
-                neighborhood: '',
-                address: '',
-                description: ''
-            });
-            setEditingIndex(null); // Reset editing index
-            setIsFormVisible(false);
         } else {
             setErrors(validationErrors);
         }
@@ -170,16 +200,56 @@ const AddressPage = () => {
     };
 
     const handleEdit = (index) => {
+        console.log("Editing address at index:", index);  // Burada index'in doğru olduğunu kontrol edin.
         setFormData(addresses[index]);
         setEditingIndex(index);
         setIsFormVisible(true); // Open the form for editing
     };
 
-    const handleDelete = (index) => {
-        const updatedAddresses = addresses.filter((_, i) => i !== index);
-        setAddresses(updatedAddresses);
-        localStorage.setItem('addresses', JSON.stringify(updatedAddresses));
+    const handleDelete = async (index) => {
+        const address = addresses[index];
+
+        if (address.isDefault) {
+            setTimeout(() => setError(""), 3000);
+            setError("Default address cannot be deleted. Please make another address the default first.");
+            return;
+        }
+
+        try {
+            await axios.delete(`http://localhost:8080/api/addresses/${address.id}`, {
+                withCredentials: true,  // Token'ı içeren cookie'yi gönder
+            });
+
+            const updatedAddresses = addresses.filter((_, i) => i !== index);
+            setAddresses(updatedAddresses);
+            setSuccessMessage("Address deleted in success.");
+            setTimeout(() => setSuccessMessage(""), 3000);
+        } catch (error) {
+            console.error('Error while deleting address:', error);
+            //setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+        }
+
     };
+
+    const handleSetDefault = async (addressId) => {
+        try {
+            // Sadece id’yi gönderiyoruz
+            const response = await axios.put(
+                'http://localhost:8080/api/addresses/default',
+                { id: addressId },
+                { withCredentials: true }
+            );
+
+            if (response.status === 200) {
+                setAddresses(addresses.map(addr =>
+                    addr.id === addressId ? { ...addr, isDefault: true } : { ...addr, isDefault: false }
+                ));
+            }
+        } catch (error) {
+            console.error('Error while setting default address:', error);
+        }
+    };
+
 
     const handleDistrictChange = (e) => {
         setFormData({
@@ -188,6 +258,8 @@ const AddressPage = () => {
             neighborhood: '' // Reset neighborhood when district changes
         });
     };
+
+
 
     return (
 
@@ -198,6 +270,18 @@ const AddressPage = () => {
             >
                 + Add New Address
             </button>
+
+            {successMessage && (
+                <div className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
+                    {successMessage}
+                </div>
+            )}
+
+            {error && (
+                <div className="bg-red-100 border border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
+                    {error}
+                </div>
+            )}
 
             {isFormVisible && (
                 <div
@@ -276,7 +360,7 @@ const AddressPage = () => {
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
-                                    <option value="">İlçe Seçin</option>
+                                    <option value="">District</option>
                                     {Object.keys(cityData['İstanbul'].districts).map((district) => (
                                         <option key={district} value={district}>{district}</option>
                                     ))}
@@ -288,7 +372,7 @@ const AddressPage = () => {
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
-                                    <option value="">Mahalle Seçin</option>
+                                    <option value="">Neighbourhood</option>
                                     {formData.district &&
                                         cityData['İstanbul'].districts[formData.district].map((neighborhood, index) => (
                                             <option key={index} value={neighborhood}>{neighborhood}</option>
@@ -329,6 +413,17 @@ const AddressPage = () => {
                     <ul className="mt-6">
                         {addresses.map((address, index) => (
                             <li key={index} className="p-6 border border-gray-300 rounded mb-4">
+
+                                {address.isDefault && (
+                                    <div className="text-green-600 ml-2 font-medium">
+                                        (Default Address)
+                                    </div>
+                                )}
+                                <FaCheckCircle
+                                    style={{ cursor: 'pointer', color: address.isDefault ? 'green' : 'gray' }}
+                                    onClick={() => handleSetDefault(address.id)}
+                                />
+
                                 <p><strong>Receiver:</strong> {address.firstName} {address.lastName}</p>
                                 <p><strong>E-mail:</strong> {address.email}</p>
                                 <p><strong>Phone Number:</strong> {address.phone}</p>
@@ -336,11 +431,13 @@ const AddressPage = () => {
                                     <strong>Address:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}
                                 </p>
                                 <p><strong>Notes:</strong> {address.description}</p>
+
                                 <button
                                     className="mt-2 p-2 bg-green-moss text-white rounded w-full sm:w-auto"
                                     onClick={() => handleEdit(index)}
                                 >
                                     <span>Edit</span>
+
                                 </button>
                                 <button
                                     className="mt-2 ml-4 p-2 bg-orange-tangerine text-white rounded w-full sm:w-auto justify-center items-center"

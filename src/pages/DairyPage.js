@@ -16,9 +16,9 @@ const importAll = (r) => {
 
 const formatPrice = (price) => {
     if (typeof price === "number") {
-        return price.toFixed(2); 
+        return price.toFixed(2);
     }
-    return parseFloat(price).toFixed(2); 
+    return parseFloat(price).toFixed(2);
 };
 
 const DairyPage = () => {
@@ -28,46 +28,45 @@ const DairyPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+    // Pagination States
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8); // İstersen bunu artırabilirsin
 
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
     const getImageFromPath = (path) => {
         if (!path) return null;
 
         if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
+            return path;
         }
-        // Extract filename from the path
-        const filename = path.split('/').pop(); // "dairy1.jpg"
 
+        const filename = path.split('/').pop();
         const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
 
         if (!imagePath) {
             console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
+            return '/placeholder.png';
         }
-        
-        // Find the matching image from the images object
+
         return images[filename] || '/placeholder.png';
     };
 
-    // Fetch dairy products from API
     useEffect(() => {
         const fetchDairyProducts = async () => {
             try {
                 setLoading(true);
                 const response = await fetch('http://localhost:8080/api/products');
-                
+
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
-                // Filter only dairy products
-                const dairyItems = data.filter(product => 
+                const dairyItems = data.filter(product =>
                     product.category.toLowerCase() === "dairy"
                 );
-                
+
                 setDairyProducts(dairyItems);
                 setError(null);
             } catch (err) {
@@ -77,15 +76,15 @@ const DairyPage = () => {
                 setLoading(false);
             }
         };
-        
+
         fetchDairyProducts();
     }, []);
 
     useEffect(() => {
         if (dairyProducts.length === 0) return;
-        
+
         let sortedArray = [...dairyProducts];
-        
+
         if (sortOption === "price-asc") {
             sortedArray.sort((a, b) => a.price - b.price);
         } else if (sortOption === "price-desc") {
@@ -95,9 +94,19 @@ const DairyPage = () => {
         } else if (sortOption === "name-desc") {
             sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
         }
-        
+
         setDairyProducts(sortedArray);
     }, [sortOption]);
+
+    // Pagination hesaplamaları
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = dairyProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(dairyProducts.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     const slideItems = [
         { image: dairy1, name: "dairy1" },
@@ -114,29 +123,50 @@ const DairyPage = () => {
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
-            
+
             {loading && <p className="text-center py-8">Loading products...</p>}
             {error && <p className="text-center text-red-500 py-8">{error}</p>}
-            
+
             {!loading && !error && (
-                <div className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
-                    {dairyProducts.length > 0 ? (
-                        dairyProducts.map((product) => (
-                            <ProductCard 
-                                key={product.id} 
-                                product={{
-                                    id: product.id,
-                                    name: product.productName,
-                                    price: formatPrice(product.price),
-                                    image: getImageFromPath(product.imagePath),
-                                    stock: product.stock,
-                                    category: product.category
-                                }}
-                            />
-                        ))
-                    ) : (
-                        <p className="col-span-full text-center py-8">No dairy products available</p>
-                    )}
+                <div>
+                    <div className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
+                        {currentItems.length > 0 ? (
+                            currentItems.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    product={{
+                                        id: product.id,
+                                        name: product.productName,
+                                        price: formatPrice(product.price),
+                                        image: getImageFromPath(product.imagePath),
+                                        stock: product.stock,
+                                        category: product.category
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <p className="col-span-full text-center py-8">No dairy products available</p>
+                        )}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center mt-8">
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                            disabled={currentPage === 1}
+                        >
+                            &lt; Previous
+                        </button>
+                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <button
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next &gt;
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
