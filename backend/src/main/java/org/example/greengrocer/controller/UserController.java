@@ -166,4 +166,26 @@ public class UserController {
             this.role = role;
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
+        try {
+            // Token'ı iptal etmek için çerezi sıfırlıyoruz
+            Cookie cookie = new Cookie("token", null);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); // HTTPS kullanıyorsanız true yapmalısınız
+            cookie.setPath("/");
+            cookie.setMaxAge(0); // Çerez süresini 0 yaparak silinmesini sağlıyoruz
+            response.addCookie(cookie);
+
+            // Çıkış işlemi başarılı, mesaj dönüyoruz
+            return ResponseEntity.ok("Logout successful!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Logout failed: " + e.getMessage());
+        }
+    }
+
+
+
+
 }

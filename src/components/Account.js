@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
+import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js"; // yol değişebilir
 
 import ForgotPassword from './ForgotPassword';
 
@@ -12,6 +13,7 @@ const Account = ({ isOpen, onClose }) => {
     const [isForgotPassword, setIsForgotPassword] = useState(false); // Modal için state
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
+    //const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -31,6 +33,7 @@ const Account = ({ isOpen, onClose }) => {
         phoneError: null,
     });
 
+    const { setIsLoggedIn } = useContext(CartContext);
     const [message, setMessage] = useState(""); // Message to display success or error
 
     useEffect(() => {
@@ -192,6 +195,9 @@ const Account = ({ isOpen, onClose }) => {
                             if(response.data.role === "USER") {
                                 localStorage.setItem("loggedInUser", JSON.stringify(response.data.role));
                             }
+
+                            setIsLoggedIn(true);
+                            //syncCartIfUserLoggedIn();
                             onClose();
 
                             if (response.data.role === "ADMIN") {

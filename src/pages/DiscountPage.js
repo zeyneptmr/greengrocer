@@ -60,7 +60,7 @@ const DiscountPage = () => {
         const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
 
         if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
+            console.error(`Image not found : ${filename} `);
             return '/placeholder.png';  // Placeholder görseli
         }
 
@@ -172,6 +172,17 @@ const DiscountPage = () => {
 
         const discountedProducts = filteredProducts.filter(product => selectedProducts.includes(product.id));
         console.log("İndirim uygulanan ürünler:", discountedProducts);
+
+        const tooCheapProduct = discountedProducts.find(product => {
+            const discountedPrice = product.price * (1 - discountRate / 100);
+            return discountedPrice < 1;
+        });
+
+        if (tooCheapProduct) {
+            setErrorNotification(`Discounts cannot be applied to products less than 1 TL.`);
+            setTimeout(() => setErrorNotification(''), 4000);
+            return;
+        }
 
         try {
             const updatedDiscountedProducts = await Promise.all(discountedProducts.map(async (product) => {
@@ -291,12 +302,12 @@ const DiscountPage = () => {
                                     <div className="flex-1">
                                         <h3 className="text-lg font-semibold">{product.ProductName}</h3>
                                         <p className="text-gray-500">Stock: {product.stock}</p>
-                                        <p className="text-gray-700">Price: ${formatPrice(product.price)}</p>
+                                        <p className="text-gray-700">Price: ₺{formatPrice(product.price)}</p>
                                     </div>
 
                                     {product.discountedPrice && (
                                         <div className="text-green-500 font-semibold">
-                                            Discounted Price: ${formatPrice(product.discountedPrice)}
+                                            Discounted Price: ₺{formatPrice(product.discountedPrice)}
                                         </div>
                                     )}
 

@@ -4,8 +4,8 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
-import { allproducts } from "../data/products";
-import { getDiscountedProducts } from "../components/discount";
+//import { allproducts } from "../data/products";
+//import { getDiscountedProducts } from "../components/discount";
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
@@ -44,7 +44,7 @@ const categories = [
 ];
 
 export default function HomePage() {
-    const [discountedProducts, setDiscountedProducts] = useState([]);
+    //const [discountedProducts, setDiscountedProducts] = useState([]);
     const [dailySelectedProducts, setDailySelectedProducts] = useState([]);
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content
@@ -54,16 +54,16 @@ export default function HomePage() {
     const { favorites } = useFavorites();
     const { cart } = useCart();
 
-    useEffect(() => {
-        setDiscountedProducts(getDiscountedProducts());
-    }, []);
+    //useEffect(() => {
+      //  setDiscountedProducts(getDiscountedProducts());
+    //}, []);
 
-    useEffect(() => {
-        const nonDiscountedProducts = allproducts.filter(
-            (product) => !getDiscountedProducts().some((discounted) => discounted.id === product.id)
-        );
-        setDailySelectedProducts(shuffleArray(nonDiscountedProducts).slice(0, 15));
-    }, []);
+    //useEffect(() => {
+      //  const nonDiscountedProducts = allproducts.filter(
+        //    (product) => !getDiscountedProducts().some((discounted) => discounted.id === product.id)
+        //);
+        //setDailySelectedProducts(shuffleArray(nonDiscountedProducts).slice(0, 15));
+    //}, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -159,14 +159,14 @@ export default function HomePage() {
             </div>
 
             {/* Discounted Products */}
-            <div className="p-6">
+            {/*<div className="p-6">
                 <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                     {discountedProducts.map((product) => (
                         <ProductCard key={product.id} product={product}/>
                     ))}
                 </div>
-            </div>
+            </div> */}
 
             {/* Products Section - Scrollable */}
             <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>

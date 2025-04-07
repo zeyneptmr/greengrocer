@@ -1,13 +1,51 @@
 import { useState } from "react";
 import { useCart } from "../helpers/CartContext";
-import { FaTrash } from "react-icons/fa"; // Rubbish bin icon
-import { useNavigate } from "react-router-dom"; // useNavigate import edildi
+import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+//import { getImageFromPath } from "../utils/imageUtils"; // 👈 bunu ekliyoruz
+
+// Görsel dosyalarını içe aktar
+const importAll = (r) => {
+    let images = {};
+    r.keys().forEach((item) => {
+        images[item.replace('./', '')] = r(item);
+    });
+    return images;
+};
+
+const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+// Görsel yolu çözümleyici
+const getImageFromPath = (path) => {
+    if (!path) return null;
+    if (path.startsWith("data:image")) return path;
+
+    const filename = path.split('/').pop();
+    const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+    if (!imagePath) {
+        console.error(`Image not found: ${filename}`);
+        return '/placeholder.png';
+    }
+
+    return images[imagePath] || '/placeholder.png';
+};
 
 export default function Cart() {
-    const { cart, increaseQuantity, decreaseQuantity, calculateTotalPrice, getTotalProductTypes, removeItem, clearCart } = useCart();
+    const {
+        cart,
+        increaseQuantity,
+        decreaseQuantity,
+        calculateTotalPrice,
+        getTotalProductTypes,
+        removeItem,
+        clearCart
+    } = useCart();
+
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
-    const navigate = useNavigate(); //
+    const navigate = useNavigate();
+
 
     const toggleSelectItem = (id) => {
         setSelectedItems((prev) =>
@@ -20,22 +58,16 @@ export default function Cart() {
         setSelectedItems([]);
     };
 
-    // Shipping Fee
     const calculateShippingFee = () => {
         const totalPrice = calculateTotalPrice();
         return totalPrice >= 500 ? 0 : 49;
     };
 
-    // Total Cost and Shipping Cost
     const calculateTotalAmount = () => {
         const totalPrice = Number(calculateTotalPrice());
         const shippingFee = Number(calculateShippingFee());
         return (totalPrice + shippingFee).toFixed(2);
     };
-
-    console.log("Total Price:", calculateTotalPrice());
-    console.log("Shipping Fee:", calculateShippingFee());
-    console.log("Total Amount (before fix):", calculateTotalPrice() + calculateShippingFee());
 
     const handleContinueClick = () => {
         const groupedCart = cart.reduce((acc, item) => {
@@ -48,7 +80,7 @@ export default function Cart() {
             return acc;
         }, []);
 
-        localStorage.setItem('cart', JSON.stringify(groupedCart));
+        //localStorage.setItem('cart', JSON.stringify(groupedCart));
         navigate("/payment");
     };
 
@@ -82,19 +114,19 @@ export default function Cart() {
                                         />
                                     )}
                                     <img
-                                        src={item.image}
+                                        src={getImageFromPath(item.image)} // 👈 BURASI GÜNCELLENDİ
                                         alt={item.name}
                                         className="w-20 h-20 object-contain rounded-md"
                                     />
-
                                     <div>
                                         <h3 className="text-lg font-semibold">{item.name}</h3>
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col items-center space-y-2">
-                                    <span
-                                        className="text-lg font-bold">{(parseFloat(item.price) * item.quantity).toFixed(2)} TL</span>
+                                    <span className="text-lg font-bold">
+                                        {(parseFloat(item.price) * item.quantity).toFixed(2)} TL
+                                    </span>
                                     <div className="flex items-center space-x-3">
                                         <button
                                             onClick={() => decreaseQuantity(item.id)}
@@ -113,7 +145,7 @@ export default function Cart() {
                                             onClick={() => removeItem(item.id)}
                                             className="bg-gray-500 text-white px-3 py-2 rounded-md"
                                         >
-                                            <FaTrash/>
+                                            <FaTrash />
                                         </button>
                                     </div>
                                 </div>
@@ -142,8 +174,7 @@ export default function Cart() {
             </div>
 
             {/* Cart Summary */}
-            <div
-                className="w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6 mt-6 lg:mt-12 max-h-[400px] overflow-y-auto">
+            <div className="w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6 mt-6 lg:mt-12 max-h-[400px] overflow-y-auto">
                 <h3 className="text-xl font-semibold mb-6">Cart Summary</h3>
                 <div className="flex justify-between text-gray-700 text-lg">
                     <span> </span>
@@ -154,23 +185,25 @@ export default function Cart() {
                     <span className="font-semibold">{calculateTotalPrice()} TL</span>
                 </div>
 
-                {/* Delivery Amount */}
                 <div className="flex justify-between text-gray-700 font-semibold text-lg mt-2">
                     <span
-                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>Delivery Amount:</span>
+                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
+                        Delivery Amount:
+                    </span>
                     <span
-                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>{calculateShippingFee() === 0 ? '49 TL' : '49 TL'}</span>
+                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
+                        49 TL
+                    </span>
                 </div>
 
-                {/* "Amount remaining for free delivery" */}
                 {calculateShippingFee() !== 0 && (
-                    <div
-                        className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
-                        <span className="text-left">Add {500 - calculateTotalPrice()} TL worth of products to your cart for free delivery.</span>
+                    <div className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
+                        <span>
+                            Add {500 - calculateTotalPrice()} TL worth of products to your cart for free delivery.
+                        </span>
                     </div>
                 )}
 
-                {/* Free delivery message */}
                 {calculateShippingFee() === 0 && (
                     <div className="flex justify-between text-green-600 font-semibold text-lg mt-2">
                         <span>Free Delivery</span>
@@ -181,7 +214,7 @@ export default function Cart() {
                     <span>Total Amount:</span>
                     <span className="font-semibold">{calculateTotalAmount()} TL</span>
                 </div>
-                {/* Continue button */}
+
                 <button
                     onClick={handleContinueClick}
                     className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition"

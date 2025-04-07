@@ -29,33 +29,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
+
         String token = getTokenFromRequest(request);
-        
+
         try {
             if (token != null && tokenProvider.validateToken(token)) {
                 String email = tokenProvider.getEmailFromToken(token);
-                
-               
+
+
                 User user = userRepository.findByEmail(email)
                         .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı: " + email));
 
                 String role = user.getRole();
                 List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
 
-               
+
                 JwtAuthentication authentication = new JwtAuthentication(email, role, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
         }
-        
+
         filterChain.doFilter(request, response);
     }
-    
+
     private String getTokenFromRequest(HttpServletRequest request) {
+        // 1. Cookie içinden al
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        // 2. (Opsiyonel) Authorization header'dan da destekle
         String bearerToken = request.getHeader("Authorization");
-        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
     }
+
 }
