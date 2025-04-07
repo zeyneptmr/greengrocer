@@ -3,8 +3,8 @@ import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
-import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js"; // yol değişebilir
-import { useFavorites } from "../helpers/FavoritesContext"; 
+import { CartContext } from "../helpers/CartContext.js"; // yol değişebilir
+import { useFavorites } from "../helpers/FavoritesContext";
 
 import ForgotPassword from './ForgotPassword';
 
