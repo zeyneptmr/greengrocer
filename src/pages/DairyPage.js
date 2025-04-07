@@ -129,7 +129,8 @@ const DairyPage = () => {
 
             {!loading && !error && (
                 <div>
-                    <div className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
+                    <div
+                        className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
                         {currentItems.length > 0 ? (
                             currentItems.map((product) => (
                                 <ProductCard
@@ -152,15 +153,15 @@ const DairyPage = () => {
                     {/* Pagination Controls */}
                     <div className="flex justify-center mt-8">
                         <button
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            className="px-5 py-2 mx-2 bg-orange-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
                             disabled={currentPage === 1}
                         >
                             &lt; Previous
                         </button>
-                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
                         <button
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            className="px-5 py-2 mx-2 bg-orange-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
                             disabled={currentPage === totalPages}
                         >

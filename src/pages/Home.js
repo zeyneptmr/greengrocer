@@ -23,6 +23,7 @@ import bakedGoodsImg from "../assets/bakedgoods1.svg";
 import olivesOilsImg from "../assets/olivesoils1.svg";
 import saucesImg from "../assets/sauces1.svg";
 import dairyImg from "../assets/dairy1.svg";
+import axios from "axios";
 
 const banners = [banner1];
 // Function to shuffle the array
@@ -50,6 +51,7 @@ export default function HomePage() {
     const [modalContent, setModalContent] = useState(""); // Modal content
     const [modalTitle, setModalTitle] = useState(""); // Modal title
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
     const { cart } = useCart();
@@ -57,6 +59,59 @@ export default function HomePage() {
     //useEffect(() => {
       //  setDiscountedProducts(getDiscountedProducts());
     //}, []);
+
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+          images[item.replace('./', '')] = r(item);
+        });
+        return images;
+      };
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+
+        if (path.startsWith("data:image")) {
+            return path;  // Doğrudan Base64 resmini döndür
+        }
+        // Extract filename from the path
+        const filename = path.split('/').pop(); // "dairy1.jpg"
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Image not found: ${filename}`);
+            return '/placeholder.png';  // Placeholder resim
+        }
+
+        // Find the matching image from the images object
+        return images[filename] || '/placeholder.png';
+    };
+    
+    const formatPrice = (price) => {
+        if (typeof price === "number") {
+            return price.toFixed(2); 
+        }
+        return parseFloat(price).toFixed(2); 
+    };
+
+    useEffect(() => {
+        const fetchRandomProducts = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/api/products/random"); 
+                setRandomProducts(response.data);
+            } catch (error) {
+                console.error("Error fetching random products", error);
+            }
+        };
+
+        fetchRandomProducts(); // Call function to fetch products
+    }, []); 
+
 
     //useEffect(() => {
       //  const nonDiscountedProducts = allproducts.filter(
@@ -172,9 +227,19 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>
             <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
-                    {dailySelectedProducts.map((product, index) => (
+                    {randomProducts.map((product, index) => (
                         <div key={index} className="flex-shrink-0">
-                            <ProductCard product={product}/>
+                            <ProductCard
+                            key={product.id}
+                            product={{
+                                id: product.id,
+                                name: product.productName,
+                                price: formatPrice(product.price),
+                                image: getImageFromPath(product.imagePath),
+                                stock: product.stock,
+                                category: product.category
+                            }}
+                        />
                         </div>
                     ))}
                 </div>

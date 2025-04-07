@@ -109,7 +109,7 @@ const DiscountPage = () => {
     const addDiscountedProduct = async (product, discountedPrice) => {
         try {
             const res = await axios.post('http://localhost:8080/api/discountedProducts', {
-                product: { id: product.id }, // Java tarafı nested `product` objesi bekliyor olabilir
+                product: { id: product.id }, // Java tarafı nested product objesi bekliyor olabilir
                 oldPrice: product.price,
                 discountedPrice: discountedPrice,
                 discountRate: parseInt(discountRate),

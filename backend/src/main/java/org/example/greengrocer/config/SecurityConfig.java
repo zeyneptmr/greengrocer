@@ -57,6 +57,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/cart/**").permitAll()
                     .requestMatchers("/api/users**").permitAll()
                     .requestMatchers("/logout").permitAll()
+                    .requestMatchers("/api/favorites/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

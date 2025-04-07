@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js"; // yol değişebilir
+import { useFavorites } from "../helpers/FavoritesContext"; 
 
 import ForgotPassword from './ForgotPassword';
 
 import axios from "axios";
 
 const Account = ({ isOpen, onClose }) => {
+    const { refreshAuth } = useFavorites(); 
     const [isForgotPassword, setIsForgotPassword] = useState(false); // Modal için state
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
@@ -196,8 +198,15 @@ const Account = ({ isOpen, onClose }) => {
                                 localStorage.setItem("loggedInUser", JSON.stringify(response.data.role));
                             }
 
+
                             setIsLoggedIn(true);
                             //syncCartIfUserLoggedIn();
+
+                            
+                           
+                            refreshAuth();
+                            
+
                             onClose();
 
                             if (response.data.role === "ADMIN") {
