@@ -142,15 +142,15 @@ const VegetablesPage = () => {
                     {/* Pagination Controls */}
                     <div className="flex justify-center mt-8">
                         <button
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            className="px-5 py-2 mx-2 bg-orange-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
                             disabled={currentPage === 1}
                         >
                             &lt; Previous
                         </button>
-                        <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+                        <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
                         <button
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded"
+                            className="px-5 py-2 mx-2 bg-orange-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
                             disabled={currentPage === totalPages}
                         >
