@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import axios from "axios";
 import Flag from "react-world-flags"; // Import the flag component
 
 export default function ContactForm() {
@@ -22,6 +22,7 @@ export default function ContactForm() {
         email: "",
         topic: "",
         message: "",
+        phoneNumber: "",
     });
 
     const [messageError, setMessageError] = useState("");
@@ -31,7 +32,6 @@ export default function ContactForm() {
     const [countryCode, setCountryCode] = useState("+90"); // Default country code set to Turkey
     const [bannerMessage, setBannerMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-
 
     const countries = [
         { code: "+1", flag: "US" },
@@ -87,7 +87,7 @@ export default function ContactForm() {
         if (value.length > 0) formattedValue = `(${value.substring(0, 3)}`;
         if (value.length >= 4) formattedValue += `) ${value.substring(3, 6)}`;
         if (value.length >= 7) formattedValue += `-${value.substring(6, 10)}`;
-
+        
         setPhoneNumber(formattedValue);
 
         if (value.length < 10) {
@@ -105,8 +105,9 @@ export default function ContactForm() {
         return (text.match(/[a-zA-ZğüşıöçĞÜŞİÖÇ]/g) || []).length;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (countLettersOnly(formData.message) < 20) {
             alert("The message must contain at least 20 letters.");
             return;
@@ -119,96 +120,102 @@ export default function ContactForm() {
             alert("Please correct the errors in the form..");
             return;
         }
-        const existingForms = JSON.parse(localStorage.getItem("contactForms")) || [];
 
-
-        const newFormData = {
+        const fullPhoneNumber = `${countryCode}${phoneNumber.replace(/\D/g, "")}`;
+        const formDataToSubmit = {
             ...formData,
-            phoneNumber: phoneNumber, // Telefon numarasını ekle
-            timestamp: new Date().toLocaleString() // Tarih ve saat ekleme
+            phoneNumber: fullPhoneNumber // Include the formatted phone number
         };
 
-        existingForms.push(newFormData);
+        try {
+            const response = await axios.post('http://localhost:8080/api/contact/submit', formDataToSubmit);
+            setBannerMessage(response.data);
+            setIsModalOpen(true);
+            setTimeout(() => {
+                setIsModalOpen(false);
+                setBannerMessage("");
+            }, 5000);
 
-        localStorage.setItem("contactForms", JSON.stringify(existingForms));
-
-        setBannerMessage("Formunuz başarıyla gönderildi!");
-        setIsModalOpen(true);
-
-        setTimeout(() => {
-            setIsModalOpen(false);
-            setBannerMessage("");
-        }, 5000);
-
-        setFormData({
-            name: "",
-            surname: "",
-            email: "",
-            topic: "",
-            message: "",
-        });
+            setFormData({
+                name: "",
+                surname: "",
+                email: "",
+                topic: "",
+                message: "",
+                phoneNumber: "",
+            });
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("There was an error submitting the form.");
+        }
     };
 
     return (
         <div className="flex flex-col items-center justify-center p-6 sm:p-10">
-            <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10"
-                 style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)'}}>
+            <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10 rounded-xl"
+                 style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.3)'}}>
 
                 {/* Banner*/}
                 {isModalOpen && (
-                    <div
-                        className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white border-4 border-green-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-center w-96 animate-fade-in">
-                        <div className="bg-orange-500 w-full py-2 rounded-t-lg text-white font-bold">
-                            Success!
+                    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50">
+                        <div className={`rounded-xl shadow-2xl overflow-hidden border-l-8 ${bannerMessage.includes("Error") ? "bg-red-100 border-red-600" : "bg-green-100 border-green-600"}`}>
+                            <div className={`px-6 py-4 flex items-start space-x-4`}>
+                                <div className="text-2xl">
+                                    {bannerMessage.includes("Error") ? "❌" : "✅"}
+                                </div>
+                                <div>
+                                    <h3 className={`text-lg font-semibold ${bannerMessage.includes("Error") ? "text-red-700" : "text-green-700"}`}>
+                                        {bannerMessage.includes("Error") ? "Submission Failed" : "Message Sent Successfully"}
+                                    </h3>
+                                    <p className="text-sm text-gray-700 mt-1">{bannerMessage.includes("Error") ? "Please try again later or check your input." : "Thank you for your feedback! We’ll get back to you shortly."}</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="ml-auto text-gray-500 hover:text-gray-700"
+                                >
+                                    ✖
+                                </button>
+                            </div>
                         </div>
-                        <div className="text-green-700 font-medium p-4">
-                            {bannerMessage}
-                        </div>
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="mt-2 px-4 py-1 bg-green-500 text-white font-semibold rounded-md hover:bg-green-700"
-                        >
-                            Close
-                        </button>
                     </div>
                 )}
 
                 <div>
-                    <h2 className="text-3xl font-semibold text-green-700 mb-2">Contact Form</h2>
+                    <h2 className="text-3xl font-semibold text-green-800 mb-4">Contact Form 📞</h2>
                     <p className="text-sm text-orange-500 mb-4"></p>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         <input
                             type="text"
                             name="name"
-                            placeholder="Name*"
+                            placeholder="Green"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         />
                         <input
                             type="text"
                             name="surname"
-                            placeholder="Surname*"
+                            placeholder="Grocer"
                             value={formData.surname}
                             onChange={handleChange}
-                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required/>
 
                         <input
                             type="email"
                             name="email"
-                            placeholder="E-mail Address*"
+                            placeholder="example@taptaze.com"
                             value={formData.email}
                             onChange={handleEmailChange}
-                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         />
                         {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
                             <div
-                                className="flex items-center border border-gray-300 rounded-md p-2 w-full sm:w-[150px]">
+                                className="flex items-center border border-gray-300 rounded-md p-4 w-full sm:w-[180px] shadow-sm">
                                 <Flag
                                     code={countries.find(country => country.code === countryCode)?.flag || "US"}
                                     style={{width: "20px", height: "20px"}}
@@ -216,7 +223,7 @@ export default function ContactForm() {
                                 <select
                                     value={countryCode}
                                     onChange={handleCountryCodeChange}
-                                    className="ml-2 border-none text-lg focus:ring-0 focus:outline-none w-full"
+                                    className="ml-4 border-none text-lg focus:ring-0 focus:outline-none w-full"
                                 >
                                     {countries.map((country) => (
                                         <option key={country.code} value={country.code}>
@@ -228,10 +235,10 @@ export default function ContactForm() {
                             <input
                                 type="tel"
                                 name="phone"
-                                placeholder="Phone Number* "
+                                placeholder="234 567 8901"
                                 value={phoneNumber}
                                 onChange={handlePhoneChange}
-                                className={`w-full sm:w-auto border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400 ${phoneError ? "border-red-500" : ""}`}
+                                className={`w-full sm:w-auto border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm ${phoneError ? "border-red-500" : ""}`}
                                 required
                             />
                         </div>
@@ -241,7 +248,7 @@ export default function ContactForm() {
                             name="topic"
                             value={formData.topic}
                             onChange={e => setFormData({...formData, topic: e.target.value})}
-                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         >
                             <option value="">-- Select --</option>
@@ -255,19 +262,22 @@ export default function ContactForm() {
                             placeholder="Message*"
                             value={formData.message}
                             onChange={handleChange}
-                            className="w-full border p-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         />
                         {messageError && <p className="text-red-500 text-sm">{messageError}</p>}
 
-                        <button type="submit" className="bg-green-500 text-white py-2 px-4 w-full">Submit</button>
+                        <button type="submit"
+                                className="bg-green-600 text-white py-3 px-6 w-full rounded-xl hover:bg-green-700 transition duration-300 ease-in-out">
+                            Submit ✉️
+                        </button>
                     </form>
                 </div>
 
                 {/* Customer Service Section */}
-                <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10"
-                     style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.5)'}}>
-                    <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service</h2>
+                <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10 rounded-xl"
+                     style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.3)'}}>
+                    <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service 📞</h2>
                     <p className="text-2xl font-bold text-orange-400">(0212) 533 65 32</p>
                     <p className="text-2xl text-green-700 font-semibold">TapTaze Food Services Inc.</p>
                     <p className="text-sm text-orange-400">

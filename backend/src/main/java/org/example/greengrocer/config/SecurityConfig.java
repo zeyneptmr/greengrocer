@@ -41,12 +41,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors().and()
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index.html").permitAll()
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
                     .requestMatchers("/api/mail/sendVerificationCode", "/api/mail/verifyCode").permitAll()
                     .requestMatchers("/api/mail/resetPassword").permitAll()
+                    .requestMatchers("/api/contact/**").permitAll()
                     .requestMatchers("/api/users/me").permitAll()
                     .requestMatchers("/api/products/**").permitAll()
                     .requestMatchers("/api/users/**").permitAll()

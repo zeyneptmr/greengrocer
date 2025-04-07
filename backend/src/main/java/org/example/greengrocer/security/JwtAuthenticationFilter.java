@@ -30,6 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Check if the request is for the '/api/contact/submit' endpoint, and skip the JWT authentication if true
+        String requestURI = request.getRequestURI();
+        if (requestURI.equals("/api/contact/submit")) {
+            filterChain.doFilter(request, response); // Skip JWT authentication for this endpoint
+            return;
+        }
+
         String token = getTokenFromRequest(request);
 
         try {
