@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**") // Tüm API'ler için CORS açma
                 .allowedOrigins("http://localhost:3000") // React uygulamanızın adresi
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // İzin verilen HTTP yöntemleri
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*"); // İzin verilen başlıklar
     }
 }
