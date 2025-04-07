@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import aboutUsImage from '../assets/aboutUs.jpg'; // Görseli doğru yoldan import ettik
+import aboutUsImage from '/Users/zeynep/greengrocer/src/assets/arugula.jpg'; // Görseli doğru yoldan import ettik
 
 const AboutUs = () => {
     const [activeItems, setActiveItems] = useState([]);

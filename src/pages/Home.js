@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
-//import { allproducts } from "../data/products";
-//import { getDiscountedProducts } from "../components/discount";
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
@@ -27,14 +23,8 @@ import axios from "axios";
 
 const banners = [banner1];
 // Function to shuffle the array
-const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-};
+
+
 const categories = [
     { name: "Vegetables", image: vegetablesImg, path: "/vegetables" },
     { name: "Fruits", image: fruitsImg, path: "/fruits" },
@@ -45,8 +35,6 @@ const categories = [
 ];
 
 export default function HomePage() {
-    //const [discountedProducts, setDiscountedProducts] = useState([]);
-    const [dailySelectedProducts, setDailySelectedProducts] = useState([]);
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content
     const [modalTitle, setModalTitle] = useState(""); // Modal title
@@ -54,11 +42,6 @@ export default function HomePage() {
     const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
-    const { cart } = useCart();
-
-    //useEffect(() => {
-      //  setDiscountedProducts(getDiscountedProducts());
-    //}, []);
 
     const importAll = (r) => {
         let images = {};
@@ -69,8 +52,6 @@ export default function HomePage() {
       };
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-
 
     const getImageFromPath = (path) => {
         if (!path) return null;
@@ -111,14 +92,6 @@ export default function HomePage() {
 
         fetchRandomProducts(); // Call function to fetch products
     }, []); 
-
-
-    //useEffect(() => {
-      //  const nonDiscountedProducts = allproducts.filter(
-        //    (product) => !getDiscountedProducts().some((discounted) => discounted.id === product.id)
-        //);
-        //setDailySelectedProducts(shuffleArray(nonDiscountedProducts).slice(0, 15));
-    //}, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -212,16 +185,6 @@ export default function HomePage() {
                     </motion.div>
                 ))}
             </div>
-
-            {/* Discounted Products */}
-            {/*<div className="p-6">
-                <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
-                    {discountedProducts.map((product) => (
-                        <ProductCard key={product.id} product={product}/>
-                    ))}
-                </div>
-            </div> */}
 
             {/* Products Section - Scrollable */}
             <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>

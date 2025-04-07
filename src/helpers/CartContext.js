@@ -68,11 +68,11 @@ function CartProvider({ children }) {
                     },
                     withCredentials: true,
                 });
-                showNotification("Ürün sepete eklendi");
+                showNotification("Success! Item added to cart!");
                 fetchCartFromBackend();
             } catch (error) {
-                console.error("Add to cart error:", error);
-                showNotification("Stok yetersiz ya da başka hata!");
+                console.error("Insufficient stock available!", error);
+                showNotification("!");
             }
         } else {
             const existingItem = cart.find(item => item.id === product.id);
@@ -88,7 +88,7 @@ function CartProvider({ children }) {
             }
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
-            showNotification("Ürün sepete eklendi");
+            showNotification("Success! Item added to cart!");
         }
     };
 
@@ -219,7 +219,7 @@ function CartProvider({ children }) {
         }}>
             {children}
             {notification && (
-                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white px-6 py-2 rounded-lg shadow-lg z-50 animate-fadeInOut">
+                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-white px-6 py-2 rounded-lg shadow-lg z-50 animate-fadeInOut">
                     {notification}
                 </div>
             )}
