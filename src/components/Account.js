@@ -3,12 +3,15 @@ import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
+import { useFavorites } from "../helpers/FavoritesContext"; 
+
 
 import ForgotPassword from './ForgotPassword';
 
 import axios from "axios";
 
 const Account = ({ isOpen, onClose }) => {
+    const { refreshAuth } = useFavorites(); 
     const [isForgotPassword, setIsForgotPassword] = useState(false); // Modal için state
     const navigate = useNavigate(); // Initialize the navigate function
     const [isRegister, setIsRegister] = useState(false);
@@ -192,6 +195,10 @@ const Account = ({ isOpen, onClose }) => {
                             if(response.data.role === "USER") {
                                 localStorage.setItem("loggedInUser", JSON.stringify(response.data.role));
                             }
+                            
+                           
+                            refreshAuth();
+                            
                             onClose();
 
                             if (response.data.role === "ADMIN") {

@@ -1,7 +1,9 @@
 package org.example.greengrocer.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.example.greengrocer.model.Product;
 import org.example.greengrocer.repository.ProductRepository;
@@ -58,5 +60,10 @@ public class ProductService {
     }
 
 
+    public List<Product> getRandomProducts() {
+        List<Product> allProducts = productRepository.findAll();
+        Collections.shuffle(allProducts); 
+        return allProducts.stream().limit(15).collect(Collectors.toList()); 
+    }
 
 }
