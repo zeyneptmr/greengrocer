@@ -6,9 +6,8 @@ const CartContext = createContext();
 function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
     const [notification, setNotification] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // Giriş durumu
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // Görselleri assets klasöründen al
     const importAll = (r) => {
         let images = {};
         r.keys().forEach((item) => {
@@ -34,14 +33,13 @@ function CartProvider({ children }) {
         return images[imagePath] || '/placeholder.png';
     };
 
-    const showNotification = (message) => {
-        setNotification(message);
+    const showNotification = (message, type = "info") => {
+        setNotification({ message, type });
         setTimeout(() => setNotification(null), 3000);
     };
 
-    // Kullanıcının giriş yapıp yapmadığını kontrol et
     const isUserLoggedIn = () => {
-        return localStorage.getItem("loggedInUser") !== null; // Eğer kullanıcı giriş yapmışsa
+        return localStorage.getItem("loggedInUser") !== null;
     }
 
     const fetchCartFromBackend = async () => {
@@ -68,15 +66,12 @@ function CartProvider({ children }) {
                     },
                     withCredentials: true,
                 });
-                showNotification("Success! Item added to cart.");
+                showNotification("Success! Item added to cart.", "success");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Insufficient stock available!", error);
-                showNotification("!");
+                showNotification("Insufficient stock available!", "warning");
             }
-
-
-
         } else {
             const existingItem = cart.find(item => item.id === product.id);
             let updatedCart;
@@ -91,26 +86,22 @@ function CartProvider({ children }) {
             }
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
-            showNotification("Success! Item added to cart!");
+            showNotification("Success! Item added to cart!", "success");
         }
     };
-
 
     const increaseQuantity = async (cartItemId) => {
         if (isUserLoggedIn()) {
             try {
                 await axios.patch(`http://localhost:8080/api/cart/increase/${cartItemId}`, null, { withCredentials: true });
-                //showNotification("Product quantity increased");
                 fetchCartFromBackend();
             } catch (error) {
-                //console.error("Increase quantity error:", error);
-                showNotification("Insufficient stock available!");
+                showNotification("Insufficient stock available!", "warning");
             }
         } else {
             const updatedCart = cart.map(item =>
                 item.id === cartItemId ? { ...item, quantity: item.quantity + 1 } : item
             );
-            console.log("Updated Cart (Increase):", updatedCart);  // Debugging
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
         }
@@ -120,7 +111,6 @@ function CartProvider({ children }) {
         if (isUserLoggedIn()) {
             try {
                 await axios.patch(`http://localhost:8080/api/cart/decrease/${cartItemId}`, null, { withCredentials: true });
-               // showNotification("Ürün miktarı azaltıldı");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Decrease quantity error:", error);
@@ -131,7 +121,6 @@ function CartProvider({ children }) {
                     ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
                     : item
             );
-            console.log("Updated Cart (Decrease):", updatedCart);  // Debugging
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
         }
@@ -141,7 +130,7 @@ function CartProvider({ children }) {
         if (isUserLoggedIn()) {
             try {
                 await axios.delete(`http://localhost:8080/api/cart/remove/${cartItemId}`, { withCredentials: true });
-                showNotification("Product deleted from cart!");
+                showNotification("Product deleted from cart!", "success");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Remove item error:", error);
@@ -153,10 +142,9 @@ function CartProvider({ children }) {
         }
     };
 
-
     const clearCart = () => {
         cart.forEach(item => removeItem(item.id));
-        showNotification("All products deleted from cart!");
+        showNotification("All products deleted from cart!", "info");
     };
 
     const calculateTotalPrice = () => {
@@ -175,11 +163,9 @@ function CartProvider({ children }) {
         }
     }, [isLoggedIn]);
 
-
     useEffect(() => {
         const loggedInUser = localStorage.getItem("loggedInUser");
         if (loggedInUser) {
-            // Giriş yapıldıysa localStorage'daki eski guest sepetini temizle
             localStorage.removeItem("cart");
             fetchCartFromBackend();
         } else {
@@ -206,7 +192,6 @@ function CartProvider({ children }) {
         };
     }, []);
 
-
     return (
         <CartContext.Provider value={{
             cart,
@@ -217,13 +202,21 @@ function CartProvider({ children }) {
             clearCart,
             calculateTotalPrice,
             getTotalProductTypes,
-            isLoggedIn,         // 🔥 bunları ekle
+            isLoggedIn,
             setIsLoggedIn
         }}>
             {children}
             {notification && (
-                <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-white px-6 py-2 rounded-lg shadow-lg z-50 animate-fadeInOut">
-                    {notification}
+                <div className={`fixed top-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 animate-fadeInOut text-white text-sm font-medium flex items-center gap-2
+                    ${notification.type === "success" ? "bg-green-600" :
+                    notification.type === "warning" ? "bg-yellow-600" :
+                        notification.type === "error" ? "bg-red-600" :
+                            "bg-blue-600"}`}>
+                    {notification.type === "success" && <span>✅</span>}
+                    {notification.type === "warning" && <span>⚠️</span>}
+                    {notification.type === "error" && <span>❌</span>}
+                    {notification.type === "info" && <span>ℹ️</span>}
+                    <span>{notification.message}</span>
                 </div>
             )}
         </CartContext.Provider>
