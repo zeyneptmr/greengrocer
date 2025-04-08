@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
+import FAQ from "./pages/FAQ";
 import FruitsPage from "./pages/FruitsPage";
 import DairyPage from "./pages/DairyPage";
 import VegetablesPage from "./pages/VegetablesPage";
@@ -52,6 +53,7 @@ function MainContent(){
                 <Routes>
                     <Route path="/*" element={<Home />} />
                     <Route path="/about" element={<AboutUs/>}/>
+                    <Route path="/faq" element={<FAQ/>}/>
                     <Route path="/fruits" element={<FruitsPage/>}/>
                     <Route path="/vegetables" element={<VegetablesPage/>}/>
                     <Route path="/bakedgoods" element={<BakedGoodsPage/>}/>
