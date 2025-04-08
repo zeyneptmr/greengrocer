@@ -3,17 +3,16 @@ import Flag from "react-world-flags";
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
-import { CartContext } from "../helpers/CartContext.js"; // yol değişebilir
-import { useFavorites } from "../helpers/FavoritesContext";
+import { CartContext } from "../helpers/CartContext";
+import { useFavorites } from "../helpers/FavoritesContext"; // Import the FavoritesContext
 
 import ForgotPassword from './ForgotPassword';
 
 import axios from "axios";
 
 const Account = ({ isOpen, onClose }) => {
-    const { refreshAuth } = useFavorites(); 
-    const [isForgotPassword, setIsForgotPassword] = useState(false); // Modal için state
-    const navigate = useNavigate(); // Initialize the navigate function
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const navigate = useNavigate();
     const [isRegister, setIsRegister] = useState(false);
     //const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +35,9 @@ const Account = ({ isOpen, onClose }) => {
     });
 
     const { setIsLoggedIn } = useContext(CartContext);
-    const [message, setMessage] = useState(""); // Message to display success or error
+    const { refreshFavorites, refreshAuth } = useFavorites();
+
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         if (isOpen) {
@@ -198,13 +199,11 @@ const Account = ({ isOpen, onClose }) => {
                                 localStorage.setItem("loggedInUser", JSON.stringify(response.data.role));
                             }
 
-
                             setIsLoggedIn(true);
-                            //syncCartIfUserLoggedIn();
-
                             
-                           
+                    
                             refreshAuth();
+                            refreshFavorites();
                             
 
                             onClose();
@@ -218,14 +217,18 @@ const Account = ({ isOpen, onClose }) => {
                             }
 
                             // Kullanıcı bilgilerini doğrulamak için /me endpoint'ini çağır
-                            axios.get("http://localhost:8080/api/users/me", { withCredentials: true })
+                            axios.get("http://localhost:8080/api/users/me", { 
+                                withCredentials: true,
+                                headers: {
+                                    'Cache-Control': 'no-cache'  // Prevent caching
+                                }
+                            })
                                 .then(authResponse => {
                                     //console.log("Authenticated user:", authResponse.data);
-                                    // Eğer kullanıcı doğrulandıysa, sayfaya yönlendirme yapılabilir
+                                    // User authenticated, favorites will be refreshed via useEffect in FavoritesContext
                                 })
                                 .catch(error => {
                                     console.error("Error during authentication check:", error);
-                                    // Hata durumunda yapılacak işlemler
                                 });
 
                             setFormData({
@@ -457,7 +460,7 @@ const Account = ({ isOpen, onClose }) => {
                         </>
                     )}
                 </form>
-                {message && <p className="text-center mt-3 text-green-600">{message}</p>} {/* Display message */}
+                {message && <p className="text-center mt-3 text-green-600">{message}</p>}
             </div>
 
             {/* ForgotPassword Modal */}

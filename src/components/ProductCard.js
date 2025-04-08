@@ -19,19 +19,45 @@ export default function ProductCard({ product, hideCartView=false }) {
     // Bu state, kullanıcı "Add to Cart" butonuna bastıysa geçici olarak ürün eklendi sayacağız
     const [addedToCart, setAddedToCart] = useState(false);
 
+    const discountPercentage = product.discountRate
+    
+  
     // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
     useEffect(() => {
-        console.log("Cart:", cart);
-
         if (cartItem) setAddedToCart(true);
     }, [cartItem]);
 
+    
+    // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
+    //useEffect(() => {
+        //console.log("Cart:", cart);
+
+        //if (cartItem) setAddedToCart(true);
+    //}, [cartItem]);
 
 
+    const quantity = cartItem?.quantity || 0;
     const handleAddToCart = () => {
         addToCart(product);
-        setAddedToCart(true); // hemen UI'da güncelle
     };
+
+    const handleIncreaseQuantity = () => {
+        if (cartItem) {
+            increaseQuantity(cartItem.id);
+        }
+    };
+
+    const handleDecreaseQuantity = () => {
+        if (cartItem?.quantity > 1) {
+            decreaseQuantity(cartItem.id);
+        } else if (cartItem?.quantity === 1) {
+            // Ürün 0'a düşecekse, decrease işlemi çağrılırsa ve context'te zaten çıkarılıyorsa,
+            // buraya ayrıca bir şey eklemeye gerek yok çünkü cartItem zaten yok olacak.
+            decreaseQuantity(cartItem.id);
+        }
+    };
+
+
 
     return (
         <Card className="relative flex flex-col items-center">
@@ -45,7 +71,7 @@ export default function ProductCard({ product, hideCartView=false }) {
 
             {product.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    15% Off
+                    {discountPercentage}% Off
                 </div>
             )}
 
@@ -62,7 +88,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                 {/* Product Name */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
-                {/* Product Price and Quantity */}
+                {/* Product Price */}
                 <div className="flex justify-center items-center mt-1">
                     {product.discountedPrice ? (
                         <p className="text-gray-600 text-md line-through mr-2">{product.price} TL</p>
@@ -72,13 +98,6 @@ export default function ProductCard({ product, hideCartView=false }) {
                     {product.discountedPrice && (
                         <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
                     )}
-
-                    {/* Sales Quantity (Piece or KG) */}
-                    {product.quantity && (
-                        <span className="text-gray-500 text-sm ml-2">
-                            {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
-                        </span>
-                    )}
                 </div>
 
                 {/* Add Cart Button, Increase, Decrease */}
@@ -86,14 +105,14 @@ export default function ProductCard({ product, hideCartView=false }) {
                     cartItem || addedToCart ? (
                         <div className="flex items-center space-x-3 mt-4 justify-center">
                             <button
-                                onClick={() => decreaseQuantity(cartItem?.id)}
+                                onClick={handleDecreaseQuantity}
                                 className="bg-red-500 text-white px-3 py-1 rounded-md"
                             >
                                 -
                             </button>
                             <span className="text-lg font-semibold">{cartItem?.quantity || 1}</span>
                             <button
-                                onClick={() => increaseQuantity(cartItem?.id)}
+                                onClick={handleIncreaseQuantity}
                                 className="bg-green-500 text-white px-3 py-1 rounded-md"
                             >
                                 +

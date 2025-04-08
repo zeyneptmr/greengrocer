@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
+import axios from 'axios';
 
 const CustomerInfo = () => {
     const [user, setUser] = useState({
@@ -13,14 +15,28 @@ const CustomerInfo = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [isUpdated, setIsUpdated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUsers = JSON.parse(localStorage.getItem('users'));
-        if (storedUsers && storedUsers.length > 0) {
-            setUser(storedUsers[0]);
-            setInitialUser(storedUsers[0]);
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get('http://localhost:8080/api/users/me', {
+                    withCredentials: true 
+                });
+                
+                const userData = response.data;
+                setUser(userData);
+                setInitialUser(userData);
+            } catch (err) {
+                console.error('Error fetching user data:', err);
+                setError('Failed to load user information. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        }
+        fetchUserData();
     }, []);
 
     const handleChange = (e) => {
@@ -48,7 +64,7 @@ const CustomerInfo = () => {
         setIsUpdated(JSON.stringify({ ...user, [name]: value }) !== JSON.stringify(initialUser));
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         if (!user.name || !user.surname || !user.phoneNumber) {
             setError("Please fill out all fields completely!");
             setSuccess(false);
@@ -64,13 +80,34 @@ const CustomerInfo = () => {
 
         if (!isUpdated) return;
 
-        setError('');
-        localStorage.setItem('users', JSON.stringify([user]));
-        setInitialUser(user);
-        setSuccess(true);
-        setIsUpdated(false);
-        setTimeout(() => setSuccess(false), 3000);
+        try {
+        
+            const response = await axios.put('http://localhost:8080/api/users/update', user, {
+                withCredentials: true 
+            });
+            
+            setInitialUser(user);
+            setSuccess(true);
+            setIsUpdated(false);
+            setError('');
+            setTimeout(() => setSuccess(false), 3000);
+        } catch (err) {
+            console.error('Error updating user data:', err);
+            setError('Update failed. Please try again.');
+            setSuccess(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="flex bg-green-50 min-h-screen">
+                <UserSidebar />
+                <div className="flex items-center justify-center w-full">
+                    <div className="text-green-700 text-xl">Loading user information...</div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex bg-green-50 min-h-screen">
@@ -146,5 +183,3 @@ const CustomerInfo = () => {
 };
 
 export default CustomerInfo;
-
-

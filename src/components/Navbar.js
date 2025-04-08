@@ -12,7 +12,6 @@ import { useContext } from "react";
 //import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
 import { useCart } from "../helpers/CartContext";
 
-
 const menuItems = [
     { name: "Fruits" },
     { name: "Vegetables" },
@@ -33,6 +32,8 @@ const Navbar = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
     const profileMenuRef = useRef();
     const { favorites } = useFavorites();
+    const { refreshAuth } = useFavorites();
+
     const [Cart, setCart] = useState(null);
 
     const [role, setRole] = useState("");
@@ -115,6 +116,7 @@ const Navbar = () => {
                 setRole(null);
                 setLoggedInUser(null);
                 setIsLoggedIn(false);
+                refreshAuth();
 
                 navigate("/");
 
@@ -127,7 +129,7 @@ const Navbar = () => {
             .catch((error) => {
                 console.error("Logout error:", error);
                 // Hata durumunda da login sayfasına yönlendirebilirsiniz
-                navigate("/");
+                navigate("/login");
             });
     };
 

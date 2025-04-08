@@ -155,7 +155,7 @@ const AddressPage = () => {
                     });
                 }
 
-                await fetchAddresses(); // 🔄 Yalnızca bu, yeterli
+                await fetchAddresses();
 
                 // Formu sıfırla
                 setFormData({

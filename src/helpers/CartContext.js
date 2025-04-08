@@ -8,6 +8,10 @@ function CartProvider({ children }) {
     const [notification, setNotification] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const [addedToCart, setAddedToCart] = useState(false);
+
+    // Görselleri assets klasöründen al
+
     const importAll = (r) => {
         let images = {};
         r.keys().forEach((item) => {
@@ -123,6 +127,11 @@ function CartProvider({ children }) {
             );
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+            const cartItem = updatedCart.find(item => item.id === cartItemId);
+            if (cartItem?.quantity <= 1) {
+                setAddedToCart(false);  // Add to Cart butonunu göster
+            }
         }
     };
 
@@ -141,6 +150,7 @@ function CartProvider({ children }) {
             localStorage.setItem("cart", JSON.stringify(updatedCart));
         }
     };
+
 
     const clearCart = () => {
         cart.forEach(item => removeItem(item.id));

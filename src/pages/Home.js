@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
+import TodaysDiscountedProducts from "../components/TodaysDiscountedProducts";
+
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
@@ -185,6 +187,14 @@ export default function HomePage() {
                     </motion.div>
                 ))}
             </div>
+
+            {/* Discounted Products */}
+            <section className="py-8">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
+                    <TodaysDiscountedProducts />
+                </div>
+            </section>
 
             {/* Products Section - Scrollable */}
             <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>

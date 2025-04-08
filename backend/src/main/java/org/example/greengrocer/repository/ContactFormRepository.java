@@ -13,5 +13,5 @@ public interface ContactFormRepository extends JpaRepository<ContactForm, Long> 
     List<ContactForm> findAllByOrderByTimestampDesc();
 
     // Okunmamış mesajları getir
-    List<ContactForm> findByIsRead(boolean isRead);
+    List<ContactForm> findByIsReadFalse(); // Okunmamış form sorgulama
 }
