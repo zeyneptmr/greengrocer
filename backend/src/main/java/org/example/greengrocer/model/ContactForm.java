@@ -1,6 +1,7 @@
 package org.example.greengrocer.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contact_form")
@@ -18,6 +19,16 @@ public class ContactForm {
 
     @Column(length = 1000)
     private String message;
+
+    private boolean isRead;  // Mesajın okunup okunmadığını tutan alan
+
+
+    private LocalDateTime timestamp;
+
+    @PrePersist
+    protected void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
 
     // Getter ve Setter'lar
     public Long getId() {
@@ -74,5 +85,21 @@ public class ContactForm {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

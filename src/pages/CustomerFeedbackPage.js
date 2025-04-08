@@ -2,37 +2,57 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import { FaReply, FaCheck, FaTrash } from 'react-icons/fa';
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { motion } from "framer-motion";
+import axios from "axios"; // Axios import
 
 const ContactFormsPage = () => {
     const [forms, setForms] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0); // Active form index
+    const [expandedId, setExpandedId] = useState(null);
+    const unreadCount = forms.filter(form => !form.isRead).length;
 
     useEffect(() => {
-        const storedForms = JSON.parse(localStorage.getItem("contactForms")) || [];
-        setForms(storedForms);
+        axios.get("http://localhost:8080/api/contact/all")
+            .then(response => {
+                setForms(response.data);
+            })
+            .catch(error => {
+                console.error("There was an error fetching the contact forms!", error);
+            });
     }, []);
 
-    const handleReply = (index) => {
-        window.location.href = "mailto:someone@example.com";
+    const handleReply = (email) => {
+        window.location.href = `mailto:${email}`;
     };
 
-    const handleMarkAsRead = (index) => {
-        const updatedForms = [...forms];
-        updatedForms[index].isRead = !updatedForms[index].isRead;
-        setForms(updatedForms);
-        localStorage.setItem("contactForms", JSON.stringify(updatedForms));
+    // Okundu olarak işaretleme işlevi
+    const handleMarkAsRead = async (id, isRead) => {
+        try {
+            const response = await axios.patch(`http://localhost:8080/api/contact/${id}`, {
+                isRead: !isRead  // Durumu tersine çevir
+            });
+            console.log("Message marked as read:", response.data);
+            // Okundu olarak işaretlendikten sonra UI'yi güncelle
+            setForms(forms.map(form => form.id === id ? { ...form, isRead: !isRead } : form)); // forms state'ini güncelle
+        } catch (error) {
+            console.error("Error marking message as read:", error);
+        }
     };
 
-    const handleDelete = (index) => {
-        const updatedForms = forms.filter((_, i) => i !== index);
-        setForms(updatedForms);
-        localStorage.setItem("contactForms", JSON.stringify(updatedForms));
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/contact/${id}`);
+            console.log("Message deleted:", response.data);
+            // Silme işlemi sonrasında UI'yi güncelle
+            setForms(forms.filter(form => form.id !== id)); // forms state'ini güncelle
+        } catch (error) {
+            console.error("Error deleting message:", error);
+        }
+    }
+
+    const toggleExpand = (id) => {
+        setExpandedId(expandedId === id ? null : id);
     };
+
 
     // Handle the index change when navigating through forms
     const handleBeforeChange = (oldIndex, newIndex) => {
@@ -51,95 +71,93 @@ const ContactFormsPage = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-100 overflow-hidden">
+        <div className="flex h-screen bg-green-50 overflow-hidden font-sans">
             <Sidebar />
-            <main className="flex-1 flex flex-col overflow-hidden">
-                <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700">Contact Forms</h1>
-                    <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Manager Panel</span>
-                        <img src={managerIcon} alt="Manager" className="rounded-full w-14 h-18" />
+            <main className="flex-1 flex flex-col overflow-auto">
+                <header className="bg-white shadow-md p-4 flex justify-between items-center">
+                    <h1 className="text-2xl font-bold text-green-700">Contact Forms</h1>
+                    <div className="flex items-center space-x-4 relative">
+                        <span className="text-gray-500 text-sm">Manager Panel</span>
+                        <div className="relative">
+                            <img src={managerIcon} alt="Manager" className="rounded-full w-12 h-12 cursor-pointer"/>
+                            {unreadCount > 0 && (
+                                <span
+                                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {unreadCount}
+            </span>
+                            )}
+                        </div>
                     </div>
+
                 </header>
-                <div className="p-4 overflow-auto">
+
+                <div className="p-6 space-y-5">
                     {forms.length === 0 ? (
-                        <p className="text-gray-500">No contact forms submitted yet.</p>
+                        <p className="text-green-600">No contact forms submitted yet.</p>
                     ) : (
-                        <div>
-                            {/* Form index and total forms display */}
-                            <div className="text-sm text-gray-600 mb-4">
-                                <span>Form {currentIndex + 1} of {forms.length}</span>
-                            </div>
+                        forms.map((form) => (
+                            <div
+                                key={form.id}
+                                onClick={() => toggleExpand(form.id)}
+                                className={`cursor-pointer transition-all duration-300 border-l-4 ${
+                                    form.isRead ? "border-green-300 bg-green-100" : "border-green-600 bg-white"
+                                } shadow-md rounded-lg px-6 py-4 relative hover:shadow-lg`}
+                            >
+                                <h2 className="text-lg font-semibold text-green-700">{form.topic}</h2>
 
-                            {/* Slider Component */}
-                            <Slider {...settings}>
-                                {forms.map((form, index) => (
-                                    <div key={index}
-                                         className={`bg-white shadow-md rounded-lg flex w-50 ${form.isRead ? 'bg-gray-300' : ''}`}>
-                                        <div className="p-4 flex-1 relative text-sm">
-                                            <p><strong>Name:</strong> {form.name}</p>
-                                            <p><strong>Surname:</strong> {form.surname}</p>
-                                            <p><strong>Email:</strong> {form.email}</p>
-                                            <p><strong>Phone Number:</strong> {form.phoneNumber}</p>
-                                            <p><strong>Topic:</strong> {form.topic}</p>
-                                            <p><strong>Message:</strong> {form.message}</p>
-                                            <p><strong>Submitted At:</strong> {form.timestamp}</p>
+                                {expandedId === form.id && (
+                                    <div className="mt-4 text-base text-green-900 space-y-2">
+                                        <p><strong>Name:</strong> {form.name}</p>
+                                        <p><strong>Surname:</strong> {form.surname}</p>
+                                        <p><strong>Email:</strong> {form.email}</p>
+                                        <p><strong>Phone:</strong> {form.phoneNumber}</p>
+                                        <p><strong>Message:</strong> {form.message}</p>
 
-                                            {form.isRead && <p className="text-gray-500 text-right">Read</p>}
-                                            <div className="absolute top-4 right-4 flex space-x-2">
-                                                <button onClick={() => handleReply(index)}
-                                                        className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-400 focus:outline-none"
-                                                        title="Yanıtla">
-                                                    <FaReply/>
-                                                </button>
-                                                <button onClick={() => handleMarkAsRead(index)}
-                                                        className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400 focus:outline-none"
-                                                        title="Okundu olarak işaretle">
-                                                    <FaCheck/>
-                                                </button>
-                                                <button onClick={() => handleDelete(index)}
-                                                        className="bg-red-500 text-white rounded-full p-2 hover:bg-red-400 focus:outline-none"
-                                                        title="Sil">
-                                                    <FaTrash/>
-                                                </button>
-                                            </div>
+                                        {/* Timestamp */}
+                                        <p><strong>Sent At:</strong> {new Date(form.timestamp).toLocaleString()}</p>
+
+                                        <div className="absolute top-4 right-4 flex space-x-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleReply(form.email);
+                                                }}
+                                                className="bg-white border border-blue-500 text-blue-500 rounded-full p-2 hover:bg-blue-100"
+                                                title="Reply"
+                                            >
+                                                <FaReply />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleMarkAsRead(form.id);
+                                                }}
+                                                className="bg-white border border-green-500 text-green-500 rounded-full p-2 hover:bg-green-100"
+                                                title="Mark as read"
+                                            >
+                                                <FaCheck />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(form.id);
+                                                }}
+                                                className="bg-white border border-red-500 text-red-500 rounded-full p-2 hover:bg-red-100"
+                                                title="Delete"
+                                            >
+                                                <FaTrash />
+                                            </button>
                                         </div>
                                     </div>
-                                ))}
-                            </Slider>
-                        </div>
+                                )}
+                            </div>
+                        ))
                     )}
-                    <UserRatingsChart />
                 </div>
             </main>
         </div>
     );
-};
 
-const UserRatingsChart = () => {
-    const data = [
-        { day: "Monday", rating: 4.2 },
-        { day: "Tuesday", rating: 3.8 },
-        { day: "Wednesday", rating: 4.5 },
-        { day: "Thursday", rating: 4.0 },
-        { day: "Friday", rating: 4.7 },
-        { day: "Saturday", rating: 4.3 },
-        { day: "Sunday", rating: 4.6 },
-    ];
-    return (
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="p-4 bg-white rounded-lg shadow-md mt-6">
-            <h2 className="text-xl font-bold text-center mb-4">User Ratings This Week</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
-                    <XAxis dataKey="day" stroke="#555" />
-                    <YAxis domain={[3, 5]} stroke="#555" />
-                    <Tooltip />
-                    <Bar dataKey="rating" fill="#82ca9d" radius={[5, 5, 0, 0]} />
-                </BarChart>
-            </ResponsiveContainer>
-        </motion.div>
-    );
 };
-
 export default ContactFormsPage;
 
