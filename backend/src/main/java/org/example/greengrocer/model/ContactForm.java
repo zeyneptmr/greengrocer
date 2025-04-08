@@ -20,8 +20,7 @@ public class ContactForm {
     @Column(length = 1000)
     private String message;
 
-    private boolean isRead;  // Mesajın okunup okunmadığını tutan alan
-
+    private boolean isRead;
 
     private LocalDateTime timestamp;
 
@@ -91,10 +90,9 @@ public class ContactForm {
         return isRead;
     }
 
-    public void setRead(boolean read) {
-        isRead = read;
+    public void setRead(boolean isRead) {
+        this.isRead = isRead;
     }
-
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

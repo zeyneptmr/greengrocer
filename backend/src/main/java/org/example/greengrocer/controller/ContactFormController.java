@@ -33,14 +33,14 @@ public class ContactFormController {
 
     // Tüm mesajları getir
     @GetMapping("/all")
-    public List<ContactForm> getAllMessages() {
+    public List<ContactForm> getAllForms() {
         return contactFormService.getAllContactForms();
     }
 
     // Okunmamış mesajları getir
     @GetMapping("/unread")
-    public List<ContactForm> getUnreadMessages() {
-        return contactFormService.getUnreadForms();
+    public List<ContactForm> getUnreadForms() {
+        return contactFormService.getUnreadForms(); // Okunmamış formlar
     }
 
     // Mevcut mesajları güncelle
@@ -57,13 +57,10 @@ public class ContactFormController {
     }
 
     // Okunmuş olarak işaretle
+// Okunmuş olarak işaretle
     @PatchMapping("/{id}")
-    public ContactForm markAsRead(@PathVariable Long id, @RequestBody ContactForm formDetails) {
-        ContactForm form = contactFormRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Form not found with id " + id));
-
-        form.setRead(formDetails.isRead());
-        return contactFormRepository.save(form);  // Güncellenmiş formu kaydet
+    public ContactForm markAsRead(@PathVariable Long id) {
+        return contactFormService.markAsRead(id);  // Service'e yönlendir
     }
 
 }

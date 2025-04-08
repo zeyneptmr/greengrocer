@@ -27,20 +27,18 @@ public class ContactFormService {
         return contactFormRepository.findAllByOrderByTimestampDesc(); // Mesajları timestamp'e göre sıralar
     }
 
-    // Okunmamış formları getirme
     public List<ContactForm> getUnreadForms() {
-        return contactFormRepository.findByIsRead(false); // 'isRead' false olan mesajları getir
+        return contactFormRepository.findByIsReadFalse();
     }
 
     // Formu okundu olarak işaretle
-    public ContactForm markAsRead(Long id, boolean isRead) {
+    public ContactForm markAsRead(Long id) {
         ContactForm form = contactFormRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Form not found with id " + id));
-
-        // Okundu olarak işaretleme
-        form.setRead(isRead);
-        return contactFormRepository.save(form);
+                .orElseThrow(() -> new RuntimeException("Form not found with id " + id));  // Exception handling ekledim
+        form.setRead(true); // Okundu olarak işaretle
+        return contactFormRepository.save(form);  // Güncellenmiş formu kaydet
     }
+
 
     // Formu silme
     public String deleteForm(Long id) {
