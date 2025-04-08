@@ -8,6 +8,8 @@ function CartProvider({ children }) {
     const [notification, setNotification] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);  // Giriş durumu
 
+    const [addedToCart, setAddedToCart] = useState(false);
+
     // Görselleri assets klasöründen al
     const importAll = (r) => {
         let images = {};
@@ -134,6 +136,11 @@ function CartProvider({ children }) {
             console.log("Updated Cart (Decrease):", updatedCart);  // Debugging
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+            const cartItem = updatedCart.find(item => item.id === cartItemId);
+            if (cartItem?.quantity <= 1) {
+                setAddedToCart(false);  // Add to Cart butonunu göster
+            }
         }
     };
 

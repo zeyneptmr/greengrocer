@@ -20,18 +20,34 @@ export default function ProductCard({ product, hideCartView=false }) {
     const [addedToCart, setAddedToCart] = useState(false);
 
     // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
-    useEffect(() => {
-        console.log("Cart:", cart);
+    //useEffect(() => {
+        //console.log("Cart:", cart);
 
-        if (cartItem) setAddedToCart(true);
-    }, [cartItem]);
+        //if (cartItem) setAddedToCart(true);
+    //}, [cartItem]);
 
 
-
+    const quantity = cartItem?.quantity || 0;
     const handleAddToCart = () => {
         addToCart(product);
-        setAddedToCart(true); // hemen UI'da güncelle
     };
+
+    const handleIncreaseQuantity = () => {
+        if (cartItem) {
+            increaseQuantity(cartItem.id);
+        }
+    };
+
+    const handleDecreaseQuantity = () => {
+        if (cartItem?.quantity > 1) {
+            decreaseQuantity(cartItem.id);
+        } else if (cartItem?.quantity === 1) {
+            // Ürün 0'a düşecekse, decrease işlemi çağrılırsa ve context'te zaten çıkarılıyorsa,
+            // buraya ayrıca bir şey eklemeye gerek yok çünkü cartItem zaten yok olacak.
+            decreaseQuantity(cartItem.id);
+        }
+    };
+
 
     return (
         <Card className="relative flex flex-col items-center">
@@ -86,14 +102,14 @@ export default function ProductCard({ product, hideCartView=false }) {
                     cartItem || addedToCart ? (
                         <div className="flex items-center space-x-3 mt-4 justify-center">
                             <button
-                                onClick={() => decreaseQuantity(cartItem?.id)}
+                                onClick={handleDecreaseQuantity}
                                 className="bg-red-500 text-white px-3 py-1 rounded-md"
                             >
                                 -
                             </button>
                             <span className="text-lg font-semibold">{cartItem?.quantity || 1}</span>
                             <button
-                                onClick={() => increaseQuantity(cartItem?.id)}
+                                onClick={handleIncreaseQuantity}
                                 className="bg-green-500 text-white px-3 py-1 rounded-md"
                             >
                                 +

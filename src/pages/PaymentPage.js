@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
 
 import axios from "axios";
 
@@ -21,6 +21,13 @@ const PaymentPage = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
+
+    const [orderTotal, setOrderTotal] = useState({
+        totalProductCount: 0,
+        totalPrice: 0,
+        shippingFee: 0,
+        totalAmount: 0,
+    });
 
     const importAll = (r) => {
         let images = {};
@@ -98,6 +105,21 @@ const PaymentPage = () => {
         fetchData();
     }, []);
 
+    // Fetch the order total from the backend
+    useEffect(() => {
+        const fetchOrderTotal = async () => {
+            try {
+                const orderTotalRes = await axios.get("http://localhost:8080/api/ordertotal", { withCredentials: true });
+                console.log("Order Total:", orderTotalRes.data);
+                setOrderTotal(orderTotalRes.data);
+            } catch (error) {
+                console.error("Error fetching order total:", error);
+            }
+        };
+
+        fetchOrderTotal();
+    }, []);
+
     const handlePayment = () => {
         const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const totalCostFormatted = totalCost.toFixed(2);
@@ -137,20 +159,21 @@ const PaymentPage = () => {
         }, 3000);
     };
 
-    const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const totalCostFormatted = totalCost.toFixed(2);
-    const shippingCost = totalCost > 500 ? 0 : 49;
-    const finalCost = parseFloat(totalCostFormatted) + shippingCost;
+    //const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    //const totalCostFormatted = totalCost.toFixed(2);
+    //const shippingCost = totalCost > 500 ? 0 : 49;
+    //const finalCost = parseFloat(totalCostFormatted) + shippingCost;
 
 
     return (
         <div className="max-w-6xl mx-auto p-2 flex flex-col md:flex-row gap-6">
             {/* Addresses */}
+
             <div className="w-full md:w-2/3">
                 <div className="border p-1 rounded-lg mb-2">
                     <h3 className="font-semibold mb-2 mt-4">Delivery Address</h3>
-                    {addresses.length > 0 ? (
-                        addresses.map((addresses, index) => (
+                    {addresses.filter(address => address.isDefault === true).length > 0 ? (
+                        addresses.filter(address => address.isDefault === true).map((address, index) => (
                             <label
                                 key={index}
                                 className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
@@ -164,18 +187,18 @@ const PaymentPage = () => {
                                 />
                                 <div className="mt-2">
                                     <p className="text-left font-bold mb-2">
-                                        {addresses.firstName} {addresses.lastName}
+                                        {address.firstName} {address.lastName}
                                     </p>
-                                    <p className="text-left mb-1">{addresses.phone}</p>
-                                    <p className="text-left">{addresses.address}</p>
+                                    <p className="text-left mb-1">{address.phone}</p>
+                                    <p className="text-left">{address.address}</p>
                                     <p className="text-left">
-                                        {addresses.district}/{addresses.city}
+                                        {address.district}/{address.city}
                                     </p>
                                 </div>
                             </label>
                         ))
                     ) : (
-                        <p>Address not found. Please add an address.</p>
+                        <p>No default address found. Please add one.</p>
                     )}
                     <div
                         className="border rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 mt-2"
@@ -195,8 +218,8 @@ const PaymentPage = () => {
                         >
                             + Add New Card
                         </div>
-                        {savedCards.length > 0 ? (
-                            savedCards.map((card, index) => (
+                        {savedCards.filter(card => card.isDefault === true).length > 0 ? (
+                            savedCards.filter(card => card.isDefault === true).map((card, index) => (
                                 <div
                                     key={index}
                                     className={`border rounded-lg p-4 relative cursor-pointer bg-white shadow-md shadow-orange-500 hover:shadow-2xl transition-shadow duration-300 ${selectedCard === index ? 'border-green-500' : ''}`}
@@ -217,89 +240,128 @@ const PaymentPage = () => {
                                 </div>
                             ))
                         ) : (
-                            <p>No registered card found. Please add a card.</p>
+                            <p>No default card found. Please add one.</p>
                         )}
                     </div>
                 </div>
             </div>
 
             {/* Cart Summary */}
-            <div
-                className="w-full md:w-1/3 border p-4 rounded-lg bg-white shadow-md flex flex-col justify-between max-h-[400px]">
-                <h3 className="font-semibold mb-6">Cart Summary</h3>
+            <div className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
+                <h3 className="font-semibold text-2xl text-gray-800 mb-4">Cart Summary</h3>
+                {/* Product List (Product Images and Quantities) */}
                 <div className="max-h-[300px] overflow-auto mb-4">
                     {cart.map((item, index) => (
-                        <div key={index} className="flex items-center mb-2">
+                        <div key={index} className="flex items-center mb-1 border-b pb-3">
                             {/* Product Image */}
                             <img
                                 src={getImageFromPath(item.imagePath)}
                                 alt={item.name}
-                                className="w-12 h-12 object-cover rounded mr-2"
+                                className="w-16 h-16 object-cover rounded-lg mr-4 shadow-md"
                             />
-                            <p>
-                                {item.name} - {item.quantity} piece -{" "}
-                                {parseFloat((item.price * item.quantity).toFixed(2))} TL
-                            </p>
+                            <div>
+                                <p className="font-medium text-lg text-gray-700">{item.name}</p>
+                                <p className="text-sm text-gray-500">
+                                    {item.quantity} piece -{" "}
+                                    <span className="font-semibold text-gray-900">
+                            {parseFloat((item.price * item.quantity).toFixed(2))} TL
+                        </span>
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </div>
 
+                {/* Cart Summary Details */}
+                <div className="space-y-1 text-lg text-gray-700 mt-2">
+                    <p className="text">{`Product Total: ${orderTotal.totalPrice.toFixed(2)} TL`}</p>
 
-                <div className="mt-auto">
+                    {/* Conditional Rendering for Shipping Fee */}
+                    {orderTotal.shippingFee === 0 ? (
+                        <p className="text-green-500 font-semibold">Free Delivery</p>
+                    ) : (
+                        <p className="text">{`Delivery Fee: ${orderTotal.shippingFee.toFixed(2)} TL`}</p>
+                    )}
+
+                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount.toFixed(2)} TL</p>
+                </div>
+
+                {/* Confirm Payment Button */}
+                <div className="mt-2">
                     <button
                         onClick={handlePayment}
-                        className="w-full bg-orange-500 text-white py-5 rounded-3xl text-xl font-bold tracking-wide hover:bg-orange-600 transform hover:scale-105 transition duration-300 ease-in-out shadow-lg hover:shadow-2xl"
+                        className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white py-5 rounded-3xl text-xl font-semibold tracking-wide hover:from-green-500 hover:to-green-600 transform hover:scale-105 transition-all duration-300 ease-in-out shadow-xl hover:shadow-2xl flex items-center justify-center gap-3"
                         style={{
                             fontFamily: "Roboto, sans-serif",
                         }}
                     >
-                <span className="mr-2">
-                    <FaShoppingCart className="h-6 w-6 text-white inline"/>
-                </span>
-                        <span className="mx-1"></span> {finalCost} TL
+        <span className="mr-2">
+            <FaShoppingBasket
+                className="h-7 w-7 text-white inline transform hover:scale-110 transition-all duration-200 ease-in-out"/>
+        </span>
+                        <span className="mx-1 text-lg font-bold">Confirm Cart</span>
                     </button>
                 </div>
+
             </div>
 
+            {/* Back Button */}
             <div
-                className="absolute bottom-36 left-12 cursor-pointer text-4xl text-orange-500"
+                className="absolute bottom-36 left-12 cursor-pointer text-4xl text-orange-500 hover:text-orange-600 transition-colors duration-300"
                 onClick={() => navigate(-1)}
             >
-                <FaArrowLeft/>
+                <FaArrowLeft />
             </div>
 
+            {/* Pop-up and Confirmation Modals */}
             {isOrderConfirmed && (
                 <div
-                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                >
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <FaShoppingCart className="text-orange-500 text-4xl mb-4"/>
-                        <p className="font-semibold text-xl">Your order has been created successfully .</p>
+                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4" />
+                        <p className="font-semibold text-xl">Your order has been created successfully.</p>
                     </div>
                 </div>
             )}
 
             {showPopUp && (
                 <div
-                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <p className="font-semibold text-xl text-red-500">
+                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                >
+                    <div className="bg-white p-6 rounded-lg  shadow-lg max-w-sm w-full text-center border-2 border-green-500 relative">
+                        <button
+                            onClick={() => setShowPopUp(false)}
+                            className="absolute top-2 right-2 text-2xl text-orange-500 hover:text-orange-700"
+                        >
+                            ×
+                        </button>
+                        <div className="flex justify-center items-center mb-4">
+                <span className="text-4xl text-orange-500">
+                   🏡
+                </span>
+                        </div>
+                        <p className="font-semibold text-xl text-gray-800 mb-4">
                             Please choose address and payment method.
                         </p>
                         <button
                             onClick={() => setShowPopUp(false)}
-                            className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600"
+                            className="mt-4 px-6 py-2 bg-green-500 text-white rounded-full shadow-md hover:bg-orange-600 transition-all duration-300"
                         >
                             Okey
                         </button>
                     </div>
                 </div>
             )}
+
+
             {isLowCostWarning && (
                 <div
-                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                >
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
                         <p className="font-semibold text-xl text-red-500">
-                            You must add at least 50 TL worth of first product.
+                            Minimum Cart Amount is 50 TL!
                         </p>
                         <button
                             onClick={() => setIsLowCostWarning(false)}
@@ -310,6 +372,8 @@ const PaymentPage = () => {
                     </div>
                 </div>
             )}
+
+
         </div>
 
     );
