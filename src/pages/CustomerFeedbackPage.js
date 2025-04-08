@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import { FaReply, FaCheck, FaTrash } from 'react-icons/fa';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { motion } from "framer-motion";
 import axios from "axios"; // Axios import
 
 const ContactFormsPage = () => {
@@ -214,11 +219,37 @@ const ContactFormsPage = () => {
                             </div>
                         ))
                     )}
+                    <UserRatingsChart />
                 </div>
             </main>
         </div>
     );
 
+};
+
+const UserRatingsChart = () => {
+    const data = [
+        { day: "Monday", rating: 4.2 },
+        { day: "Tuesday", rating: 3.8 },
+        { day: "Wednesday", rating: 4.5 },
+        { day: "Thursday", rating: 4.0 },
+        { day: "Friday", rating: 4.7 },
+        { day: "Saturday", rating: 4.3 },
+        { day: "Sunday", rating: 4.6 },
+    ];
+    return (
+        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="p-4 bg-white rounded-lg shadow-md mt-6">
+            <h2 className="text-xl font-bold text-center mb-4">User Ratings This Week</h2>
+            <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+                    <XAxis dataKey="day" stroke="#555" />
+                    <YAxis domain={[3, 5]} stroke="#555" />
+                    <Tooltip />
+                    <Bar dataKey="rating" fill="#82ca9d" radius={[5, 5, 0, 0]} />
+                </BarChart>
+            </ResponsiveContainer>
+        </motion.div>
+    );
 };
 export default ContactFormsPage;
 
