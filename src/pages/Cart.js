@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../helpers/CartContext";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 //import { getImageFromPath } from "../utils/imageUtils"; // 👈 bunu ekliyoruz
 
 // Görsel dosyalarını içe aktar
@@ -36,15 +37,53 @@ export default function Cart() {
         cart,
         increaseQuantity,
         decreaseQuantity,
-        calculateTotalPrice,
         getTotalProductTypes,
         removeItem,
         clearCart
     } = useCart();
 
+    const calculateTotalPrice = () => {
+        return cart.reduce((acc, item) => {
+            return acc + (item.price * item.quantity);
+        }, 0).toFixed(2); // Fiyatı hesapla ve virgülden iki basamağa yuvarla
+    };
+
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const navigate = useNavigate();
+
+    // API'ye OrderTotal gönderme
+    const updateOrderTotal = async (totalProductCount, totalPrice, shippingFee) => {
+        try {
+            const totalAmount = (Number(totalPrice) + Number(shippingFee)).toFixed(2);
+
+            const response = await axios.post(
+                "http://localhost:8080/api/ordertotal/update",
+                {
+                    totalProductCount,
+                    totalPrice: Number(totalPrice).toFixed(2),  // totalPrice'ı sayıya dönüştürüp iki basamağa yuvarlıyoruz
+                    shippingFee: Number(shippingFee).toFixed(2), // shippingFee'yi sayıya dönüştürüp iki basamağa yuvarlıyoruz
+                    totalAmount, // toplam tutarı iki basamağa yuvarlanmış olarak gönderiyoruz
+                },
+                { withCredentials: true } // Oturum bilgileriyle gönderim yap
+            );
+            if (response.status === 200) {
+                console.log("OrderTotal başarıyla güncellendi.");
+            } else {
+                console.error("OrderTotal güncellenirken bir sorun oluştu.");
+            }
+        } catch (error) {
+            console.error("OrderTotal güncellenirken bir hata oluştu:", error);
+        }
+    };
+
+    useEffect(() => {
+        // Sepet değiştikçe OrderTotal'ı güncelle
+        const totalProductCount = getTotalProductTypes();
+        const totalPrice = calculateTotalPrice();
+        const shippingFee = calculateShippingFee();
+        updateOrderTotal(totalProductCount, totalPrice, shippingFee);
+    }, [cart]);
 
 
     const toggleSelectItem = (id) => {
@@ -66,7 +105,8 @@ export default function Cart() {
     const calculateTotalAmount = () => {
         const totalPrice = Number(calculateTotalPrice());
         const shippingFee = Number(calculateShippingFee());
-        return (totalPrice + shippingFee).toFixed(2);
+        const totalAmount = totalPrice + shippingFee;
+        return totalAmount.toFixed(2); // Sonuçları iki basamağa yuvarla
     };
 
     const handleContinueClick = () => {
@@ -80,7 +120,6 @@ export default function Cart() {
             return acc;
         }, []);
 
-        //localStorage.setItem('cart', JSON.stringify(groupedCart));
         navigate("/payment");
     };
 
@@ -145,7 +184,7 @@ export default function Cart() {
                                             onClick={() => removeItem(item.id)}
                                             className="bg-gray-500 text-white px-3 py-2 rounded-md"
                                         >
-                                            <FaTrash />
+                                            <FaTrash/>
                                         </button>
                                     </div>
                                 </div>
@@ -174,33 +213,33 @@ export default function Cart() {
             </div>
 
             {/* Cart Summary */}
-            <div className="w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6 mt-6 lg:mt-12 max-h-[400px] overflow-y-auto">
-                <h3 className="text-xl font-semibold mb-6">Cart Summary</h3>
+            <div
+                className="w-full lg:w-1/3 bg-white shadow-2xl rounded-3xl p-6 mt-6 lg:mt-12 border-l-4 border-b-4 border-green-500 relative z-10 max-h-[450px] overflow-hidden">
+                <h3 className="text-2xl text-orange-500 font-semibold mb-6">Cart Summary</h3>
                 <div className="flex justify-between text-gray-700 text-lg">
                     <span> </span>
-                    <span className="font-semibold">{getTotalProductTypes()} products</span>
+                    <span>{getTotalProductTypes()} products</span>
                 </div>
                 <div className="flex justify-between text-gray-700 text-lg mt-4">
-                    <span>Cart Total:</span>
+                    <span className="font-semibold"> Cart Total:</span>
                     <span className="font-semibold">{calculateTotalPrice()} TL</span>
                 </div>
 
-                <div className="flex justify-between text-gray-700 font-semibold text-lg mt-2">
-                    <span
-                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
-                        Delivery Amount:
-                    </span>
-                    <span
-                        className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
-                        49 TL
-                    </span>
+                <div className="flex justify-between text-gray-700 text-lg mt-2">
+        <span className={calculateShippingFee() === 0 ? "line-through text-gray-500 " : ""}>
+            Delivery Amount:
+        </span>
+                    <span className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
+            49.00 TL
+        </span>
                 </div>
 
                 {calculateShippingFee() !== 0 && (
-                    <div className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
-                        <span>
-                            Add {500 - calculateTotalPrice()} TL worth of products to your cart for free delivery.
-                        </span>
+                    <div
+                        className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
+            <span>
+                Add {(500 - calculateTotalPrice()).toFixed(2)} TL worth of products to your cart for free delivery.
+            </span>
                     </div>
                 )}
 
@@ -211,17 +250,19 @@ export default function Cart() {
                 )}
 
                 <div className="flex justify-between text-gray-700 text-lg mt-4">
-                    <span>Total Amount:</span>
+                    <span className="font-semibold"> Total Amount:</span>
                     <span className="font-semibold">{calculateTotalAmount()} TL</span>
                 </div>
 
                 <button
                     onClick={handleContinueClick}
-                    className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-md hover:bg-orange-600 transition"
+                    className="w-full mt-6 bg-orange-500 text-white py-3 text-lg rounded-2xl hover:bg-orange-600 transition transform hover:scale-110 shadow-xl"
                 >
                     Continue
                 </button>
             </div>
+
+
         </div>
     );
 }

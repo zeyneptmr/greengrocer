@@ -140,6 +140,18 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to update this item.");
         }
 
+        // Stok kontrolü eklendi
+        Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
+        if (productOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        }
+
+        Product product = productOpt.get();
+        if (cartItem.getQuantity() >= product.getStock()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough stock");
+        }
+
+
         cartItem.setQuantity(cartItem.getQuantity() + 1); // Miktarı bir artırıyoruz
         cartItemRepository.save(cartItem);
 

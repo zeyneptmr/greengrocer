@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart } from 'react-icons/fa';
 
+import axios from "axios";
+
 const PaymentPage = () => {
     const [addresses, setAddresses] = useState([]);
     const [savedCards, setSavedCards] = useState([]);
@@ -13,27 +15,88 @@ const PaymentPage = () => {
     const [isLowCostWarning, setIsLowCostWarning] = useState(false);
     const [showPopUp, setShowPopUp] = useState(false);
     const navigate = useNavigate();
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [stockInput, setStockInput] = useState(100);
+    const [successMessage, setSuccessMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(true);
 
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+            images[item.replace('./', '')] = r(item);
+        });
+        return images;
+    };
+
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+
+    const formatPrice = (price) => {
+        if (typeof price === "number") {
+            return price.toFixed(2);
+        }
+        return parseFloat(price).toFixed(2);
+    };
+
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+
+        if (path.startsWith("data:image")) {
+            return path;  // Base64 görseli döndür
+        }
+
+        const filename = path.split('/').pop(); // Örnek: "apple.jpg"
+
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Image not found: ${filename}`);
+            return '/placeholder.png';  // Placeholder görseli
+        }
+
+        return images[imagePath] || '/placeholder.png';
+    };
+
+    // Ürünleri veritabanından çek
     useEffect(() => {
-        const storedAddresses = JSON.parse(localStorage.getItem("addresses")) || [];
-        setAddresses(storedAddresses);
-
-        const storedCards = JSON.parse(localStorage.getItem("savedCards")) || [];
-        setSavedCards(storedCards);
-
-        const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-        const groupedCart = existingCart.reduce((acc, item) => {
-            const existingItem = acc.find(i => i.id === item.id);
-            if (existingItem) {
-                existingItem.quantity += item.quantity ?? 1;
-            } else {
-                acc.push({ ...item, quantity: item.quantity ?? 1 });
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/products');
+                console.log(response.data);
+                setProducts(response.data);
+                setFilteredProducts(response.data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setErrorMessage("Failed to load products.");
+            } finally {
+                setLoading(false);
             }
-            return acc;
-        }, []);
-        setCart(groupedCart);
+        };
+        fetchProducts();
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const addressRes = await axios.get("http://localhost:8080/api/addresses", { withCredentials: true });
+                console.log("Adresler:", addressRes.data);
+                setAddresses(addressRes.data);
+
+                const cardRes = await axios.get("http://localhost:8080/api/cards", { withCredentials: true });
+                console.log("Kredi Kartları:", cardRes.data);
+                setSavedCards(cardRes.data);
+
+                const cartRes = await axios.get("http://localhost:8080/api/cart", { withCredentials: true });
+                setCart(cartRes.data);
+                console.log("Sepet:", cartRes.data);
+            } catch (error) {
+                console.error("Veri çekme hatası:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handlePayment = () => {
         const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -49,22 +112,22 @@ const PaymentPage = () => {
             return;
         }
 
+        const address = addresses[selectedAddress];
         const orderData = {
-            name: addresses[selectedAddress]?.firstName + " " + addresses[selectedAddress]?.lastName,
-            address: addresses[selectedAddress],
+            name: `${address?.firstName} ${address?.lastName}`,
+            address,
             cart,
             totalCost: parseFloat(totalCostFormatted),
-
         };
 
-        const existingOrders = JSON.parse(localStorage.getItem("orderinfo")) || [];
-        localStorage.setItem("orderinfo", JSON.stringify([...existingOrders, orderData]));
+        //const existingOrders = JSON.parse(localStorage.getItem("orderinfo")) || [];
+        //localStorage.setItem("orderinfo", JSON.stringify([...existingOrders, orderData]));
 
-        sessionStorage.removeItem("cart");
+        //sessionStorage.removeItem("cart");
 
         setCart([]);
 
-        localStorage.removeItem("cart");
+        //localStorage.removeItem("cart");
 
         setIsOrderConfirmed(true);
 
@@ -87,7 +150,7 @@ const PaymentPage = () => {
                 <div className="border p-1 rounded-lg mb-2">
                     <h3 className="font-semibold mb-2 mt-4">Delivery Address</h3>
                     {addresses.length > 0 ? (
-                        addresses.map((address, index) => (
+                        addresses.map((addresses, index) => (
                             <label
                                 key={index}
                                 className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
@@ -101,12 +164,12 @@ const PaymentPage = () => {
                                 />
                                 <div className="mt-2">
                                     <p className="text-left font-bold mb-2">
-                                        {address.firstName} {address.lastName}
+                                        {addresses.firstName} {addresses.lastName}
                                     </p>
-                                    <p className="text-left mb-1">{address.phone}</p>
-                                    <p className="text-left">{address.address}</p>
+                                    <p className="text-left mb-1">{addresses.phone}</p>
+                                    <p className="text-left">{addresses.address}</p>
                                     <p className="text-left">
-                                        {address.district}/{address.city}
+                                        {addresses.district}/{addresses.city}
                                     </p>
                                 </div>
                             </label>
@@ -146,7 +209,7 @@ const PaymentPage = () => {
                                         )}
                                     </div>
                                     <p className="text-lg mb-4">
-                                        **** **** **** {card.cardNumber.slice(-4)}
+                                        **** **** **** {card.cardNumberLast4}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Expiration Date: {card.expiryMonth}/{card.expiryYear}
@@ -169,7 +232,7 @@ const PaymentPage = () => {
                         <div key={index} className="flex items-center mb-2">
                             {/* Product Image */}
                             <img
-                                src={item.image}
+                                src={getImageFromPath(item.imagePath)}
                                 alt={item.name}
                                 className="w-12 h-12 object-cover rounded mr-2"
                             />
@@ -180,6 +243,7 @@ const PaymentPage = () => {
                         </div>
                     ))}
                 </div>
+
 
                 <div className="mt-auto">
                     <button

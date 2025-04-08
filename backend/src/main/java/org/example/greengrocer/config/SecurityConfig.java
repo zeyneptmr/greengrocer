@@ -60,6 +60,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/users**").permitAll()
                     .requestMatchers("/logout").permitAll()
                     .requestMatchers("/api/favorites/**").permitAll()
+                    .requestMatchers("/api/ordertotal/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

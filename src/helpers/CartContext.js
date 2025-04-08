@@ -68,12 +68,15 @@ function CartProvider({ children }) {
                     },
                     withCredentials: true,
                 });
-                showNotification("Success! Item added to cart!");
+                showNotification("Success! Item added to cart.");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Insufficient stock available!", error);
                 showNotification("!");
             }
+
+
+
         } else {
             const existingItem = cart.find(item => item.id === product.id);
             let updatedCart;
@@ -97,10 +100,11 @@ function CartProvider({ children }) {
         if (isUserLoggedIn()) {
             try {
                 await axios.patch(`http://localhost:8080/api/cart/increase/${cartItemId}`, null, { withCredentials: true });
-                showNotification("Ürün miktarı artırıldı");
+                //showNotification("Product quantity increased");
                 fetchCartFromBackend();
             } catch (error) {
-                console.error("Increase quantity error:", error);
+                //console.error("Increase quantity error:", error);
+                showNotification("Insufficient stock available!");
             }
         } else {
             const updatedCart = cart.map(item =>
@@ -112,12 +116,11 @@ function CartProvider({ children }) {
         }
     };
 
-
     const decreaseQuantity = async (cartItemId) => {
         if (isUserLoggedIn()) {
             try {
                 await axios.patch(`http://localhost:8080/api/cart/decrease/${cartItemId}`, null, { withCredentials: true });
-                showNotification("Ürün miktarı azaltıldı");
+               // showNotification("Ürün miktarı azaltıldı");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Decrease quantity error:", error);
@@ -138,7 +141,7 @@ function CartProvider({ children }) {
         if (isUserLoggedIn()) {
             try {
                 await axios.delete(`http://localhost:8080/api/cart/remove/${cartItemId}`, { withCredentials: true });
-                showNotification("Ürün sepetten silindi");
+                showNotification("Product deleted from cart!");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Remove item error:", error);
@@ -153,6 +156,7 @@ function CartProvider({ children }) {
 
     const clearCart = () => {
         cart.forEach(item => removeItem(item.id));
+        showNotification("All products deleted from cart!");
     };
 
     const calculateTotalPrice = () => {
@@ -201,7 +205,6 @@ function CartProvider({ children }) {
             window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
-    ;
 
 
     return (
