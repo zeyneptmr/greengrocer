@@ -19,20 +19,11 @@ export default function ProductCard({ product, hideCartView=false }) {
     // Bu state, kullanıcı "Add to Cart" butonuna bastıysa geçici olarak ürün eklendi sayacağız
     const [addedToCart, setAddedToCart] = useState(false);
 
-    const discountPercentage = product.discountRate
-    
-  
-    // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
-    useEffect(() => {
-        if (cartItem) setAddedToCart(true);
-    }, [cartItem]);
-
-    
     // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
     //useEffect(() => {
-        //console.log("Cart:", cart);
+    //console.log("Cart:", cart);
 
-        //if (cartItem) setAddedToCart(true);
+    //if (cartItem) setAddedToCart(true);
     //}, [cartItem]);
 
 
@@ -58,7 +49,6 @@ export default function ProductCard({ product, hideCartView=false }) {
     };
 
 
-
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favorites Button */}
@@ -71,7 +61,7 @@ export default function ProductCard({ product, hideCartView=false }) {
 
             {product.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    {discountPercentage}% Off
+                    15% Off
                 </div>
             )}
 
@@ -88,7 +78,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                 {/* Product Name */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
 
-                {/* Product Price */}
+                {/* Product Price and Quantity */}
                 <div className="flex justify-center items-center mt-1">
                     {product.discountedPrice ? (
                         <p className="text-gray-600 text-md line-through mr-2">{product.price} TL</p>
@@ -97,6 +87,13 @@ export default function ProductCard({ product, hideCartView=false }) {
                     )}
                     {product.discountedPrice && (
                         <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
+                    )}
+
+                    {/* Sales Quantity (Piece or KG) */}
+                    {product.quantity && (
+                        <span className="text-gray-500 text-sm ml-2">
+                           {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
+                        </span>
                     )}
                 </div>
 

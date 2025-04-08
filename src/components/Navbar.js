@@ -135,18 +135,20 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="w-full bg-white text-green-600 px-4 relative flex flex-col md:flex-row items-center justify-between h-auto md:h-24 space-y-2 md:space-y-0">
+            <nav
+                className="w-full bg-white text-green-600 px-4 relative flex flex-col md:flex-row items-center justify-between h-auto md:h-24 space-y-2 md:space-y-0">
                 <div className="flex items-center w-full md:w-auto justify-between">
                     <div className="flex items-center">
-                        <img src={logo} alt="Tap-Taze Logo" className="h-16 md:h-20 w-auto" />
+                        <img src={logo} alt="Tap-Taze Logo" className="h-16 md:h-20 w-auto"/>
                         <Link to="">
                             <h1 className="text-3xl md:text-6xl font-bold text-green-600 ml-2">TapTaze</h1>
                         </Link>
                     </div>
                 </div>
 
-                <div className="w-full md:w-1/2 lg:w-1/3 mt-2 md:mt-0">
-                    <SearchBar />
+                <div className="w-full md:w-full lg:w-full">
+
+                    <SearchBar/>
                 </div>
 
                 <div className="flex items-center gap-4 md:gap-10 w-full md:w-auto justify-center md:justify-end">
@@ -156,43 +158,61 @@ const Navbar = () => {
                                 onClick={handleProfileMenuToggle}
                                 className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110"
                             >
-                                <User size={32} />
+                                <User size={32}/>
                                 <span className="text-xs">Profile</span>
                             </button>
                             {isProfileMenuOpen && (
-                                <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-48 z-50">
+                                <div
+                                    className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-48 z-50">
                                     <ul>
-                                        <li onClick={() => { navigate("/account"); setIsProfileMenuOpen(false); }} className="p-2 cursor-pointer hover:bg-gray-200">Account settings</li>
-                                        <li onClick={() => { navigate("/address"); setIsProfileMenuOpen(false); }} className="p-2 cursor-pointer hover:bg-gray-200">Addresses</li>
-                                        <li onClick={() => { handleLogout(); setIsProfileMenuOpen(false); }} className="p-2 cursor-pointer hover:bg-gray-200">Log Out</li>
+                                        <li onClick={() => {
+                                            navigate("/account");
+                                            setIsProfileMenuOpen(false);
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Account settings
+                                        </li>
+                                        <li onClick={() => {
+                                            navigate("/address");
+                                            setIsProfileMenuOpen(false);
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Addresses
+                                        </li>
+                                        <li onClick={() => {
+                                            handleLogout();
+                                            setIsProfileMenuOpen(false);
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Log Out
+                                        </li>
                                     </ul>
                                 </div>
                             )}
                         </div>
                     ) : (
-                        <button onClick={() => setIsAccountOpen(true)} className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110">
-                            <User size={32} />
+                        <button onClick={() => setIsAccountOpen(true)}
+                                className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110">
+                            <User size={32}/>
                             <span className="text-xs">Log In</span>
                         </button>
                     )}
 
                     <Link to="/favorites">
-                        <button className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
-                            <Heart size={32} />
+                        <button
+                            className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
+                            <Heart size={32}/>
                             <span className="text-xs">Favorites</span>
                             {favorites.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span
+                                    className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {favorites.length}
                 </span>
                             )}
                         </button>
                     </Link>
 
-                    <button onClick={handleCartClick} className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
-                        <ShoppingCart size={32} />
+                    <button onClick={handleCartClick}
+                            className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
+                        <ShoppingCart size={32}/>
                         <span className="text-xs">{loggedInUser ? "My Cart" : "Cart"}</span>
                         {getTotalProductTypes() > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            <span
+                                className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {getTotalProductTypes()}
               </span>
                         )}
