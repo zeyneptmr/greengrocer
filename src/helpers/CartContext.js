@@ -1,137 +1,232 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { ProductStorage } from "../helpers/ProductStorage";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
-// Context
 const CartContext = createContext();
 
-export function CartProvider({ children }) {
-    // Import Cart from Local Storage
-    const getInitialCart = () => {
-        const savedCart = localStorage.getItem("cart");
-        return savedCart ? JSON.parse(savedCart) : [];
+function CartProvider({ children }) {
+    const [cart, setCart] = useState([]);
+    const [notification, setNotification] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);  // Giriş durumu
+
+    // Görselleri assets klasöründen al
+    const importAll = (r) => {
+        let images = {};
+        r.keys().forEach((item) => {
+            images[item.replace('./', '')] = r(item);
+        });
+        return images;
     };
 
-    const [cart, setCart] = useState(getInitialCart);
-    const [notification, setNotification] = useState(null);
+    const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    useEffect(() => {
-        console.log("Cart updated:", cart);
-        localStorage.setItem("cart", JSON.stringify(cart));
-    }, [cart]);
+    const getImageFromPath = (path) => {
+        if (!path) return null;
+        if (path.startsWith("data:image")) return path;
+
+        const filename = path.split('/').pop();
+        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
+
+        if (!imagePath) {
+            console.error(`Image not found: ${filename}`);
+            return '/placeholder.png';
+        }
+
+        return images[imagePath] || '/placeholder.png';
+    };
 
     const showNotification = (message) => {
         setNotification(message);
         setTimeout(() => setNotification(null), 3000);
     };
 
-    const addToCart = (product, quantityToAdd = 1) => {
-        const products = ProductStorage.getProducts();
-        const productInStock = products.find((p) => p.id === product.id);
+    // Kullanıcının giriş yapıp yapmadığını kontrol et
+    const isUserLoggedIn = () => {
+        return localStorage.getItem("loggedInUser") !== null; // Eğer kullanıcı giriş yapmışsa
+    }
 
-        if (productInStock) {
-            if (quantityToAdd > productInStock.stock) {
-                showNotification("Insufficient Stock Available!");
-                return;
-            }
+    const fetchCartFromBackend = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/cart", { withCredentials: true });
+            const updatedCart = response.data.map(item => ({
+                ...item,
+                image: getImageFromPath(item.imagePath),
+            }));
+            setCart(updatedCart);
+
+        } catch (error) {
+            console.error("Error fetching cart:", error);
         }
+    };
 
-        setCart((prevCart) => {
-            const existingItem = prevCart.find((item) => item.id === product.id);
+    const addToCart = async (product, quantityToAdd = 1) => {
+        if (isUserLoggedIn()) {
+            try {
+                await axios.post("http://localhost:8080/api/cart/add", null, {
+                    params: {
+                        productId: product.id,
+                        quantity: quantityToAdd
+                    },
+                    withCredentials: true,
+                });
+                showNotification("Ürün sepete eklendi");
+                fetchCartFromBackend();
+            } catch (error) {
+                console.error("Add to cart error:", error);
+                showNotification("Stok yetersiz ya da başka hata!");
+            }
+        } else {
+            const existingItem = cart.find(item => item.id === product.id);
             let updatedCart;
-
             if (existingItem) {
-                if (existingItem.quantity + quantityToAdd > productInStock.stock) {
-                    showNotification("Insufficient Stock Available!");
-                    return prevCart;
-                }
-
-                updatedCart = prevCart.map((item) =>
+                updatedCart = cart.map(item =>
                     item.id === product.id
                         ? { ...item, quantity: item.quantity + quantityToAdd }
                         : item
                 );
             } else {
-                updatedCart = [...prevCart, { ...product, quantity: quantityToAdd }];
+                updatedCart = [...cart, { ...product, quantity: quantityToAdd }];
             }
-
-            console.log("Cart after adding:", updatedCart);
-            return updatedCart;
-        });
+            setCart(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+            showNotification("Ürün sepete eklendi");
+        }
     };
 
-    const increaseQuantity = (id) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.map((item) => {
-                if (item.id === id) {
-                    const productInStock = ProductStorage.getProducts().find((p) => p.id === item.id);
-                    if (productInStock && item.quantity + 1 > productInStock.stock) {
-                        showNotification("Insufficient Stock Available!");
-                        return item;
-                    }
-                    return { ...item, quantity: item.quantity + 1 };
-                }
-                return item;
-            });
 
-            console.log("Cart after increasing quantity:", updatedCart);
-            return updatedCart;
-        });
+    const increaseQuantity = async (cartItemId) => {
+        if (isUserLoggedIn()) {
+            try {
+                await axios.patch(`http://localhost:8080/api/cart/increase/${cartItemId}`, null, { withCredentials: true });
+                showNotification("Ürün miktarı artırıldı");
+                fetchCartFromBackend();
+            } catch (error) {
+                console.error("Increase quantity error:", error);
+            }
+        } else {
+            const updatedCart = cart.map(item =>
+                item.id === cartItemId ? { ...item, quantity: item.quantity + 1 } : item
+            );
+            setCart(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+        }
     };
 
-    const decreaseQuantity = (id) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart
-                .map((item) => {
-                    if (item.id === id && item.quantity > 0) {
-                        return { ...item, quantity: item.quantity - 1 };
-                    }
-                    return item;
-                })
-                .filter((item) => item.quantity > 0);
 
-            console.log("Cart after decreasing quantity:", updatedCart);
-            return updatedCart;
-        });
+    const decreaseQuantity = async (cartItemId) => {
+        if (isUserLoggedIn()) {
+            try {
+                await axios.patch(`http://localhost:8080/api/cart/decrease/${cartItemId}`, null, { withCredentials: true });
+                showNotification("Ürün miktarı azaltıldı");
+                fetchCartFromBackend();
+            } catch (error) {
+                console.error("Decrease quantity error:", error);
+            }
+        } else {
+            const updatedCart = cart.map(item =>
+                item.id === cartItemId
+                    ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
+                    : item
+            );
+            setCart(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+        }
     };
 
-    const removeItem = (id) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter((item) => item.id !== id);
-            console.log("Cart after removing item:", updatedCart);
-            return updatedCart;
-        });
+
+
+    const removeItem = async (cartItemId) => {
+        if (isUserLoggedIn()) {
+            try {
+                await axios.delete(`http://localhost:8080/api/cart/remove/${cartItemId}`, { withCredentials: true });
+                showNotification("Ürün sepetten silindi");
+                fetchCartFromBackend();
+            } catch (error) {
+                console.error("Remove item error:", error);
+            }
+        } else {
+            const updatedCart = cart.filter(item => item.id !== cartItemId);
+            setCart(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+        }
     };
+
 
     const clearCart = () => {
-        console.log("Cart cleared!");
-        setCart([]);
+        cart.forEach(item => removeItem(item.id));
     };
 
     const calculateTotalPrice = () => {
-        return cart.reduce((total, item) => {
-            let price = item.price.toString().replace('TL', '').replace(/\s/g, '').replace(',', '.');
-            price = parseFloat(price) || 0;
-            return total + (price * item.quantity);
-        }, 0).toFixed(2);
+        return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
 
-    const getTotalProductTypes = () => {
-        return cart.length;
-    };
+    const getTotalProductTypes = () => cart.length;
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            localStorage.removeItem("cart");
+            fetchCartFromBackend();
+        } else {
+            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+            setCart(localCart);
+        }
+    }, [isLoggedIn]);
+
+
+    useEffect(() => {
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        if (loggedInUser) {
+            // Giriş yapıldıysa localStorage'daki eski guest sepetini temizle
+            localStorage.removeItem("cart");
+            fetchCartFromBackend();
+        } else {
+            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+            setCart(localCart);
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const user = localStorage.getItem("loggedInUser");
+            if (user) {
+                localStorage.removeItem("cart");
+                fetchCartFromBackend();
+            } else {
+                const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+                setCart(localCart);
+            }
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
+    ;
+
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, increaseQuantity, decreaseQuantity, removeItem, clearCart, calculateTotalPrice, getTotalProductTypes }}>
+        <CartContext.Provider value={{
+            cart,
+            addToCart,
+            increaseQuantity,
+            decreaseQuantity,
+            removeItem,
+            clearCart,
+            calculateTotalPrice,
+            getTotalProductTypes,
+            isLoggedIn,         // 🔥 bunları ekle
+            setIsLoggedIn
+        }}>
             {children}
             {notification && (
                 <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white px-6 py-2 rounded-lg shadow-lg z-50 animate-fadeInOut">
                     {notification}
                 </div>
             )}
-
         </CartContext.Provider>
     );
 }
 
-export function useCart() {
-    return useContext(CartContext);
-}
+const useCart = () => useContext(CartContext);
+
+export { CartProvider, useCart, CartContext };

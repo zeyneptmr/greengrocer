@@ -3,10 +3,14 @@ import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
-import { useCart } from "../helpers/CartContext";
-import products from "../data/products";
+//import { useCart } from "../helpers/CartContext";
+//import products from "../data/products";
 import { useFavorites } from "../helpers/FavoritesContext";
 import SearchBar from "./SearchBar";
+import axios from "axios";
+import { useContext } from "react";
+//import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
+import { useCart } from "../helpers/CartContext";
 
 const menuItems = [
     { name: "Fruits" },
@@ -18,6 +22,7 @@ const menuItems = [
 ];
 
 const Navbar = () => {
+    const { setIsLoggedIn } = useCart();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isCartAccessRestricted, setIsCartAccessRestricted] = useState(false);
     const { getTotalProductTypes } = useCart();
@@ -27,6 +32,11 @@ const Navbar = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
     const profileMenuRef = useRef();
     const { favorites } = useFavorites();
+    const { refreshAuth } = useFavorites();
+
+    const [Cart, setCart] = useState(null);
+
+    const [role, setRole] = useState("");
     //const [hoveredMenu, setHoveredMenu] = useState(null);
 
     // Giriş yapan kullanıcıyı kontrol et
@@ -96,10 +106,31 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("loggedInUser");
+        axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true })
+            .then(response => {
+                localStorage.removeItem("loggedInUser");
+                localStorage.removeItem("role");
+                localStorage.removeItem("cart");
+                // Rol bilgisini sıfırla
+                setCart([]);
+                setRole(null);
+                setLoggedInUser(null);
+                setIsLoggedIn(false);
+                refreshAuth();
 
-        setLoggedInUser(null);
-        navigate("/");
+                navigate("/");
+
+                console.log("logout succesfull");
+                console.log("")
+                console.log("Logout Response:", response.data);
+                console.log("role:", response.data.role);
+                console.log("cart_item:", response.data.cart);
+            })
+            .catch((error) => {
+                console.error("Logout error:", error);
+                // Hata durumunda da login sayfasına yönlendirebilirsiniz
+                navigate("/login");
+            });
     };
 
     return (
@@ -112,7 +143,8 @@ const Navbar = () => {
                     </Link>
                 </div>
 
-                <SearchBar products={products} />
+                {/* <SearchBar products={products} /> */}
+                <SearchBar />
 
                 <div className="flex items-center gap-10 ml-auto"> {/* Push the buttons to the right */}
                     {loggedInUser ? (

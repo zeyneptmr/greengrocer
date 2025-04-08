@@ -1,25 +1,26 @@
 package org.example.greengrocer.controller;
 
-import java.util.Optional;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -166,4 +167,79 @@ public class UserController {
             this.role = role;
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
+        try {
+            // Token'ı iptal etmek için çerezi sıfırlıyoruz
+            Cookie cookie = new Cookie("token", null);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); // HTTPS kullanıyorsanız true yapmalısınız
+            cookie.setPath("/");
+            cookie.setMaxAge(0); // Çerez süresini 0 yaparak silinmesini sağlıyoruz
+            response.addCookie(cookie);
+
+            // Çıkış işlemi başarılı, mesaj dönüyoruz
+            return ResponseEntity.ok("Logout successful!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Logout failed: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUserInfo(@RequestBody User updatedUser, HttpServletRequest request) {
+        try {
+        
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No authentication token found.");
+            }
+
+            String token = Arrays.stream(cookies)
+                    .filter(cookie -> "token".equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+
+            if (token == null || !tokenProvider.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid or expired token.");
+            }
+
+            String email = tokenProvider.getEmailFromToken(token);
+            
+            Optional<User> existingUserOpt = userRepository.findByEmail(email);
+            if (!existingUserOpt.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            }
+
+            User existingUser = existingUserOpt.get();
+            
+
+            existingUser.setName(updatedUser.getName());
+            existingUser.setSurname(updatedUser.getSurname());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            
+            
+            userRepository.save(existingUser);
+            
+            existingUser.setPassword(null);
+            
+            return ResponseEntity.ok(existingUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + e.getMessage());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }
