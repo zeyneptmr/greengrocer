@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
 import TodaysDiscountedProducts from "../components/TodaysDiscountedProducts";
-import { allproducts } from "../data/products";
-import { getDiscountedProducts } from "../components/discount";
+
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
