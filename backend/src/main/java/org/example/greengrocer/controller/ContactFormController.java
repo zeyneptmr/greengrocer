@@ -1,6 +1,7 @@
 package org.example.greengrocer.controller;
 
 import org.example.greengrocer.model.ContactForm;
+import org.example.greengrocer.repository.ContactFormRepository;
 import org.example.greengrocer.service.ContactFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,13 @@ public class ContactFormController {
     private final ContactFormService contactFormService;
 
     @Autowired
+    private ContactFormRepository contactFormRepository;
+
+    @Autowired
     public ContactFormController(ContactFormService contactFormService) {
         this.contactFormService = contactFormService;
     }
+
 
     // Yeni gelen mesajları kaydetmek için sadece tüm kullanıcılara izin veriyoruz
     @PostMapping("/submit")

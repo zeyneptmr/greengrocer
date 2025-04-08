@@ -112,7 +112,12 @@
 			<artifactId>jedis</artifactId>
 		</dependency>
 
+		<!-- SLF4J Logger -->
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
 
 		<!-- Lombok -->
 		<dependency>
