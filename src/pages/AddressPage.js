@@ -155,7 +155,7 @@ const AddressPage = () => {
                     });
                 }
 
-                await fetchAddresses(); // 🔄 Yalnızca bu, yeterli
+                await fetchAddresses();
 
                 // Formu sıfırla
                 setFormData({
@@ -259,26 +259,25 @@ const AddressPage = () => {
         });
     };
 
-
-
     return (
-
-        <div className="container mx-auto p-8">
+        <div className="container mx-auto p-8 max-w-6xl bg-gray-50 border-l-8 border-orange-500 shadow-xl rounded-2xl mb-20 mt-10">
             <button
                 onClick={toggleForm}
-                className="mb-4 p-3 bg-green-500 text-white rounded text-xl w-full sm:w-auto"
+                className="mb-6 p-5 bg-green-500 text-white rounded text-2xl w-full sm:w-auto hover:bg-green-600 transition-all"
             >
-                + Add New Address
+                + Add New Address 🏠
             </button>
 
             {successMessage && (
-                <div className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
+                <div
+                    className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
                     {successMessage}
                 </div>
             )}
 
             {error && (
-                <div className="bg-red-100 border border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
+                <div
+                    className="bg-red-100 border border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 text-center font-medium">
                     {error}
                 </div>
             )}
@@ -295,7 +294,7 @@ const AddressPage = () => {
                             &times;
                         </button>
                         <form onSubmit={handleSubmit}>
-                            <h2 className="text-2xl mb-6">{editingIndex !== null ? 'Edit Address' : 'New Address'}</h2>
+                            <h2 className="text-2xl mb-6 text-green-600">{editingIndex !== null ? 'Edit Address' : 'New Address'}</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <input
                                     type="text"
@@ -318,6 +317,7 @@ const AddressPage = () => {
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 />
+
                                 {errors.lastNameError && (
                                     <p className="text-red-500 text-sm mt-1">{errors.lastNameError}</p>
                                 )}
@@ -327,7 +327,7 @@ const AddressPage = () => {
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     placeholder="E-mail"
-                                    className={`p-3 border border-gray-300 rounded text-lg w-full ${errors.emailError ? 'border-red-500' : ''}`}
+                                    className={`p-3 border border-gray-300 rounded text-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400 ${errors.emailError ? 'border-red-500' : ''}`}
                                     required
                                 />
                                 {errors.emailError && (
@@ -339,7 +339,7 @@ const AddressPage = () => {
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
                                     placeholder="Phone Number"
-                                    className={`p-3 border border-gray-300 rounded text-lg w-full ${errors.phoneError ? 'border-red-500' : ''}`}
+                                    className={`p-3 border border-gray-300 rounded text-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400 shadow-md ${errors.phoneError ? 'border-red-500' : ''}`}
                                     required
                                 />
                                 {errors.phoneError && (
@@ -406,47 +406,50 @@ const AddressPage = () => {
             )}
 
             <div className="mt-8">
-                <h2 className="text-2xl">Saved Addresses</h2>
+                <h2 className="text-3xl font-bold text-green-700 mb-6">Saved Addresses</h2>
                 {addresses.length === 0 ? (
-                    <p> No address saved yet </p>
+                    <p className="text-lg text-gray-500">No address saved yet 🛒</p>
                 ) : (
-                    <ul className="mt-6">
+                    <ul className="mt-6 space-y-4">
                         {addresses.map((address, index) => (
-                            <li key={index} className="p-6 border border-gray-300 rounded mb-4">
+                            <li key={index} className="p-6 bg-white border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-all">
 
                                 {address.isDefault && (
-                                    <div className="text-green-600 ml-2 font-medium">
-                                        (Default Address)
+                                    <div className="text-green-600 font-semibold text-xl mb-4">
+                                        <span className="font-semibold">Default Address</span>
                                     </div>
                                 )}
                                 <FaCheckCircle
-                                    style={{ cursor: 'pointer', color: address.isDefault ? 'green' : 'gray' }}
+                                    style={{cursor: 'pointer', color: address.isDefault ? 'green' : 'gray'}}
                                     onClick={() => handleSetDefault(address.id)}
+                                    size={30} // İkonun boyutunu buradan ayarlıyoruz
                                 />
 
-                                <p><strong>Receiver:</strong> {address.firstName} {address.lastName}</p>
-                                <p><strong>E-mail:</strong> {address.email}</p>
-                                <p><strong>Phone Number:</strong> {address.phone}</p>
-                                <p>
+                                <p className="text-lg"><strong>Receiver:</strong> {address.firstName} {address.lastName}</p>
+                                <p className="text-lg"><strong>E-mail:</strong> {address.email}</p>
+                                <p className="text-lg"><strong>Phone Number:</strong> {address.phone}</p>
+                                <p className="text-lg">
                                     <strong>Address:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}
                                 </p>
-                                <p><strong>Notes:</strong> {address.description}</p>
+                                <p className="text-lg"><strong>Notes:</strong> {address.description}</p>
 
-                                <button
-                                    className="mt-2 p-2 bg-green-moss text-white rounded w-full sm:w-auto"
-                                    onClick={() => handleEdit(index)}
-                                >
-                                    <span>Edit</span>
+                                <div className="flex justify-center items-center space-x-4">
+                                    <button
+                                        className="mt-2 p-2 bg-green-moss text-white rounded w-auto text-center sm:w-auto"
+                                        onClick={() => handleEdit(index)}
+                                    >
+                                        <span>Edit</span>
 
-                                </button>
-                                <button
-                                    className="mt-2 ml-4 p-2 bg-orange-tangerine text-white rounded w-full sm:w-auto justify-center items-center"
-                                    onClick={() => handleDelete(index)}
-                                >
-                                    <FaTrash size={15}/>
-                                </button>
+                                    </button>
+                                    <button
+                                        className="mt-2 ml-4 p-2 bg-orange-tangerine text-white rounded w-auto text-center sm:w-auto"
+                                        onClick={() => handleDelete(index)}
+                                    >
+                                        <FaTrash size={20}/>
+                                    </button>
+                                </div>
                             </li>
-                        ))}
+                            ))}
                     </ul>
                 )}
             </div>

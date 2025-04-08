@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
 import TodaysDiscountedProducts from "../components/TodaysDiscountedProducts";
@@ -28,14 +26,8 @@ import axios from "axios";
 
 const banners = [banner1];
 // Function to shuffle the array
-const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-};
+
+
 const categories = [
     { name: "Vegetables", image: vegetablesImg, path: "/vegetables" },
     { name: "Fruits", image: fruitsImg, path: "/fruits" },
@@ -46,8 +38,6 @@ const categories = [
 ];
 
 export default function HomePage() {
-    const [discountedProducts, setDiscountedProducts] = useState([]);
-    const [dailySelectedProducts, setDailySelectedProducts] = useState([]);
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content
     const [modalTitle, setModalTitle] = useState(""); // Modal title
@@ -55,7 +45,6 @@ export default function HomePage() {
     const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
-    const { cart } = useCart();
 
     const importAll = (r) => {
         let images = {};
@@ -66,8 +55,6 @@ export default function HomePage() {
       };
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-
 
     const getImageFromPath = (path) => {
         if (!path) return null;
@@ -108,17 +95,6 @@ export default function HomePage() {
 
         fetchRandomProducts(); // Call function to fetch products
     }, []); 
-
-    useEffect(() => {
-        setDiscountedProducts(getDiscountedProducts());
-    }, []);
-
-    useEffect(() => {
-        const nonDiscountedProducts = allproducts.filter(
-            (product) => !getDiscountedProducts().some((discounted) => discounted.id === product.id)
-        );
-        setDailySelectedProducts(shuffleArray(nonDiscountedProducts).slice(0, 15));
-    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {

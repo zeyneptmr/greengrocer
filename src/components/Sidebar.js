@@ -4,16 +4,17 @@ import { Package, Box, Home, Users, LogOut, MessageCircle } from "lucide-react";
 import { Plus,  Pen, NotebookText, Truck, ClipboardList } from 'lucide-react';
 import { FaTag, FaPercent, FaBolt, FaDollarSign, FaBox, } from 'react-icons/fa';
 import { MdAttachMoney, MdLocalOffer, MdTag, MdPercent , MdStore, MdShoppingBasket} from 'react-icons/md';
-
 import axios from "axios";
+import { useCart } from "../helpers/CartContext";
 
 const Sidebar = () => {
     //const location = useLocation();
     //const [token, setToken] = useState(null);
-    //const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
-
+    const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
+    //const [Cart, setCart] = useState(null);
     const navigate = useNavigate();
     const [role, setRole] = useState("");
+    const { setIsLoggedIn } = useCart();
 
     useEffect(() => {
         // Kullanıcı bilgilerini doğrulamak için /me endpoint'ini çağır
@@ -33,11 +34,23 @@ const Sidebar = () => {
 
 
     const handleLogout = () => {
-        //setToken(null);  // State'teki token'i sıfırlıyoruz
-        setRole(null);
+        axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true })
+            .then(response => {
+                localStorage.removeItem("loggedInUser");
+                localStorage.removeItem("role");
 
-        // Navigate to login page
-        navigate("/login");
+                //setToken(null);  // State'teki token'i sıfırlıyoruz
+                setRole(null);
+                setLoggedInUser(null);
+                setIsLoggedIn(false);
+                // Navigate to login page
+                navigate("/");
+            })
+            .catch((error) => {
+                console.error("Logout error:", error);
+                // Hata durumunda da login sayfasına yönlendirebilirsiniz
+                navigate("/login");
+            });
     };
 
     // Dinamik sidebar başlığını ve yönlendirme linkini ayarlıyoruz

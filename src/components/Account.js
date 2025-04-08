@@ -14,6 +14,7 @@ const Account = ({ isOpen, onClose }) => {
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const navigate = useNavigate();
     const [isRegister, setIsRegister] = useState(false);
+    //const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -204,6 +205,7 @@ const Account = ({ isOpen, onClose }) => {
                             refreshAuth();
                             refreshFavorites();
                             
+
                             onClose();
 
                             if (response.data.role === "ADMIN") {

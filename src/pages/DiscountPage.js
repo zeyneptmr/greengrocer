@@ -60,7 +60,7 @@ const DiscountPage = () => {
         const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
 
         if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
+            console.error(`Image not found : ${filename} `);
             return '/placeholder.png';  // Placeholder görseli
         }
 
@@ -174,6 +174,17 @@ const DiscountPage = () => {
 
         const discountedProducts = filteredProducts.filter(product => selectedProducts.includes(product.id));
         console.log("İndirim uygulanan ürünler:", discountedProducts);
+
+        const tooCheapProduct = discountedProducts.find(product => {
+            const discountedPrice = product.price * (1 - discountRate / 100);
+            return discountedPrice < 1;
+        });
+
+        if (tooCheapProduct) {
+            setErrorNotification(`Discounts cannot be applied to products less than 1 TL.`);
+            setTimeout(() => setErrorNotification(''), 4000);
+            return;
+        }
 
         try {
             const updatedDiscountedProducts = await Promise.all(discountedProducts.map(async (product) => {

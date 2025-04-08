@@ -47,11 +47,11 @@ public class ProductController {
         return productService.addProduct(product);
     }
 
-
     @GetMapping("/random")
     public List<Product> getRandomProducts() {
         return productService.getRandomProducts();
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
@@ -59,7 +59,6 @@ public class ProductController {
         Product updatedProduct = productService.updateProduct(product);
         return ResponseEntity.ok(updatedProduct);
     }
-
 
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestBody StockUpdateRequest stockUpdateRequest) {

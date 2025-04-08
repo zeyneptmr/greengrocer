@@ -1,20 +1,41 @@
 import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import { useContext } from "react";
+import { useCart } from "../helpers/CartContext";
+
+import axios from "axios";
 
 const Sidebar = () => {
 
-    //const [role, setRole] = useState("");
+    const { setIsLoggedIn } = useCart();
+    const [role, setRole] = useState("");
     //const [token, setToken] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        localStorage.removeItem("loggedInUser");
+    const [Cart, setCart] = useState(null);
 
-        // Diğer çıkış işlemleri, örneğin state'leri sıfırlama
-        setLoggedInUser(null);
-        navigate("/");
+    const handleLogout = () => {
+        axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true })
+            .then(response => {
+                localStorage.removeItem("loggedInUser");
+                localStorage.removeItem("role");
+                localStorage.removeItem("cart");
+                // Rol bilgisini sıfırla
+                setCart([]);
+                setRole(null);
+                setLoggedInUser(null);
+                setIsLoggedIn(false);
+
+                navigate("/");
+
+            })
+            .catch((error) => {
+                console.error("Logout error:", error);
+                // Hata durumunda da login sayfasına yönlendirebilirsiniz
+                navigate("/");
+            });
     };
 
     return (

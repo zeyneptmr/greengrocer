@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -41,12 +43,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index.html").permitAll()
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
                     .requestMatchers("/api/mail/sendVerificationCode", "/api/mail/verifyCode").permitAll()
                     .requestMatchers("/api/mail/resetPassword").permitAll()
+                    .requestMatchers("/api/contact/**").permitAll()
                     .requestMatchers("/api/users/me").permitAll()
                     .requestMatchers("/api/products/**").permitAll()
                     .requestMatchers("/api/users/**").permitAll()
@@ -54,7 +58,11 @@ public class SecurityConfig {
                     .requestMatchers("/api/discountedProducts/**").permitAll()
                     .requestMatchers("/api/cards/**").permitAll()
                     .requestMatchers("/api/addresses/**").permitAll()
+                    .requestMatchers("/api/cart/**").permitAll()
+                    .requestMatchers("/api/users**").permitAll()
+                    .requestMatchers("/logout").permitAll()
                     .requestMatchers("/api/favorites/**").permitAll()
+                    .requestMatchers("/api/ordertotal/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
