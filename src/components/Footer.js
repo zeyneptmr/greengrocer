@@ -4,6 +4,7 @@ import LocationIcon from '../assets/location.svg';
 import PhoneIcon from '../assets/phone.svg';
 import MailIcon from '../assets/mail.svg';
 import MegaphoneIcon from '../assets/megaphone.svg';
+import FAQIcon from '../assets/question-circle-svgrepo-com.svg';
 import FacebookIcon from '../assets/facebook.svg';
 import InstagramIcon from '../assets/instagram.svg';
 import YoutubeIcon from '../assets/youtube.svg';
@@ -53,10 +54,10 @@ function Footer() {
             <h3 className="text-lg font-bold">COMPANY</h3>
             <div className="mt-4">
               <a
-                href="/about"
-                className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
+                  href="/about"
+                  className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
               >
-                <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5" />
+                <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5"/>
                 <span>About Us</span>
               </a>
             </div>
@@ -68,6 +69,16 @@ function Footer() {
               >
                 <img src={ContactUsIcon} alt="ContactUs Icon" className="w-5"/>
                 <span>Contact Us</span>
+              </a>
+            </div>
+
+            <div className="mt-4">
+              <a
+                  href="/faq"
+                  className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
+              >
+                <img src={FAQIcon} alt="FAQ Icon" className="w-5"/>
+                <span>Frequently Asked Questions</span>
               </a>
             </div>
 
