@@ -135,13 +135,15 @@ const Inventory = () => {
             <Sidebar />
 
             <main className="flex-1 flex flex-col overflow-hidden">
-                <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
+                <header className="bg-white shadow-md p-4 flex justify-between items-center">
                     <h1 className="text-2xl font-semibold text-gray-700">Product Inventory</h1>
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Manager Panel</span>
-                        <img src={managerIcon} alt="Admin" className="rounded-full w-14 h-18" />
+                        <img src={managerIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
+
+
 
                 <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
                     <AdminSearchBar
