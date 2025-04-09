@@ -150,7 +150,7 @@ const AddProductPage = () => {
                     <h1 className="text-2xl font-semibold text-gray-700 pt-10">Add New Product</h1>
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Admin Panel</span>
-                        <img src={adminIcon} alt="Admin" className="rounded-full w-10 h-10" />
+                        <img src={adminIcon} alt="Admin" className="rounded-full w-32 h-28" />
                     </div>
                 </header>
 
