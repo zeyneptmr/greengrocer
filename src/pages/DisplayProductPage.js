@@ -45,7 +45,7 @@ const DisplayProductsPage = () => {
 
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Admin Panel</span>
-                        <img src={adminIcon} alt="Admin" className="rounded-full w-10 h-10" />
+                        <img src={adminIcon} alt="Admin" className="rounded-full w-32 h-28" />
                     </div>
                 </header>
 
