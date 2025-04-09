@@ -14,7 +14,7 @@ export const FavoritesProvider = ({ children }) => {
             withCredentials: true 
         })
         .then(res => {
-            console.log("Current user loaded:", res.data);
+            //console.log("Current user loaded:", res.data);
             setCurrentUser(res.data);
         })
         .catch(err => {

@@ -6,6 +6,8 @@ import org.example.greengrocer.model.OrderTotal;
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.OrderTotalRepository;
 import org.example.greengrocer.repository.UserRepository;
+import org.example.greengrocer.model.CartItem;
+import org.example.greengrocer.repository.CartItemRepository;
 import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ordertotal")
@@ -24,6 +27,9 @@ public class OrderTotalController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -39,7 +45,8 @@ public class OrderTotalController {
     }
 
     // Kullanıcının sepet toplam verisini getirme
-    @GetMapping
+    // Kullanıcının sepet toplam verisini getirme
+    @GetMapping("/getOrderTotal")
     public ResponseEntity<?> getOrderTotal(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
         if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -50,7 +57,45 @@ public class OrderTotalController {
         User user = userOpt.get();
         Optional<OrderTotal> orderTotalOpt = orderTotalRepository.findByUser(user);
 
-        return ResponseEntity.ok(orderTotalOpt.orElse(null));
+        if (orderTotalOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order totals found for this user.");
+        }
+
+        OrderTotal orderTotal = orderTotalOpt.get();
+        // Return the order total data to the client
+        return ResponseEntity.ok(orderTotal);
+    }
+
+
+    @PostMapping("/checkout")
+    public ResponseEntity<?> checkout(HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
+        User user = userOpt.get();
+        Optional<OrderTotal> orderTotalOpt = orderTotalRepository.findByUser(user);
+
+        if (orderTotalOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order total found");
+
+        OrderTotal existingOrderTotal = orderTotalOpt.get();
+
+        // Checkout işlemi: yeni OrderTotal oluşturulabilir ya da mevcut bilgiler kullanılabilir.
+        OrderTotal newOrder = new OrderTotal();
+        newOrder.setUser(user);
+        newOrder.setTotalProductCount(existingOrderTotal.getTotalProductCount());
+        newOrder.setTotalPrice(existingOrderTotal.getTotalPrice());
+        newOrder.setShippingFee(existingOrderTotal.getShippingFee());
+        newOrder.setTotalAmount(existingOrderTotal.getTotalAmount());
+
+        orderTotalRepository.save(newOrder);
+
+        // Mevcut OrderTotal siliniyor (checkout sonrası sepet boşaltma gibi düşünülebilir)
+        orderTotalRepository.delete(existingOrderTotal);
+
+        return ResponseEntity.ok("Checkout completed successfully.");
     }
 
     // Sepet toplamını güncelleme veya ekleme
@@ -74,6 +119,7 @@ public class OrderTotalController {
         orderTotalRepository.save(orderTotal);
         return ResponseEntity.ok("Order total saved successfully.");
     }
+
 
     // Sepet verilerini sıfırlama (isteğe bağlı)
     @DeleteMapping

@@ -201,8 +201,6 @@ const Account = ({ isOpen, onClose }) => {
 
                             setIsLoggedIn(true);
                             //syncCartIfUserLoggedIn();
-
-                            
                            
                             refreshAuth();
                             

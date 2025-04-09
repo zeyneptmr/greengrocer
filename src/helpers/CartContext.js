@@ -7,7 +7,6 @@ function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
     const [notification, setNotification] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
     const [addedToCart, setAddedToCart] = useState(false);
 
     // Görselleri assets klasöründen al
@@ -156,6 +155,12 @@ function CartProvider({ children }) {
         showNotification("All products deleted from cart!", "info");
     };
 
+    const clearCarto = () => {
+        setCart([]);
+        localStorage.removeItem("cart");
+    };
+
+
     const calculateTotalPrice = () => {
         return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
@@ -205,10 +210,12 @@ function CartProvider({ children }) {
         <CartContext.Provider value={{
             cart,
             addToCart,
+
             increaseQuantity,
             decreaseQuantity,
             removeItem,
             clearCart,
+            clearCarto,
             calculateTotalPrice,
             getTotalProductTypes,
             isLoggedIn,

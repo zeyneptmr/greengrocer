@@ -1,7 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
+import { useFavorites } from "../helpers/FavoritesContext";
+import { useCart } from "../helpers/CartContext"; // yol değişebilir
 
 import axios from "axios";
 
@@ -21,13 +24,8 @@ const PaymentPage = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
-
-    const [orderTotal, setOrderTotal] = useState({
-        totalProductCount: 0,
-        totalPrice: 0,
-        shippingFee: 0,
-        totalAmount: 0,
-    });
+    //const { refreshAuth } = useFavorites();
+    const { clearCarto } = useCart(); // burası önemli
 
     const importAll = (r) => {
         let images = {};
@@ -65,64 +63,71 @@ const PaymentPage = () => {
         return images[imagePath] || '/placeholder.png';
     };
 
-    // Ürünleri veritabanından çek
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/products');
-                console.log(response.data);
-                setProducts(response.data);
-                setFilteredProducts(response.data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setErrorMessage("Failed to load products.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+    const [orderTotal, setOrderTotal] = useState({
+        totalProductCount: 0,
+        totalPrice: 0,
+        shippingFee: 0,
+        totalAmount: 0,
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const addressRes = await axios.get("http://localhost:8080/api/addresses", { withCredentials: true });
-                console.log("Adresler:", addressRes.data);
-                setAddresses(addressRes.data);
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/products');
+            console.log(response.data);
+            setProducts(response.data);
+            setFilteredProducts(response.data);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            setErrorMessage("Failed to load products.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    const fetchData = async () => {
+        try {
+            const [addressRes, cardRes, cartRes] = await Promise.all([
+                axios.get("http://localhost:8080/api/addresses", { withCredentials: true }),
+                axios.get("http://localhost:8080/api/cards", { withCredentials: true }),
+                axios.get("http://localhost:8080/api/cart", { withCredentials: true }),
+            ]);
 
-                const cardRes = await axios.get("http://localhost:8080/api/cards", { withCredentials: true });
-                console.log("Kredi Kartları:", cardRes.data);
-                setSavedCards(cardRes.data);
+            setAddresses(addressRes.data);
+            setSavedCards(cardRes.data);
+            setCart(cartRes.data);
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+        }
+    };
 
-                const cartRes = await axios.get("http://localhost:8080/api/cart", { withCredentials: true });
-                setCart(cartRes.data);
-                console.log("Sepet:", cartRes.data);
-            } catch (error) {
-                console.error("Veri çekme hatası:", error);
-            }
-        };
+    const fetchOrderTotal = async () => {
+        try {
+            const orderTotalRes = await axios.get("http://localhost:8080/api/ordertotal/getOrderTotal", { withCredentials: true });
 
-        fetchData();
-    }, []);
-
-    // Fetch the order total from the backend
-    useEffect(() => {
-        const fetchOrderTotal = async () => {
-            try {
-                const orderTotalRes = await axios.get("http://localhost:8080/api/ordertotal", { withCredentials: true });
-                console.log("Order Total:", orderTotalRes.data);
+            if (orderTotalRes.status === 200) {
                 setOrderTotal(orderTotalRes.data);
-            } catch (error) {
-                console.error("Error fetching order total:", error);
+                console.log("OrderTotal başarıyla alındı.");
+            } else if (orderTotalRes.status === 404) {
+                console.error("Order Total'a yansıtacak veri yok.");
+            } else if (orderTotalRes.status === 403) {
+                console.error("Kullanıcı yetkisi yok.");
+            } else {
+                console.error("OrderTotal alınırken bir sorun oluştu.");
             }
-        };
+        } catch (error) {
+            console.error("OrderTotal alınırken bir hata oluştu:", error.response ? error.response.data : error.message);
+        }
+    };
 
+
+// Sayfa ilk yüklendiğinde
+    useEffect(() => {
+        fetchProducts();
+        fetchData();
         fetchOrderTotal();
     }, []);
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const totalCostFormatted = totalCost.toFixed(2);
 
         if (totalCost < 50) {
             setIsLowCostWarning(true);
@@ -134,36 +139,43 @@ const PaymentPage = () => {
             return;
         }
 
-        const address = addresses[selectedAddress];
-        const orderData = {
-            name: `${address?.firstName} ${address?.lastName}`,
-            address,
-            cart,
-            totalCost: parseFloat(totalCostFormatted),
-        };
+        try {
+            const res = await axios.post("http://localhost:8080/api/customerorder/create", {}, {
+                withCredentials: true
+            });
+            console.log("Order Created:", res.data);
 
-        //const existingOrders = JSON.parse(localStorage.getItem("orderinfo")) || [];
-        //localStorage.setItem("orderinfo", JSON.stringify([...existingOrders, orderData]));
+            const completeRes = await axios.post("http://localhost:8080/api/customerorder/finalize", {}, {
+                withCredentials: true
+            });
+            console.log("Order Completed:", completeRes.data);
 
-        //sessionStorage.removeItem("cart");
+            clearCarto();
 
-        setCart([]);
+            // Verileri çekmeden önce frontend state'ini de sıfırla
+            //setCart([]);
+            setOrderTotal({
+                totalProductCount: 0,
+                totalPrice: 0,
+                shippingFee: 0,
+                totalAmount: 0,
+            });
 
-        //localStorage.removeItem("cart");
+            // Son verileri backend'den yeniden al
+            await fetchOrderTotal();
+            await fetchData();
+            //refreshAuth();
 
-        setIsOrderConfirmed(true);
+            setIsOrderConfirmed(true);
 
-        setTimeout(() => {
-            setIsOrderConfirmed(false);
-            navigate("/order-confirmation");
-        }, 3000);
+            setTimeout(() => {
+                setIsOrderConfirmed(false);
+                navigate("/order-confirmation");
+            }, 3000);
+        } catch (error) {
+            console.error("Order creation failed:", error);
+        }
     };
-
-    //const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    //const totalCostFormatted = totalCost.toFixed(2);
-    //const shippingCost = totalCost > 500 ? 0 : 49;
-    //const finalCost = parseFloat(totalCostFormatted) + shippingCost;
-
 
     return (
         <div className="max-w-6xl mx-auto p-2 flex flex-col md:flex-row gap-6">
@@ -264,7 +276,7 @@ const PaymentPage = () => {
                                 <p className="text-sm text-gray-500">
                                     {item.quantity} piece -{" "}
                                     <span className="font-semibold text-gray-900">
-                            {parseFloat((item.price * item.quantity).toFixed(2))} TL
+                            {parseFloat(item.price * item.quantity).toFixed(2)} TL
                         </span>
                                 </p>
                             </div>
@@ -274,16 +286,16 @@ const PaymentPage = () => {
 
                 {/* Cart Summary Details */}
                 <div className="space-y-1 text-lg text-gray-700 mt-2">
-                    <p className="text">{`Product Total: ${orderTotal.totalPrice.toFixed(2)} TL`}</p>
+                    <p className="text">{`Product Total: ${orderTotal.totalPrice} TL`}</p>
 
                     {/* Conditional Rendering for Shipping Fee */}
                     {orderTotal.shippingFee === 0 ? (
                         <p className="text-green-500 font-semibold">Free Delivery</p>
                     ) : (
-                        <p className="text">{`Delivery Fee: ${orderTotal.shippingFee.toFixed(2)} TL`}</p>
+                        <p className="text">{`Delivery Fee: ${orderTotal.shippingFee} TL`}</p>
                     )}
 
-                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount.toFixed(2)} TL</p>
+                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount} TL</p>
                 </div>
 
                 {/* Confirm Payment Button */}
@@ -378,6 +390,4 @@ const PaymentPage = () => {
 
     );
 };
-
 export default PaymentPage;
-
