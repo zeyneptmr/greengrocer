@@ -126,16 +126,16 @@ const UpdateProductsPage = () => {
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700">Update Products</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">Update Products</h1>
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Admin Panel</span>
-                        <img src={adminIcon} alt="Admin" className="rounded-full w-10 h-10" />
+                        <img src={adminIcon} alt="Admin" className="rounded-full w-10 h-10"/>
                     </div>
                 </header>
 
                 {/* Search Bar */}
                 <div className="bg-white shadow-md p-4">
-                    <AdminSearchBar 
+                <AdminSearchBar
                         products={products} 
                         setFilteredProductsList={setFilteredProducts} 
                     />
