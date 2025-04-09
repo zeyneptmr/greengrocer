@@ -245,9 +245,15 @@ const DiscountPage = () => {
                     <h1 className="text-2xl font-semibold text-gray-700">Discount & Campaign</h1>
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Manager Panel</span>
-                        <img src={managerIcon} alt="Admin" className="rounded-full w-14 h-18"/>
+                        <img src={managerIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
+
+
+
+
+
+
 
                 <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
                     <AdminSearchBar
@@ -258,10 +264,10 @@ const DiscountPage = () => {
 
                 <div className="px-6 py-4">
                     <h2 className="text-xl font-semibold text-gray-700 mb-4">Manage Discounts</h2>
-                    
+
                     <div className="bg-blue-50 border-l-4 border-blue-700 p-4 mb-6">
                         <p className="text-blue-700">
-                            All discounts applied here will automatically expire after 24 hours. 
+                            All discounts applied here will automatically expire after 24 hours.
                             Products will return to their original prices automatically.
                         </p>
                     </div>
@@ -277,7 +283,7 @@ const DiscountPage = () => {
                                 className="border px-3 py-2 rounded w-48"
                             />
                         </div>
-                        
+
                         <div className="flex flex-col">
                             <label className="mb-1 text-sm text-gray-600">Filter by Category</label>
                             <select
@@ -293,7 +299,7 @@ const DiscountPage = () => {
                                 ))}
                             </select>
                         </div>
-                        
+
                         <div className="flex items-end">
                             <button onClick={handleSelectAll}
                                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"

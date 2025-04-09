@@ -3,6 +3,7 @@ import { useCart } from "../helpers/CartContext";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {useFavorites} from "../helpers/FavoritesContext";
 //import { getImageFromPath } from "../utils/imageUtils"; // 👈 bunu ekliyoruz
 
 // Görsel dosyalarını içe aktar
@@ -13,7 +14,6 @@ const importAll = (r) => {
     });
     return images;
 };
-
 const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
 // Görsel yolu çözümleyici
@@ -42,47 +42,92 @@ export default function Cart() {
         clearCart
     } = useCart();
 
-    const calculateTotalPrice = () => {
-        return cart.reduce((acc, item) => {
-            return acc + (item.price * item.quantity);
-        }, 0).toFixed(2); // Fiyatı hesapla ve virgülden iki basamağa yuvarla
-    };
-
     const [isEditing, setIsEditing] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const navigate = useNavigate();
+    const [orderTotalData, setOrderTotalData]= useState({
+        totalProductCount: 0,
+        totalPrice: 0,
+        shippingFee: 0,
+        totalAmount: 0,
+    });
 
-    // API'ye OrderTotal gönderme
+    const calculateTotalPrice = () => {
+        const total = cart.reduce((acc, item) => {
+            return acc + (item.price * item.quantity);
+        }, 0);
+        return Number(total.toFixed(2));
+    };
+
+    const calculateShippingFee = () => {
+        const totalPrice = calculateTotalPrice();
+        return totalPrice === 0 || totalPrice >= 500 ? 0 : 49;
+    };
+
     const updateOrderTotal = async (totalProductCount, totalPrice, shippingFee) => {
         try {
-            const totalAmount = (Number(totalPrice) + Number(shippingFee)).toFixed(2);
+            const totalAmount = Number(totalPrice + shippingFee).toFixed(2);
 
             const response = await axios.post(
                 "http://localhost:8080/api/ordertotal/update",
                 {
                     totalProductCount,
-                    totalPrice: Number(totalPrice).toFixed(2),  // totalPrice'ı sayıya dönüştürüp iki basamağa yuvarlıyoruz
-                    shippingFee: Number(shippingFee).toFixed(2), // shippingFee'yi sayıya dönüştürüp iki basamağa yuvarlıyoruz
-                    totalAmount, // toplam tutarı iki basamağa yuvarlanmış olarak gönderiyoruz
+                    totalPrice: totalPrice.toFixed(2),
+                    shippingFee: shippingFee.toFixed(2),
+                    totalAmount,
                 },
-                { withCredentials: true } // Oturum bilgileriyle gönderim yap
+                { withCredentials: true }
             );
+
             if (response.status === 200) {
                 console.log("OrderTotal başarıyla güncellendi.");
+                // UI'ye başarı mesajı gösterilebilir
+            }
+            else if (response.status === 404) {
+                console.error("Order Total'a yansıtacak veri yok.");
+                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
+            }
+            else if (response.status === 403) {
+                console.error("Sepet boş, order total'a yansıtılacak veri yok.");
+                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
             } else {
                 console.error("OrderTotal güncellenirken bir sorun oluştu.");
+                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
             }
         } catch (error) {
             console.error("OrderTotal güncellenirken bir hata oluştu:", error);
         }
     };
 
+    const fetchOrderTotal = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/ordertotal/getOrderTotal", {
+                withCredentials: true,
+            });
+            if (response.status === 200 && response.data) {
+                setOrderTotalData(response.data);
+            } else {
+                console.warn("OrderTotal verisi alınamadı.");
+            }
+        } catch (error) {
+            console.error("OrderTotal getirme hatası:", error);
+        }
+    };
+
+    // Sepet değişince OrderTotal'ı backend'e gönder
     useEffect(() => {
-        // Sepet değiştikçe OrderTotal'ı güncelle
         const totalProductCount = getTotalProductTypes();
         const totalPrice = calculateTotalPrice();
         const shippingFee = calculateShippingFee();
         updateOrderTotal(totalProductCount, totalPrice, shippingFee);
+    }, [cart]);
+
+    // Backend'den veriyi çekme işlemi (500ms delay ile)
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchOrderTotal();
+        }, 200);
+        return () => clearTimeout(timeout);
     }, [cart]);
 
 
@@ -97,18 +142,6 @@ export default function Cart() {
         setSelectedItems([]);
     };
 
-    const calculateShippingFee = () => {
-        const totalPrice = calculateTotalPrice();
-        return totalPrice >= 500 ? 0 : 49;
-    };
-
-    const calculateTotalAmount = () => {
-        const totalPrice = Number(calculateTotalPrice());
-        const shippingFee = Number(calculateShippingFee());
-        const totalAmount = totalPrice + shippingFee;
-        return totalAmount.toFixed(2); // Sonuçları iki basamağa yuvarla
-    };
-
     const handleContinueClick = () => {
         const groupedCart = cart.reduce((acc, item) => {
             const existingItem = acc.find(i => i.id === item.id);
@@ -121,6 +154,14 @@ export default function Cart() {
         }, []);
 
         navigate("/payment");
+    };
+
+
+    const calculateTotalAmount = () => {
+        //const totalPrice = Number(calculateTotalPrice());
+        //const shippingFee = Number(calculateShippingFee());
+        //const totalAmount = totalPrice + shippingFee;
+        //return totalAmount.toFixed(2); // Sonuçları iki basamağa yuvarla
     };
 
     return (
@@ -218,40 +259,31 @@ export default function Cart() {
                 <h3 className="text-2xl text-orange-500 font-semibold mb-6">Cart Summary</h3>
                 <div className="flex justify-between text-gray-700 text-lg">
                     <span> </span>
-                    <span>{getTotalProductTypes()} products</span>
+                    <span>{orderTotalData && orderTotalData.totalProductCount} products</span>
                 </div>
                 <div className="flex justify-between text-gray-700 text-lg mt-4">
                     <span className="font-semibold"> Cart Total:</span>
-                    <span className="font-semibold">{calculateTotalPrice()} TL</span>
+                    <span className="font-semibold">{orderTotalData &&orderTotalData.totalPrice} TL</span>
                 </div>
 
-                <div className="flex justify-between text-gray-700 text-lg mt-2">
-        <span className={calculateShippingFee() === 0 ? "line-through text-gray-500 " : ""}>
-            Delivery Amount:
-        </span>
-                    <span className={calculateShippingFee() === 0 ? "line-through text-gray-500" : ""}>
-            49.00 TL
-        </span>
-                </div>
-
-                {calculateShippingFee() !== 0 && (
-                    <div
-                        className="flex justify-between text-black font-normal text-base mt-2 bg-orange-100 p-2 rounded-md">
-            <span>
-                Add {(500 - calculateTotalPrice()).toFixed(2)} TL worth of products to your cart for free delivery.
-            </span>
-                    </div>
-                )}
-
-                {calculateShippingFee() === 0 && (
+                {orderTotalData && orderTotalData.shippingFee === 0 && orderTotalData.totalPrice !== 0 ? (
                     <div className="flex justify-between text-green-600 font-semibold text-lg mt-2">
                         <span>Free Delivery</span>
+                    </div>
+                ) : (
+                    <div className="flex justify-between text-gray-700 text-lg mt-2">
+                        <span className="font-semibold">Delivery Amount:</span>
+                        <span className="font-semibold">
+            {orderTotalData && orderTotalData.shippingFee === 0 && orderTotalData.totalPrice === 0
+                ? "0 TL"
+                : `${orderTotalData && orderTotalData.shippingFee} TL`}
+        </span>
                     </div>
                 )}
 
                 <div className="flex justify-between text-gray-700 text-lg mt-4">
                     <span className="font-semibold"> Total Amount:</span>
-                    <span className="font-semibold">{calculateTotalAmount()} TL</span>
+                    <span className="font-semibold">{orderTotalData &&orderTotalData.totalAmount} TL</span>
                 </div>
 
                 <button

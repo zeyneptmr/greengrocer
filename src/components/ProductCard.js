@@ -101,7 +101,7 @@ export default function ProductCard({ product, hideCartView=false }) {
 
             {currentProduct.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    {discountPercentage}% Off
+                    15% Off
                 </div>
             )}
 
@@ -118,7 +118,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                 {/* Product Name */}
                 <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{currentProduct.name}</h3>
 
-                {/* Product Price */}
+                {/* Product Price and Quantity */}
                 <div className="flex justify-center items-center mt-1">
                     {currentProduct.discountedPrice ? (
                         <p className="text-gray-600 text-md line-through mr-2">{currentProduct.price} TL</p>
@@ -127,6 +127,13 @@ export default function ProductCard({ product, hideCartView=false }) {
                     )}
                     {currentProduct.discountedPrice && (
                         <span className="text-green-600 font-bold">{currentProduct.discountedPrice} TL</span>
+                    )}
+
+                    {/* Sales Quantity (Piece or KG) */}
+                    {product.quantity && (
+                        <span className="text-gray-500 text-sm ml-2">
+                           {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
+                        </span>
                     )}
                 </div>
 

@@ -1,7 +1,12 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
+import { useFavorites } from "../helpers/FavoritesContext";
+import { useCart } from "../helpers/CartContext"; // yol değişebilir
+import { generateInvoice } from "../helpers/generateInvoice";
+
 
 import axios from "axios";
 
@@ -21,13 +26,24 @@ const PaymentPage = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
+    //const { refreshAuth } = useFavorites();
+    const { clearCarto } = useCart(); // burası önemli
 
-    const [orderTotal, setOrderTotal] = useState({
-        totalProductCount: 0,
-        totalPrice: 0,
-        shippingFee: 0,
-        totalAmount: 0,
-    });
+    const handleGeneratePDF = () => {
+        const orderData = {
+            orderId: "DAHA DATABASEDEN ÇEKMEDİM", // backend'den gelmeli normalde
+            customerName: "O YÜZDEN GÖRÜNMÜYO SİPARİŞLER KORKMA <3",
+            items: cart.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+            })),
+            totalAmount: orderTotal.totalAmount,
+        };
+
+        generateInvoice(orderData);
+    };
+
 
     const importAll = (r) => {
         let images = {};
@@ -65,64 +81,71 @@ const PaymentPage = () => {
         return images[imagePath] || '/placeholder.png';
     };
 
-    // Ürünleri veritabanından çek
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/products');
-                console.log(response.data);
-                setProducts(response.data);
-                setFilteredProducts(response.data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setErrorMessage("Failed to load products.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+    const [orderTotal, setOrderTotal] = useState({
+        totalProductCount: 0,
+        totalPrice: 0,
+        shippingFee: 0,
+        totalAmount: 0,
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const addressRes = await axios.get("http://localhost:8080/api/addresses", { withCredentials: true });
-                console.log("Adresler:", addressRes.data);
-                setAddresses(addressRes.data);
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/products');
+            console.log(response.data);
+            setProducts(response.data);
+            setFilteredProducts(response.data);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            setErrorMessage("Failed to load products.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    const fetchData = async () => {
+        try {
+            const [addressRes, cardRes, cartRes] = await Promise.all([
+                axios.get("http://localhost:8080/api/addresses", { withCredentials: true }),
+                axios.get("http://localhost:8080/api/cards", { withCredentials: true }),
+                axios.get("http://localhost:8080/api/cart", { withCredentials: true }),
+            ]);
 
-                const cardRes = await axios.get("http://localhost:8080/api/cards", { withCredentials: true });
-                console.log("Kredi Kartları:", cardRes.data);
-                setSavedCards(cardRes.data);
+            setAddresses(addressRes.data);
+            setSavedCards(cardRes.data);
+            setCart(cartRes.data);
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+        }
+    };
 
-                const cartRes = await axios.get("http://localhost:8080/api/cart", { withCredentials: true });
-                setCart(cartRes.data);
-                console.log("Sepet:", cartRes.data);
-            } catch (error) {
-                console.error("Veri çekme hatası:", error);
-            }
-        };
+    const fetchOrderTotal = async () => {
+        try {
+            const orderTotalRes = await axios.get("http://localhost:8080/api/ordertotal/getOrderTotal", { withCredentials: true });
 
-        fetchData();
-    }, []);
-
-    // Fetch the order total from the backend
-    useEffect(() => {
-        const fetchOrderTotal = async () => {
-            try {
-                const orderTotalRes = await axios.get("http://localhost:8080/api/ordertotal", { withCredentials: true });
-                console.log("Order Total:", orderTotalRes.data);
+            if (orderTotalRes.status === 200) {
                 setOrderTotal(orderTotalRes.data);
-            } catch (error) {
-                console.error("Error fetching order total:", error);
+                console.log("OrderTotal başarıyla alındı.");
+            } else if (orderTotalRes.status === 404) {
+                console.error("Order Total'a yansıtacak veri yok.");
+            } else if (orderTotalRes.status === 403) {
+                console.error("Kullanıcı yetkisi yok.");
+            } else {
+                console.error("OrderTotal alınırken bir sorun oluştu.");
             }
-        };
+        } catch (error) {
+            console.error("OrderTotal alınırken bir hata oluştu:", error.response ? error.response.data : error.message);
+        }
+    };
 
+
+// Sayfa ilk yüklendiğinde
+    useEffect(() => {
+        fetchProducts();
+        fetchData();
         fetchOrderTotal();
     }, []);
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const totalCostFormatted = totalCost.toFixed(2);
 
         if (totalCost < 50) {
             setIsLowCostWarning(true);
@@ -134,72 +157,86 @@ const PaymentPage = () => {
             return;
         }
 
-        const address = addresses[selectedAddress];
-        const orderData = {
-            name: `${address?.firstName} ${address?.lastName}`,
-            address,
-            cart,
-            totalCost: parseFloat(totalCostFormatted),
-        };
+        try {
+            const res = await axios.post("http://localhost:8080/api/customerorder/create", {}, {
+                withCredentials: true
+            });
+            console.log("Order Created:", res.data);
 
-        //const existingOrders = JSON.parse(localStorage.getItem("orderinfo")) || [];
-        //localStorage.setItem("orderinfo", JSON.stringify([...existingOrders, orderData]));
+            const completeRes = await axios.post("http://localhost:8080/api/customerorder/finalize", {}, {
+                withCredentials: true
+            });
+            console.log("Order Completed:", completeRes.data);
 
-        //sessionStorage.removeItem("cart");
+            clearCarto();
 
-        setCart([]);
+            // Verileri çekmeden önce frontend state'ini de sıfırla
+            //setCart([]);
+            setOrderTotal({
+                totalProductCount: 0,
+                totalPrice: 0,
+                shippingFee: 0,
+                totalAmount: 0,
+            });
 
-        //localStorage.removeItem("cart");
+            // Son verileri backend'den yeniden al
+            await fetchOrderTotal();
+            await fetchData();
+            //refreshAuth();
 
-        setIsOrderConfirmed(true);
+            setIsOrderConfirmed(true);
 
-        setTimeout(() => {
-            setIsOrderConfirmed(false);
-            navigate("/order-confirmation");
-        }, 3000);
+            setTimeout(() => {
+                setIsOrderConfirmed(false);
+                navigate("/order-confirmation");
+            }, 3000);
+        } catch (error) {
+            console.error("Order creation failed:", error);
+        }
     };
-
-    //const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    //const totalCostFormatted = totalCost.toFixed(2);
-    //const shippingCost = totalCost > 500 ? 0 : 49;
-    //const finalCost = parseFloat(totalCostFormatted) + shippingCost;
-
 
     return (
         <div className="max-w-6xl mx-auto p-2 flex flex-col md:flex-row gap-6">
             {/* Addresses */}
-
             <div className="w-full md:w-2/3">
                 <div className="border p-1 rounded-lg mb-2">
                     <h3 className="font-semibold mb-2 mt-4">Delivery Address</h3>
-                    {addresses.filter(address => address.isDefault === true).length > 0 ? (
-                        addresses.filter(address => address.isDefault === true).map((address, index) => (
-                            <label
-                                key={index}
-                                className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
-                            >
-                                <input
-                                    type="radio"
-                                    name="address"
-                                    value={index}
-                                    checked={selectedAddress === index}
-                                    onChange={() => setSelectedAddress(index)}
-                                />
-                                <div className="mt-2">
-                                    <p className="text-left font-bold mb-2">
-                                        {address.firstName} {address.lastName}
-                                    </p>
-                                    <p className="text-left mb-1">{address.phone}</p>
-                                    <p className="text-left">{address.address}</p>
-                                    <p className="text-left">
-                                        {address.district}/{address.city}
-                                    </p>
-                                </div>
-                            </label>
-                        ))
+
+                    {/* Verinin geçerli olup olmadığını kontrol et */}
+                    {Array.isArray(addresses) && addresses.length > 0 ? (
+                        // Default address var mı diye kontrol et
+                        addresses.some(address => address.isDefault === true) ? (
+                            addresses.filter(address => address.isDefault === true).map((address, index) => (
+                                <label
+                                    key={index}
+                                    className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="address"
+                                        value={index}
+                                        checked={selectedAddress === index}
+                                        onChange={() => setSelectedAddress(index)}
+                                    />
+                                    <div className="mt-2">
+                                        <p className="text-left font-bold mb-2">
+                                            {address.firstName} {address.lastName}
+                                        </p>
+                                        <p className="text-left mb-1">{address.phone}</p>
+                                        <p className="text-left">{address.address}</p>
+                                        <p className="text-left">
+                                            {address.district}/{address.city}
+                                        </p>
+                                    </div>
+                                </label>
+                            ))
+                        ) : (
+                            <p>No default address found. Please add one.</p>
+                        )
                     ) : (
-                        <p>No default address found. Please add one.</p>
+                        <p>Loading addresses...</p>
                     )}
+
                     <div
                         className="border rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 mt-2"
                         onClick={() => navigate("/address")}
@@ -247,7 +284,8 @@ const PaymentPage = () => {
             </div>
 
             {/* Cart Summary */}
-            <div className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
+            <div
+                className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
                 <h3 className="font-semibold text-2xl text-gray-800 mb-4">Cart Summary</h3>
                 {/* Product List (Product Images and Quantities) */}
                 <div className="max-h-[300px] overflow-auto mb-4">
@@ -264,7 +302,7 @@ const PaymentPage = () => {
                                 <p className="text-sm text-gray-500">
                                     {item.quantity} piece -{" "}
                                     <span className="font-semibold text-gray-900">
-                            {parseFloat((item.price * item.quantity).toFixed(2))} TL
+                            {parseFloat(item.price * item.quantity).toFixed(2)} TL
                         </span>
                                 </p>
                             </div>
@@ -274,16 +312,21 @@ const PaymentPage = () => {
 
                 {/* Cart Summary Details */}
                 <div className="space-y-1 text-lg text-gray-700 mt-2">
-                    <p className="text">{`Product Total: ${orderTotal.totalPrice.toFixed(2)} TL`}</p>
+                    <p className="text">{`Cart Total: ${orderTotal.totalPrice} TL`}</p>
 
                     {/* Conditional Rendering for Shipping Fee */}
-                    {orderTotal.shippingFee === 0 ? (
+                    {orderTotal.shippingFee === 0 && orderTotal.totalPrice !== 0 ? (
                         <p className="text-green-500 font-semibold">Free Delivery</p>
                     ) : (
-                        <p className="text">{`Delivery Fee: ${orderTotal.shippingFee.toFixed(2)} TL`}</p>
+                        <p className="text">
+                            {orderTotal.totalPrice === 0
+                                ? "Delivery Fee: 0 TL"
+                                : `Delivery Fee: ${orderTotal.shippingFee} TL`}
+                        </p>
+
                     )}
 
-                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount.toFixed(2)} TL</p>
+                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount} TL</p>
                 </div>
 
                 {/* Confirm Payment Button */}
@@ -310,7 +353,7 @@ const PaymentPage = () => {
                 className="absolute bottom-36 left-12 cursor-pointer text-4xl text-orange-500 hover:text-orange-600 transition-colors duration-300"
                 onClick={() => navigate(-1)}
             >
-                <FaArrowLeft />
+                <FaArrowLeft/>
             </div>
 
             {/* Pop-up and Confirmation Modals */}
@@ -319,8 +362,16 @@ const PaymentPage = () => {
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                 >
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4" />
+                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4"/>
                         <p className="font-semibold text-xl">Your order has been created successfully.</p>
+                        {/* PDF Button */}
+                        <button
+                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                            onClick={handleGeneratePDF}
+                        >
+                            Download PDF
+                        </button>
+
                     </div>
                 </div>
             )}
@@ -329,7 +380,8 @@ const PaymentPage = () => {
                 <div
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                 >
-                    <div className="bg-white p-6 rounded-lg  shadow-lg max-w-sm w-full text-center border-2 border-green-500 relative">
+                    <div
+                        className="bg-white p-6 rounded-lg  shadow-lg max-w-sm w-full text-center border-2 border-green-500 relative">
                         <button
                             onClick={() => setShowPopUp(false)}
                             className="absolute top-2 right-2 text-2xl text-orange-500 hover:text-orange-700"
@@ -378,6 +430,4 @@ const PaymentPage = () => {
 
     );
 };
-
 export default PaymentPage;
-

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 
 import axios from "axios";
 
+
 const ManagerPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(null);
@@ -95,12 +96,14 @@ const ManagerPage = () => {
     return (
         <div className="flex h-screen bg-gray-100">
             <Sidebar />
-            <main className="flex-1 flex flex-col">
-                <Topbar />
-                <div className="p-6 grid grid-cols-4 gap-6">
+            <main className="flex-1 flex flex-col overflow-auto">
+
+                <Topbar/>
+                <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <h3 className="text-xl font-bold text-green-700">Today</h3>
-                        <p className="text-xl text-gray-500 font-medium"><Clock /></p>
+                        <p className="text-xl text-gray-500 font-medium"><Clock/></p>
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
@@ -119,20 +122,22 @@ const ManagerPage = () => {
                     </div>
                 </div>
 
-                <div className="p-6 grid grid-cols-2 gap-6">
+                <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+
                     <div className="bg-white shadow-md rounded-lg p-6">
                         <h3 className="text-xl font-bold text-gray-700">Sales Overview</h3>
-                        <Line data={salesData} />
+                        <Line data={salesData}/>
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 overflow-auto h-80">
                         <h3 className="text-xl font-bold text-gray-700">Calendar</h3>
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.5 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.5}}
                         >
-                            <div className="flex justify-between items-center mb-4">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+
                                 {/* Year Selector */}
                                 <select
                                     value={selectedYear}
@@ -147,7 +152,9 @@ const ManagerPage = () => {
                                 </select>
 
                                 {/* Month Selector */}
-                                <div className="flex overflow-x-auto space-x-4">
+                                <div className="flex overflow-x-auto space-x-2 scrollbar-hide">
+
+
                                     {months.map((month, index) => (
                                         <button
                                             key={index}
@@ -164,7 +171,8 @@ const ManagerPage = () => {
 
                             {selectedMonth !== null && (
                                 <div className="mt-4">
-                                    <h4 className="text-lg font-semibold text-gray-700">Selected Month: {months[selectedMonth]}</h4>
+                                    <h4 className="text-lg font-semibold text-gray-700">Selected
+                                        Month: {months[selectedMonth]}</h4>
                                     <div className="grid grid-cols-7 gap-4 mt-4">
                                         {generateCalendarDays(selectedYear, selectedMonth).map((day, index) => (
                                             <div
@@ -191,7 +199,7 @@ const ManagerPage = () => {
 
                             <ul className="mt-4">
                                 {ordersData.length > 0 ? (
-                                    ordersData.map(({ date, orders }) => (
+                                    ordersData.map(({date, orders}) => (
                                         <li key={date} className="p-2 border-b">
                                             {date.toLocaleDateString()} - {orders} Orders
                                         </li>
