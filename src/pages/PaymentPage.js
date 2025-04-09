@@ -5,6 +5,8 @@ import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext"; // yol değişebilir
+import { generateInvoice } from "../helpers/generateInvoice";
+
 
 import axios from "axios";
 
@@ -26,6 +28,22 @@ const PaymentPage = () => {
     const [loading, setLoading] = useState(true);
     //const { refreshAuth } = useFavorites();
     const { clearCarto } = useCart(); // burası önemli
+
+    const handleGeneratePDF = () => {
+        const orderData = {
+            orderId: "DAHA DATABASEDEN ÇEKMEDİM", // backend'den gelmeli normalde
+            customerName: "O YÜZDEN GÖRÜNMÜYO SİPARİŞLER KORKMA <3",
+            items: cart.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+            })),
+            totalAmount: orderTotal.totalAmount,
+        };
+
+        generateInvoice(orderData);
+    };
+
 
     const importAll = (r) => {
         let images = {};
@@ -346,6 +364,14 @@ const PaymentPage = () => {
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
                         <FaShoppingBasket className="text-orange-500 text-4xl mb-4"/>
                         <p className="font-semibold text-xl">Your order has been created successfully.</p>
+                        {/* PDF Button */}
+                        <button
+                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                            onClick={handleGeneratePDF}
+                        >
+                            Download PDF
+                        </button>
+
                     </div>
                 </div>
             )}

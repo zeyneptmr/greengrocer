@@ -99,6 +99,8 @@ public class CustomerOrderController {
         // (İsteğe bağlı) Order nesnesinin statusHistory listesine de ekle
         order.getStatusHistory().add(initialStatus);
 
+        orderRepository.save(order);  // Siparişin statusHistory güncellendikten sonra tekrar kaydet
+
         List<CartItem> cartItems = cartRepository.findByUser(user);
         for (CartItem item : cartItems) {
             OrderProduct op = new OrderProduct();
@@ -134,17 +136,17 @@ public class CustomerOrderController {
         // Sipariş ürünlerini getir
         List<OrderProduct> orderProducts = orderProductRepo.findByCustomerOrder(lastOrder);
 
-        // Her ürünün stok bilgisini güncelle
-        for (OrderProduct op : orderProducts) {
-            System.out.println("OrderProduct ID: " + op.getProductId());
-            Optional<Product> productOpt = productService.getProductById(op.getProductId());
-            productOpt.ifPresent(product -> {
+        /* Her ürünün stok bilgisini güncelle
+        //for (OrderProduct op : orderProducts) {
+         //   System.out.println("OrderProduct ID: " + op.getProductId());
+         //   Optional<Product> productOpt = productService.getProductById(op.getProductId());
+         //   productOpt.ifPresent(product -> {
                 int newStock = product.getStock() - op.getQuantity();
                 product.setStock(Math.max(newStock, 0));  // stok eksiye düşmesin diye
                 productService.updateProduct(product);
                 System.out.println("Updating stock for productId: " + op.getProductId());
             });
-        }
+        }*/
 
         // Cart sil
         List<CartItem> cartItems = cartRepository.findByUser(user);
