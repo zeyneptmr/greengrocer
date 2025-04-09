@@ -150,6 +150,7 @@ function CartProvider({ children }) {
         }
     };
 
+
     const clearCart = () => {
         cart.forEach(item => removeItem(item.id));
         showNotification("All products deleted from cart!", "info");

@@ -21,9 +21,9 @@ export default function ProductCard({ product, hideCartView=false }) {
 
     // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
     //useEffect(() => {
-        //console.log("Cart:", cart);
+    //console.log("Cart:", cart);
 
-        //if (cartItem) setAddedToCart(true);
+    //if (cartItem) setAddedToCart(true);
     //}, [cartItem]);
 
 
@@ -92,7 +92,7 @@ export default function ProductCard({ product, hideCartView=false }) {
                     {/* Sales Quantity (Piece or KG) */}
                     {product.quantity && (
                         <span className="text-gray-500 text-sm ml-2">
-                            {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
+                           {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
                         </span>
                     )}
                 </div>

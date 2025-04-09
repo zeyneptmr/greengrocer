@@ -66,7 +66,6 @@ public class OrderTotalController {
         return ResponseEntity.ok(orderTotal);
     }
 
-
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);

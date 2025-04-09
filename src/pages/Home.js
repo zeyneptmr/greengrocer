@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
+import TodaysDiscountedProducts from "../components/TodaysDiscountedProducts";
+
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
 import home2 from '../assets/home2.jpg';
+import home3 from '../assets/home3.jpg';
+import home4 from '../assets/home4.jpg';
+import home5 from '../assets/home5.jpg';
 import promo1 from '../assets/promo1.svg';
 import promo2 from '../assets/promo2.svg';
 import promo3 from '../assets/promo3.svg';
@@ -130,6 +135,9 @@ export default function HomePage() {
     };
 
     const slideItems = [
+        { image: home5, name: "home5" },
+        { image: home3, name: "home3" },
+        { image: home4, name: "home4" },
         { image: banner1, name: "banner1" },
         { image: home2, name: "home2" },
 
@@ -185,6 +193,14 @@ export default function HomePage() {
                     </motion.div>
                 ))}
             </div>
+
+            {/* Discounted Products */}
+            <section className="py-8">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
+                    <TodaysDiscountedProducts />
+                </div>
+            </section>
 
             {/* Products Section - Scrollable */}
             <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>

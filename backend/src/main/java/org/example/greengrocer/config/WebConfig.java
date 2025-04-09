@@ -1,4 +1,4 @@
-package com.example.greengrocer.config;
+package org.example.greengrocer.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
