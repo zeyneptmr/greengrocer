@@ -221,13 +221,40 @@ const Navbar = () => {
             </nav>
 
             {isCartAccessRestricted && (
-                <div className="fixed top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="relative bg-white p-6 rounded-lg shadow-lg text-center">
-                        <button onClick={() => setIsCartAccessRestricted(false)} className="absolute -top-4 left-0 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-red-800">
-                            ✖
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="relative bg-white rounded-2xl shadow-2xl px-8 py-10 max-w-md w-full text-center">
+                        <button
+                            onClick={() => setIsCartAccessRestricted(false)}
+                            className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition duration-300 shadow-md"
+                            aria-label="Close"
+                        >
+                            <span className="text-xl">×</span>
                         </button>
-                        <p className="text-lg font-semibold mb-4">Please log in to continue!</p>
-                        <button onClick={() => { setIsAccountOpen(true); setIsCartAccessRestricted(false); }} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+
+                        <div className="mb-4">
+                            <svg
+                                className="mx-auto mb-4 w-12 h-12 text-green-600"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M16 11V7a4 4 0 10-8 0v4m-2 0a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2H6z"
+                                />
+                            </svg>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Login Required</h2>
+                            <p className="text-gray-600">Please log in to access your cart.</p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setIsAccountOpen(true);
+                                setIsCartAccessRestricted(false);
+                            }}
+                            className="mt-6 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg shadow-lg transition duration-300"
+                        >
                             Log In
                         </button>
                     </div>
@@ -239,7 +266,7 @@ const Navbar = () => {
                     <ul className="flex space-x-4 sm:space-x-6">
                         <li className="cursor-pointer hover:scale-125 hover:text-orange-500">
                             <Link to="">
-                                <Home size={25} />
+                                <Home size={25}/>
                             </Link>
                         </li>
                         {menuItems.map((menu, index) => (
