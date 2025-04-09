@@ -104,6 +104,10 @@ public class Address {
         this.address = address;
     }
 
+    public String getFullAddress() {
+        return this.phone + "," + this.neighborhood + ", " + this.district + ", " + this.city; // örnek
+    }
+
     public String getDescription() {
         return description;
     }
