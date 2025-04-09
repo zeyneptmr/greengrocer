@@ -180,38 +180,45 @@ const PaymentPage = () => {
     return (
         <div className="max-w-6xl mx-auto p-2 flex flex-col md:flex-row gap-6">
             {/* Addresses */}
-
             <div className="w-full md:w-2/3">
                 <div className="border p-1 rounded-lg mb-2">
                     <h3 className="font-semibold mb-2 mt-4">Delivery Address</h3>
-                    {addresses.filter(address => address.isDefault === true).length > 0 ? (
-                        addresses.filter(address => address.isDefault === true).map((address, index) => (
-                            <label
-                                key={index}
-                                className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
-                            >
-                                <input
-                                    type="radio"
-                                    name="address"
-                                    value={index}
-                                    checked={selectedAddress === index}
-                                    onChange={() => setSelectedAddress(index)}
-                                />
-                                <div className="mt-2">
-                                    <p className="text-left font-bold mb-2">
-                                        {address.firstName} {address.lastName}
-                                    </p>
-                                    <p className="text-left mb-1">{address.phone}</p>
-                                    <p className="text-left">{address.address}</p>
-                                    <p className="text-left">
-                                        {address.district}/{address.city}
-                                    </p>
-                                </div>
-                            </label>
-                        ))
+
+                    {/* Verinin geçerli olup olmadığını kontrol et */}
+                    {Array.isArray(addresses) && addresses.length > 0 ? (
+                        // Default address var mı diye kontrol et
+                        addresses.some(address => address.isDefault === true) ? (
+                            addresses.filter(address => address.isDefault === true).map((address, index) => (
+                                <label
+                                    key={index}
+                                    className="block p-5 border rounded-b-lg mb-5 cursor-pointer bg-white shadow-lg border-green-500 hover:shadow-xl transition-shadow duration-300"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="address"
+                                        value={index}
+                                        checked={selectedAddress === index}
+                                        onChange={() => setSelectedAddress(index)}
+                                    />
+                                    <div className="mt-2">
+                                        <p className="text-left font-bold mb-2">
+                                            {address.firstName} {address.lastName}
+                                        </p>
+                                        <p className="text-left mb-1">{address.phone}</p>
+                                        <p className="text-left">{address.address}</p>
+                                        <p className="text-left">
+                                            {address.district}/{address.city}
+                                        </p>
+                                    </div>
+                                </label>
+                            ))
+                        ) : (
+                            <p>No default address found. Please add one.</p>
+                        )
                     ) : (
-                        <p>No default address found. Please add one.</p>
+                        <p>Loading addresses...</p>
                     )}
+
                     <div
                         className="border rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 mt-2"
                         onClick={() => navigate("/address")}
@@ -259,7 +266,8 @@ const PaymentPage = () => {
             </div>
 
             {/* Cart Summary */}
-            <div className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
+            <div
+                className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
                 <h3 className="font-semibold text-2xl text-gray-800 mb-4">Cart Summary</h3>
                 {/* Product List (Product Images and Quantities) */}
                 <div className="max-h-[300px] overflow-auto mb-4">
@@ -286,13 +294,18 @@ const PaymentPage = () => {
 
                 {/* Cart Summary Details */}
                 <div className="space-y-1 text-lg text-gray-700 mt-2">
-                    <p className="text">{`Product Total: ${orderTotal.totalPrice} TL`}</p>
+                    <p className="text">{`Cart Total: ${orderTotal.totalPrice} TL`}</p>
 
                     {/* Conditional Rendering for Shipping Fee */}
-                    {orderTotal.shippingFee === 0 ? (
+                    {orderTotal.shippingFee === 0 && orderTotal.totalPrice !== 0 ? (
                         <p className="text-green-500 font-semibold">Free Delivery</p>
                     ) : (
-                        <p className="text">{`Delivery Fee: ${orderTotal.shippingFee} TL`}</p>
+                        <p className="text">
+                            {orderTotal.totalPrice === 0
+                                ? "Delivery Fee: 0 TL"
+                                : `Delivery Fee: ${orderTotal.shippingFee} TL`}
+                        </p>
+
                     )}
 
                     <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount} TL</p>
@@ -322,7 +335,7 @@ const PaymentPage = () => {
                 className="absolute bottom-36 left-12 cursor-pointer text-4xl text-orange-500 hover:text-orange-600 transition-colors duration-300"
                 onClick={() => navigate(-1)}
             >
-                <FaArrowLeft />
+                <FaArrowLeft/>
             </div>
 
             {/* Pop-up and Confirmation Modals */}
@@ -331,7 +344,7 @@ const PaymentPage = () => {
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                 >
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4" />
+                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4"/>
                         <p className="font-semibold text-xl">Your order has been created successfully.</p>
                     </div>
                 </div>
@@ -341,7 +354,8 @@ const PaymentPage = () => {
                 <div
                     className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                 >
-                    <div className="bg-white p-6 rounded-lg  shadow-lg max-w-sm w-full text-center border-2 border-green-500 relative">
+                    <div
+                        className="bg-white p-6 rounded-lg  shadow-lg max-w-sm w-full text-center border-2 border-green-500 relative">
                         <button
                             onClick={() => setShowPopUp(false)}
                             className="absolute top-2 right-2 text-2xl text-orange-500 hover:text-orange-700"
