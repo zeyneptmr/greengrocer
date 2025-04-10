@@ -23,6 +23,29 @@ export default function ProductCard({ product, hideCartView=false }) {
             item.product?.id === currentProduct.id;
     });
 
+
+    const quantity = cartItem?.quantity || 0;
+    const handleAddToCart = () => {
+        addToCart(product);
+    };
+
+    const handleIncreaseQuantity = () => {
+        if (cartItem) {
+            increaseQuantity(cartItem.id);
+        }
+    };
+
+    const handleDecreaseQuantity = () => {
+        if (cartItem?.quantity > 1) {
+            decreaseQuantity(cartItem.id);
+        } else if (cartItem?.quantity === 1) {
+            // Ürün 0'a düşecekse, decrease işlemi çağrılırsa ve context'te zaten çıkarılıyorsa,
+            // buraya ayrıca bir şey eklemeye gerek yok çünkü cartItem zaten yok olacak.
+            decreaseQuantity(cartItem.id);
+        }
+    };
+
+
     // Fetch the latest product information on mount and when product prop changes
     useEffect(() => {
         const fetchLatestProductData = async () => {
@@ -64,32 +87,7 @@ export default function ProductCard({ product, hideCartView=false }) {
         setCurrentProduct(product);
     }, [product]);
 
-    // Update addedToCart state when cart changes
-    useEffect(() => {
-        if (cartItem) setAddedToCart(true);
-    }, [cartItem]);
 
-    const quantity = cartItem?.quantity || 0;
-
-    const handleAddToCart = () => {
-        addToCart(currentProduct);
-    };
-
-    const handleIncreaseQuantity = () => {
-        if (cartItem) {
-            increaseQuantity(cartItem.id);
-        }
-    };
-
-    const handleDecreaseQuantity = () => {
-        if (cartItem?.quantity > 1) {
-            decreaseQuantity(cartItem.id);
-        } else if (cartItem?.quantity === 1) {
-            decreaseQuantity(cartItem.id);
-        }
-    };
-
-    
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favorites Button */}
