@@ -100,7 +100,7 @@ export default function ProductCard({ product, hideCartView=false }) {
 
             {currentProduct.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    15% Off
+                     {discountPercentage}% Off
                 </div>
             )}
 
