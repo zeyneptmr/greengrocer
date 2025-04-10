@@ -1,12 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext"; // yol değişebilir
-import { generateInvoice } from "../helpers/generateInvoice";
-
 
 import axios from "axios";
 
@@ -28,22 +25,6 @@ const PaymentPage = () => {
     const [loading, setLoading] = useState(true);
     //const { refreshAuth } = useFavorites();
     const { clearCarto } = useCart(); // burası önemli
-
-    const handleGeneratePDF = () => {
-        const orderData = {
-            orderId: "DAHA DATABASEDEN ÇEKMEDİM", // backend'den gelmeli normalde
-            customerName: "O YÜZDEN GÖRÜNMÜYO SİPARİŞLER KORKMA <3",
-            items: cart.map(item => ({
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price,
-            })),
-            totalAmount: orderTotal.totalAmount,
-        };
-
-        generateInvoice(orderData);
-    };
-
 
     const importAll = (r) => {
         let images = {};
@@ -255,7 +236,7 @@ const PaymentPage = () => {
                         >
                             + Add New Card
                         </div>
-                        {savedCards.filter(card => card.isDefault === true).length > 0 ? (
+                        {Array.isArray(savedCards) && savedCards.filter(card => card.isDefault === true).length > 0 ? (
                             savedCards.filter(card => card.isDefault === true).map((card, index) => (
                                 <div
                                     key={index}
@@ -269,7 +250,7 @@ const PaymentPage = () => {
                                         )}
                                     </div>
                                     <p className="text-lg mb-4">
-                                        **** **** **** {card.cardNumberLast4}
+                                        ** ** ** {card.cardNumberLast4}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Expiration Date: {card.expiryMonth}/{card.expiryYear}
@@ -321,7 +302,7 @@ const PaymentPage = () => {
                         <p className="text">
                             {orderTotal.totalPrice === 0
                                 ? "Delivery Fee: 0 TL"
-                                : `Delivery Fee: ${orderTotal.shippingFee} TL`}
+                                :` Delivery Fee: ${orderTotal.shippingFee} TL`}
                         </p>
 
                     )}
@@ -364,14 +345,6 @@ const PaymentPage = () => {
                     <div className="bg-white p-6 rounded-lg shadow-md text-center">
                         <FaShoppingBasket className="text-orange-500 text-4xl mb-4"/>
                         <p className="font-semibold text-xl">Your order has been created successfully.</p>
-                        {/* PDF Button */}
-                        <button
-                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                            onClick={handleGeneratePDF}
-                        >
-                            Download PDF
-                        </button>
-
                     </div>
                 </div>
             )}

@@ -16,45 +16,50 @@ const AdminPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    useEffect(() => {
-        const fetchProductData = async () => {
-            try {
-                setLoading(true);
-                
-                const productsResponse = await axios.get(`${API_BASE_URL}/api/products`);
-                const products = productsResponse.data;
-                
-                setTotalProducts(products.length);
-                
-                
-                const categoryMap = {};
-                products.forEach(product => {
-                    const category = product.category.toUpperCase();
-                    categoryMap[category] = (categoryMap[category] || 0) + 1;
-                });
-                
-        
-                const categoryArray = Object.entries(categoryMap).map(([name, count]) => ({
-                    name,
-                    count
-                })).sort((a, b) => b.count - a.count);
-                
-                setCategoryStats(categoryArray);
-                
-  
-                setTotalSales("45,500 TL");
-                
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching product data:", err);
-                setError("Failed to load product data. Please try again later.");
-                setLoading(false);
-            }
-        };
-        
-        fetchProductData();
-    }, []);
+   // Inside AdminPage.js - update the useEffect function
+useEffect(() => {
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            
+            // Fetch products data
+            const productsResponse = await axios.get(`${API_BASE_URL}/api/products`);
+            const products = productsResponse.data;
+            
+            setTotalProducts(products.length);
+            
+            // Process category data
+            const categoryMap = {};
+            products.forEach(product => {
+                const category = product.category.toUpperCase();
+                categoryMap[category] = (categoryMap[category] || 0) + 1;
+            });
+            
+            const categoryArray = Object.entries(categoryMap).map(([name, count]) => ({
+                name,
+                count
+            })).sort((a, b) => b.count - a.count);
+            
+            setCategoryStats(categoryArray);
+            
+            // Fetch total sales from the new endpoint
+            const salesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/total-sales`);
+            const totalSalesAmount = salesResponse.data;
 
+            // Format the number with a dot as decimal separator and add TL
+            const formattedSales = totalSalesAmount.toFixed(2) + ' TL';
+
+            setTotalSales(formattedSales);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching data:", err);
+            setError("Failed to load data. Please try again later.");
+            setLoading(false);
+        }
+    };
+    
+    fetchData();
+}, []);
 
     const getCategoryColor = (index) => {
         const colors = [

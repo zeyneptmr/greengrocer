@@ -1,26 +1,37 @@
 // --- CONTROLLER: OrderController.java ---
 package org.example.greengrocer.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import org.example.greengrocer.model.CustomerOrder;
-import org.example.greengrocer.repository.CustomerOrderRepository;
-import org.example.greengrocer.model.*;
-import org.example.greengrocer.model.User;
-import org.example.greengrocer.repository.*;
-import org.example.greengrocer.security.TokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.example.greengrocer.repository.OrderTotalRepository;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.example.greengrocer.service.ProductService;
-
-import org.example.greengrocer.model.OrderStatus;
-import org.example.greengrocer.repository.OrderStatusRepository;
-
-import java.util.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import org.example.greengrocer.model.Address;
+import org.example.greengrocer.model.CartItem;
+import org.example.greengrocer.model.CustomerOrder;
+import org.example.greengrocer.model.OrderProduct;
+import org.example.greengrocer.model.OrderStatus;
+import org.example.greengrocer.model.OrderTotal;
+import org.example.greengrocer.model.User;
+import org.example.greengrocer.repository.AddressRepository;
+import org.example.greengrocer.repository.CartItemRepository;
+import org.example.greengrocer.repository.CustomerOrderRepository;
+import org.example.greengrocer.repository.OrderProductRepository;
+import org.example.greengrocer.repository.OrderStatusRepository;
+import org.example.greengrocer.repository.OrderTotalRepository;
+import org.example.greengrocer.repository.UserRepository;
+import org.example.greengrocer.security.TokenProvider;
+import org.example.greengrocer.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/customerorder")
@@ -160,5 +171,22 @@ public class CustomerOrderController {
 
         return ResponseEntity.ok("Payment handled, cart cleared, stock updated for user" + email);
     }
+
+
+    @GetMapping("/total-sales")
+    public ResponseEntity<Double> getTotalSales() {
+        Double totalSales = orderRepository.calculateTotalSales();
+        // Handle null case (when there are no orders)
+        if (totalSales == null) {
+            totalSales = 0.0;
+        }
+
+        return ResponseEntity.ok(totalSales);
+        
+    }
+
+
+
+
 
 }
