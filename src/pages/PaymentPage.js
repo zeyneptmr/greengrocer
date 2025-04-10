@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
-import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
+import { FaShoppingCart, FaShoppingBasket, FaTimes } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext"; // yol değişebilir
 import { generateInvoice } from "../helpers/generateInvoice";
@@ -27,21 +27,41 @@ const PaymentPage = () => {
     //const { refreshAuth } = useFavorites();
     const { clearCarto } = useCart(); // burası önemli
 
-    const handleGeneratePDF = () => {
-        const orderData = {
-            orderId: "DAHA DATABASEDEN ÇEKMEDİM", // backend'den gelmeli normalde
-            customerName: "O YÜZDEN GÖRÜNMÜYO SİPARİŞLER KORKMA <3",
-            items: cart.map(item => ({
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price,
-            })),
-            totalAmount: orderTotal.totalAmount,
-        };
+    const handleGeneratePDF = async () => {
+        try {
+            // Kullanıcı bilgilerini almak için API'ye istek gönderiyoruz
+            const userResponse = await axios.get('http://localhost:8080/api/users/me', {
+                withCredentials: true,  // Çerezleri dahil etmek için
+            });
 
-        generateInvoice(orderData);
+            if (userResponse.status !== 200) {
+                alert('User information could not be fetched');
+                return;
+            }
+
+            const userData = userResponse.data;
+
+            const orderData = {
+                userName: userData.name,
+                userSurname: userData.surname,
+                userEmail: userData.email,
+                userPhoneNumber: userData.phoneNumber,
+                orderId: "orderId",
+                items: cart.map(item => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                })),
+                totalAmount: orderTotal.totalAmount,
+            };
+
+        // Fatura PDF'sini oluşturuyoruz
+            generateInvoice(orderData);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error while generating invoice');
+        }
     };
-
 
     const importAll = (r) => {
         let images = {};
