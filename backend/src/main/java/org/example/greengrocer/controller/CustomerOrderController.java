@@ -79,6 +79,7 @@ public class CustomerOrderController {
 
     @Autowired
     private OrderStatusRepository orderStatusRepository;
+
     @GetMapping("/orders/all")
     public ResponseEntity<?> getAllOrders(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -94,6 +95,7 @@ public class CustomerOrderController {
         if (orders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders available");
         }
+
 
         // Yalnızca gerekli alanları döndür
         List<Map<String, Object>> simplifiedOrders = orders.stream().map(order -> {
@@ -135,7 +137,6 @@ public class CustomerOrderController {
 
         return tokenProvider.getEmailFromToken(token);
     }
-
 
 
     @PostMapping("/orders/{orderId}/status")
@@ -281,7 +282,6 @@ public class CustomerOrderController {
         return ResponseEntity.ok("Payment handled, cart cleared, stock updated for user" + email);
     }
 
-}
 
     @GetMapping("/total-sales")
     public ResponseEntity<Double> getTotalSales() {
@@ -292,7 +292,8 @@ public class CustomerOrderController {
         }
 
         return ResponseEntity.ok(totalSales);
-        
-    }
-}
 
+    }
+
+
+}
