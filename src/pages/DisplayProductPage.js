@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
@@ -8,8 +8,10 @@ import AdminSearchBar from "../components/AdminSearchBar";
 const DisplayProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [categorizedProducts, setCategorizedProducts] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const categoryRefs = useRef({}); // Scroll için referanslar
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -32,6 +34,26 @@ const DisplayProductsPage = () => {
         fetchProducts();
     }, []);
 
+    useEffect(() => {
+        if (products.length > 0) {
+            const grouped = categorizeProducts(products);
+            setCategorizedProducts(grouped);
+        }
+    }, [products]);
+
+    const categorizeProducts = (products) => {
+        return products.reduce((acc, product) => {
+            const category = product.category.toUpperCase();
+            if (!acc[category]) acc[category] = [];
+            acc[category].push(product);
+            return acc;
+        }, {});
+    };
+
+    const scrollToCategory = (category) => {
+        categoryRefs.current[category]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
             {/* Sidebar */}
@@ -41,7 +63,7 @@ const DisplayProductsPage = () => {
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">All Products</h1> {/* Padding-top'u arttırdım */}
+                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">All Products</h1>
 
                     <div className="flex items-center space-x-4">
                         <span className="text-gray-500">Admin Panel</span>
@@ -57,8 +79,23 @@ const DisplayProductsPage = () => {
                     />
                 </div>
 
+                {/* Category Navigation Bar */}
+                <div className="sticky top-0 z-10 bg-gray-50 px-6 py-3 shadow">
+                    <div className="flex justify-center space-x-4 flex-wrap">
+                        {Object.keys(categorizedProducts).map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => scrollToCategory(category)} // Tıklandığında scrollToCategory çağrılır
+                                className="bg-white hover:bg-green-600 text-black font-medium px-6 py-2 rounded-full shadow-sm border border-gray-300 transition duration-300 mb-2 md:mb-0"
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Products Section */}
-                <div id="search-results" className="overflow-y-auto">
+                <div id="search-results" className="overflow-y-auto px-4 md:px-6">
                     {loading ? (
                         <div className="flex justify-center items-center h-64">
                             <div className="text-green-700 text-lg">Products are loading...</div>
@@ -68,7 +105,12 @@ const DisplayProductsPage = () => {
                             <p className="text-red-500 text-lg">Error: {error}</p>
                         </div>
                     ) : filteredProducts.length > 0 ? (
-                        <DisplayProducts products={filteredProducts} />
+                        // Display only the categorized products dynamically without repeating headings
+                        Object.keys(categorizedProducts).map((category) => (
+                            <div key={category} ref={(el) => (categoryRefs.current[category] = el)} className="mt-6">
+                                <DisplayProducts products={categorizedProducts[category]} />
+                            </div>
+                        ))
                     ) : (
                         <div className="text-center py-10">
                             <p className="text-gray-500 text-lg">No products found matching your search criteria</p>
