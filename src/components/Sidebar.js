@@ -124,7 +124,7 @@ const Sidebar = () => {
                                     <Link to="/manager/customer-feedback"
                                           className="flex items-center space-x-3 hover:bg-green-700 p-3 rounded-lg">
                                         <MessageCircle size={25}/>
-                                        <span>Customer Feedback</span>
+                                        <span>Customer Forms</span>
                                     </Link>
                                 </li>
                             </>
