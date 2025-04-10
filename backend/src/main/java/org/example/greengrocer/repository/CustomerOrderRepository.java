@@ -10,4 +10,6 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
     List<CustomerOrder> findByUser(User user);
 
+    List<CustomerOrder> findByUserId(Long userId);
+
 }

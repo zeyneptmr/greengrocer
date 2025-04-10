@@ -3,6 +3,10 @@ package org.example.greengrocer.model;
 
 import org.example.greengrocer.service.OrderIdGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,12 +20,16 @@ public class CustomerOrder {
     @Id
     private String orderId;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"name", "surname", "password", "phoneNumber", "role", "enabled", "credentialsNonExpired", "accountNonExpired", "accountNonLocked"})
     private User user;
 
-    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderStatus> statusHistory = new ArrayList<>();
+
+    private String latestStatus;
 
     private String userEmail;
 
@@ -113,6 +121,22 @@ public class CustomerOrder {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    /*public String getLatestStatus() {
+        if (statusHistory == null || statusHistory.isEmpty()) {
+            return "Sipariş Alındı";
+        }
+        return statusHistory.get(statusHistory.size() - 1).getStatus();
+    }*/
+
+    public String getLatestStatus() {
+        return latestStatus;
+    }
+
+    public void setLatestStatus(String latestStatus) {
+        this.latestStatus = latestStatus;
+    }
+
 
     // Getters and setters...
 }

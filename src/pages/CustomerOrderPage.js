@@ -1,87 +1,123 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import managerIcon from "../assets/manager.svg";
+import axios from "axios";
+
+const statusSteps = ["Sipariş Alındı", "Onaylandı", "Hazırlanıyor", "Kargoya Verildi"];
 
 const CustomerOrderPage = () => {
     const [orders, setOrders] = useState([]);
-    const [selectedOrder, setSelectedOrder] = useState(null);
 
     useEffect(() => {
-        const storedOrders = JSON.parse(localStorage.getItem("orderinfo")) || [];
-        setOrders(storedOrders);
+        axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true })
+            .then(res => {
+                if (Array.isArray(res.data)) {
+                    setOrders(res.data);
+                }
+            })
+            .catch(err => console.error("Siparişler çekilemedi:", err));
     }, []);
 
-    const handleDetailsToggle = (index) => {
-        if (selectedOrder === index) {
-            setSelectedOrder(null);
-        } else {
-            setSelectedOrder(index);
+    const handleStatusChange = async (orderId, currentStatus) => {
+        const nextStatus = statusSteps[statusSteps.indexOf(currentStatus) + 1];
+        if (!nextStatus) return;
+
+        try {
+            await axios.post(`http://localhost:8080/api/customerorder/orders/${orderId}/status`,
+                { status: nextStatus },
+                { withCredentials: true }
+
+        );
+
+            const updated = await axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true });
+            setOrders(updated.data);
+        } catch (error) {
+            console.error("Durum güncellenemedi:", error);
         }
     };
 
     return (
-        <div className="flex h-screen bg-gray-100">
-            {/* Sidebar */}
-            <Sidebar className="h-full" />
-
+        <div className="flex h-screen bg-gray-100 overflow-hidden">
+            <Sidebar />
             <main className="flex-1 flex flex-col overflow-y-auto">
-                {/* Topbar */}
-                <Topbar />
+                <header className="bg-white shadow-md p-4 flex justify-between items-center">
+                    <h1 className="text-2xl font-semibold text-gray-700">Manage Customer Orders</h1>
+                    <div className="flex items-center space-x-4">
+                        <span className="text-green-600 font-bold">Manager Panel</span>
+                        <img src={managerIcon} alt="Admin" className="rounded-full w-16 h-16" />
+                    </div>
+                </header>
 
-                <div className="max-w-6xl mx-auto p-6">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">Orders</h2>
-                    <table className="w-full table-auto border-collapse border border-gray-300 rounded-lg shadow-md bg-white">
-                        <thead className="bg-gray-200">
-                        <tr>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Surname</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Phone</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Address</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Order Total</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Order Date</th>
-                            <th className="border-b border-gray-300 p-3 text-left text-sm font-semibold text-gray-700">Detail</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {orders.length > 0 ? (
-                            orders.map((order, index) => (
-                                <tr key={index} className="border-b hover:bg-gray-50">
-                                    <td className="border-t border-gray-300 p-3">{order.name.split(" ")[0]}</td>
-                                    <td className="border-t border-gray-300 p-3">{order.name.split(" ")[1]}</td>
-                                    <td className="border-t border-gray-300 p-3">{order.address.phone}</td>
-                                    <td className="border-t border-gray-300 p-3">{order.address.neighborhood}</td>
-                                    <td className="border-t border-gray-300 p-3">{order.totalCost} TL</td>
-                                    <td className="border-t border-gray-300 p-3">{new Date().toLocaleDateString()}</td>
-                                    <td className="border-t border-gray-300 p-3 cursor-pointer text-blue-500 hover:text-blue-700"
-                                        onClick={() => handleDetailsToggle(index)}>
-                                        {selectedOrder === index ? "Close" : "Detail"}
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
+                <div className="p-4">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white rounded-lg shadow-md">
+                            <thead className="bg-green-500 text-white">
                             <tr>
-                                <td colSpan="7" className="text-center p-4">Sipariş bulunamadı.</td>
+                                <th className="px-4 py-2">#</th>
+                                <th className="px-4 py-2">Order ID</th>
+                                <th className="px-4 py-2">Created At</th>
+                                <th className="px-4 py-2">User ID</th>
+                                <th className="px-4 py-2">Email</th>
+                                <th className="px-4 py-2">Address</th>
+                                <th className="px-4 py-2">Total AMount</th>
+                                <th className="px-4 py-2">Status</th>
+                                <th className="px-4 py-2">Manage</th>
                             </tr>
-                        )}
-                        </tbody>
-                    </table>
-
-                    {/* Detail */}
-                    {selectedOrder !== null && (
-                        <div className="mt-6 p-4 border rounded-lg shadow-md bg-gray-50">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-800">Order Details</h3>
-                            <ul>
-                                {orders[selectedOrder].cart.map((item, index) => (
-                                    <li key={index}
-                                        className="flex justify-between mb-2 p-2 hover:bg-gray-100 rounded-md">
-                                        <span className="text-gray-700">{item.name}</span>
-                                        <span
-                                            className="text-gray-600">{item.quantity} quantity - {(item.price * item.quantity).toFixed(2)} TL</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                            </thead>
+                            <tbody>
+                            {orders.map((order, idx) => {
+                                const currentStatus = order.latestStatus || "Sipariş Alındı";
+                                return (
+                                    <tr key={order.orderId} className="text-center border-b hover:bg-gray-100 transition">
+                                        <td className="px-4 py-2">{idx + 1}</td>
+                                        <td className="px-4 py-2">{order.orderId}</td>
+                                        <td className="px-4 py-2">{order.createdAt?.slice(0, 19).replace("T", " ")}</td>
+                                        <td className="px-4 py-2">{order.userId}</td>
+                                        <td className="px-4 py-2">{order.userEmail}</td>
+                                        <td className="px-4 py-2">{order.shippingAddress}</td>
+                                        <td className="px-4 py-2 text-orange-600 font-bold">{order.productTotal}₺</td>
+                                        <td className="px-4 py-2">
+                                            <div className="flex items-center justify-center space-x-2">
+                        <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                                                    {currentStatus}
+                                                </span>
+                                                {/* Status icons based on the currentStatus */}
+                                                {currentStatus === "Sipariş Alındı" &&
+                                                    <span className="text-green-600">🟢</span>}
+                                                {currentStatus === "Kargoya Verildi" &&
+                                                    <span className="text-orange-600">🟠</span>}
+                                                {currentStatus === "Teslim Edildi" &&
+                                                    <span className="text-blue-600">🔵</span>}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-2 space-y-2">
+                                            {/* Dikey sıralama için flex-col ekledik */}
+                                            {statusSteps.map((step, i) => (
+                                                <button
+                                                    key={i}
+                                                    className={`w-full h-10 mb-1 px-4 py-1 rounded text-sm font-medium transition-all duration-300 ease-in-out ${
+                                                        step === currentStatus
+                                                            ? "bg-green-600 text-white"
+                                                            : statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1
+                                                                ? "bg-orange-400 text-white hover:bg-orange-500"
+                                                                : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                                                    }`}
+                                                    disabled={
+                                                        step !== currentStatus &&
+                                                        statusSteps.indexOf(step) !== statusSteps.indexOf(currentStatus) + 1
+                                                    }
+                                                    onClick={() => handleStatusChange(order.orderId, currentStatus)}
+                                                >
+                                                    {step}
+                                                </button>
+                                            ))}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
         </div>
