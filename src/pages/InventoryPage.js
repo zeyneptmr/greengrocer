@@ -16,6 +16,19 @@ const Inventory = () => {
     const [loading, setLoading] = useState(true);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const itemsPerPage = 10;
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
+
 
     const importAll = (r) => {
         let images = {};
@@ -52,6 +65,9 @@ const Inventory = () => {
 
         return images[imagePath] || '/placeholder.png';
     };
+    useEffect(() => {
+        setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
+    }, [filteredProducts]);
 
     // Ürünleri veritabanından çek
     useEffect(() => {
@@ -159,7 +175,7 @@ const Inventory = () => {
                         <p className="text-center text-gray-500">Loading products...</p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredProducts.map(product => (
+                            {productsToDisplay.map(product => (
                                 <div key={product.id} className="bg-white p-4 rounded shadow-md">
                                     <div className="flex justify-center mb-4">
                                         <img
@@ -184,8 +200,26 @@ const Inventory = () => {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
                     )}
+                    <div className="flex justify-center mt-8">
+                        <button
+                            className="px-5 py-2 mx-2 bg-yellow-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                            disabled={currentPage === 1}
+                        >
+                            &lt; Previous
+                        </button>
+                        <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
+                        <button
+                            className="px-5 py-2 mx-2 bg-yellow-500 text-white rounded-full shadow-md hover:bg-orange-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next &gt;
+                        </button>
+                    </div>
 
                     {/* Input & buttons */}
                     <div className="mt-6 text-right">
@@ -200,8 +234,9 @@ const Inventory = () => {
                         </div>
 
                         {errorMessage && (
-                            <div className="absolute top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg flex items-center shadow-md">
-                                <FaTimesCircle className="h-8 w-8 text-red-600 mr-3" />
+                            <div
+                                className="absolute top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg flex items-center shadow-md">
+                                <FaTimesCircle className="h-8 w-8 text-red-600 mr-3"/>
                                 <span>{errorMessage}</span>
                             </div>
                         )}
@@ -230,8 +265,9 @@ const Inventory = () => {
                         </button>
 
                         {successMessage && (
-                            <div className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center shadow-md">
-                                <FaCheckCircle className="h-8 w-8 text-green-600 mr-3" />
+                            <div
+                                className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center shadow-md">
+                                <FaCheckCircle className="h-8 w-8 text-green-600 mr-3"/>
                                 <span>Stocks saved successfully!</span>
                             </div>
                         )}

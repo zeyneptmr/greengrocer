@@ -162,6 +162,7 @@ useEffect(() => {
                         )}
                     </div>
 
+
                     {/* Category Distribution Chart Section */}
                     <div className="bg-white shadow-md rounded-lg p-6 mt-6">
                         <h2 className="text-2xl font-bold text-green-700 mb-4">Category Distribution</h2>
