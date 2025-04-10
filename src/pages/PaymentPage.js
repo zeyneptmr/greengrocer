@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
-import { FaShoppingCart, FaShoppingBasket } from 'react-icons/fa';
+import { FaShoppingCart, FaShoppingBasket, FaTimes } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext"; // yol değişebilir
 
@@ -167,10 +167,6 @@ const PaymentPage = () => {
 
             setIsOrderConfirmed(true);
 
-            setTimeout(() => {
-                setIsOrderConfirmed(false);
-                navigate("/order-confirmation");
-            }, 3000);
         } catch (error) {
             console.error("Order creation failed:", error);
         }
@@ -339,12 +335,55 @@ const PaymentPage = () => {
 
             {/* Pop-up and Confirmation Modals */}
             {isOrderConfirmed && (
-                <div
-                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                >
-                    <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <FaShoppingBasket className="text-orange-500 text-4xl mb-4"/>
-                        <p className="font-semibold text-xl">Your order has been created successfully.</p>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 font-sans">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 w-full max-w-md relative text-gray-800 border border-gray-200">
+
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-3 right-3 text-white bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-md transition-colors duration-300"
+                            onClick={() => setIsOrderConfirmed(false)}
+                        >
+                            <FaTimes className="text-xl"/>
+                        </button>
+
+                        <div className="flex flex-col items-center">
+                            <FaShoppingBasket className="text-orange-500 text-6xl mb-4"/>
+                            <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center">
+                                Order Received 🎉
+                            </h2>
+                            <p className="text-center text-sm md:text-base text-gray-600 font-medium leading-relaxed">
+                                Your order has been successfully placed.
+                                You can track it from the <strong>"Order Tracking"</strong> section in your user panel.
+                            </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="mt-8 space-y-3">
+
+                            {/* PDF Button */}
+                            <button
+                                onClick={handleGeneratePDF}
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
+                            >
+                                Download Order Details (PDF)
+                            </button>
+
+                            {/* OK Button */}
+                            <button
+                                onClick={() => setIsOrderConfirmed(false)}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
+                            >
+                                OK
+                            </button>
+
+                            {/* Go to My Orders */}
+                            <button
+                                onClick={() => window.location.href = "http://localhost:3000/customer-info"}
+                                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
+                            >
+                                Go to My Orders
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -381,23 +420,41 @@ const PaymentPage = () => {
 
 
             {isLowCostWarning && (
-                <div
-                    className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                >
-                    <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                        <p className="font-semibold text-xl text-red-500">
-                            Minimum Cart Amount is 50 TL!
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white px-8 py-10 rounded-2xl shadow-2xl text-center w-[95%] sm:w-[420px]">
+                        {/* Warning Icon */}
+                        <div className="mb-6 flex justify-center">
+                            <div className="bg-red-100 p-4 rounded-full">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-14 w-14 text-red-600"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M12 2a10 10 0 100 20 10 10 0 000-20zm.75 5.25a.75.75 0 00-1.5 0v6.5a.75.75 0 001.5 0v-6.5zm-.75 9a1 1 0 100 2 1 1 0 000-2z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Uyarı Metni */}
+                        <p className="font-bold text-xl text-gray-800 mb-8">
+                            🛒 Minimum cart amount is <span className="text-red-600 font-bold">50 TL</span>!
                         </p>
+
                         <button
                             onClick={() => setIsLowCostWarning(false)}
-                            className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600"
+                            className="px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-400 text-white text-lg font-semibold rounded-xl shadow hover:brightness-110 transition duration-300"
                         >
-                            Okey
+                            Okay, Got it!
                         </button>
+
                     </div>
                 </div>
             )}
-
 
         </div>
 
