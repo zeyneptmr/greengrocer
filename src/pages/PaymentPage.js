@@ -154,7 +154,6 @@ const PaymentPage = () => {
         }
     };
 
-
 // Sayfa ilk yüklendiğinde
     useEffect(() => {
         fetchProducts();
