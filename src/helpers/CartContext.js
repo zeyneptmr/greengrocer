@@ -9,6 +9,7 @@ function CartProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [addedToCart, setAddedToCart] = useState(false);
 
+
     // Görselleri assets klasöründen al
 
     const importAll = (r) => {
