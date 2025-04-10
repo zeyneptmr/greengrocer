@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { useCart } from "../helpers/CartContext";
 import { useFavorites } from "../helpers/FavoritesContext";
 
-
 import axios from "axios";
 
 const Sidebar = () => {

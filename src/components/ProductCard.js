@@ -89,6 +89,7 @@ export default function ProductCard({ product, hideCartView=false }) {
         }
     };
 
+    
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favorites Button */}

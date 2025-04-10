@@ -6,6 +6,8 @@ import { FaTag, FaPercent, FaBolt, FaDollarSign, FaBox, } from 'react-icons/fa';
 import { MdAttachMoney, MdLocalOffer, MdTag, MdPercent , MdStore, MdShoppingBasket} from 'react-icons/md';
 import axios from "axios";
 import { useCart } from "../helpers/CartContext";
+import { useFavorites } from "../helpers/FavoritesContext";
+
 
 const Sidebar = () => {
     //const location = useLocation();
@@ -15,6 +17,7 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const [role, setRole] = useState("");
     const { setIsLoggedIn } = useCart();
+    const { refreshAuth } = useFavorites();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     useEffect(() => {
@@ -44,6 +47,7 @@ const Sidebar = () => {
                 setRole(null);
                 setLoggedInUser(null);
                 setIsLoggedIn(false);
+                refreshAuth();
                 // Navigate to login page
                 navigate("/");
             })

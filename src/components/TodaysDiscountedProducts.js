@@ -16,6 +16,7 @@ const TodaysDiscountedProducts = () => {
         return images;
     };
 
+    
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
     const formatPrice = (price) => {
