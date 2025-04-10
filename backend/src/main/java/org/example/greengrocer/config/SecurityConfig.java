@@ -65,7 +65,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/ordertotal/**").permitAll()
                     .requestMatchers("/api/customerorder/**").permitAll()
                     .requestMatchers("/api/customerorder/total-sales").permitAll()
-                    .requestMatchers("/api/orderproduct").permitAll()
+                    .requestMatchers("/api/orderproduct/**").permitAll()
                     .requestMatchers("api/customerorder/orders/{orderId}/status").permitAll()
                 .anyRequest().authenticated()
             )
