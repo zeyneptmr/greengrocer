@@ -128,12 +128,6 @@ export default function ProductCard({ product, hideCartView=false }) {
                         <span className="text-green-600 font-bold">{currentProduct.discountedPrice} TL</span>
                     )}
 
-                    {/* Sales Quantity (Piece or KG) */}
-                    {product.quantity && (
-                        <span className="text-gray-500 text-sm ml-2">
-                           {product.unit === 'kg' ? `${product.quantity} kg` : `${product.quantity} pieces`}
-                        </span>
-                    )}
                 </div>
 
                 {/* Add Cart Button, Increase, Decrease */}
