@@ -185,36 +185,41 @@ const Navbar = () => {
                             )}
                         </div>
                     ) : (
+
                         <button onClick={() => setIsAccountOpen(true)}
                                 className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110">
-                            <User size={32}/>
-                            <span className="text-xs">Log In</span>
+                            <User size={42}/>
+                            <span className="text-sm whitespace-nowrap">Log In</span>
                         </button>
+
+
                     )}
 
                     <Link to="/favorites">
                         <button
                             className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
-                            <Heart size={32}/>
-                            <span className="text-xs">Favorites</span>
+                        <Heart size={38}/>
+                            <span className="text-sm sm:text-base">Favorites</span>
                             {favorites.length > 0 && (
                                 <span
                                     className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {favorites.length}
-                </span>
+            {favorites.length}
+        </span>
                             )}
                         </button>
                     </Link>
 
-                    <button onClick={handleCartClick}
-                            className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative">
-                        <ShoppingCart size={32}/>
-                        <span className="text-xs">{loggedInUser ? "My Cart" : "Cart"}</span>
+                    <button
+                        onClick={handleCartClick}
+                        className="flex flex-col items-center p-1 rounded transition-transform hover:scale-110 relative"
+                    >
+                        <ShoppingCart size={38}/>
+                        <span className="text-sm sm:text-base">{loggedInUser ? "My Cart" : "Cart"}</span>
                         {getTotalProductTypes() > 0 && (
                             <span
                                 className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {getTotalProductTypes()}
-              </span>
+            {getTotalProductTypes()}
+        </span>
                         )}
                     </button>
                 </div>
@@ -261,24 +266,30 @@ const Navbar = () => {
                 </div>
             )}
 
-            <div className="bg-green-500 text-white p-3">
+            <div className="bg-green-500 text-white py-5 px-3">
                 <div className="flex justify-center overflow-x-auto">
                     <ul className="flex space-x-4 sm:space-x-6">
-                        <li className="cursor-pointer hover:scale-125 hover:text-orange-500">
-                            <Link to="">
-                                <Home size={25}/>
+                        <li className="cursor-pointer hover:scale-125 hover:text-orange-500 transition-transform duration-300 ease-in-out overflow-visible">
+                            <Link to="" className="flex items-center justify-center">
+                                <Home size={28}/>
                             </Link>
                         </li>
+
                         {menuItems.map((menu, index) => (
-                            <li key={index} onClick={() => handleMenuClick(menu.name)} className="cursor-pointer hover:scale-110 hover:text-orange-500">
-                                <span className="text-sm sm:text-lg">{menu.name}</span>
+                            <li
+                                key={index}
+                                onClick={() => handleMenuClick(menu.name)}
+                                className="cursor-pointer text-sm sm:text-lg md:text-xl font-medium hover:scale-125 hover:text-orange-500 hover:drop-shadow-lg transition-all duration-300"
+                            >
+                                {menu.name}
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
 
-            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)} />
+
+            <Account isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)}/>
         </>
     );
 };

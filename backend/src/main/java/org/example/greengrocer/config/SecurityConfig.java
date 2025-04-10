@@ -5,6 +5,7 @@ import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
@@ -64,6 +64,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/favorites/**").permitAll()
                     .requestMatchers("/api/ordertotal/**").permitAll()
                     .requestMatchers("/api/customerorder/**").permitAll()
+                    .requestMatchers("/api/customerorder/total-sales").permitAll()
                     .requestMatchers("/api/orderproduct").permitAll()
                     .requestMatchers("api/customerorder/orders/{orderId}/status").permitAll()
                 .anyRequest().authenticated()

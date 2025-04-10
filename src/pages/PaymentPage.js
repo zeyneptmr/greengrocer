@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
@@ -269,7 +268,7 @@ const PaymentPage = () => {
                                         )}
                                     </div>
                                     <p className="text-lg mb-4">
-                                        **** **** **** {card.cardNumberLast4}
+                                        ** ** ** {card.cardNumberLast4}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Expiration Date: {card.expiryMonth}/{card.expiryYear}
@@ -321,7 +320,7 @@ const PaymentPage = () => {
                         <p className="text">
                             {orderTotal.totalPrice === 0
                                 ? "Delivery Fee: 0 TL"
-                                : `Delivery Fee: ${orderTotal.shippingFee} TL`}
+                                :` Delivery Fee: ${orderTotal.shippingFee} TL`}
                         </p>
 
                     )}

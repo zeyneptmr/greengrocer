@@ -42,11 +42,10 @@ export const FavoritesProvider = ({ children }) => {
 
     // Check authentication status and get current user
     const checkAuthStatus = () => {
-        axios.get("http://localhost:8080/api/users/me", { 
+        axios.get(`http://localhost:8080/api/users/me`, { 
             withCredentials: true 
         })
         .then(res => {
-            //console.log("Current user loaded:", res.data);
             setCurrentUser(res.data);
         })
         .catch(err => {
@@ -55,90 +54,158 @@ export const FavoritesProvider = ({ children }) => {
         });
     };
 
-    const loadFavorites = () => {
-        setLoading(true);
-        axios.get("http://localhost:8080/api/favorites", { 
-            withCredentials: true,
-            headers: {
-                'Cache-Control': 'no-cache'  
-            }
-        })
-        .then(res => {
-            console.log("Loaded favorites:", res.data);
-    
-           
-            const mappedFavorites = res.data.map(product => ({
-                id: product.id,
-                name: product.productName, 
-                price: formatPrice(product.price),
-                image: getImageFromPath(product.imagePath),
-                stock: product.stock,
-                category: product.category
-            }));
-    
-            setFavorites(mappedFavorites);
-            setLoading(false);
-        })
-        .catch(err => {
-            console.error("Favorites fetch error", err);
-            setFavorites([]); 
-            setLoading(false);
-        });
+    // Fetch the latest product data by ID
+    const fetchLatestProductData = async (productId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/products/${productId}`, {
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching latest data for product ${productId}:`, error);
+            return null;
+        }
     };
-    
+
+    // Get latest data for all favorite products
+    const refreshFavoritesWithLatestData = async (favoriteIds) => {
+        if (!favoriteIds || favoriteIds.length === 0) return [];
+        
+        try {
+            // Get latest data for all favorite products in parallel
+            const productPromises = favoriteIds.map(id => fetchLatestProductData(id));
+            const latestProducts = await Promise.all(productPromises);
+            
+            // Map the products that were successfully fetched
+            return latestProducts
+                .filter(product => product !== null)
+                .map(product => ({
+                    id: product.id,
+                    name: product.productName || product.name,
+                    price: formatPrice(product.price),
+                    image: getImageFromPath(product.imagePath || product.image),
+                    stock: product.stock,
+                    category: product.category
+                }));
+        } catch (error) {
+            console.error("Error refreshing favorites with latest data:", error);
+            return [];
+        }
+    };
+
+    const loadFavorites = async () => {
+        setLoading(true);
+        
+        if (currentUser) {
+            // Logged in users: get favorites from API
+            try {
+                const res = await axios.get("http://localhost:8080/api/favorites", { 
+                    withCredentials: true,
+                    headers: {
+                        'Cache-Control': 'no-cache'  
+                    }
+                });
+                
+                console.log("Loaded favorites:", res.data);
+                
+                // Get latest data for these favorites
+                const favoriteIds = res.data.map(product => product.id);
+                const updatedFavorites = await refreshFavoritesWithLatestData(favoriteIds);
+                
+                setFavorites(updatedFavorites);
+            } catch (err) {
+                console.error("Favorites fetch error", err);
+                setFavorites([]);
+            }
+        } else {
+            // Guest users: start with empty favorites
+            // This clears any leftover favorites from previous logged-in users
+            setFavorites([]);
+        }
+        
+        setLoading(false);
+    };
     
     useEffect(() => {
         checkAuthStatus();
     }, []);
 
-    // Auth durumu değiştiğinde veya kullanıcı değiştiğinde favorileri yükle
+    // Load favorites when authentication status changes
     useEffect(() => {
         if (currentUser) {
             loadFavorites();
+        } else if (favorites.length > 0) {
+            // For non-logged in users with local favorites, refresh them
+            loadFavorites();
         } else {
-            setFavorites([]); // No user, empty favorites
+            setLoading(false);
         }
     }, [currentUser]);
 
-    const toggleFavorite = (product) => {
+    const toggleFavorite = async (product) => {
         if (!currentUser) {
-            const formattedProduct = {
-                id: product.id,
-                name: product.name,
-                price: formatPrice(product.price),
-                image: product.image,
-                stock: product.stock,
-                category: product.category
-            };
-    
-            const isAlreadyFavorite = favorites.some(fav => fav.id === formattedProduct.id);
-            if (isAlreadyFavorite) {
-                setFavorites(prev => prev.filter(fav => fav.id !== formattedProduct.id));
+            // For non-logged in users - get latest product data first
+            const latestProduct = await fetchLatestProductData(product.id);
+            
+            if (latestProduct) {
+                const formattedProduct = {
+                    id: latestProduct.id,
+                    name: latestProduct.productName || product.name,
+                    price: formatPrice(latestProduct.price),
+                    image: getImageFromPath(latestProduct.imagePath || product.image),
+                    stock: latestProduct.stock,
+                    category: latestProduct.category
+                };
+                
+                const isAlreadyFavorite = favorites.some(fav => fav.id === formattedProduct.id);
+                if (isAlreadyFavorite) {
+                    setFavorites(prev => prev.filter(fav => fav.id !== formattedProduct.id));
+                } else {
+                    setFavorites(prev => [...prev, formattedProduct]);
+                }
             } else {
-                setFavorites(prev => [...prev, formattedProduct]);
+                // Fallback to original product data if latest couldn't be fetched
+                const formattedProduct = {
+                    id: product.id,
+                    name: product.name,
+                    price: formatPrice(product.price),
+                    image: product.image,
+                    stock: product.stock,
+                    category: product.category
+                };
+                
+                const isAlreadyFavorite = favorites.some(fav => fav.id === formattedProduct.id);
+                if (isAlreadyFavorite) {
+                    setFavorites(prev => prev.filter(fav => fav.id !== formattedProduct.id));
+                } else {
+                    setFavorites(prev => [...prev, formattedProduct]);
+                }
             }
-    
+            
             return;
         }
-    
-        axios.post(`http://localhost:8080/api/favorites/${product.id}`, {}, { 
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(() => {
+        
+        // For logged-in users
+        try {
+            await axios.post(`http://localhost:8080/api/favorites/${product.id}`, {}, { 
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             loadFavorites();
-        })
-        .catch(err => console.error("Favorite toggle error", err));
+        } catch (err) {
+            console.error("Favorite toggle error", err);
+        }
     };
-    
 
     const isFavorite = (productId) => {
         return favorites.some(product => product.id === productId);
     };
 
-    // Login ve logout işlemleri sonrası auth durumunu güncelle
+    // Refresh auth status
     const refreshAuth = () => {
         checkAuthStatus();
     };

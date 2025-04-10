@@ -43,6 +43,9 @@ const DiscountPage = () => {
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
     const formatPrice = (price) => {
+        if (price === undefined || price === null || isNaN(price)) {
+            return "0.00"; // NaN durumunda varsayılan değer
+        }
         if (typeof price === "number") {
             return price.toFixed(2);
         }
@@ -196,12 +199,13 @@ const DiscountPage = () => {
                     price: parseFloat(discountedPrice)
                 });
                 
-            
+                // İndirimli ürün bilgisini ekle
                 const discountInfo = await addDiscountedProduct(product, discountedPrice);
                 
-                
+                // Orijinal fiyatı ve indirimli fiyatı döndür
                 return { 
                     ...product, 
+                    oldPrice: product.price, // Orijinal fiyatı saklayalım
                     discountedPrice: parseFloat(discountedPrice),
                     discountId: discountInfo.id 
                 };
@@ -213,18 +217,16 @@ const DiscountPage = () => {
                 const updatedProduct = updatedDiscountedProducts.find(updated => updated.id === product.id);
                 return updatedProduct ? { 
                     ...product, 
+                    oldPrice: updatedProduct.oldPrice, // Orijinal fiyatı ekleyelim 
                     discountedPrice: updatedProduct.discountedPrice,
                     discountId: updatedProduct.discountId
                 } : product;
             });
 
-    
             setFilteredProducts(updatedProducts);
-
 
             setSelectedProducts([]);
             setSelectAllChecked(false);
-            
             
             setSuccessNotification('Discount applied successfully! Prices will automatically revert after 24 hours.');
             setTimeout(() => setSuccessNotification(''), 5000);  
@@ -248,12 +250,6 @@ const DiscountPage = () => {
                         <img src={managerIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
-
-
-
-
-
-
 
                 <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
                     <AdminSearchBar

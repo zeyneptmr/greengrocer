@@ -1,6 +1,7 @@
 // --- CONTROLLER: OrderController.java ---
 package org.example.greengrocer.controller;
 
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.greengrocer.model.CustomerOrder;
@@ -24,6 +25,27 @@ import java.util.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
+
+import java.util.Optional;
+
+import org.example.greengrocer.model.Address;
+import org.example.greengrocer.model.CartItem;
+import org.example.greengrocer.model.OrderProduct;
+import org.example.greengrocer.model.OrderTotal;
+import org.example.greengrocer.repository.AddressRepository;
+import org.example.greengrocer.repository.CartItemRepository;
+import org.example.greengrocer.repository.OrderProductRepository;
+import org.example.greengrocer.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 
 @RestController
@@ -157,7 +179,6 @@ public class CustomerOrderController {
     }
 
 
-
     @GetMapping("/my-orders")
     public ResponseEntity<?> getMyOrders(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -171,7 +192,6 @@ public class CustomerOrderController {
 
         return ResponseEntity.ok(orders);
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(HttpServletRequest request) {
@@ -216,7 +236,6 @@ public class CustomerOrderController {
 
         return ResponseEntity.ok("Order created with ID: " + order.getOrderId());
     }
-
 
     @PostMapping("/finalize")
     public ResponseEntity<?> finalizeOrder(HttpServletRequest request) {
@@ -263,3 +282,17 @@ public class CustomerOrderController {
     }
 
 }
+
+    @GetMapping("/total-sales")
+    public ResponseEntity<Double> getTotalSales() {
+        Double totalSales = orderRepository.calculateTotalSales();
+        // Handle null case (when there are no orders)
+        if (totalSales == null) {
+            totalSales = 0.0;
+        }
+
+        return ResponseEntity.ok(totalSales);
+        
+    }
+}
+

@@ -5,31 +5,74 @@ import { Button } from "./Button";
 import { useFavorites } from "../helpers/FavoritesContext"
 import { useCart } from "../helpers/CartContext";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ProductCard({ product, hideCartView=false }) {
     const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
     const { favorites, toggleFavorite } = useFavorites();
-
-    const isFavorite = favorites.some((fav) => fav.id === product.id);
-
-    const cartItem = cart.find((item) => {
-        return item.productId === product.id || item.id === product.id || item.product?.id === product.id;
-    });
-
-    // Bu state, kullanıcı "Add to Cart" butonuna bastıysa geçici olarak ürün eklendi sayacağız
+    const [currentProduct, setCurrentProduct] = useState(product);
     const [addedToCart, setAddedToCart] = useState(false);
 
-    // Eğer cart güncellendiyse ve ürün cart'taysa bu state'i güncelle
-    //useEffect(() => {
-    //console.log("Cart:", cart);
+    const isFavorite = favorites.some((fav) => fav.id === currentProduct.id);
+    const discountPercentage = currentProduct.discountRate;
 
-    //if (cartItem) setAddedToCart(true);
-    //}, [cartItem]);
+    // Find cart item - check multiple possible ID mappings
+    const cartItem = cart.find((item) => {
+        return item.productId === currentProduct.id ||
+            item.id === currentProduct.id ||
+            item.product?.id === currentProduct.id;
+    });
 
+    // Fetch the latest product information on mount and when product prop changes
+    useEffect(() => {
+        const fetchLatestProductData = async () => {
+            try {
+                // If we have a productId (from the original product object), use that for fetching
+                const productIdToFetch = product.productId || product.id;
+
+                if (!productIdToFetch) return;
+
+                const baseUrl = 'http://localhost:8080';
+                const response = await axios.get(`{baseUrl}/api/products/${productIdToFetch}`, {
+                    withCredentials: true,
+                        headers: {
+                        'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 200) {
+                    // Update the current product with the latest data while preserving discount info
+                    setCurrentProduct(prev => ({
+                        ...prev,
+                        // Update price if available in response (preserve structure based on your API response)
+                        price: response.data.price || prev.price,
+                        // Recalculate discountedPrice based on the most recent price and discount rate
+                        discountedPrice: prev.discountRate ?
+                            ((response.data.price || prev.price) * (1 - prev.discountRate/100)).toFixed(2) :
+                            prev.discountedPrice
+                    }));
+                }
+            } catch (err) {
+                console.error('Error fetching latest product data:', err);
+            }
+        };
+
+        fetchLatestProductData();
+
+        // Update state if product prop changes
+        setCurrentProduct(product);
+    }, [product]);
+
+    // Update addedToCart state when cart changes
+    useEffect(() => {
+        if (cartItem) setAddedToCart(true);
+    }, [cartItem]);
 
     const quantity = cartItem?.quantity || 0;
+
     const handleAddToCart = () => {
-        addToCart(product);
+        addToCart(currentProduct);
     };
 
     const handleIncreaseQuantity = () => {
@@ -42,24 +85,22 @@ export default function ProductCard({ product, hideCartView=false }) {
         if (cartItem?.quantity > 1) {
             decreaseQuantity(cartItem.id);
         } else if (cartItem?.quantity === 1) {
-            // Ürün 0'a düşecekse, decrease işlemi çağrılırsa ve context'te zaten çıkarılıyorsa,
-            // buraya ayrıca bir şey eklemeye gerek yok çünkü cartItem zaten yok olacak.
             decreaseQuantity(cartItem.id);
         }
     };
 
-
+    
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favorites Button */}
             <button
-                onClick={() => toggleFavorite(product)}
+                onClick={() => toggleFavorite(currentProduct)}
                 className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
             >
                 <Heart className={`h-6 w-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
 
-            {product.discountedPrice && (
+            {currentProduct.discountedPrice && (
                 <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
                     15% Off
                 </div>
@@ -69,24 +110,24 @@ export default function ProductCard({ product, hideCartView=false }) {
             <CardContent>
                 <div className="w-44 h-44 flex items-center justify-center overflow-hidden">
                     <img
-                        src={product.image}
-                        alt={product.name}
+                        src={currentProduct.image}
+                        alt={currentProduct.name}
                         className="max-w-full max-h-full object-cover transition-all duration-300 ease-in-out"
                     />
                 </div>
 
                 {/* Product Name */}
-                <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{product.name}</h3>
+                <h3 className="mt-3 text-lg font-semibold text-gray-800 text-center break-words">{currentProduct.name}</h3>
 
                 {/* Product Price and Quantity */}
                 <div className="flex justify-center items-center mt-1">
-                    {product.discountedPrice ? (
-                        <p className="text-gray-600 text-md line-through mr-2">{product.price} TL</p>
+                    {currentProduct.discountedPrice ? (
+                        <p className="text-gray-600 text-md line-through mr-2">{currentProduct.price} TL</p>
                     ) : (
-                        <p className="text-gray-600 text-md">{product.price} TL</p>
+                        <p className="text-gray-600 text-md">{currentProduct.price} TL</p>
                     )}
-                    {product.discountedPrice && (
-                        <span className="text-green-600 font-bold">{product.discountedPrice} TL</span>
+                    {currentProduct.discountedPrice && (
+                        <span className="text-green-600 font-bold">{currentProduct.discountedPrice} TL</span>
                     )}
 
                     {/* Sales Quantity (Piece or KG) */}

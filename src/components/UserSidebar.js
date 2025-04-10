@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaCreditCard, FaLock, FaTrash, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
 import { useContext } from "react";
 import { useCart } from "../helpers/CartContext";
+import { useFavorites } from "../helpers/FavoritesContext";
 
 import axios from "axios";
 
@@ -13,7 +14,7 @@ const Sidebar = () => {
     //const [token, setToken] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const navigate = useNavigate();
-
+    const { refreshAuth } = useFavorites();
     const [Cart, setCart] = useState(null);
 
     const handleLogout = () => {
@@ -27,6 +28,7 @@ const Sidebar = () => {
                 setRole(null);
                 setLoggedInUser(null);
                 setIsLoggedIn(false);
+                refreshAuth();
 
                 navigate("/");
 

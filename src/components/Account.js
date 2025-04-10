@@ -203,7 +203,6 @@ const Account = ({ isOpen, onClose }) => {
 
                             //syncCartIfUserLoggedIn();
                            
-                            
                             refreshAuth();
                             refreshFavorites();
                             

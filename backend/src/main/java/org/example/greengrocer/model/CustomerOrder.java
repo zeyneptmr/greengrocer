@@ -1,11 +1,7 @@
 // --- MODEL: CustomerOrder.java ---
 package org.example.greengrocer.model;
-
 import org.example.greengrocer.service.OrderIdGenerator;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +9,14 @@ import java.util.UUID;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
 
 
 @Entity
