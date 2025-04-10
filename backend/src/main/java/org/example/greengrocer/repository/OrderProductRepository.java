@@ -1,14 +1,20 @@
 package org.example.greengrocer.repository;
+import java.util.List;
+
 import org.example.greengrocer.model.CustomerOrder;
-
-
 import org.example.greengrocer.model.OrderProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface OrderProductRepository extends JpaRepository<OrderProduct, Long> {
     List<OrderProduct>  findByCustomerOrder_OrderId(String orderId);
 
     List<OrderProduct> findByCustomerOrder(CustomerOrder customerOrder);
+
+    @Transactional
+    void deleteAllByCustomerOrder(CustomerOrder customerOrder); 
+
+
+
 
 }
