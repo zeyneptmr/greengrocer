@@ -88,21 +88,22 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
-            <button
-                onClick={onClose}
-                className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-red-500 transition"
-            >
-                &times;
-            </button>
-
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-[460px] relative border-2 border-orange-400">
+                {/* Close button inside the modal */}
+                <button
+                    onClick={handleCloseAll}
+                    className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-red-500 transition"
+                >
+                    &times;
+                </button>
+    
                 <h2 className="text-3xl font-extrabold text-green-700 mb-6 text-center">🔐 Reset Password</h2>
-
+    
                 <div className="flex flex-col items-center space-y-4">
-                <p className="text-md font-medium text-[#006400] text-center">
+                    <p className="text-md font-medium text-[#006400] text-center">
                         Please enter your new password below
                     </p>
-
+    
                     <input
                         type="password"
                         value={newPassword}
@@ -134,7 +135,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                         Reset Password
                     </button>
                 </div>
-
+    
                 {/* Success Message */}
                 {isSuccess && (
                     <div
