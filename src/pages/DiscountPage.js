@@ -366,12 +366,12 @@ const DiscountPage = () => {
                                             {product.stock} units
                                         </div>
                                         <div className="col-span-2 font-medium">
-                                            ${formatPrice(product.discountedPrice ? product.oldPrice : product.price)}
+                                            ₺{formatPrice(product.discountedPrice ? product.oldPrice : product.price)}
                                         </div>
                                         <div className="col-span-2">
                                             {product.discountedPrice ? (
                                                 <div className="text-green-600 font-bold">
-                                                    ${formatPrice(product.discountedPrice)}
+                                                    ₺{formatPrice(product.discountedPrice)}
                                                     <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
                                                         {Math.round((1 - product.discountedPrice / product.price) * 100)}% off
                                                     </span>

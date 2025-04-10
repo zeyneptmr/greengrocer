@@ -254,7 +254,9 @@ const PaymentPage = () => {
                         >
                             + Add New Card
                         </div>
-                        {savedCards.filter(card => card.isDefault === true).length > 0 ? (
+
+
+                        {Array.isArray(savedCards) && savedCards.filter(card => card.isDefault === true).length > 0 ? (
                             savedCards.filter(card => card.isDefault === true).map((card, index) => (
                                 <div
                                     key={index}
