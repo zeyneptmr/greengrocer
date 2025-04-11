@@ -5,54 +5,52 @@ import logo from '../assets/logoyazısız.jpeg'; // Kendi logo yolunu buraya yaz
 export const generateInvoice = (orderData) => {
     const doc = new jsPDF();
 
-    // Renkler
     const green = '#2e7d32';
     const orange = '#fb8c00';
     const lightGray = '#f2f2f2';
 
-    // Yazı Tipi
     doc.setFont("helvetica");  // Modern ve şık bir font
 
-    // Logo yüklemesi
     const img = new Image();
     img.src = logo;
 
     img.onload = () => {
-        // Logo sol tarafta
+
         doc.addImage(img, 'JPEG', 14, 10, 30, 30);
 
-        // Başlık (Ortalı ve üstte)
         doc.setFontSize(24);
         doc.setTextColor(green);
         doc.text("E-INVOICE", 105, 50, {align: 'center'});  // Başlık biraz daha aşağı alındı
 
-        // Şirket Bilgileri (Sağda)
         doc.setFontSize(10);
         doc.setTextColor(0);
         doc.text('TapTaze Company ', 150, 15);
         doc.text('Address: Cibali, Fatih/Istanbul', 150, 21);
         doc.text('Tax Office: Fatih Tax Office ', 150, 27);
 
-        // Buyer & Order Details (Üst Bölüm)
+        const addressParts = orderData.address.split(',').map(part => part.trim());
+        const middleValues = addressParts.slice(1, 3);  // Ortadaki 2 veri
+
         const buyerInfo = [
-            ['Customer:', orderData.userName],
-            ['Address:', orderData.address],
+            ['Customer:', `${orderData.userName} ${orderData.userSurname}`],
+            ['Phone:', orderData.userPhoneNumber || 'N/A'],
             ['Email:', orderData.userEmail],
+            ['Address:', middleValues.join(', ')],
             ['Order ID:', orderData.orderId],
             ['Order Date:', new Date(orderData.orderDate).toLocaleDateString()],
         ];
 
         const companyInfo = [
-            ['Invoice No:', orderData.invoiceNo],
-            ['Invoice Date:', new Date().toLocaleDateString()],
+            ['Invoice No:', orderData.invoiceNo || 'INV-' + orderData.orderId],
+            ['Invoice Date:', new Date().toLocaleString()],
             ['Payment Method:', orderData.paymentMethod || 'Online'],
             ['Shipment Date:', orderData.shipmentDate || 'N/A'],
+            ['Shipping Fee:', `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
             ['Tax Office:', 'Fatih Tax Office'],
         ];
 
-        // Buyer & Company Info (Yan Yana)
         autoTable(doc, {
-            startY: 60,  // Başlık biraz daha aşağı alındığı için bu kısımdaki startY değeri de yukarı alındı
+            startY: 60,
             head: [],
             body: buyerInfo.map((row, i) => [row[0], row[1], companyInfo[i][0], companyInfo[i][1]]),
             theme: 'grid',
@@ -61,15 +59,13 @@ export const generateInvoice = (orderData) => {
             margin: { left: 14, right: 14 },
         });
 
-        // Ürün Tablosu
         const itemRows = orderData.items.map((item, index) => {
-            const total = item.price * item.quantity ;
+            const total = item.price * item.quantity;
             return [
                 index + 1,
                 item.name,
                 `${item.quantity} pcs`,
-                `${item.price.toFixed(2)} TL`,
-                '20%',
+                `${(item.price ?? 0).toFixed(2)} TL`,
                 `${total.toFixed(2)} TL`,
             ];
         });
@@ -84,16 +80,13 @@ export const generateInvoice = (orderData) => {
             margin: { left: 14, right: 14 },
         });
 
-        // Summary Table
-        const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        const total = subtotal;
 
+        const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
         autoTable(doc, {
             body: [
-                ['Subtotal', `${subtotal.toFixed(2)} TL`],
-                ['Discount', '0.00 TL'],
-                ['Total', `${total.toFixed(2)} TL`],
-                ['Amount to be Paid', `${total.toFixed(2)} TL`],
+                ['Product Total', `${subtotal.toFixed(2)} TL`],
+                ['Shipping Fee', `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
+                ['Total Amount', `${(orderData.totalAmount ?? 0).toFixed(2)} TL`],
             ],
             startY: doc.lastAutoTable.finalY + 5,
             theme: 'plain',
@@ -105,7 +98,6 @@ export const generateInvoice = (orderData) => {
             margin: { left: 100 },
         });
 
-        // Alt not
         doc.setFontSize(10);
         doc.setTextColor(100);
         doc.text(
@@ -114,6 +106,6 @@ export const generateInvoice = (orderData) => {
             doc.lastAutoTable.finalY + 20
         );
 
-        doc.save('invoice.pdf');
+        doc.save(`${orderData.orderId}.pdf`);
     };
 };

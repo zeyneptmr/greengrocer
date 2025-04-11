@@ -10,6 +10,7 @@ import axios from "axios";
 
 const PaymentPage = () => {
     const [addresses, setAddresses] = useState([]);
+    //const [orderId, setOrderId] = useState(null); // en üstte
     const [savedCards, setSavedCards] = useState([]);
     const [cart, setCart] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -26,36 +27,62 @@ const PaymentPage = () => {
     const [loading, setLoading] = useState(true);
     //const { refreshAuth } = useFavorites();
     const { clearCarto } = useCart(); // burası önemli
+    const [orderId, setOrderId] = useState(null); // en üstte
 
-    const handleGeneratePDF = async () => {
+    const handleGeneratePDF = async (orderId) => {
         try {
-            // Kullanıcı bilgilerini almak için API'ye istek gönderiyoruz
             const userResponse = await axios.get('http://localhost:8080/api/users/me', {
-                withCredentials: true,  // Çerezleri dahil etmek için
+                withCredentials: true,
             });
 
             if (userResponse.status !== 200) {
                 alert('User information could not be fetched');
                 return;
             }
-
             const userData = userResponse.data;
+
+            const orderResponse = await axios.get(`http://localhost:8080/api/customerorder/order/${orderId}`, {
+                withCredentials: true,
+            });
+
+            if (orderResponse.status !== 200) {
+                alert('Ordered products could not be received');
+                return;
+            }
+
+            const orderDetails = orderResponse.data;
+
+            const productsResponse = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`, {
+                withCredentials: true,
+            });
+
+            if (productsResponse.status !== 200) {
+                alert('Ordered products could not be received');
+                return;
+            }
+
+            const products = productsResponse.data;
+
 
             const orderData = {
                 userName: userData.name,
                 userSurname: userData.surname,
                 userEmail: userData.email,
                 userPhoneNumber: userData.phoneNumber,
-                orderId: "orderId",
-                items: cart.map(item => ({
-                    name: item.name,
-                    quantity: item.quantity,
-                    price: item.price,
+                orderId: orderDetails.orderId,
+                orderDate: orderDetails.createdAt,
+                shippingFee: orderDetails.shippingFee,
+                totalPrice: orderDetails.totalPrice,
+                address: orderDetails.shippingAddress,
+                items: products.map(product => ({
+                    name: product.productName,
+                    quantity: product.quantity,
+                    price: product.pricePerProduct,
                 })),
-                totalAmount: orderTotal.totalAmount,
+                totalAmount: orderDetails.totalAmount,
             };
 
-        // Fatura PDF'sini oluşturuyoruz
+        // Invoice pdf
             generateInvoice(orderData);
         } catch (error) {
             console.error('Error:', error);
@@ -183,10 +210,10 @@ const PaymentPage = () => {
             // Parse the orderId from the string response
             let orderId = null;
             if (typeof res.data === 'string' && res.data.includes("Order created with ID:")) {
-                // Extract orderId from the string
                 orderId = res.data.split("Order created with ID:")[1].trim();
+                setOrderId(orderId); // 📌 state'e kaydet
             }
-            
+
             // Validate orderId before proceeding
             if (!orderId) {
                 console.error("No order ID received from create order API");
@@ -421,7 +448,7 @@ const PaymentPage = () => {
 
                             {/* PDF Button */}
                             <button
-                                onClick={handleGeneratePDF}
+                                onClick={() => handleGeneratePDF(orderId)}
                                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
                             >
                                 Download Order Details (PDF)

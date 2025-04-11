@@ -221,6 +221,44 @@ public class CustomerOrderController {
         return ResponseEntity.ok(simplifiedOrders);
     }
 
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<?> getMyOrderById(@PathVariable String orderId, HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        User user = userOpt.get();
+
+        Optional<CustomerOrder> orderOpt = orderRepository.findById(orderId);
+        if (orderOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+
+        CustomerOrder order = orderOpt.get();
+
+        // Kullanıcının kendi siparişi mi kontrolü
+        if (!order.getUser().getId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This order does not belong to you");
+        }
+
+        Map<String, Object> orderMap = new HashMap<>();
+        orderMap.put("orderId", order.getOrderId());
+        orderMap.put("createdAt", order.getCreatedAt());
+        orderMap.put("productTotal", order.getProductTotal());
+        orderMap.put("shippingAddress", order.getShippingAddress());
+        orderMap.put("shippingFee", order.getShippingFee());
+        orderMap.put("totalAmount", order.getTotalAmount());
+        orderMap.put("latestStatus", order.getLatestStatus());
+
+        orderMap.put("statusHistory", order.getStatusHistory().stream().map(status -> {
+            Map<String, Object> statusMap = new HashMap<>();
+            statusMap.put("status", status.getStatus());
+            statusMap.put("timestamp", status.getTimestamp());
+            return statusMap;
+        }).collect(Collectors.toList()));
+
+        return ResponseEntity.ok(orderMap);
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(HttpServletRequest request) {
