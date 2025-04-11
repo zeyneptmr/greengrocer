@@ -1,5 +1,6 @@
 package org.example.greengrocer.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.example.greengrocer.model.CustomerOrder;
@@ -21,5 +22,7 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, St
 
     @Transactional
     void deleteAllByUserId(Long userId);
+
+    List<CustomerOrder> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
 }

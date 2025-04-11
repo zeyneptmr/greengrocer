@@ -5,40 +5,47 @@ import Clock from "../components/Clock";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { motion } from "framer-motion";
-
 import axios from "axios";
-
 
 const API_BASE_URL = 'http://localhost:8080';
 
 const ManagerPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [ordersData, setOrdersData] = useState([]);
     const [userCount, setUserCount] = useState(0);
     const [orderCount, setOrderCount] = useState(0);
     const [totalSales, setTotalSales] = useState("0 TL");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [calendarData, setCalendarData] = useState({});
 
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
 
-   
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                // Fetch total sales from the new endpoint
+                // Fetch total sales from the endpoint
                 const salesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/total-sales`);
                 const totalSalesAmount = salesResponse.data;
                 
-
                 const formattedSales = totalSalesAmount.toFixed(2) + '₺';
-
                 setTotalSales(formattedSales);
+                
+                // Fetch user count
+                const userResponse = await axios.get("http://localhost:8080/api/users/count/users");
+                setUserCount(userResponse.data);
+                
+                // Fetch order count
+                const orderResponse = await axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true });
+                if (Array.isArray(orderResponse.data)) {
+                    setOrderCount(orderResponse.data.length);
+                }
+                
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -50,50 +57,45 @@ const ManagerPage = () => {
         fetchData();
     }, []);
 
-    // Example orders data: "YYYY-MM-DD" format
-    const orderData = {
-        "2025-03-01": 5,
-        "2025-03-03": 8,
-        "2025-03-10": 3,
-        "2025-03-14": 7,
-        "2025-03-21": 2,
-        "2025-03-25": 6
-    };
 
     useEffect(() => {
-        // Kullanıcı sayısını almak için API'ye GET isteği gönderiyoruz
-        axios
-            .get("http://localhost:8080/api/users/count/users")
-            .then((response) => {
-                setUserCount(response.data);  // Gelen veriyi state'e set ediyoruz
-            })
-            .catch((error) => {
-                console.error("Error fetching user count:", error);
-            });
-    }, []);
+        const fetchCalendarData = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/api/customerorder/orders-by-date`, {
+                    params: {
+                        year: selectedYear,
+                        month: selectedMonth + 1 
+                    },
+                    withCredentials: true
+                });
+                
+                setCalendarData(response.data);
+                
+    
+                const monthOrdersList = Object.entries(response.data).map(([date, count]) => ({
+                    date: new Date(date),
+                    orders: count
+                })).filter(item => item.orders > 0);
+                
+                setOrdersData(monthOrdersList);
+            } catch (err) {
+                console.error("Error fetching calendar data:", err);
+            }
+        };
+        
+        if (selectedMonth !== null) {
+            fetchCalendarData();
+        }
+    }, [selectedYear, selectedMonth]);
 
 
-    const [orders, setOrders] = useState([]);
-
-    useEffect(() => {
-        axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true })
-            .then(res => {
-                if (Array.isArray(res.data)) {
-                    setOrderCount(res.data.length);
-                }
-            })
-            .catch(err => console.error("Orders could not be fetched:", err));
-    }, []);
-
-
-    // Function to generate calendar days for a selected month
     const generateCalendarDays = (year, month) => {
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const firstDayOfMonth = new Date(year, month, 1).getDay();
 
         let days = [];
         for (let i = 0; i < firstDayOfMonth; i++) {
-            days.push(null); // Empty days before the start of the month
+            days.push(null); 
         }
 
         for (let i = 1; i <= daysInMonth; i++) {
@@ -103,26 +105,12 @@ const ManagerPage = () => {
         return days;
     };
 
-    // Filter orders for the selected month and year
-    const getOrdersForMonth = (year, month) => {
-        const monthOrders = [];
-        for (const [date, orders] of Object.entries(orderData)) {
-            const orderDate = new Date(date);
-            if (orderDate.getFullYear() === year && orderDate.getMonth() === month) {
-                monthOrders.push({ date: orderDate, orders });
-            }
-        }
-        return monthOrders;
-    };
-
     const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
-        setSelectedMonth(null); // Reset month when year changes
+        setSelectedYear(parseInt(e.target.value));
     };
 
     const handleMonthClick = (index) => {
         setSelectedMonth(index);
-        setOrdersData(getOrdersForMonth(selectedYear, index)); // Get orders for the selected month
     };
 
     const salesData = {
@@ -137,14 +125,20 @@ const ManagerPage = () => {
         ],
     };
 
+
+    const getOrderCount = (day) => {
+        if (!day) return 0;
+        
+        const dateStr = `${selectedYear}-${(selectedMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+        return calendarData[dateStr] || 0;
+    };
+
     return (
         <div className="flex h-screen bg-gray-100">
             <Sidebar />
             <main className="flex-1 flex flex-col overflow-auto">
-
                 <Topbar/>
                 <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <h3 className="text-xl font-bold text-green-700">Today</h3>
                         <p className="text-xl text-gray-500 font-medium"><Clock/></p>
@@ -167,7 +161,6 @@ const ManagerPage = () => {
                 </div>
 
                 <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-
                     <div className="bg-white shadow-md rounded-lg p-6">
                         <h3 className="text-xl font-bold text-gray-700">Sales Overview</h3>
                         <Line data={salesData}/>
@@ -181,7 +174,6 @@ const ManagerPage = () => {
                             transition={{duration: 0.5}}
                         >
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-
                                 {/* Year Selector */}
                                 <select
                                     value={selectedYear}
@@ -197,8 +189,6 @@ const ManagerPage = () => {
 
                                 {/* Month Selector */}
                                 <div className="flex overflow-x-auto space-x-2 scrollbar-hide">
-
-
                                     {months.map((month, index) => (
                                         <button
                                             key={index}
@@ -218,40 +208,54 @@ const ManagerPage = () => {
                                     <h4 className="text-lg font-semibold text-gray-700">Selected
                                         Month: {months[selectedMonth]}</h4>
                                     <div className="grid grid-cols-7 gap-4 mt-4">
-                                        {generateCalendarDays(selectedYear, selectedMonth).map((day, index) => (
-                                            <div
-                                                key={index}
-                                                className={`p-2 text-center rounded ${
-                                                    day ? (orderData[`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`] ? "bg-green-100" : "bg-white") : ""
-                                                }`}
-                                            >
-                                                {day && (
-                                                    <>
-                                                        <p>{day}</p>
-                                                        {orderData[`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`] && (
-                                                            <span className="text-xs text-green-700">
-                                                                {orderData[`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`]} Orders
-                                                            </span>
-                                                        )}
-                                                    </>
-                                                )}
+                                        {/* Day headers */}
+                                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                                            <div key={`header-${index}`} className="text-center font-semibold text-gray-600">
+                                                {day}
                                             </div>
                                         ))}
+                                        
+                                        {/* Calendar days */}
+                                        {generateCalendarDays(selectedYear, selectedMonth).map((day, index) => {
+                                            const orderCount = getOrderCount(day);
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className={`p-2 text-center rounded ${
+                                                        day ? (orderCount > 0 ? "bg-green-100" : "bg-white") : ""
+                                                    }`}
+                                                >
+                                                    {day && (
+                                                        <>
+                                                            <p>{day}</p>
+                                                            {orderCount > 0 && (
+                                                                <span className="text-xs text-green-700">
+                                                                    {orderCount} {orderCount === 1 ? 'Order' : 'Orders'}
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
 
-                            <ul className="mt-4">
-                                {ordersData.length > 0 ? (
-                                    ordersData.map(({date, orders}) => (
-                                        <li key={date} className="p-2 border-b">
-                                            {date.toLocaleDateString()} - {orders} Orders
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p>No orders for this month</p>
-                                )}
-                            </ul>
+                            <div className="mt-4">
+                                <h4 className="text-lg font-semibold text-gray-700">Orders This Month</h4>
+                                <ul className="mt-2">
+                                    {ordersData.length > 0 ? (
+                                        ordersData.map(({date, orders}, index) => (
+                                            <li key={index} className="p-2 border-b">
+                                                {date.toLocaleDateString()} - {orders} {orders === 1 ? 'Order' : 'Orders'}
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <p className="p-2">No orders for this month</p>
+                                    )}
+                                </ul>
+                            </div>
                         </motion.div>
                     </div>
                 </div>

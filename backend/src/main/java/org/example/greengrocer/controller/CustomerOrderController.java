@@ -2,49 +2,47 @@
 package org.example.greengrocer.controller;
 
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import org.example.greengrocer.model.CustomerOrder;
-import org.example.greengrocer.repository.CustomerOrderRepository;
-import org.example.greengrocer.model.*;
-import org.example.greengrocer.model.User;
-import org.example.greengrocer.repository.*;
-import org.example.greengrocer.security.TokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.example.greengrocer.repository.OrderTotalRepository;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.example.greengrocer.service.ProductService;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.example.greengrocer.model.OrderStatus;
-import org.example.greengrocer.repository.OrderStatusRepository;
-
-import java.util.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
-
-
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.example.greengrocer.model.Address;
 import org.example.greengrocer.model.CartItem;
+import org.example.greengrocer.model.CustomerOrder;
 import org.example.greengrocer.model.OrderProduct;
+import org.example.greengrocer.model.OrderStatus;
 import org.example.greengrocer.model.OrderTotal;
+import org.example.greengrocer.model.Product;
+import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.AddressRepository;
 import org.example.greengrocer.repository.CartItemRepository;
+import org.example.greengrocer.repository.CustomerOrderRepository;
 import org.example.greengrocer.repository.OrderProductRepository;
+import org.example.greengrocer.repository.OrderStatusRepository;
+import org.example.greengrocer.repository.OrderTotalRepository;
 import org.example.greengrocer.repository.UserRepository;
+import org.example.greengrocer.security.TokenProvider;
+import org.example.greengrocer.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -294,6 +292,44 @@ public class CustomerOrderController {
         return ResponseEntity.ok(totalSales);
 
     }
+
+
+@GetMapping("/orders-by-date")
+public ResponseEntity<Map<String, Integer>> getOrdersByDate(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
+    
+    if (year == null) year = LocalDate.now().getYear();
+    if (month == null) month = LocalDate.now().getMonthValue();
+    
+
+    LocalDate startDate = LocalDate.of(year, month, 1);
+    LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+    
+
+    List<CustomerOrder> orders = orderRepository.findByCreatedAtBetween(
+        startDate.atStartOfDay(), 
+        endDate.atTime(23, 59, 59)
+    );
+    
+    
+    Map<String, Integer> ordersByDate = new HashMap<>();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+
+    for (int day = 1; day <= endDate.getDayOfMonth(); day++) {
+        LocalDate date = LocalDate.of(year, month, day);
+        ordersByDate.put(date.format(formatter), 0);
+    }
+    
+
+    for (CustomerOrder order : orders) {
+        String dateStr = order.getCreatedAt().toLocalDate().format(formatter);
+        ordersByDate.put(dateStr, ordersByDate.getOrDefault(dateStr, 0) + 1);
+    }
+    
+    return ResponseEntity.ok(ordersByDate);
+}
+
+
 
 
 }
