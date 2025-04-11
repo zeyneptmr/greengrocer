@@ -156,9 +156,9 @@ const Navbar = () => {
                         <div className="relative" ref={profileMenuRef}>
                             <button
                                 onClick={handleProfileMenuToggle}
-                                className="flex items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110"
+                                className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                             >
-                                <User size={38}/>
+                                <User size={50}/>
                                 <span className="text-sm">Profile</span>
                             </button>
                             {isProfileMenuOpen && (
@@ -192,17 +192,17 @@ const Navbar = () => {
                     ) : (
                         <button
                             onClick={() => setIsAccountOpen(true)}
-                            className="flex items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110"
+                            className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                         >
-                            <User size={44}/>
+                            <User size={50}/>
                             <span className="text-sm">Log In</span>
                         </button>
                     )}
 
                     <Link to="/favorites">
                         <button
-                            className="flex items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative">
-                            <Heart size={36}/>
+                            className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative">
+                            <Heart size={50}/>
                             <span className="text-sm">Favorites</span>
                             {favorites.length > 0 && (
                                 <span
@@ -215,10 +215,10 @@ const Navbar = () => {
 
                     <button
                         onClick={handleCartClick}
-                        className="flex items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
+                        className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                     >
-                        <ShoppingCart size={44}/>
-                        <span className="text-sm">{loggedInUser ? "My Cart" : "Cart"}</span>
+                        <ShoppingCart size={50}/>
+                        <span className="text-sm truncate">{loggedInUser ? "My Cart" : "Cart"}</span>
                         {getTotalProductTypes() > 0 && (
                             <span
                                 className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
