@@ -39,6 +39,7 @@ import CustomerFeedbackPage from "./pages/CustomerFeedbackPage";
 import CardList from "./pages/CreditCard";
 import ResetPassword from "./components/ResetPassword";
 import DiscountPage from "./pages/DiscountPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 import "./styles/App.css";
 
 function MainContent(){
@@ -80,6 +81,7 @@ function MainContent(){
                     <Route path="/customer-info" element={<CustomerInfoPage/>}/>
                     <Route path="/credit-card" element={<CreditCardPage/>}/>
                     <Route path="delete-account" element={<DeleteAccount/>}/>
+                    <Route path="/my-orders" element={<MyOrdersPage/>}/>
                     <Route path="/manager/inventory" element={<InventoryPage/>}/>
                     <Route path="/manager/customer-order" element={<CustomerOrderPage/>}/>
                     <Route path="/manager/customer-feedback" element={<CustomerFeedbackPage/>}/>

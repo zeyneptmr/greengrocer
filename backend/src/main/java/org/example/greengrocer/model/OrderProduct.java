@@ -17,11 +17,14 @@ public class OrderProduct {
 
     private String productName;
 
+    private String imagePath;
+
     private int quantity;
 
     private double pricePerProduct;
 
     private double totalPerProduct;
+
 
     public Long getItemId() {
         return itemId;
@@ -38,6 +41,9 @@ public class OrderProduct {
     public CustomerOrder getCustomerOrder() {
         return customerOrder;
     }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
     public Long getProductId() {
         return productId;

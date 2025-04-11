@@ -414,7 +414,7 @@ const PaymentPage = () => {
 
                             {/* Go to My Orders */}
                             <button
-                                onClick={() => window.location.href = "http://localhost:3000/customer-info"}
+                                onClick={() => navigate("/my-orders")}
                                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
                             >
                                 Go to My Orders

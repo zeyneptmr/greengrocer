@@ -67,6 +67,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/customerorder/total-sales").permitAll()
                     .requestMatchers("/api/orderproduct/**").permitAll()
                     .requestMatchers("api/customerorder/orders/{orderId}/status").permitAll()
+                    .requestMatchers("/api/orderproduct/by-order/{orderId}").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

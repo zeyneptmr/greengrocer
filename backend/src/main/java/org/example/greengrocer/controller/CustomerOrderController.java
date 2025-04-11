@@ -26,8 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 import java.util.Optional;
 
 import org.example.greengrocer.model.Address;
@@ -45,8 +43,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
 
 @RestController
 @RequestMapping("/api/customerorder")
@@ -175,24 +171,49 @@ public class CustomerOrderController {
         // Siparişin son durumunu da güncelle
         order.setLatestStatus(newStatus);
         orderRepository.save(order);
+        System.out.println("Saved order with ID: " + order.getOrderId());
 
         return ResponseEntity.ok("Status updated successfully");
     }
 
-
-    @GetMapping("/my-orders")
+    @GetMapping("/orders/my")
     public ResponseEntity<?> getMyOrders(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
         if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-
         User user = userOpt.get();
-        List<CustomerOrder> orders = orderRepository.findByUser(user);
 
-        return ResponseEntity.ok(orders);
+        List<CustomerOrder> orders = orderRepository.findByUser(user); // Kullanıcının siparişlerini al
+
+        if (orders.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders found for user");
+        }
+
+        List<Map<String, Object>> simplifiedOrders = orders.stream().map(order -> {
+            Map<String, Object> orderMap = new HashMap<>();
+            orderMap.put("orderId", order.getOrderId());
+            orderMap.put("createdAt", order.getCreatedAt());
+            orderMap.put("productTotal", order.getProductTotal());
+            orderMap.put("shippingAddress", order.getShippingAddress());
+            orderMap.put("shippingFee", order.getShippingFee());
+            orderMap.put("totalAmount", order.getTotalAmount());
+            orderMap.put("latestStatus", order.getLatestStatus());
+
+            orderMap.put("statusHistory", order.getStatusHistory().stream().map(status -> {
+                Map<String, Object> statusMap = new HashMap<>();
+                statusMap.put("status", status.getStatus());
+                statusMap.put("timestamp", status.getTimestamp());
+                return statusMap;
+            }).collect(Collectors.toList()));
+
+            return orderMap;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(simplifiedOrders);
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(HttpServletRequest request) {
@@ -208,8 +229,8 @@ public class CustomerOrderController {
         OrderTotal orderTotal = orderTotalRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Order total not found"));
 
-
         CustomerOrder order = new CustomerOrder();
+        order.setLatestStatus("Order Received");
         order.setUser(user);
         order.setUserEmail(email);
         order.setShippingAddress(address);
@@ -217,21 +238,28 @@ public class CustomerOrderController {
         order.setShippingFee(orderTotal.getShippingFee());
         order.setTotalAmount(orderTotal.getTotalAmount());
 
-        OrderStatus initialStatus = new OrderStatus("Sipariş Alındı", order);
+        OrderStatus initialStatus = new OrderStatus("Order Received", order);
+
         order.getStatusHistory().add(initialStatus); // önce listeye ekle
         orderRepository.save(order);
+        System.out.println("Saved order with ID: " + order.getOrderId());
 
         //orderStatusRepository.save(initialStatus);
 
         List<CartItem> cartItems = cartRepository.findByUser(user);
+
         for (CartItem item : cartItems) {
             OrderProduct op = new OrderProduct();
             op.setCustomerOrder(order);
+            System.out.println("Setting CustomerOrder: " + order.getOrderId());
             op.setProductId(item.getProductId());
             op.setProductName(item.getName());
             op.setQuantity(item.getQuantity());
+            op.setImagePath(item.getImagePath());
             op.setPricePerProduct(item.getPrice());
             op.setTotalPerProduct(item.getQuantity() * item.getPrice());
+
+            System.out.println("Saving OrderProduct with OrderId: " + order.getOrderId());
             orderProductRepo.save(op);
         }
 

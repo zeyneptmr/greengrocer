@@ -176,6 +176,11 @@ const Navbar = () => {
                                         }} className="p-2 cursor-pointer hover:bg-gray-200">Addresses
                                         </li>
                                         <li onClick={() => {
+                                            navigate("/my-orders");
+                                            setIsProfileMenuOpen(false);
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">My Orders
+                                        </li>
+                                        <li onClick={() => {
                                             handleLogout();
                                             setIsProfileMenuOpen(false);
                                         }} className="p-2 cursor-pointer hover:bg-gray-200">Log Out
