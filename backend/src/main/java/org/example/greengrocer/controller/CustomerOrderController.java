@@ -4,10 +4,13 @@ package org.example.greengrocer.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -327,6 +330,43 @@ public ResponseEntity<Map<String, Integer>> getOrdersByDate(@RequestParam(requir
     }
     
     return ResponseEntity.ok(ordersByDate);
+}
+
+
+@GetMapping("/monthly-sales")
+public ResponseEntity<Map<String, Double>> getMonthlySales(@RequestParam(required = false) Integer year) {
+
+    if (year == null) {
+        year = LocalDate.now().getYear();
+    }
+    
+    Map<String, Double> monthlySales = new HashMap<>();
+    
+
+    for (int month = 1; month <= 12; month++) {
+        // Format month names as "Jan", "Feb", etc.
+        String monthName = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+        monthlySales.put(monthName, 0.0);
+    }
+    
+
+    LocalDate startDate = LocalDate.of(year, 1, 1);
+    LocalDate endDate = LocalDate.of(year, 12, 31);
+    
+    List<CustomerOrder> orders = orderRepository.findByCreatedAtBetween(
+        startDate.atStartOfDay(), 
+        endDate.atTime(23, 59, 59)
+    );
+    
+    
+    for (CustomerOrder order : orders) {
+        LocalDate orderDate = order.getCreatedAt().toLocalDate();
+        String monthName = orderDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+        double existingTotal = monthlySales.getOrDefault(monthName, 0.0);
+        monthlySales.put(monthName, existingTotal + order.getTotalAmount());
+    }
+    
+    return ResponseEntity.ok(monthlySales);
 }
 
 

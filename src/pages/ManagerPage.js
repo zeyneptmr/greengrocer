@@ -19,6 +19,17 @@ const ManagerPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [calendarData, setCalendarData] = useState({});
+    const [salesChartData, setSalesChartData] = useState({
+        labels: [],
+        datasets: [
+            {
+                label: "Total Sales",
+                data: [],
+                borderColor: "#4CAF50",
+                backgroundColor: "rgba(76, 175, 80, 0.2)",
+            },
+        ],
+    });
 
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -46,6 +57,28 @@ const ManagerPage = () => {
                     setOrderCount(orderResponse.data.length);
                 }
                 
+    
+                const monthlySalesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/monthly-sales`, {
+                    params: { year: selectedYear },
+                    withCredentials: true
+                });
+                
+        
+                const labels = Object.keys(monthlySalesResponse.data);
+                const salesValues = Object.values(monthlySalesResponse.data);
+                
+                setSalesChartData({
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Total Sales (₺)",
+                            data: salesValues,
+                            borderColor: "#4CAF50",
+                            backgroundColor: "rgba(76, 175, 80, 0.2)",
+                        },
+                    ],
+                });
+                
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -55,9 +88,9 @@ const ManagerPage = () => {
         };
         
         fetchData();
-    }, []);
+    }, [selectedYear]);
 
-
+    // Effect for calendar data
     useEffect(() => {
         const fetchCalendarData = async () => {
             try {
@@ -71,7 +104,6 @@ const ManagerPage = () => {
                 
                 setCalendarData(response.data);
                 
-    
                 const monthOrdersList = Object.entries(response.data).map(([date, count]) => ({
                     date: new Date(date),
                     orders: count
@@ -87,7 +119,6 @@ const ManagerPage = () => {
             fetchCalendarData();
         }
     }, [selectedYear, selectedMonth]);
-
 
     const generateCalendarDays = (year, month) => {
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -113,24 +144,48 @@ const ManagerPage = () => {
         setSelectedMonth(index);
     };
 
-    const salesData = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [
-            {
-                label: "Total Sales",
-                data: [12000, 15000, 18000, 20000, 25000, 30000],
-                borderColor: "#4CAF50",
-                backgroundColor: "rgba(76, 175, 80, 0.2)",
-            },
-        ],
-    };
-
-
     const getOrderCount = (day) => {
         if (!day) return 0;
         
         const dateStr = `${selectedYear}-${(selectedMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
         return calendarData[dateStr] || 0;
+    };
+
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += new Intl.NumberFormat('tr-TR', { 
+                                style: 'currency', 
+                                currency: 'TRY',
+                                minimumFractionDigits: 2
+                            }).format(context.parsed.y);
+                        }
+                        return label;
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return value.toLocaleString('tr-TR') + ' ₺';
+                    }
+                }
+            }
+        }
     };
 
     return (
@@ -162,8 +217,27 @@ const ManagerPage = () => {
 
                 <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div className="bg-white shadow-md rounded-lg p-6">
-                        <h3 className="text-xl font-bold text-gray-700">Sales Overview</h3>
-                        <Line data={salesData}/>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-gray-700">Sales Overview ({selectedYear})</h3>
+                            <select
+                                value={selectedYear}
+                                onChange={handleYearChange}
+                                className="p-2 border rounded"
+                            >
+                                {[2023, 2024, 2025, 2026].map((year) => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        {loading ? (
+                            <div className="flex justify-center items-center h-64">
+                                <p>Loading sales data...</p>
+                            </div>
+                        ) : (
+                            <Line data={salesChartData} options={chartOptions} />
+                        )}
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 overflow-auto h-80">
