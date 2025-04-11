@@ -73,16 +73,18 @@ const ManagerPage = () => {
     }, []);
 
 
+    const [orders, setOrders] = useState([]);
+
     useEffect(() => {
-        axios
-            .get(`${API_BASE_URL}/api/order-status/count`)
-            .then((response) => {
-                setOrderCount(response.data); 
+        axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true })
+            .then(res => {
+                if (Array.isArray(res.data)) {
+                    setOrderCount(res.data.length);
+                }
             })
-            .catch((error) => {
-                console.error("Error fetching order count:", error);
-            });
+            .catch(err => console.error("Orders could not be fetched:", err));
     }, []);
+
 
     // Function to generate calendar days for a selected month
     const generateCalendarDays = (year, month) => {
