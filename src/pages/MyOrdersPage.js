@@ -33,16 +33,37 @@ const statusIcons = {
     "Dispatched": <Truck className="w-6 h-6" />,       // Kargoya verildi
 };
 
+// Filtre seçenekleri
+const filterOptions = [
+    { id: "all", label: "All Orders" },
+    { id: "week", label: "Last Week" },
+    { id: "month", label: "Last Month" },
+    { id: "threeMonths", label: "Last 3 Months" },
+    { id: "year", label: "Last Year" }
+];
+
 export default function MyOrdersPage() {
-    const [orders, setOrders] = useState([]);
+    const [allOrders, setAllOrders] = useState([]);
+    const [displayedOrders, setDisplayedOrders] = useState([]);
     const [productsByOrderId, setProductsByOrderId] = useState({});
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchOrders = async () => {
+        setIsLoading(true);
         try {
             const response = await axios.get("http://localhost:8080/api/customerorder/orders/my", { withCredentials: true });
-            setOrders(response.data);
+            // Siparişleri tarihe göre sıralayın (en yeni en üstte)
+            const sortedOrders = response.data.sort((a, b) => {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+            
+            setAllOrders(sortedOrders);
+            setDisplayedOrders(sortedOrders);
+            setIsLoading(false);
         } catch (error) {
             console.error("Siparişler alınamadı:", error);
+            setIsLoading(false);
         }
     };
 
@@ -59,6 +80,48 @@ export default function MyOrdersPage() {
         fetchOrders();
     }, []);
 
+    // Filtre değiştiğinde siparişleri filtreleme
+    const filterOrders = (filterId) => {
+        setActiveFilter(filterId);
+        
+        if (allOrders.length === 0) return;
+        
+        const now = new Date();
+        let filteredList = [];
+        
+        console.log("Filtering orders with filter:", filterId);
+        console.log("All orders count:", allOrders.length);
+        
+        switch(filterId) {
+            case "week":
+            
+                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneWeekAgo);
+                break;
+            case "month":
+        
+                const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneMonthAgo);
+                break;
+            case "threeMonths":
+            
+                const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= threeMonthsAgo);
+                break;
+            case "year":
+            
+                const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneYearAgo);
+                break;
+            default:
+        
+                filteredList = [...allOrders];
+        }
+        
+        console.log("Filtered orders count:", filteredList.length);
+        setDisplayedOrders(filteredList);
+    };
+
     const getStatusSteps = (currentStatus) => {
         const allSteps = ["Order Received", "Confirmed", "Preparing", "Dispatched"];
         return allSteps.map(status => ({
@@ -67,13 +130,40 @@ export default function MyOrdersPage() {
         }));
     };
 
+
+    console.log("Active filter:", activeFilter);
+    console.log("All orders:", allOrders.length);
+    console.log("Displayed orders:", displayedOrders.length);
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-orange-50 py-10 px-6 lg:px-20">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-3xl font-bold text-orange-600 mb-8 text-center">My Orders</h1>
-                {Array.isArray(orders) && orders.length > 0 ? (
+                
+                {/* Filtre butonları */}
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                    {filterOptions.map(option => (
+                        <button
+                            key={option.id}
+                            onClick={() => filterOrders(option.id)}
+                            className={`px-4 py-2 rounded-full ${
+                                activeFilter === option.id 
+                                    ? 'bg-orange-500 text-white' 
+                                    : 'bg-white text-orange-500 border border-orange-500'
+                            } transition-colors`}
+                        >
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+                
+                {isLoading ? (
+                    <div className="flex justify-center items-center min-h-[300px]">
+                        <div className="text-xl font-bold text-orange-500">Loading your orders...</div>
+                    </div>
+                ) : Array.isArray(displayedOrders) && displayedOrders.length > 0 ? (
                     <div className="flex flex-col gap-12">
-                        {orders.map((order) => (
+                        {displayedOrders.map((order) => (
                             <div key={order.orderId} className="flex flex-col lg:flex-row gap-6">
 
                                 {/* Sipariş Takip İkonları */}
@@ -95,9 +185,6 @@ export default function MyOrdersPage() {
                                     }}
                                 >
                                     {/* Ürünler */}
-
-                                    {/* Ürünler */}
-
                                     <div className="md:w-1/2 pr-4 relative">
                                         {/* Sipariş No Sol Üst */}
                                         <div className="absolute top-0 left-0 text-xs font-semibold text-orange-500">
@@ -151,7 +238,6 @@ export default function MyOrdersPage() {
                                             <div className="text-sm text-gray-600 inline ml-4">Time:</div>
                                             <div className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
 
-
                                             {/* Toplam Tutar */}
                                             <div className="text-sm text-gray-600 inline ml-4">Total Amount: </div>
                                             <div className="font-bold text-lg text-orange-600 inline ml-2">{order.totalAmount} ₺</div>
@@ -162,23 +248,15 @@ export default function MyOrdersPage() {
                                                 {statusIcons[order.latestStatus]} <span>{order.latestStatus}</span>
                                             </div>
                                             </div>
-
-
-
                                         </div>
                                     </div>
-
-
-
-
                                 </div>
                             </div>
-
                         ))}
                     </div>
                 ) : (
                     <div className="flex justify-center items-center min-h-[300px]">
-                        <h2 className="text-4xl font-bold text-green-600">You don't have any orders yet.</h2>
+                        <h2 className="text-xl font-bold text-green-600">No orders found in this time range.</h2>
                     </div>
                 )}
             </div>

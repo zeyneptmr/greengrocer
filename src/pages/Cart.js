@@ -3,6 +3,8 @@ import { useCart } from "../helpers/CartContext";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import cartImg from "../assets/sadCart.jpeg";
+import { Link } from "react-router-dom";
 import {useFavorites} from "../helpers/FavoritesContext";
 //import { getImageFromPath } from "../utils/imageUtils"; // 👈 bunu ekliyoruz
 
@@ -179,7 +181,18 @@ export default function Cart() {
                 </div>
 
                 {cart.length === 0 ? (
-                    <p className="text-gray-600">Your Cart is Empty.</p>
+                     <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+                     <img src={cartImg} alt="No favorites" className="w-60 sm:w-70 mb-6" />
+                     <p className="text-gray-700 text-lg sm:text-xl font-semibold mb-4 px-4">
+                         You haven't added anything to your cart yet.
+                     </p>
+                     <Link to="/products">
+                         <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                             Discover Our Products
+                         </button>
+                     </Link>
+                 </div>
+
                 ) : (
                     <ul className="space-y-4">
                         {cart.map((item) => (
