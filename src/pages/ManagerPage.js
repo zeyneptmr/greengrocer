@@ -9,16 +9,46 @@ import { motion } from "framer-motion";
 import axios from "axios";
 
 
+const API_BASE_URL = 'http://localhost:8080';
+
 const ManagerPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [ordersData, setOrdersData] = useState([]);
     const [userCount, setUserCount] = useState(0);
+    const [orderCount, setOrderCount] = useState(0);
+    const [totalSales, setTotalSales] = useState("0 TL");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
+
+   
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                // Fetch total sales from the new endpoint
+                const salesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/total-sales`);
+                const totalSalesAmount = salesResponse.data;
+                
+
+                const formattedSales = totalSalesAmount.toFixed(2) + '₺';
+
+                setTotalSales(formattedSales);
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                setError("Failed to load data. Please try again later.");
+                setLoading(false);
+            }
+        };
+        
+        fetchData();
+    }, []);
 
     // Example orders data: "YYYY-MM-DD" format
     const orderData = {
@@ -39,6 +69,18 @@ const ManagerPage = () => {
             })
             .catch((error) => {
                 console.error("Error fetching user count:", error);
+            });
+    }, []);
+
+
+    useEffect(() => {
+        axios
+            .get(`${API_BASE_URL}/api/order-status/count`)
+            .then((response) => {
+                setOrderCount(response.data); 
+            })
+            .catch((error) => {
+                console.error("Error fetching order count:", error);
             });
     }, []);
 
@@ -108,7 +150,7 @@ const ManagerPage = () => {
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <h3 className="text-xl font-bold text-green-700">Total Sales</h3>
-                        <p className="text-xl text-gray-500 font-medium">₺45,300</p>
+                        <p className="text-xl text-gray-500 font-medium">{totalSales}</p>
                     </div>
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
@@ -118,7 +160,7 @@ const ManagerPage = () => {
 
                     <div className="bg-white shadow-md rounded-lg p-6 text-center">
                         <h3 className="text-xl font-bold text-green-700">Orders</h3>
-                        <p className="text-xl text-gray-500 font-medium">{ordersData.length}</p>
+                        <p className="text-xl text-gray-500 font-medium">{orderCount}</p>
                     </div>
                 </div>
 

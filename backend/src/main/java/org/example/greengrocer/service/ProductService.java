@@ -9,6 +9,7 @@ import org.example.greengrocer.model.Product;
 import org.example.greengrocer.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
@@ -65,5 +66,24 @@ public class ProductService {
         Collections.shuffle(allProducts); 
         return allProducts.stream().limit(15).collect(Collectors.toList()); 
     }
+
+    @Transactional
+    public Product decreaseProductStock(Long productId, int quantity) {
+        System.out.println("Decreasing stock for product ID: " + productId + " by quantity: " + quantity);
+
+        Optional<Product> productOpt = getProductById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+        System.out.println("Product found: " + product.getProductName() + ", Current stock: " + product.getStock());
+            int newStock = Math.max(0, product.getStock() - quantity);
+            product.setStock(newStock);
+            return updateProduct(product);
+        }
+        return null;
+    }
+
+
+
+
 
 }
