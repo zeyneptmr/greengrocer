@@ -257,10 +257,12 @@ export default function Cart() {
             <div
                 className="w-full lg:w-1/3 bg-white shadow-2xl rounded-3xl p-6 mt-6 lg:mt-12 border-l-4 border-b-4 border-green-500 relative z-10 max-h-[450px] overflow-hidden">
                 <h3 className="text-2xl text-orange-500 font-semibold mb-6">Cart Summary</h3>
+
                 <div className="flex justify-between text-gray-700 text-lg">
                     <span> </span>
                     <span>{orderTotalData && orderTotalData.totalProductCount} products</span>
                 </div>
+
                 <div className="flex justify-between text-gray-700 text-lg mt-4">
                     <span className="font-semibold"> Cart Total:</span>
                     <span className="font-semibold">{orderTotalData &&orderTotalData.totalPrice} TL</span>
@@ -278,6 +280,12 @@ export default function Cart() {
                 ? "0 TL"
                 : `${orderTotalData && orderTotalData.shippingFee} TL`}
         </span>
+                    </div>
+                )}
+
+                {orderTotalData && orderTotalData.totalPrice < 500 && (
+                    <div className="mt-4 bg-orange-100 text-orange-700 font-bold text-lg py-4 px-6 rounded-lg shadow-md">
+                        {`Add ${500 - orderTotalData.totalPrice} TL worth of products to your cart for free delivery`}
                     </div>
                 )}
 

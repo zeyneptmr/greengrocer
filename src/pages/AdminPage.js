@@ -47,7 +47,7 @@ useEffect(() => {
             const totalSalesAmount = salesResponse.data;
 
             // Format the number with a dot as decimal separator and add TL
-            const formattedSales = totalSalesAmount.toFixed(2) + ' TL';
+            const formattedSales = totalSalesAmount.toFixed(2) + '₺';
 
             setTotalSales(formattedSales);
             setLoading(false);
@@ -161,6 +161,7 @@ useEffect(() => {
                             </div>
                         )}
                     </div>
+
 
                     {/* Category Distribution Chart Section */}
                     <div className="bg-white shadow-md rounded-lg p-6 mt-6">

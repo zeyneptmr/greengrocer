@@ -2,44 +2,55 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import UserSidebar from "../components/UserSidebar.js";
+import axios from "axios";
+import { useCart } from "../helpers/CartContext"; // CartContext'i import ediyoruz
 
 const DeleteAccount = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { setIsLoggedIn } = useCart(); 
 
-    const handleDelete = () => {
-        const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (!storedUser) {
-            setErrorMessage("User not found!");
+    const handleDelete = async () => {
+        setErrorMessage("");
+        
+        if (!password.trim()) {
+            setErrorMessage("Password is required.");
             return;
         }
-
-        if (password !== storedUser.password) {
-            setErrorMessage("Incorrect password. Please try again.");
-            return;
-        }
-
+        
         setConfirmDelete(true);
     };
 
-    const confirmAccountDeletion = () => {
-        const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (!storedUser) return;
-
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        users = users.filter(user => user.email !== storedUser.email);
-        localStorage.setItem("users", JSON.stringify(users));
-
-        localStorage.removeItem("loggedInUser");
-        localStorage.removeItem("cart");
-        localStorage.removeItem("favorites");
-        localStorage.removeItem("savedCards");
-        localStorage.removeItem("defaultCardIndex");
-
-        navigate("/");
+    const confirmAccountDeletion = async () => {
+        try {
+            setIsLoading(true);
+            
+            await axios.post(
+                'http://localhost:8080/api/users/delete-account',
+                { password },
+                { withCredentials: true }
+            );
+            
+        
+            localStorage.removeItem("loggedInUser"); 
+            setIsLoggedIn(false); 
+            
+            navigate("/"); 
+            
+        } catch (error) {
+            setConfirmDelete(false);
+            if (error.response) {
+                setErrorMessage(error.response.data || "Failed to delete account.");
+            } else {
+                setErrorMessage("Network error. Please try again later.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -72,7 +83,8 @@ const DeleteAccount = () => {
                             {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
                             <button
                                 onClick={handleDelete}
-                                className="mt-5 w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition"
+                                disabled={!password.trim()}
+                                className={`mt-5 w-full ${password.trim() ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'} text-white py-3 rounded-lg transition`}
                             >
                                 Continue
                             </button>
@@ -86,12 +98,14 @@ const DeleteAccount = () => {
                             <div className="flex gap-6 mt-6 justify-center">
                                 <button
                                     onClick={confirmAccountDeletion}
-                                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition"
+                                    disabled={isLoading}
+                                    className={`${isLoading ? 'bg-gray-500' : 'bg-red-600 hover:bg-red-700'} text-white px-6 py-3 rounded-lg transition`}
                                 >
-                                    Yes, Delete
+                                    {isLoading ? "Deleting..." : "Yes, Delete"}
                                 </button>
                                 <button
                                     onClick={() => setConfirmDelete(false)}
+                                    disabled={isLoading}
                                     className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-3 rounded-lg transition"
                                 >
                                     Cancel

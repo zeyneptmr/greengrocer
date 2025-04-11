@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from 'axios';
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -11,6 +12,7 @@ const ChangePassword = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (errorMessage || successMessage) {
@@ -22,60 +24,53 @@ const ChangePassword = () => {
         }
     }, [errorMessage, successMessage]);
 
-    const handleChangePassword = () => {
+    const handleChangePassword = async () => {
         setErrorMessage('');
         setSuccessMessage('');
+        setIsLoading(true);
 
-        const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (!storedUser) {
-            setErrorMessage("User not found!");
-            return;
+        try {
+
+            if (!currentPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) {
+                setErrorMessage("All fields are required!");
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                setErrorMessage("Password must be at least 8 characters long!");
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                setErrorMessage("New passwords do not match!");
+                return;
+            }
+
+    
+            const response = await axios.put(
+                'http://localhost:8080/api/users/change-password',
+                {
+                    currentPassword,
+                    newPassword,
+                    confirmPassword
+                },
+                { withCredentials: true }  
+            );
+
+            setSuccessMessage("Password changed successfully!");
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+        } catch (error) {
+
+            if (error.response) {
+                setErrorMessage(error.response.data || "Failed to change password!");
+            } else {
+                setErrorMessage("Network error. Please try again later.");
+            }
+        } finally {
+            setIsLoading(false);
         }
-
-        const storedPassword = storedUser.password;
-
-        if (currentPassword !== storedPassword) {
-            setErrorMessage("Current password is incorrect!");
-            return;
-        }
-
-        if (newPassword === storedPassword) {
-            setErrorMessage("It cannot be the same as your current password!");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            setErrorMessage("New passwords do not match!");
-            return;
-        }
-
-        if (!newPassword.trim()) {
-            setErrorMessage("Password cannot be empty!");
-            return;
-        }
-
-        // En az 8 karakter kontrolü (boşluklar dahil)
-        if (newPassword.length < 8) {
-            setErrorMessage("Password must be at least 8 characters long!");
-            return;
-        }
-
-        if (!/[^\s]/.test(newPassword)) {
-            setErrorMessage("Password cannot be only spaces!");
-            return;
-        }
-
-        storedUser.password = newPassword;
-        localStorage.setItem("loggedInUser", JSON.stringify(storedUser));
-
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        users = users.map(user => user.email === storedUser.email ? { ...user, password: newPassword } : user);
-        localStorage.setItem("users", JSON.stringify(users));
-
-        setSuccessMessage("Password changed successfully!");
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
     };
 
     const isFormIncomplete = !currentPassword || !newPassword || !confirmPassword;
@@ -101,7 +96,9 @@ const ChangePassword = () => {
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                             />
                             <button
-                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                type="button"
+                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"
+                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                             >
                                 {showCurrentPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
@@ -117,6 +114,7 @@ const ChangePassword = () => {
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
                             <button
+                                type="button"
                                 className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"
                                 onClick={() => setShowNewPassword(!showNewPassword)}
                             >
@@ -134,7 +132,9 @@ const ChangePassword = () => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                             <button
-                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                type="button"
+                                className="absolute inset-y-0 right-3 flex items-center text-green-500 hover:text-green-700 transition"                                
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             >
                                 {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                             </button>
@@ -146,14 +146,14 @@ const ChangePassword = () => {
                     )}
                     <button
                         className={`px-6 py-3 w-full rounded-lg text-lg font-semibold transition ${
-                            isFormIncomplete
+                            isFormIncomplete || isLoading
                                 ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                                 : "bg-orange-600 text-white hover:bg-orange-700"
                         }`}
                         onClick={handleChangePassword}
-                        disabled={isFormIncomplete}
+                        disabled={isFormIncomplete || isLoading}
                     >
-                        Update
+                        {isLoading ? "Processing..." : "Update"}
                     </button>
                     {errorMessage && <p className="mt-3 text-red-500 text-center font-medium">{errorMessage}</p>}
                 </div>

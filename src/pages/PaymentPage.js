@@ -179,10 +179,33 @@ const PaymentPage = () => {
                 withCredentials: true
             });
             console.log("Order Created:", res.data);
+            
+            // Parse the orderId from the string response
+            let orderId = null;
+            if (typeof res.data === 'string' && res.data.includes("Order created with ID:")) {
+                // Extract orderId from the string
+                orderId = res.data.split("Order created with ID:")[1].trim();
+            }
+            
+            // Validate orderId before proceeding
+            if (!orderId) {
+                console.error("No order ID received from create order API");
+                setErrorMessage("Order creation failed: No order ID received");
+                return;
+            }
+        
+            console.log("Using order ID:", orderId);
+            
+            const stockUpdateRes = await axios.post(`http://localhost:8080/api/orderproduct/process-order/${orderId}`, {}, {
+                withCredentials: true
+            });
+            console.log("Stock Updated:", stockUpdateRes.data);
+
 
             const completeRes = await axios.post("http://localhost:8080/api/customerorder/finalize", {}, {
                 withCredentials: true
             });
+
             console.log("Order Completed:", completeRes.data);
 
             clearCarto();
@@ -282,7 +305,7 @@ const PaymentPage = () => {
                                         )}
                                     </div>
                                     <p className="text-lg mb-4">
-                                        ** ** ** {card.cardNumberLast4}
+                                        * * ** {card.cardNumberLast4}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Expiration Date: {card.expiryMonth}/{card.expiryYear}
