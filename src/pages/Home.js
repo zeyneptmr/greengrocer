@@ -10,7 +10,11 @@ import banner1 from '../assets/banner1.png';
 import home2 from '../assets/home2.jpg';
 import home3 from '../assets/home3.jpg';
 import home4 from '../assets/home4.jpg';
-import home5 from '../assets/home5.jpg';
+import home6 from '../assets/home6.jpg';
+import home9 from '../assets/home9.jpg';
+import home11 from '../assets/home11.jpg';
+import home7 from '../assets/home7.jpg';
+import home8 from '../assets/home8.jpg';
 import promo1 from '../assets/promo1.svg';
 import promo2 from '../assets/promo2.svg';
 import promo3 from '../assets/promo3.svg';
@@ -135,11 +139,10 @@ export default function HomePage() {
     };
 
     const slideItems = [
-        { image: home5, name: "home5" },
-        { image: home3, name: "home3" },
-        { image: home4, name: "home4" },
-        { image: banner1, name: "banner1" },
-        { image: home2, name: "home2" },
+        { image: home7, name: "home4" },
+        { image: home9, name: "home9" },
+        { image: home8, name: "home3" },
+        { image: home11, name: "home11" },
 
     ];
     const [hovered, setHovered] = useState(null);

@@ -12,7 +12,8 @@ const CustomerOrderPage = () => {
         axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true })
             .then(res => {
                 if (Array.isArray(res.data)) {
-                    setOrders(res.data);
+                    const sortedOrders = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setOrders(sortedOrders);
                 }
             })
             .catch(err => console.error("Orders could not be fetched:", err));
@@ -30,7 +31,8 @@ const CustomerOrderPage = () => {
         );
 
             const updated = await axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true });
-            setOrders(updated.data);
+            const sortedUpdated = updated.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setOrders(sortedUpdated);
         } catch (error) {
             console.error("Status could not be updated:", error);
         }
@@ -140,19 +142,25 @@ const CustomerOrderPage = () => {
                                                     <button
                                                         key={i}
                                                         className={`w-full py-2 rounded-md text-sm font-medium transition-all duration-300
-                                                                ${step === currentStatus
+        ${step === currentStatus
                                                             ? "bg-green-600 text-white"
-                                                            : statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1
-                                                                ? "bg-orange-400 text-white hover:bg-orange-500"
-                                                                : "bg-gray-200 text-gray-500 cursor-not-allowed"}`}
+                                                            : step === "Order Received"
+                                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                                : statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1
+                                                                    ? "bg-orange-400 text-white hover:bg-orange-500"
+                                                                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                                        }`}
                                                         disabled={
-                                                            step !== currentStatus &&
-                                                            statusSteps.indexOf(step) !== statusSteps.indexOf(currentStatus) + 1
+                                                            step === "Order Received" || (
+                                                                step !== currentStatus &&
+                                                                statusSteps.indexOf(step) !== statusSteps.indexOf(currentStatus) + 1
+                                                            )
                                                         }
                                                         onClick={() => handleStatusChange(order.orderId, currentStatus)}
                                                     >
                                                         {step}
                                                     </button>
+
                                                 ))}
                                             </td>
                                         </tr>

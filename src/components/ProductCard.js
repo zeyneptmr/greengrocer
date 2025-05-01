@@ -45,49 +45,6 @@ export default function ProductCard({ product, hideCartView=false }) {
         }
     };
 
-
-    // Fetch the latest product information on mount and when product prop changes
-    useEffect(() => {
-        const fetchLatestProductData = async () => {
-            try {
-                // If we have a productId (from the original product object), use that for fetching
-                const productIdToFetch = product.productId || product.id;
-
-                if (!productIdToFetch) return;
-
-                const baseUrl = 'http://localhost:8080';
-                const response = await axios.get(`{baseUrl}/api/products/${productIdToFetch}`, {
-                    withCredentials: true,
-                        headers: {
-                        'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.status === 200) {
-                    // Update the current product with the latest data while preserving discount info
-                    setCurrentProduct(prev => ({
-                        ...prev,
-                        // Update price if available in response (preserve structure based on your API response)
-                        price: response.data.price || prev.price,
-                        // Recalculate discountedPrice based on the most recent price and discount rate
-                        discountedPrice: prev.discountRate ?
-                            ((response.data.price || prev.price) * (1 - prev.discountRate/100)).toFixed(2) :
-                            prev.discountedPrice
-                    }));
-                }
-            } catch (err) {
-                console.error('Error fetching latest product data:', err);
-            }
-        };
-
-        fetchLatestProductData();
-
-        // Update state if product prop changes
-        setCurrentProduct(product);
-    }, [product]);
-
-
     return (
         <Card className="relative flex flex-col items-center">
             {/* Favorites Button */}

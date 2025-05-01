@@ -37,7 +37,7 @@ export const generateInvoice = (orderData) => {
             ['Email:', orderData.userEmail],
             ['Address:', middleValues.join(', ')],
             ['Order ID:', orderData.orderId],
-            ['Order Date:', new Date(orderData.orderDate).toLocaleDateString()],
+            ['Order Date:', new Date(orderData.orderDate).toLocaleString()],
         ];
 
         const companyInfo = [

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ShoppingCart, CheckCircle, Truck, Package, Clock } from "lucide-react";
 import { FaApple } from 'react-icons/fa';
+import { generateInvoice } from "../helpers/generateInvoice"; // senin dosya yolu neyse ona göre değiştir
+import { FaFileInvoice } from "react-icons/fa";
+
+
 import axios from "axios";
 
 const importAll = (r) => {
@@ -49,6 +53,67 @@ export default function MyOrdersPage() {
     const [activeFilter, setActiveFilter] = useState("all");
     const [isLoading, setIsLoading] = useState(true);
 
+    const handleGeneratePDF = async (orderId) => {
+        try {
+            const userResponse = await axios.get('http://localhost:8080/api/users/me', {
+                withCredentials: true,
+            });
+
+            if (userResponse.status !== 200) {
+                alert('Kullanıcı bilgileri alınamadı');
+                return;
+            }
+
+            const userData = userResponse.data;
+
+            const orderResponse = await axios.get(`http://localhost:8080/api/customerorder/order/${orderId}`, {
+                withCredentials: true,
+            });
+
+            if (orderResponse.status !== 200) {
+                alert('Sipariş bilgileri alınamadı');
+                return;
+            }
+
+            const orderDetails = orderResponse.data;
+
+            const productsResponse = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`, {
+                withCredentials: true,
+            });
+
+            if (productsResponse.status !== 200) {
+                alert('Sipariş ürünleri alınamadı');
+                return;
+            }
+
+            const products = productsResponse.data;
+
+            const orderData = {
+                userName: userData.name,
+                userSurname: userData.surname,
+                userEmail: userData.email,
+                userPhoneNumber: userData.phoneNumber,
+                orderId: orderDetails.orderId,
+                orderDate: orderDetails.createdAt,
+                shippingFee: orderDetails.shippingFee,
+                totalPrice: orderDetails.totalPrice,
+                address: orderDetails.shippingAddress,
+                items: products.map(product => ({
+                    name: product.productName,
+                    quantity: product.quantity,
+                    price: product.pricePerProduct,
+                })),
+                totalAmount: orderDetails.totalAmount,
+            };
+
+            generateInvoice(orderData); // PDF oluşturma fonksiyonunu çağır
+        } catch (error) {
+            console.error('Hata:', error);
+            alert('Fatura oluşturulurken hata oluştu');
+        }
+    };
+
+
     const fetchOrders = async () => {
         setIsLoading(true);
         try {
@@ -57,7 +122,7 @@ export default function MyOrdersPage() {
             const sortedOrders = response.data.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
-            
+
             setAllOrders(sortedOrders);
             setDisplayedOrders(sortedOrders);
             setIsLoading(false);
@@ -177,13 +242,21 @@ export default function MyOrdersPage() {
 
                                 {/* Sipariş Kartı */}
                                 <div
-                                    className="bg-white shadow-lg rounded-2xl p-6 flex flex-col md:flex-row w-full"
+                                    className="relative bg-white shadow-lg rounded-2xl p-6 flex flex-col md:flex-row w-full"
                                     onMouseEnter={() => {
                                         if (!productsByOrderId[order.orderId]) {
                                             fetchOrderProducts(order.orderId);
                                         }
                                     }}
                                 >
+                                    <button
+                                        className="absolute top-4 right-4 flex items-center gap-2 bg-orange-500 hover:bg-gradient-to-r hover:from-green-400 hover:to-green-600 text-white text-sm px-4 py-2 rounded-full shadow-md transition-all duration-300 transform hover:scale-105"
+                                        onClick={() => handleGeneratePDF(order.orderId)}
+                                    >
+                                        <FaFileInvoice className="w-5 h-5"/>
+                                    </button>
+
+
                                     {/* Ürünler */}
                                     <div className="md:w-1/2 pr-4 relative">
                                         {/* Sipariş No Sol Üst */}
@@ -224,33 +297,43 @@ export default function MyOrdersPage() {
                                     </div>
 
                                     {/* Sipariş Bilgileri */}
-                                    <div className="md:w-1/2 border-l border-orange-200 pl-4 flex flex-col justify-between">
+                                    <div
+                                        className="md:w-1/2 border-l border-orange-200 pl-4 flex flex-col justify-between">
                                         <div className="flex flex-col gap-2">
                                             {/* Sipariş No */}
-                                            <div className="text-sm text-gray-600 inline">Order ID: </div>
+                                            <div className="text-sm text-gray-600 inline">Order ID:</div>
                                             <div className="font-semibold inline ml-2">{order.orderId}</div>
 
                                             {/* Tarih */}
-                                            <div className="text-sm text-gray-600 inline ml-4">Date: </div>
-                                            <div className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleDateString()}</div>
+                                            <div className="text-sm text-gray-600 inline ml-4">Date:</div>
+                                            <div
+                                                className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleDateString()}</div>
 
                                             {/* Saat */}
                                             <div className="text-sm text-gray-600 inline ml-4">Time:</div>
-                                            <div className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                            <div
+                                                className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleTimeString([], {
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}</div>
 
                                             {/* Toplam Tutar */}
-                                            <div className="text-sm text-gray-600 inline ml-4">Total Amount: </div>
-                                            <div className="font-bold text-lg text-orange-600 inline ml-2">{order.totalAmount} ₺</div>
+                                            <div className="text-sm text-gray-600 inline ml-4">Total Amount:</div>
+                                            <div
+                                                className="font-bold text-lg text-orange-600 inline ml-2">{order.totalAmount} ₺
+                                            </div>
 
                                             {/* Durum */}
                                             <div className="flex justify-end">
-                                            <div className={`font-semibold flex items-center gap-2 inline ml-2 ${order.latestStatus === "Dispatched" ? 'text-green-600' : 'text-orange-500'}`}>
-                                                {statusIcons[order.latestStatus]} <span>{order.latestStatus}</span>
-                                            </div>
+                                                <div
+                                                    className={`font-semibold flex items-center gap-2 inline ml-2 ${order.latestStatus === "Dispatched" ? 'text-green-600' : 'text-orange-500'}`}>
+                                                    {statusIcons[order.latestStatus]} <span>{order.latestStatus}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         ))}
                     </div>
