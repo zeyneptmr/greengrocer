@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
+
 
 const DisplayProductsPage = () => {
     const [products, setProducts] = useState([]);

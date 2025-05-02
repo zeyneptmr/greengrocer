@@ -88,7 +88,7 @@ public class CartController {
             newCartItem.setProductId(productId);
             newCartItem.setQuantity(quantity);
             newCartItem.setPrice(product.getPrice());
-            newCartItem.setName(product.getProductName());        // EKLENDİ
+            newCartItem.setName(product.getProductKey());        // EKLENDİ
             newCartItem.setImagePath(product.getImagePath()); // EKLENDİ
             cartItemRepository.save(newCartItem);
         }

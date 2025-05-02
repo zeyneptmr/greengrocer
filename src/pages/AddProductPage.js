@@ -51,11 +51,16 @@ const AddProductPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         setProduct((prev) => ({
             ...prev,
             [name]: value,
+            ...(name === "productName" && {
+                productKey: value.trim().toLowerCase().replace(/\s+/g, "_")
+            })
         }));
     };
+
 
     const handlePriceChange = (e) => {
         let priceValue = parseFloat(e.target.value);
@@ -99,16 +104,18 @@ const AddProductPage = () => {
         }
 
         try {
-            
+
             const productToSave = {
                 productName: product.productName,
+                productKey: product.productKey,   // 👈 EKLENDİ
                 price: parseFloat(product.price),
                 category: product.category,
                 imagePath: product.imagePath,
-                stock: 100  
+                stock: 100
             };
 
-        
+
+
             await axios.post(`${API_URL}/api/products`, productToSave);
 
     

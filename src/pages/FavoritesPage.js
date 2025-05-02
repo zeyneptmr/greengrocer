@@ -4,6 +4,8 @@ import heartImg from "../assets/sadheart.png";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
+
+
 const FavoritesPage = () => {
     const { favorites } = useFavorites();
 

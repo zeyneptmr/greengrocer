@@ -11,14 +11,17 @@ import axios from "axios";
 import { useContext } from "react";
 //import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
 import { useCart } from "../helpers/CartContext";
+import { useTranslation } from 'react-i18next';
+import { LanguageContext } from '../context/LanguageContext';
+import i18n from 'i18next';
 
 const menuItems = [
-    { name: "Fruits" },
-    { name: "Vegetables" },
-    { name: "Baked Goods" },
-    { name: "Olives & Oils" },
-    { name: "Sauces" },
-    { name: "Dairy" },
+    { key: "fruits" },
+    { key: "vegetables" },
+    { key: "baked_goods" },
+    { key: "olives_oils" },
+    { key: "sauces" },
+    { key: "dairy" },
 ];
 
 const Navbar = () => {
@@ -33,11 +36,27 @@ const Navbar = () => {
     const profileMenuRef = useRef();
     const { favorites } = useFavorites();
     const { refreshAuth } = useFavorites();
-
     const [Cart, setCart] = useState(null);
-
     const [role, setRole] = useState("");
     //const [hoveredMenu, setHoveredMenu] = useState(null);
+    //const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
+    const { language, setLanguage } = useContext(LanguageContext);
+    const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+    const { t } = useTranslation('navbar'); // navbar namespace kullanıyoruz
+    console.log('Çeviri test (profile):', t('profile'));
+
+
+    const handleLanguageChange = (lang) => {
+        setLanguage(lang);
+        //localStorage.setItem('language', lang);
+        i18n.changeLanguage(lang);
+        setIsLanguageMenuOpen(false);
+    };
+
+
+    const toggleLanguageMenu = () => {
+        setIsLanguageMenuOpen(!isLanguageMenuOpen);
+    };
 
     // Giriş yapan kullanıcıyı kontrol et
     useEffect(() => {
@@ -58,30 +77,31 @@ const Navbar = () => {
         };
     }, []);
 
-    const handleMenuClick = (menuName) => {
-        switch (menuName) {
-            case "Fruits":
+    const handleMenuClick = (menuKey) => {
+        switch (menuKey) {
+            case "fruits":
                 navigate("/fruits");
                 break;
-            case "Vegetables":
+            case "vegetables":
                 navigate("/vegetables");
                 break;
-            case "Baked Goods":
+            case "baked_goods":
                 navigate("/bakedgoods");
                 break;
-            case "Olives & Oils":
+            case "olives_oils":
                 navigate("/olives");
                 break;
-            case "Sauces":
+            case "sauces":
                 navigate("/sauces");
                 break;
-            case "Dairy":
+            case "dairy":
                 navigate("/dairy");
                 break;
             default:
                 break;
         }
     };
+
 
     const handleCartClick = () => {
         console.log("loggedInUser:", loggedInUser); // Kullanıcı bilgisi konsolda görünüyor mu?
@@ -152,6 +172,31 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4 md:gap-10 w-full md:w-auto justify-center md:justify-end">
+                    {/* 🌍 language selector */}
+                    <div className="relative">
+                        <button
+                            onClick={toggleLanguageMenu}
+                            className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
+                        >
+                            <span className="text-3xl">🌍</span>
+                            <span
+                                className="text-sm">{language.toUpperCase()}</span>
+                        </button>
+                        {isLanguageMenuOpen && (
+                            <div
+                                className="absolute top-14 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-md shadow-md w-32 z-50">
+                                <ul>
+                                    <li onClick={() => handleLanguageChange('en')}
+                                        className="p-2 cursor-pointer hover:bg-gray-200 text-lg">🇬🇧 English
+                                    </li>
+                                    <li onClick={() => handleLanguageChange('tr')}
+                                        className="p-2 cursor-pointer hover:bg-gray-200 text-lg">🇹🇷 Türkçe
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+
                     {loggedInUser ? (
                         <div className="relative" ref={profileMenuRef}>
                             <button
@@ -159,7 +204,8 @@ const Navbar = () => {
                                 className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                             >
                                 <User size={50}/>
-                                <span className="text-sm">Profile</span>
+                                <span
+                                    className="text-sm whitespace-nowrap min-w-[70px] text-center">{t('profile')}</span>
                             </button>
                             {isProfileMenuOpen && (
                                 <div
@@ -168,22 +214,26 @@ const Navbar = () => {
                                         <li onClick={() => {
                                             navigate("/account");
                                             setIsProfileMenuOpen(false);
-                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Account settings
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">
+                                            {t('account_settings')}
                                         </li>
                                         <li onClick={() => {
                                             navigate("/address");
                                             setIsProfileMenuOpen(false);
-                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Addresses
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">
+                                            {t('addresses')}
                                         </li>
                                         <li onClick={() => {
                                             navigate("/my-orders");
                                             setIsProfileMenuOpen(false);
-                                        }} className="p-2 cursor-pointer hover:bg-gray-200">My Orders
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">
+                                            {t('my_orders')}
                                         </li>
                                         <li onClick={() => {
                                             handleLogout();
                                             setIsProfileMenuOpen(false);
-                                        }} className="p-2 cursor-pointer hover:bg-gray-200">Log Out
+                                        }} className="p-2 cursor-pointer hover:bg-gray-200">
+                                            {t('logout')}
                                         </li>
                                     </ul>
                                 </div>
@@ -195,7 +245,9 @@ const Navbar = () => {
                             className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                         >
                             <User size={50}/>
-                            <span className="text-sm">Log In</span>
+                            <span className="text-sm whitespace-nowrap min-w-[70px] text-center">{t('login')}</span>
+
+
                         </button>
                     )}
 
@@ -203,7 +255,7 @@ const Navbar = () => {
                         <button
                             className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative">
                             <Heart size={50}/>
-                            <span className="text-sm">Favorites</span>
+                            <span className="text-sm whitespace-nowrap min-w-[70px] text-center">{t('favorites')}</span>
                             {favorites.length > 0 && (
                                 <span
                                     className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -218,7 +270,10 @@ const Navbar = () => {
                         className="flex flex-col items-center gap-1 px-2 py-1 rounded transition-transform hover:scale-110 relative"
                     >
                         <ShoppingCart size={50}/>
-                        <span className="text-sm truncate">{loggedInUser ? "My Cart" : "Cart"}</span>
+                        <span className="text-sm truncate whitespace-nowrap min-w-[70px] text-center">
+    {loggedInUser ? t('cart_logged_in') : t('cart')}
+</span>
+
                         {getTotalProductTypes() > 0 && (
                             <span
                                 className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -255,8 +310,8 @@ const Navbar = () => {
                                     d="M16 11V7a4 4 0 10-8 0v4m-2 0a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2H6z"
                                 />
                             </svg>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Login Required</h2>
-                            <p className="text-gray-600">Please log in to access your cart.</p>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('login_required')}</h2>
+                            <p className="text-gray-600">{t('please_login')}</p>
                         </div>
                         <button
                             onClick={() => {
@@ -265,7 +320,7 @@ const Navbar = () => {
                             }}
                             className="mt-6 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg shadow-lg transition duration-300"
                         >
-                            Log In
+                            {t('login')}
                         </button>
                     </div>
                 </div>
@@ -283,10 +338,10 @@ const Navbar = () => {
                         {menuItems.map((menu, index) => (
                             <li
                                 key={index}
-                                onClick={() => handleMenuClick(menu.name)}
+                                onClick={() => handleMenuClick(menu.key)}
                                 className="cursor-pointer text-sm sm:text-lg md:text-xl font-medium hover:scale-125 hover:text-orange-500 hover:drop-shadow-lg transition-all duration-300"
                             >
-                                {menu.name}
+                                {t(menu.key)}
                             </li>
                         ))}
                     </ul>

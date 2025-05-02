@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import SlideBar from "../components/SliderBar";
 import TodaysDiscountedProducts from "../components/TodaysDiscountedProducts";
-
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext";
 import banner1 from '../assets/banner1.png';
@@ -29,6 +28,9 @@ import olivesOilsImg from "../assets/olivesoils1.svg";
 import saucesImg from "../assets/sauces1.svg";
 import dairyImg from "../assets/dairy1.svg";
 import axios from "axios";
+import { useContext } from "react";
+import { LanguageContext } from "../context/LanguageContext";
+
 
 const banners = [banner1];
 // Function to shuffle the array
@@ -51,6 +53,7 @@ export default function HomePage() {
     const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -92,7 +95,7 @@ export default function HomePage() {
     useEffect(() => {
         const fetchRandomProducts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/api/products/random"); 
+                const response = await axios.get(`http://localhost:8080/api/products/random?language=${language}`);
                 setRandomProducts(response.data);
             } catch (error) {
                 console.error("Error fetching random products", error);
@@ -100,7 +103,7 @@ export default function HomePage() {
         };
 
         fetchRandomProducts(); // Call function to fetch products
-    }, []); 
+    }, [language]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -215,7 +218,7 @@ export default function HomePage() {
                             key={product.id}
                             product={{
                                 id: product.id,
-                                name: product.productName,
+                                name: product.translatedName || product.productName,
                                 price: formatPrice(product.price),
                                 image: getImageFromPath(product.imagePath),
                                 stock: product.stock,

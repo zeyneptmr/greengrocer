@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import bakedgoods1 from '../assets/bakedgoods1.jpg.avif';
 import bakedgoods2 from '../assets/bakedgoods2.jpg';
 import bakedgoods3 from '../assets/bakedgoods3.jpg';
+import { LanguageContext } from "../context/LanguageContext";
 
 const importAll = (r) => {
     let images = {};
@@ -22,6 +23,7 @@ const formatPrice = (price) => {
 };
 
 const BakedGoodsPage = () => {
+    const { language } = useContext(LanguageContext);
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
     const [bakedGoodsProducts, setBakedGoodsProducts] = useState([]);
@@ -54,7 +56,7 @@ const BakedGoodsPage = () => {
         const fetchBakedGoods = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:8080/api/products');
+                const response = await fetch(`http://localhost:8080/api/products?language=${language}`);
 
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
 
@@ -74,7 +76,7 @@ const BakedGoodsPage = () => {
         };
 
         fetchBakedGoods();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         if (bakedGoodsProducts.length === 0) return;
@@ -86,9 +88,9 @@ const BakedGoodsPage = () => {
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
+            sortedArray.sort((a, b) => a.translatedName.localeCompare(b.translatedName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
+            sortedArray.sort((a, b) => b.translatedName.localeCompare(a.translatedName));
         }
 
         setBakedGoodsProducts(sortedArray);
@@ -131,7 +133,7 @@ const BakedGoodsPage = () => {
                                     key={product.id}
                                     product={{
                                         id: product.id,
-                                        name: product.productName,
+                                        name: product.translatedName,
                                         price: formatPrice(product.price),
                                         image: getImageFromPath(product.imagePath),
                                         stock: product.stock,

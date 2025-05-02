@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import fruits1 from '../assets/fruits1.jpg';
 import fruits2 from '../assets/fruits2.jpg';
 import fruits3 from '../assets/fruits3.jpg';
-
+import { LanguageContext } from "../context/LanguageContext";
 
 const importAll = (r) => {
     let images = {};
@@ -23,6 +23,7 @@ const importAll = (r) => {
 };
 
 const FruitsPage = () => {
+    const { language } = useContext(LanguageContext);
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
     const [fruits, setFruits] = useState([]);
@@ -62,7 +63,7 @@ const FruitsPage = () => {
         const fetchFruits = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:8080/api/products');
+                const response = await fetch(`http://localhost:8080/api/products?language=${language}`);
                 
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
@@ -85,7 +86,7 @@ const FruitsPage = () => {
         };
         
         fetchFruits();
-    }, []);
+    }, [language]);
     
 
     useEffect(() => {
@@ -98,9 +99,9 @@ const FruitsPage = () => {
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
+            sortedArray.sort((a, b) => a.translatedName.localeCompare(b.translatedName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
+            sortedArray.sort((a, b) => b.translatedName.localeCompare(a.translatedName));
         }
         
         setFruits(sortedArray);
@@ -147,7 +148,7 @@ const FruitsPage = () => {
                                     key={product.id}
                                     product={{
                                         id: product.id,
-                                        name: product.productName,
+                                        name: product.translatedName,
                                         price: formatPrice(product.price),
                                         image: getImageFromPath(product.imagePath),
                                         stock: product.stock,

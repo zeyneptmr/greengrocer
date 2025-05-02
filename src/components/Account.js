@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { CartContext } from "../helpers/CartContext";
 import { useFavorites } from "../helpers/FavoritesContext"; // Import the FavoritesContext
+import { useTranslation } from 'react-i18next';
 
 import ForgotPassword from './ForgotPassword';
 
@@ -38,6 +39,8 @@ const Account = ({ isOpen, onClose }) => {
     const { refreshFavorites, refreshAuth } = useFavorites();
 
     const [message, setMessage] = useState("");
+    const { t } = useTranslation('account');
+
 
     useEffect(() => {
         if (isOpen) {
@@ -299,11 +302,11 @@ const Account = ({ isOpen, onClose }) => {
                 <form onSubmit={handleSubmit}>
                     {isRegister ? (
                         <>
-                            <h2 className="text-xl font-bold text-green-600">Sign Up</h2>
+                            <h2 className="text-xl font-bold text-green-600">{t('signup_title')}</h2>
                             <input
                                 type="text"
                                 name="name"
-                                placeholder="Name"
+                                placeholder={t('name_placeholder')}
                                 value={formData.name}
                                 onChange={handleNameChange}
                                 className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
@@ -312,7 +315,7 @@ const Account = ({ isOpen, onClose }) => {
                             <input
                                 type="text"
                                 name="surname"
-                                placeholder="Surname"
+                                placeholder={t('surname_placeholder')}
                                 value={formData.surname}
                                 onChange={handleSurnameChange}
                                 className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
@@ -321,13 +324,13 @@ const Account = ({ isOpen, onClose }) => {
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="E-mail"
+                                placeholder={t('surname_placeholder')}
                                 value={formData.email}
                                 onChange={handleEmailChange}
                                 className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.emailError ? "border-red-500" : "border-gray-300"}`}
                                 required
                             />
-                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
+                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{t('email_error')}</p>}
                             <div className="flex items-center space-x-2">
                                 <div
                                     className="flex items-center border border-gray-300 rounded-md w-[150px] h-[60px] p-2">
@@ -350,19 +353,19 @@ const Account = ({ isOpen, onClose }) => {
                                 <input
                                     type="tel"
                                     name="phoneNumber"
-                                    placeholder="Phone number"
+                                    placeholder={t('phone_placeholder')}
                                     value={formData.phoneNumber}
                                     onChange={handlePhoneChange}
                                     className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.phoneError ? "border-red-500" : "border-gray-300"}`}
                                     required
                                 />
                             </div>
-                            {errors.phoneError && <p className="text-red-500 text-sm mt-1">{errors.phoneError}</p>}
+                            {errors.phoneError && <p className="text-red-500 text-sm mt-1">{t('phone_error')}</p>}
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder={t('password_placeholder')}
                                     value={formData.password}
                                     onChange={handlePasswordChange}
                                     className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.passwordError ? "border-red-500" : "border-gray-300"}`}
@@ -377,12 +380,12 @@ const Account = ({ isOpen, onClose }) => {
                             </div>
 
                             {errors.passwordError &&
-                                <p className="text-red-500 text-sm mt-1">{errors.passwordError}</p>}
+                                <p className="text-red-500 text-sm mt-1">{t('password_length_error')}</p>}
                             <div className="relative">
                                 <input
                                     type={showConfirmPassword ? "text" : "password"}
                                     name="confirmPassword"
-                                    placeholder="Confirm password"
+                                    placeholder={t('confirm_password_placeholder')}
                                     value={formData.confirmPassword}
                                     onChange={handleConfirmPasswordChange}
                                     className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
@@ -397,16 +400,16 @@ const Account = ({ isOpen, onClose }) => {
                             </div>
 
                             {errors.confirmPasswordError &&
-                                <p className="text-red-500 text-sm mt-1">{errors.confirmPasswordError}</p>}
+                                <p className="text-red-500 text-sm mt-1">{t('password_match_error')}</p>}
                             <button
                                 type="submit"
                                 className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
-                                Sign Up
+                                {t('signup_button')}
                             </button>
 
-                            <p className="mt-2">Already have an account? <span
+                            <p className="mt-2">{t('already_have_account')} <span
                                 className="text-green-600 underline cursor-pointer"
-                                onClick={() => setIsRegister(false)}>Log In</span></p>
+                                onClick={() => setIsRegister(false)}>{t('login_title')}</span></p>
                         </>
                     ) : (
                         <>
@@ -414,20 +417,20 @@ const Account = ({ isOpen, onClose }) => {
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="E-mail"
+                                placeholder={t('email_placeholder')}
                                 value={formData.email}
                                 onChange={handleEmailChange}
                                 className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
                                 required
                             />
 
-                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{errors.emailError}</p>}
+                            {errors.emailError && <p className="text-red-500 text-sm mt-1">{t('email_error')}</p>}
 
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder={t('password_placeholder')}
                                     value={formData.password}
                                     onChange={handlePasswordChange}
                                     className="block w-full p-4 my-2 border border-gray-300 rounded-md text-lg focus:border-orange-600"
@@ -443,10 +446,10 @@ const Account = ({ isOpen, onClose }) => {
 
                             <button type="submit"
                                     className="w-full p-4 bg-green-600 text-white rounded-md cursor-pointer transition-transform hover:scale-105 hover:shadow-lg">
-                                Log In
+                                {t('login_title')}
                             </button>
-                            <p className="mt-2">Don't have an account? <span
-                                className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>Sign Up</span>
+                            <p className="mt-2">{t('dont_have_account')}  <span
+                                className="text-green-600 underline cursor-pointer" onClick={() => setIsRegister(true)}>{t('signup_title')}</span>
                             </p>
                             <p className="mt-2">
                                  <span
@@ -455,7 +458,7 @@ const Account = ({ isOpen, onClose }) => {
                                          setIsForgotPassword(true);
                                      }}
                                  >
-                                Forgot Password?
+                                {t('forgot_password')}
                                 </span>
                             </p>
                         </>

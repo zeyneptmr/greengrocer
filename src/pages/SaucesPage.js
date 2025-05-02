@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import sauces1 from '../assets/sauces1.jpg';
 import sauces2 from '../assets/sauces2.jpg';
+import { LanguageContext } from "../context/LanguageContext";
 
 const importAll = (r) => {
     let images = {};
@@ -21,6 +22,7 @@ const formatPrice = (price) => {
 };
 
 const SaucesPage = () => {
+    const { language } = useContext(LanguageContext);
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
     const [sauces, setSauces] = useState([]);
@@ -54,7 +56,7 @@ const SaucesPage = () => {
         const fetchSauces = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:8080/api/products');
+                const response = await fetch(`http://localhost:8080/api/products?language=${language}`);
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
                 }
@@ -72,7 +74,7 @@ const SaucesPage = () => {
             }
         };
         fetchSauces();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         if (sauces.length === 0) return;
@@ -84,9 +86,9 @@ const SaucesPage = () => {
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
+            sortedArray.sort((a, b) => a.translatedName.localeCompare(b.translatedName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
+            sortedArray.sort((a, b) => b.translatedName.localeCompare(a.translatedName));
         }
 
         setSauces(sortedArray);
@@ -130,7 +132,7 @@ const SaucesPage = () => {
                                     key={product.id}
                                     product={{
                                         id: product.id,
-                                        name: product.productName,
+                                        name: product.translatedName,
                                         price: formatPrice(product.price),
                                         image: getImageFromPath(product.imagePath),
                                         stock: product.stock,

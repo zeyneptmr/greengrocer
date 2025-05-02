@@ -1,0 +1,20 @@
+{
+  "profile": "Profile",
+  "favorites": "Favorites",
+  "cart_logged_in": "My Cart",
+  "cart": "Cart",
+  "login": "Log In",
+  "account_settings": "Account settings",
+  "addresses": "Addresses",
+  "my_orders": "My Orders",
+  "logout": "Log Out",
+  "login_required": "Login Required",
+  "please_login": "Please log in to access your cart.",
+  "fruits": "Fruits",
+  "vegetables": "Vegetables",
+  "baked_goods": "Baked Goods",
+  "olives_oils": "Olives & Oils",
+  "sauces": "Sauces",
+  "dairy": "Dairy"
+
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
@@ -7,6 +7,7 @@ import vegetables2 from '../assets/vegetables2.jpg';
 import vegetables3 from '../assets/vegetables3.jpg';
 import vegetables4 from '../assets/vegetables4.jpg';
 import vegetables5 from '../assets/vegetables5.jpg';
+import { LanguageContext } from "../context/LanguageContext";
 
 const importAll = (r) => {
     let images = {};
@@ -24,6 +25,7 @@ const formatPrice = (price) => {
 };
 
 const VegetablesPage = () => {
+    const { language } = useContext(LanguageContext);
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
     const [vegetables, setVegetables] = useState([]);
@@ -32,6 +34,7 @@ const VegetablesPage = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
+    //const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
@@ -47,11 +50,12 @@ const VegetablesPage = () => {
         return images[filename] || '/placeholder.png';
     };
 
+
     useEffect(() => {
         const fetchVegetables = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:8080/api/products');
+                const response = await fetch(`http://localhost:8080/api/products?language=${language}`)
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
                 const data = await response.json();
                 const vegetableProducts = data.filter(product =>
@@ -67,7 +71,7 @@ const VegetablesPage = () => {
             }
         };
         fetchVegetables();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         if (vegetables.length === 0) return;
@@ -77,9 +81,9 @@ const VegetablesPage = () => {
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
+            sortedArray.sort((a, b) => a.translatedName.localeCompare(b.translatedName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
+            sortedArray.sort((a, b) => b.translatedName.localeCompare(a.translatedName));
         }
         setVegetables(sortedArray);
     }, [sortOption]);
@@ -126,7 +130,7 @@ const VegetablesPage = () => {
                                     key={product.id}
                                     product={{
                                         id: product.id,
-                                        name: product.productName,
+                                        name: product.translatedName,
                                         price: formatPrice(product.price),
                                         image: getImageFromPath(product.imagePath),
                                         stock: product.stock,

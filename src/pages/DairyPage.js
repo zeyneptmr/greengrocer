@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SlideBar from "../components/SliderBar";
 import dairy1 from '../assets/dairy1.jpg';
 import dairy2 from '../assets/dairy2.jpg';
 import dairy3 from '../assets/dairy3.jpg';
+import { LanguageContext } from "../context/LanguageContext";
 
 const importAll = (r) => {
     let images = {};
@@ -22,6 +23,7 @@ const formatPrice = (price) => {
 };
 
 const DairyPage = () => {
+    const { language } = useContext(LanguageContext);
     const [columns, setColumns] = useState(4);
     const [sortOption, setSortOption] = useState("default");
     const [dairyProducts, setDairyProducts] = useState([]);
@@ -56,7 +58,7 @@ const DairyPage = () => {
         const fetchDairyProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:8080/api/products');
+                const response = await fetch(`http://localhost:8080/api/products?language=${language}`);
 
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
@@ -78,7 +80,7 @@ const DairyPage = () => {
         };
 
         fetchDairyProducts();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         if (dairyProducts.length === 0) return;
@@ -90,9 +92,9 @@ const DairyPage = () => {
         } else if (sortOption === "price-desc") {
             sortedArray.sort((a, b) => b.price - a.price);
         } else if (sortOption === "name-asc") {
-            sortedArray.sort((a, b) => a.productName.localeCompare(b.productName));
+            sortedArray.sort((a, b) => a.translatedName.localeCompare(b.translatedName));
         } else if (sortOption === "name-desc") {
-            sortedArray.sort((a, b) => b.productName.localeCompare(a.productName));
+            sortedArray.sort((a, b) => b.translatedName.localeCompare(a.translatedName));
         }
 
         setDairyProducts(sortedArray);
@@ -137,7 +139,7 @@ const DairyPage = () => {
                                     key={product.id}
                                     product={{
                                         id: product.id,
-                                        name: product.productName,
+                                        name: product.translatedName,
                                         price: formatPrice(product.price),
                                         image: getImageFromPath(product.imagePath),
                                         stock: product.stock,

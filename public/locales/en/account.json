@@ -1,0 +1,19 @@
+{
+  "signup_title": "Sign Up",
+  "login_title": "Log In",
+  "name_placeholder": "Name",
+  "surname_placeholder": "Surname",
+  "email_placeholder": "E-mail",
+  "password_placeholder": "Password",
+  "confirm_password_placeholder": "Confirm password",
+  "phone_placeholder": "Phone number",
+  "already_have_account": "Already have an account?",
+  "dont_have_account": "Don't have an account?",
+  "forgot_password": "Forgot Password?",
+  "invalid_login": "Invalid email or password.",
+  "password_length_error": "Password must be at least 8 characters long!",
+  "phone_error": "Please enter a valid phone number!",
+  "email_error": "Please enter a valid email address.",
+  "password_match_error": "Passwords do not match!",
+  "signup_button": "Sign Up"
+}

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { LanguageProvider } from './context/LanguageContext';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -41,6 +42,8 @@ import ResetPassword from "./components/ResetPassword";
 import DiscountPage from "./pages/DiscountPage";
 import MyOrdersPage from "./pages/MyOrdersPage";
 import "./styles/App.css";
+import './i18n';
+
 
 function MainContent(){
     const currentPage = useLocation();
@@ -96,6 +99,7 @@ function MainContent(){
 
 function App() {
     return (
+        <LanguageProvider>
         <FavoritesProvider>
             <CartProvider>
                 <Router>
@@ -105,6 +109,7 @@ function App() {
                 </Router>
             </CartProvider>
         </FavoritesProvider>
+        </LanguageProvider>
 
     );
 }

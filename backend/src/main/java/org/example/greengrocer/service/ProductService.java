@@ -20,11 +20,11 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-    
+
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
@@ -52,10 +52,11 @@ public class ProductService {
     }
 
      // Search methods
-     public List<Product> searchByProductName(String productName) {
-        return productRepository.findByProductNameContainingIgnoreCase(productName);
-    }
-    
+     public List<Product> searchByProductKey(String productKey) {
+         return productRepository.findByProductKeyContainingIgnoreCase(productKey);
+     }
+
+
     public List<Product> searchByCategory(String category) {
         return productRepository.findByCategoryContainingIgnoreCase(category);
     }
@@ -74,7 +75,7 @@ public class ProductService {
         Optional<Product> productOpt = getProductById(productId);
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-        System.out.println("Product found: " + product.getProductName() + ", Current stock: " + product.getStock());
+            System.out.println("Product found: " + product.getProductKey() + ", Current stock: " + product.getStock());
             int newStock = Math.max(0, product.getStock() - quantity);
             product.setStock(newStock);
             return updateProduct(product);

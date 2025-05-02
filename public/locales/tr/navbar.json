@@ -1,0 +1,19 @@
+{
+  "profile": "Hesabım",
+  "favorites": "Favoriler",
+  "cart_logged_in": "Sepetim",
+  "cart": "Sepet",
+  "login": "Giriş Yap",
+  "account_settings": "Hesap Ayarları",
+  "addresses": "Adreslerim",
+  "my_orders": "Siparişlerim",
+  "logout": "Çıkış Yap",
+  "login_required": "Giriş Gerekli",
+  "please_login": "Lütfen sepete erişmek için giriş yapın.",
+  "fruits": "Meyveler",
+  "vegetables": "Sebzeler",
+  "baked_goods": "Unlu Mamüller",
+  "olives_oils": "Zeytin & Yağlar",
+  "sauces": "Soslar",
+  "dairy": "Süt Ürünleri"
+}
