@@ -13,4 +13,10 @@ public interface ProductTranslationRepository extends JpaRepository<ProductTrans
     Optional<ProductTranslation> findByProductKeyAndLanguage(String productKey, String language);
 
     List<ProductTranslation> findByLanguage(String language);
+
+    List<ProductTranslation> findByTranslatedNameContainingIgnoreCaseAndLanguage(String translatedName, String language);
+
+
+
+
 }

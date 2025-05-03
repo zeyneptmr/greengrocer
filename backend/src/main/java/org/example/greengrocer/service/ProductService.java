@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.example.greengrocer.model.ProductTranslation;
+
+
 @Service
 public class ProductService {
     
@@ -82,6 +85,28 @@ public class ProductService {
         }
         return null;
     }
+
+    @Autowired
+    private ProductTranslationService translationService;
+
+    /*public List<Product> searchByTranslatedName(String translatedName, String language) {
+        List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
+        return translations.stream()
+                .map(t -> productRepository.findByProductKey(t.getProductKey()))
+                .filter(opt -> opt.isPresent())
+                .map(opt -> opt.get())
+                .collect(Collectors.toList());
+    }*/
+
+    public List<Product> searchByTranslatedName(String translatedName, String language) {
+        List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
+        return translations.stream()
+                .map(t -> productRepository.findByProductKey(t.getProductKey()))
+                .flatMap(opt -> opt.stream())  // Optional varsa içindeki Product'ı açar
+                .collect(Collectors.toList());
+    }
+
+
 
 
 

@@ -331,4 +331,30 @@ public class ProductController {
         return capitalized.toString().trim();
     }
 
+
+    @GetMapping("/search/name")
+    public List<ProductDTO> searchByTranslatedName(
+            @RequestParam String productName,
+            @RequestParam(defaultValue = "en") String language) {
+
+        List<Product> products = productService.searchByTranslatedName(productName, language);
+
+        return products.stream().map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setId(product.getId());
+            dto.setProductKey(product.getProductKey());
+            dto.setPrice(product.getPrice());
+            dto.setStock(product.getStock());
+            dto.setCategory(product.getCategory());
+            dto.setImagePath(product.getImagePath());
+
+            String translated = translationService.getTranslation(product.getProductKey(), language)
+                    .map(ProductTranslation::getTranslatedName)
+                    .orElse(capitalizeWords(product.getProductKey().replace("_", " ")));
+            dto.setTranslatedName(translated);
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 }

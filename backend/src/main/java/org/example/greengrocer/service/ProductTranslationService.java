@@ -152,6 +152,11 @@ public class ProductTranslationService {
         return capitalized.toString().trim();
     }
 
+    public List<ProductTranslation> searchByTranslatedName(String translatedName, String language) {
+        return translationRepository.findByTranslatedNameContainingIgnoreCaseAndLanguage(translatedName, language);
+    }
+
+
 
 
 
