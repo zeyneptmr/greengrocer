@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "../components/Sidebar"; 
+import Sidebar from "../components/Sidebar";
+import { LanguageContext } from "../context/LanguageContext";
 
 const EditProductPage = () => {
     const { id } = useParams(); 
@@ -10,6 +11,8 @@ const EditProductPage = () => {
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
+
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};

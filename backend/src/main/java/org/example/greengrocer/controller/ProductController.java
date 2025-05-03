@@ -65,52 +65,53 @@ public class ProductController {
         Optional<Product> product = productService.getProductById(id);
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
+
         Product savedProduct = productService.addProduct(product);
 
         String productKey = product.getProductKey();
+        System.out.println("========================================");
         System.out.println("ÜRÜN KEY: " + productKey);
 
-        // 1️⃣ İngilizce çeviri kontrol
+        //  language detection
+        String detectedLanguage = translationService.detectLanguage(productKey.replace("_", " "));
+        System.out.println("Algılanan dil: " + detectedLanguage);
+
+        // English translate control
         Optional<ProductTranslation> enTranslation = translationService.getTranslation(productKey, "en");
         if (enTranslation.isEmpty()) {
+            System.out.println("İngilizce çeviri bulunamadı. Çeviri yapılıyor...");
+            String translated = translationService.autoTranslate(productKey.replace("_", " "), detectedLanguage, "en");
             ProductTranslation newEn = new ProductTranslation();
             newEn.setProductKey(productKey);
             newEn.setLanguage("en");
-
-            // Alt çizgileri boşluk yap, kelimeleri büyük harfle başlat
-            String englishName = capitalizeWords(productKey.replace("_", " "));
-            newEn.setTranslatedName(englishName);
-
-            System.out.println("İNGİLİZCE ÇEVİRİ KAYDEDİLİYOR: " + englishName);
-
+            newEn.setTranslatedName(translated);
             translationService.saveTranslation(newEn);
         } else {
-            System.out.println("İngilizce çeviri zaten mevcut.");
+            System.out.println("İngilizce çeviri zaten mevcut: " + enTranslation.get().getTranslatedName());
         }
 
-        // 2️⃣ Türkçe çeviri kontrol
+        //  Turkish translate control
         Optional<ProductTranslation> trTranslation = translationService.getTranslation(productKey, "tr");
         if (trTranslation.isEmpty()) {
-            String translated = translationService.autoTranslate(productKey.replace("_", " "), "tr");
-            System.out.println("ÇEVİRİ GELDİ (autoTranslate sonucu): " + translated);  // LOG
-
+            System.out.println("Türkçe çeviri bulunamadı. Çeviri yapılıyor...");
+            String translated = translationService.autoTranslate(productKey.replace("_", " "), detectedLanguage, "tr");
             ProductTranslation newTr = new ProductTranslation();
             newTr.setProductKey(productKey);
             newTr.setLanguage("tr");
             newTr.setTranslatedName(translated);
-
-            System.out.println("TÜRKÇE ÇEVİRİ VERİTABANINA KAYDEDİLİYOR: " + translated);
-
             translationService.saveTranslation(newTr);
         } else {
-            System.out.println("Türkçe çeviri zaten mevcut.");
+            System.out.println("Türkçe çeviri zaten mevcut: " + trTranslation.get().getTranslatedName());
         }
+
+        System.out.println("========================================");
 
         return savedProduct;
     }
+
+
 
 
     @GetMapping("/random")
@@ -209,7 +210,6 @@ public class ProductController {
         return productService.searchByCategory(category);
     }
 
-    // ✅ KELİMELERİN BAŞ HARFLERİNİ BÜYÜT
     private String capitalizeWords(String str) {
         String[] words = str.split(" ");
         StringBuilder capitalized = new StringBuilder();

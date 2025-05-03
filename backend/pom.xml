@@ -141,6 +141,24 @@
 			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Dil Algılama
+		<dependency>
+			<groupId>com.cybozu.labs</groupId>
+			<artifactId>langdetect</artifactId>
+			<version>1.1-20120112</version>
+		</dependency> -->
+
+
+		<dependency>
+			<groupId>com.github.pemistahl</groupId>
+			<artifactId>lingua</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+
+
+
 	</dependencies>
 
 	<build>
