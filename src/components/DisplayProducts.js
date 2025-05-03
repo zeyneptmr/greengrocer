@@ -1,7 +1,10 @@
-import React from "react";
-
+//import React from "react";
+import React, { useContext } from "react";
+import { LanguageContext } from "../context/LanguageContext";
 
 const DisplayProducts = ({ products }) => {
+
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -79,10 +82,10 @@ const DisplayProducts = ({ products }) => {
                                 >
                                     <img
                                         src={getImageFromPath(product.imagePath)}
-                                        alt={product.productName}
+                                        alt={product.translatedName}
                                         className="w-40 h-40 object-contain mx-auto"
                                     />
-                                    <h3 className="text-lg font-semibold text-gray-800 mt-2">{product.productName}</h3>
+                                    <h3 className="text-lg font-semibold text-gray-800 mt-2">{product.translatedName}</h3>
                                     <p className="text-gray-600 text-md">{formatPrice(product.price)} TL</p>
                                     <p className="text-gray-500 text-sm">Stock: {product.stock}</p>
                                 </div>

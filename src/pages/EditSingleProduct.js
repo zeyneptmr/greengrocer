@@ -90,8 +90,11 @@ const EditProductPage = () => {
             setLoading(true);
             const productId = parseInt(id, 10);
             if (!isNaN(productId)) {
-                const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
-                setProduct(response.data);
+                const response = await axios.get(`http://localhost:8080/api/products/${productId}?language=${language}`);
+                setProduct({
+                    ...response.data,
+                    productName: response.data.translatedName  // Burası önemli!
+                });
             }
             setLoading(false);
         } catch (err) {
@@ -100,6 +103,7 @@ const EditProductPage = () => {
             setLoading(false);
         }
     };
+
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
@@ -123,14 +127,17 @@ const EditProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
-            
-            const productData = { ...product };
-            
+            const productData = {
+                ...product,
+                translatedName: product.productName,  // yeni çeviri
+                language: language                      // şu anki dil
+            };
+
             // Ürünü güncelle
             await axios.put(`http://localhost:8080/api/products/${product.id}`, productData);
-            
+
             alert("Product updated successfully!");
             navigate("/admin/updateproducts");
         } catch (err) {
@@ -138,6 +145,7 @@ const EditProductPage = () => {
             alert("Failed to update product. Please try again.");
         }
     };
+
 
     if (loading) return (
         <div className="flex min-h-screen bg-gray-100">

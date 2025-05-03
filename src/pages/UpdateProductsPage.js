@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef , useContext} from "react";
 import { Link } from "react-router-dom";
 import { Edit, Trash2 } from "lucide-react";
 import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
+
+import { LanguageContext } from "../context/LanguageContext";
 
 const UpdateProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -13,6 +15,8 @@ const UpdateProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const categoryRefs = useRef({}); // Scroll için referanslar
+
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -52,7 +56,7 @@ const UpdateProductsPage = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/api/products');
+            const response = await axios.get(`http://localhost:8080/api/products?language=${language}`);
             setProducts(response.data);
             setLoading(false);
         } catch (err) {
@@ -157,12 +161,12 @@ const UpdateProductsPage = () => {
                                             <div className="w-full h-32 flex justify-center items-center">
                                                 <img
                                                     src={getImageFromPath(product.imagePath)}
-                                                    alt={product.productName}
+                                                    alt={product.translatedName}
                                                     className="w-auto h-32 object-contain"
                                                 />
                                             </div>
                                             <div className="p-4">
-                                                <h4 className="text-md font-semibold mb-1">{product.productName}</h4>
+                                                <h4 className="text-md font-semibold mb-1">{product.translatedName}</h4>
                                                 <p className="text-green-600 font-medium">{formatPrice(product.price)} TL</p>
                                             </div>
                                             <div className="flex border-t border-gray-200">
