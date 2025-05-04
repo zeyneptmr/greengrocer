@@ -325,13 +325,13 @@ public class CustomerOrderController {
         if (userOrders.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found");
 
         // En son siparişi al
-        CustomerOrder lastOrder = userOrders.get(userOrders.size() - 1);
+        //CustomerOrder lastOrder = userOrders.get(userOrders.size() - 1);
 
         // Sipariş ürünlerini getir
-        List<OrderProduct> orderProducts = orderProductRepo.findByCustomerOrder(lastOrder);
+        //List<OrderProduct> orderProducts = orderProductRepo.findByCustomerOrder(lastOrder);
 
         // Her ürünün stok bilgisini güncelle
-        for (OrderProduct op : orderProducts) {
+        /* for (OrderProduct op : orderProducts) {
             System.out.println("OrderProduct ID: " + op.getProductId());
             Optional<Product> productOpt = productService.getProductById(op.getProductId());
             productOpt.ifPresent(product -> {
@@ -340,13 +340,12 @@ public class CustomerOrderController {
                 productService.updateProduct(product);
                 System.out.println("Updating stock for productId: " + op.getProductId());
             });
-        }
+        } */
 
         // Cart sil
         List<CartItem> cartItems = cartRepository.findByUser(user);
         cartRepository.deleteAll(cartItems);
 
-        // OrderTotal sil
         // OrderTotal sil
         Optional<OrderTotal> orderTotalOptional = orderTotalRepository.findByUser(user);
         orderTotalOptional.ifPresent(orderTotalRepository::delete);  // OrderTotal item'ını sil
