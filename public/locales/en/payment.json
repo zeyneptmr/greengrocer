@@ -1,0 +1,29 @@
+{
+  "deliveryAddress": "Delivery Address",
+  "noDefaultAddress": "No default address found. Please add one.",
+  "loadingAddresses": "Loading addresses...",
+  "addNewAddress": "+ Add New Address",
+  "paymentMethod": "Payment Method",
+  "addNewCard": "+ Add New Card",
+  "noDefaultCard": "No default card found. Please add one.",
+  "cartSummary": "Cart Summary",
+  "cartTotal": "Cart Total: {{amount}} TL",
+  "deliveryFee": "Delivery Fee: {{fee}} TL",
+  "totalAmount": "Total Amount: {{amount}} TL",
+  "confirmCart": "Confirm Cart",
+  "orderReceived": "Order Received 🎉",
+  "orderPlacedMessage": "Your order has been successfully placed.<br/>You can track it in the <strong>\"My Orders\"</strong> section of your user panel.",
+  "downloadPDF": "Download Order Details (PDF)",
+  "ok": "OK",
+  "goToOrders": "Go to My Orders",
+  "chooseAddressPayment": "Please choose address and payment method.",
+  "okay": "Okay",
+  "gotIt": "Okay, Got it!",
+  "expirationDate": "Expiration Date",
+  "deliveryFeeZero": "Delivery Fee: 0 TL",
+  "deliveryFeeAmount": "Delivery Fee: {{fee}} TL",
+  "freeDelivery": "Free Delivery",
+  "minimumAmountWarning": "🛒 Minimum cart amount is <strong>{{minAmount}} TL</strong>!"
+
+
+}

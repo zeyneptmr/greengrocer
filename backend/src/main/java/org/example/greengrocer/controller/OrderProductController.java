@@ -194,5 +194,4 @@ public class OrderProductController {
         return ResponseEntity.ok("Stock updated successfully for order: " + orderId);
     }
 
-
 }

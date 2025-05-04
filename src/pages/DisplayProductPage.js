@@ -4,6 +4,7 @@ import adminIcon from '../assets/admin.svg';
 import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
+import { LanguageContext } from "../context/LanguageContext";
 
 
 const DisplayProductsPage = () => {
@@ -14,12 +15,14 @@ const DisplayProductsPage = () => {
     const [error, setError] = useState(null);
     const categoryRefs = useRef({}); // Scroll için referanslar
 
+    const { language } = useContext(LanguageContext);
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
                 // Replace with your actual API endpoint
-                const response = await axios.get('http://localhost:8080/api/products');
+                const response = await axios.get(`http://localhost:8080/api/products?language=${language}`);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
             } catch (err) {

@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.example.greengrocer.dto.ProductUpdateRequest;
+
 
 @RestController
 @RequestMapping("/api/products")
@@ -60,58 +62,81 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         Optional<Product> product = productService.getProductById(id);
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }*/
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id, @RequestParam(defaultValue = "en") String language) {
+        Optional<Product> productOpt = productService.getProductById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            ProductDTO dto = new ProductDTO();
+            dto.setId(product.getId());
+            dto.setProductKey(product.getProductKey());
+            dto.setPrice(product.getPrice());
+            dto.setStock(product.getStock());
+            dto.setCategory(product.getCategory());
+            dto.setImagePath(product.getImagePath());
+
+            String translated = translationService.getTranslation(product.getProductKey(), language)
+                    .map(ProductTranslation::getTranslatedName)
+                    .orElse(capitalizeWords(product.getProductKey().replace("_", " ")));
+            dto.setTranslatedName(translated);
+
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
+
         Product savedProduct = productService.addProduct(product);
 
         String productKey = product.getProductKey();
+        System.out.println("========================================");
         System.out.println("ÜRÜN KEY: " + productKey);
 
-        // 1️⃣ İngilizce çeviri kontrol
+        //  language detection
+        String detectedLanguage = translationService.detectLanguage(productKey.replace("_", " "));
+        System.out.println("Algılanan dil: " + detectedLanguage);
+
+        // English translate control
         Optional<ProductTranslation> enTranslation = translationService.getTranslation(productKey, "en");
         if (enTranslation.isEmpty()) {
+            System.out.println("İngilizce çeviri bulunamadı. Çeviri yapılıyor...");
+            String translated = translationService.autoTranslate(productKey.replace("_", " "), detectedLanguage, "en");
             ProductTranslation newEn = new ProductTranslation();
             newEn.setProductKey(productKey);
             newEn.setLanguage("en");
-
-            // Alt çizgileri boşluk yap, kelimeleri büyük harfle başlat
-            String englishName = capitalizeWords(productKey.replace("_", " "));
-            newEn.setTranslatedName(englishName);
-
-            System.out.println("İNGİLİZCE ÇEVİRİ KAYDEDİLİYOR: " + englishName);
-
+            newEn.setTranslatedName(translated);
             translationService.saveTranslation(newEn);
         } else {
-            System.out.println("İngilizce çeviri zaten mevcut.");
+            System.out.println("İngilizce çeviri zaten mevcut: " + enTranslation.get().getTranslatedName());
         }
 
-        // 2️⃣ Türkçe çeviri kontrol
+        //  Turkish translate control
         Optional<ProductTranslation> trTranslation = translationService.getTranslation(productKey, "tr");
         if (trTranslation.isEmpty()) {
-            String translated = translationService.autoTranslate(productKey.replace("_", " "), "tr");
-            System.out.println("ÇEVİRİ GELDİ (autoTranslate sonucu): " + translated);  // LOG
-
+            System.out.println("Türkçe çeviri bulunamadı. Çeviri yapılıyor...");
+            String translated = translationService.autoTranslate(productKey.replace("_", " "), detectedLanguage, "tr");
             ProductTranslation newTr = new ProductTranslation();
             newTr.setProductKey(productKey);
             newTr.setLanguage("tr");
             newTr.setTranslatedName(translated);
-
-            System.out.println("TÜRKÇE ÇEVİRİ VERİTABANINA KAYDEDİLİYOR: " + translated);
-
             translationService.saveTranslation(newTr);
         } else {
-            System.out.println("Türkçe çeviri zaten mevcut.");
+            System.out.println("Türkçe çeviri zaten mevcut: " + trTranslation.get().getTranslatedName());
         }
+
+        System.out.println("========================================");
 
         return savedProduct;
     }
-
 
     @GetMapping("/random")
     public List<ProductDTO> getRandomProducts(@RequestParam(defaultValue = "en") String language) {
@@ -135,13 +160,97 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-
-    @PutMapping("/{id}")
+   /* @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         product.setId(id);
         Product updatedProduct = productService.updateProduct(product);
         return ResponseEntity.ok(updatedProduct);
+    }*/
+
+
+    /*@PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        product.setId(id);
+        Product updatedProduct = productService.updateProduct(product);
+
+        // Translation
+        String productKey = product.getProductKey();
+        String detectedLanguage = translationService.detectLanguage(product.getProductKey().replace("_", " "));
+        System.out.println("Algılanan dil: " + detectedLanguage);
+
+        if (detectedLanguage.equals("en")) {
+            Optional<ProductTranslation> enTranslation = translationService.getTranslation(productKey, "en");
+            if (enTranslation.isPresent()) {
+                ProductTranslation translation = enTranslation.get();
+                translation.setTranslatedName(capitalizeWords(product.getProductKey().replace("_", " ")));
+                translationService.saveTranslation(translation);
+            } else {
+                ProductTranslation newTranslation = new ProductTranslation();
+                newTranslation.setProductKey(productKey);
+                newTranslation.setLanguage("en");
+                newTranslation.setTranslatedName(capitalizeWords(product.getProductKey().replace("_", " ")));
+                translationService.saveTranslation(newTranslation);
+            }
+        } else if (detectedLanguage.equals("tr")) {
+            Optional<ProductTranslation> trTranslation = translationService.getTranslation(productKey, "tr");
+            if (trTranslation.isPresent()) {
+                ProductTranslation translation = trTranslation.get();
+                translation.setTranslatedName(capitalizeWords(product.getProductKey().replace("_", " ")));
+                translationService.saveTranslation(translation);
+            } else {
+                ProductTranslation newTranslation = new ProductTranslation();
+                newTranslation.setProductKey(productKey);
+                newTranslation.setLanguage("tr");
+                newTranslation.setTranslatedName(capitalizeWords(product.getProductKey().replace("_", " ")));
+                translationService.saveTranslation(newTranslation);
+            }
+        }
+
+        return ResponseEntity.ok(updatedProduct);
     }
+*/
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable Long id,
+            @RequestBody ProductUpdateRequest updateRequest) {
+
+        Optional<Product> optionalProduct = productService.getProductById(id);
+        if (!optionalProduct.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Product product = optionalProduct.get();
+        product.setPrice(updateRequest.getPrice());
+        product.setStock(updateRequest.getStock());
+        product.setCategory(updateRequest.getCategory());
+        product.setImagePath(updateRequest.getImagePath());
+
+        productService.updateProduct(product);  // Ana ürün güncellemesi
+
+        // Çeviri güncellemesi:
+        if (updateRequest.getTranslatedName() != null && updateRequest.getLanguage() != null) {
+            Optional<ProductTranslation> translationOpt =
+                    translationService.getTranslation(product.getProductKey(), updateRequest.getLanguage());
+
+            if (translationOpt.isPresent()) {
+                ProductTranslation translation = translationOpt.get();
+                translation.setTranslatedName(updateRequest.getTranslatedName());
+                translationService.saveTranslation(translation);
+            } else {
+                ProductTranslation newTranslation = new ProductTranslation();
+                newTranslation.setProductKey(product.getProductKey());
+                newTranslation.setLanguage(updateRequest.getLanguage());
+                newTranslation.setTranslatedName(updateRequest.getTranslatedName());
+                translationService.saveTranslation(newTranslation);
+            }
+        }
+
+        return ResponseEntity.ok(product);
+    }
+
+
+
 
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestBody StockUpdateRequest stockUpdateRequest) {
@@ -209,7 +318,6 @@ public class ProductController {
         return productService.searchByCategory(category);
     }
 
-    // ✅ KELİMELERİN BAŞ HARFLERİNİ BÜYÜT
     private String capitalizeWords(String str) {
         String[] words = str.split(" ");
         StringBuilder capitalized = new StringBuilder();
@@ -221,6 +329,32 @@ public class ProductController {
             }
         }
         return capitalized.toString().trim();
+    }
+
+
+    @GetMapping("/search/name")
+    public List<ProductDTO> searchByTranslatedName(
+            @RequestParam String productName,
+            @RequestParam(defaultValue = "en") String language) {
+
+        List<Product> products = productService.searchByTranslatedName(productName, language);
+
+        return products.stream().map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setId(product.getId());
+            dto.setProductKey(product.getProductKey());
+            dto.setPrice(product.getPrice());
+            dto.setStock(product.getStock());
+            dto.setCategory(product.getCategory());
+            dto.setImagePath(product.getImagePath());
+
+            String translated = translationService.getTranslation(product.getProductKey(), language)
+                    .map(ProductTranslation::getTranslatedName)
+                    .orElse(capitalizeWords(product.getProductKey().replace("_", " ")));
+            dto.setTranslatedName(translated);
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
 }

@@ -10,6 +10,8 @@ import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
 
 import org.example.greengrocer.model.Product; // Product sınıfını import et
 import org.example.greengrocer.repository.ProductRepository; // ProductRepository'i import et
@@ -97,7 +99,7 @@ public class CartController {
     }
 
     // Kullanıcının sepetindeki ürünleri almak
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<?> getCart(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
         if (email == null) {
@@ -113,7 +115,51 @@ public class CartController {
         // Sepetteki ürünleri getirelim ve gönderelim
         var cartItems = cartItemRepository.findByUser(user);
         return ResponseEntity.ok(cartItems);
+    }*/
+
+    @GetMapping
+    public ResponseEntity<?> getCart(HttpServletRequest request,
+                                     @RequestParam(value = "language", defaultValue = "en") String language) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = userOpt.get();
+        var cartItems = cartItemRepository.findByUser(user);
+
+        var responseList = cartItems.stream().map(cartItem -> {
+            Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
+            String translatedName = cartItem.getName(); // fallback
+
+            if (productOpt.isPresent()) {
+                Product product = productOpt.get();
+                translatedName = product.getTranslatedName(language); // parametre olarak gelen language kullanılıyor
+            }
+
+            return Map.of(
+                    "id", cartItem.getId(),
+                    "productId", cartItem.getProductId(),
+                    "quantity", cartItem.getQuantity(),
+                    "price", cartItem.getPrice(),
+                    "name", cartItem.getName(),
+                    "imagePath", cartItem.getImagePath(),
+                    "translatedName", translatedName
+            );
+        }).toList();
+
+        return ResponseEntity.ok(responseList);
     }
+
+
+
+
+
 
     // Sepet ürününü artırmak
     @PatchMapping("/increase/{id}")

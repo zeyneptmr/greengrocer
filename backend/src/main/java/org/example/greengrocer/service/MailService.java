@@ -66,21 +66,88 @@ public class MailService {
             emailData.put("subject", "Your TapTaze verification code is " +  verificationCode);
 
             String htmlContent = """
-                    <html>
-                               <body style="font-family: Arial, sans-serif; color: #333;">
-                                   <div style="max-width: 600px; margin: auto; padding: 20px;">
-                                       <img src="https://i.imgur.com/4ofG4rH.jpg" alt="Tap-Taze Logo" style="width: 80px; height: auto; margin-bottom: 20px;" />
-                                       <p>Dear Customer,</p>
-                                       <p>We noticed a request to reset your password or verify your account on <strong>Taptaze</strong>.</p>
-                                       <p>If this was you, use the verification code below:</p>
-                                       <h2 style="letter-spacing: 2px;">%s</h2>
-                                       <p>If you did not request this, you can ignore this message safely.</p>
-                                       <p>Need help? Visit our <a href="https://taptaze.com/help">Help Center</a>.</p>
-                                       <p>Best regards,<br/>Taptaze Team</p>
-                                   </div>
-                               </body>
-                           </html>
-                """.formatted(verificationCode);
+                <html>
+                  <head>
+                    <style>
+                      .container {
+                        max-width: 600px;
+                        margin: auto;
+                        padding: 20px;
+                        border-radius: 10px;
+                        background-color: #f9fdf9;
+                        border: 2px solid #e0f2e9;
+                        font-family: Arial, sans-serif;
+                        color: #333;
+                      }
+            
+                       .logo {
+                         background-color: #ffffff;
+                         padding: 10px;
+                         text-align: left;
+                         border-radius: 10px;
+                       }
+            
+                      .code-box {
+                        background-color: #dfffe0;
+                        color: #1a7f32;
+                        font-weight: bold;
+                        font-size: 24px;
+                        padding: 15px;
+                        margin: 20px 0;
+                        text-align: center;
+                        border-radius: 10px;
+                        border: 2px dashed #2bb54c;
+                      }
+            
+                      a:hover {
+                        color: #f97316;
+                      }
+            
+                      .image-box {
+                        text-align: center;
+                        margin-top: 30px;
+                      }
+            
+                      .image-box img {
+                        width: 100%%;
+                        max-width: 100%%;
+                        height: auto;
+                        aspect-ratio: 3 / 1;
+                        object-fit: cover;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                      }
+
+                    </style>
+                  </head>
+                  <body>
+                    <div class="container">
+                      <div class="logo">
+                        <img src="https://i.imgur.com/4ofG4rH.jpg" alt="Tap-Taze Logo" style="width: 120px;" />
+                      </div>
+            
+                      <p>Dear Customer,</p>
+                      <p>We noticed a request to reset your password or verify your account on <strong>TapTaze</strong>.</p>
+                      <p>If this was you, use the verification code below:</p>
+            
+                      <div class="code-box">%s</div>
+            
+                      <p>If you did not request this, you can ignore this message safely.</p>
+                      <p>Need help? Visit our <a href="https://taptaze.com/help">Help Center</a>.</p>
+            
+                      <p style="margin-top: 30px;">Best regards,<br/>Taptaze Team</p>
+            
+                      <div class="image-box">
+                        <img
+                          src="https://i.imgur.com/qN1cQab.jpeg" 
+                          alt="Greengrocer Market"
+                        />
+                      </div>
+                    </div>
+                  </body>
+                </html>
+            """.formatted(verificationCode);
+
 
             emailData.put("htmlContent", htmlContent);
 

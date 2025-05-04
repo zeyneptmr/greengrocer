@@ -1,10 +1,11 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import AdminSearchBar from "../components/AdminSearchBar";
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaTimesCircle } from 'react-icons/fa';
+import { LanguageContext } from "../context/LanguageContext";
 import axios from "axios";
 
 const Inventory = () => {
@@ -19,6 +20,7 @@ const Inventory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 10;
+    const { language } = useContext(LanguageContext);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -73,7 +75,7 @@ const Inventory = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/products');
+                const response = await axios.get(`http://localhost:8080/api/products?language=${language}`);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
             } catch (error) {
@@ -180,11 +182,11 @@ const Inventory = () => {
                                     <div className="flex justify-center mb-4">
                                         <img
                                             src={getImageFromPath(product.imagePath)}
-                                            alt={product.productName}
+                                            alt={product.translatedName}
                                             className="w-32 h-32 object-contain"
                                         />
                                     </div>
-                                    <h3 className="text-lg font-semibold">{product.productName}</h3>
+                                    <h3 className="text-lg font-semibold">{product.translatedName}</h3>
                                     <p className="text-gray-500">Price: ₺{formatPrice(product.price)}</p>
                                     <div className="flex items-center space-x-2 mt-4">
                                         <span className="text-gray-700">Stock:</span>

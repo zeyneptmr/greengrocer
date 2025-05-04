@@ -1,0 +1,28 @@
+{
+  "deliveryAddress": "Teslimat Adresi",
+  "noDefaultAddress": "Varsayılan adres bulunamadı. Lütfen bir adres ekleyin.",
+  "loadingAddresses": "Adresler yükleniyor...",
+  "addNewAddress": "+ Yeni Adres Ekle",
+  "paymentMethod": "Ödeme Yöntemi",
+  "addNewCard": "+ Yeni Ödeme Yöntemi Ekle",
+  "noDefaultCard": "Varsayılan ödeme yöntemi bulunamadı. Lütfen bir ödeme yöntemi ekleyin.",
+  "cartSummary": "Sepet Özeti",
+  "cartTotal": "Sepet Toplamı: {{amount}} TL",
+  "deliveryFee": "Teslimat Ücreti: {{fee}} TL",
+  "totalAmount": "Toplam Tutar: {{amount}} TL",
+  "confirmCart": "Sepeti Onayla",
+  "orderReceived": "Sipariş Alındı 🎉",
+  "orderPlacedMessage": "Siparişiniz başarıyla oluşturuldu.<br/>Kullanıcı panelinizdeki <strong>\"Siparişlerim\"</strong> bölümünden takip edebilirsiniz.",
+  "downloadPDF": "Sipariş Detaylarını İndir (PDF)",
+  "ok": "Tamam",
+  "goToOrders": "Siparişlerime Git",
+  "chooseAddressPayment": "Lütfen adres ve ödeme yöntemi seçin.",
+  "okay": "Tamam",
+  "minimumAmountWarning": "🛒 Minimum sepet tutarı <strong>{{minAmount}} TL</strong>!",
+  "gotIt": "Anladım!",
+  "expirationDate": "Son Kullanma Tarihi",
+  "deliveryFeeZero": "Teslimat Ücreti: 0 TL",
+  "deliveryFeeAmount": "Teslimat Ücreti: {{fee}} TL",
+  "freeDelivery": "Kargo Bedava"
+
+}

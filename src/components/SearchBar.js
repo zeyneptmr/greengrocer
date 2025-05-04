@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
+import { LanguageContext } from "../context/LanguageContext";
 
 const SearchBar = () => {
     const [query, setQuery] = useState("");
@@ -10,6 +11,8 @@ const SearchBar = () => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const { language } = useContext(LanguageContext);
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -52,7 +55,7 @@ const SearchBar = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/products`);
+                const response = await fetch(`${API_BASE_URL}/api/products?language=${language}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -61,7 +64,7 @@ const SearchBar = () => {
                 // Transform backend product format to match frontend format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
-                    name: product.productName,
+                    name: product.translatedName,
                     price: product.price,
                     stock: product.stock,
                     image: getImageFromPath(product.imagePath),
@@ -101,7 +104,7 @@ const SearchBar = () => {
 
             try {
             
-                const response = await fetch(`${API_BASE_URL}/api/products/search/name?productName=${searchTerm}`);
+                const response = await fetch(`${API_BASE_URL}/api/products/search/name?productName=${searchTerm}&language=${language}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -110,7 +113,7 @@ const SearchBar = () => {
                 // Transform backend product format to match frontend format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
-                    name: product.productName,
+                    name: product.translatedName,
                     price: product.price,
                     stock: product.stock,
                     image: getImageFromPath(product.imagePath),
@@ -202,12 +205,13 @@ const SearchBar = () => {
             <div className="flex gap-2 w-full md:w-4/5 lg:w-3/4 xl:w-2/3 relative h-16">
                 <input
                     type="text"
-                    placeholder="Search product..."
+                    placeholder={language === "tr" ? "Ürün ara..." : "Search product..."}
                     className="p-7 rounded-full bg-[#f7f7f7] text-black w-full border border-[#B6D1A7] z-10 text-lg"
                     value={query}
                     onChange={handleSearch}
                     onKeyDown={handleKeyDown}
                 />
+
                 <button
                     className="bg-green-600 text-white p-4 rounded-full z-10"
                     onClick={handleSearchClick}

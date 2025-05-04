@@ -1,0 +1,22 @@
+{
+  "myCart": "Sepetim",
+  "products": "Ürünler",
+  "editCart": "Sepeti Düzenle",
+  "finishEditing": "Düzenlemeyi Bitir",
+  "emptyCartMessage": "Henüz sepetinize ürün eklemediniz.",
+  "discoverProducts": "Ürünlerimizi Keşfedin",
+  "deleteSelected": "Seçilen Ürünleri Sil",
+  "deleteAll": "Tümünü Sil",
+  "cartSummary": "Sepet Özeti",
+  "cartTotal": "Sepet Toplamı",
+  "freeDelivery": "Kargo Bedava",
+  "deliveryAmount": "Kargo Ücreti",
+  "addMoreForFreeDelivery": "Ücretsiz teslimat için {{amount}} TL tutarında ürün daha ekleyin.",
+  "totalAmount": "Toplam Tutar",
+  "continue": "Devam Et",
+  "productsCount": "{{count}} ürün",
+  "successfullyAdded": "Ürün başarıyla sepete eklendi.",
+  "insufficientStock": "Yetersiz stok !",
+  "deleted": "Ürün sepetten silindi!",
+  "allDeleted": "Sepet temizlendi"
+}

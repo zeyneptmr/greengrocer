@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "../components/Sidebar"; 
+import Sidebar from "../components/Sidebar";
+import { LanguageContext } from "../context/LanguageContext";
 
 const EditProductPage = () => {
     const { id } = useParams(); 
@@ -10,6 +11,8 @@ const EditProductPage = () => {
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
+
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -87,8 +90,11 @@ const EditProductPage = () => {
             setLoading(true);
             const productId = parseInt(id, 10);
             if (!isNaN(productId)) {
-                const response = await axios.get(`http://localhost:8080/api/products/${productId}`);
-                setProduct(response.data);
+                const response = await axios.get(`http://localhost:8080/api/products/${productId}?language=${language}`);
+                setProduct({
+                    ...response.data,
+                    productName: response.data.translatedName  // Burası önemli!
+                });
             }
             setLoading(false);
         } catch (err) {
@@ -97,6 +103,7 @@ const EditProductPage = () => {
             setLoading(false);
         }
     };
+
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
@@ -120,14 +127,17 @@ const EditProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
-            
-            const productData = { ...product };
-            
+            const productData = {
+                ...product,
+                translatedName: product.productName,  // yeni çeviri
+                language: language                      // şu anki dil
+            };
+
             // Ürünü güncelle
             await axios.put(`http://localhost:8080/api/products/${product.id}`, productData);
-            
+
             alert("Product updated successfully!");
             navigate("/admin/updateproducts");
         } catch (err) {
@@ -135,6 +145,7 @@ const EditProductPage = () => {
             alert("Failed to update product. Please try again.");
         }
     };
+
 
     if (loading) return (
         <div className="flex min-h-screen bg-gray-100">

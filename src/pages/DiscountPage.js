@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import AdminSearchBar from "../components/AdminSearchBar";
 import axios from "axios";
 import {FaCheckCircle, FaTimesCircle} from "react-icons/fa";
+import { LanguageContext } from "../context/LanguageContext";
 
 const DiscountPage = () => {
     const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ const DiscountPage = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [selectAllChecked, setSelectAllChecked] = useState(false); // "Select All" butonu durumu
+    const { language } = useContext(LanguageContext);
 
 
     // Bildirimler için state
@@ -72,7 +74,7 @@ const DiscountPage = () => {
 
     const fetchAllProducts = async () => {
         try {
-            const res = await axios.get('http://localhost:8080/api/products');
+            const res = await axios.get(`http://localhost:8080/api/products?language=${language}`);
             setProducts(res.data);
             setFilteredProducts(res.data);
         } catch (error) {
@@ -355,12 +357,12 @@ const DiscountPage = () => {
                                         <div className="col-span-2">
                                             <img
                                                 src={getImageFromPath(product.imagePath)}
-                                                alt={product.productName}
+                                                alt={product.translatedName}
                                                 className="w-16 h-16 object-cover rounded-md"
                                             />
                                         </div>
                                         <div className="col-span-3 font-medium text-gray-800">
-                                            {product.productName}
+                                            {product.translatedName}
                                         </div>
                                         <div className="col-span-2 text-gray-600">
                                             {product.stock} units
