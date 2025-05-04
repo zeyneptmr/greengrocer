@@ -1,0 +1,8 @@
+{
+  "title": "Sauces",
+  "loading": "Loading products...",
+  "error": "Failed to fetch products:",
+  "noProducts": "No sauce products available",
+  "prev": "< Previous",
+  "next": "Next >"
+}

@@ -1,0 +1,279 @@
+{
+  "recipes": {
+    "1": {
+      "name": "Honey Cottage Cheese Breakfast on Village Bread",
+      "category": "Breakfast",
+      "mood": "LIGHT",
+      "ingredients": [
+        "Village bread (thick slices)",
+        "Cottage cheese",
+        "Walnuts",
+        "Honey"
+      ],
+      "preparation": "Lightly toast the village bread. Sprinkle cottage cheese on top, add walnuts, and drizzle with honey before serving."
+    },
+    "2": {
+      "name": "Whole Wheat Jam & Cheese Toast",
+      "category": "Breakfast",
+      "mood": "FEAST",
+      "ingredients": [
+        "Whole wheat bread",
+        "Cheddar cheese",
+        "Cherry jam"
+      ],
+      "preparation": "Place cheddar cheese and cherry jam between the slices of bread. Toast in a sandwich maker and serve hot."
+    },
+    "3": {
+      "name": "Avocado & White Cheese Sandwich (on Ancient Wheat Bread)",
+      "category": "Breakfast",
+      "mood": "PRACTICAL",
+      "ingredients": [
+        "Ancient wheat bread",
+        "Avocado",
+        "White cheese",
+        "Lemon juice",
+        "Black pepper"
+      ],
+      "preparation": "Mash the avocado and mix with lemon juice and black pepper. Spread it on the ancient wheat bread, add white cheese, and assemble the sandwich."
+    },
+    "4": {
+      "name": "Cheese & Roasted Vegetable Open Sandwich",
+      "category": "Breakfast",
+      "mood": "SURPRISE",
+      "ingredients": [
+        "Sourdough bread",
+        "Tulum cheese",
+        "Roasted red bell pepper",
+        "Roasted eggplant",
+        "Olive oil"
+      ],
+      "preparation": "Place tulum cheese on the bread, then add roasted bell pepper and eggplant. Drizzle with olive oil and serve."
+    },
+    "5": {
+      "name": "Fermented Green Salad",
+      "category": "Salad",
+      "mood": "LIGHT",
+      "ingredients": [
+        "Mixed greens",
+        "Pickled gherkins",
+        "Pickled red bell pepper",
+        "White cheese",
+        "Lemon juice & olive oil"
+      ],
+      "preparation": "Place mixed greens in a bowl. Add chopped pickles and white cheese. Season with lemon juice and olive oil, then mix well."
+    },
+    "6": {
+      "name": "Tangy Sweet Beetroot Salad",
+      "category": "Salad",
+      "mood": "FEAST",
+      "ingredients": [
+        "Boiled beetroot",
+        "Pickled carrot",
+        "Apple slices",
+        "Walnuts",
+        "Cottage cheese",
+        "Pomegranate molasses & olive oil"
+      ],
+      "preparation": "Mix the beetroot, carrot, and apple slices. Add walnuts and cottage cheese. Season with pomegranate molasses and olive oil."
+    },
+    "7": {
+      "name": "Colorful Grilled Bell Pepper Salad",
+      "category": "Salad",
+      "mood": "PRACTICAL",
+      "ingredients": [
+        "Grilled red bell pepper",
+        "Pickled green bell pepper",
+        "Fresh onion",
+        "Corn",
+        "Feta cheese",
+        "Olive oil & vinegar"
+      ],
+      "preparation": "Combine all ingredients in a bowl, crumble feta cheese on top, and season with olive oil and vinegar."
+    },
+    "8": {
+      "name": "Pickled Avocado Salad",
+      "category": "Salad",
+      "mood": "SURPRISE",
+      "ingredients": [
+        "Avocado",
+        "Pickled cucumber",
+        "Red onion",
+        "Dill",
+        "Goat cheese",
+        "Lemon juice & olive oil"
+      ],
+      "preparation": "Mix all ingredients and top with goat cheese. Season with lemon juice and olive oil."
+    },
+    "9": {
+      "name": "Baked Pumpkin Soup",
+      "category": "Soup",
+      "mood": "LIGHT",
+      "ingredients": [
+        "Pumpkin",
+        "Onion",
+        "Garlic",
+        "Olive oil",
+        "Milk",
+        "Vegetable broth",
+        "Black pepper"
+      ],
+      "preparation": "Roast the pumpkin. Sauté onion and garlic, then blend with broth and milk. Season and serve."
+    },
+    "10": {
+      "name": "Leek and Potato Soup",
+      "category": "Soup",
+      "mood": "FEAST",
+      "ingredients": [
+        "Leek",
+        "Potato",
+        "Onion",
+        "Olive oil",
+        "Milk",
+        "Vegetable broth",
+        "White cheese"
+      ],
+      "preparation": "Cook vegetables in broth, blend, add milk, and top with white cheese."
+    },
+    "11": {
+      "name": "Grilled Eggplant Yogurt Soup",
+      "category": "Soup",
+      "mood": "PRACTICAL",
+      "ingredients": [
+        "Grilled eggplant",
+        "Yogurt",
+        "Chickpeas",
+        "Dill",
+        "Garlic",
+        "Olive oil",
+        "Vegetable broth"
+      ],
+      "preparation": "Mix yogurt with broth, add eggplant and chickpeas, garnish with dill and olive oil."
+    },
+    "12": {
+      "name": "Swiss Chard and Cottage Cheese Soup",
+      "category": "Soup",
+      "mood": "SURPRISE",
+      "ingredients": [
+        "Swiss chard",
+        "Cottage cheese",
+        "Onion",
+        "Garlic",
+        "Olive oil",
+        "Vegetable broth",
+        "Black pepper"
+      ],
+      "preparation": "Sauté onion and garlic, add chard and broth. Top with cottage cheese before serving."
+    },
+    "13": {
+      "name": "Grilled Vegetable & Cheese Sandwich",
+      "category": "Main Course",
+      "mood": "LIGHT",
+      "ingredients": [
+        "Whole wheat bread",
+        "Grilled vegetables",
+        "White cheese",
+        "Olive oil",
+        "Oregano"
+      ],
+      "preparation": "Assemble grilled vegetables and cheese between toasted bread slices. Season and serve."
+    },
+    "14": {
+      "name": "Rich Stuffed Whole Wheat Sandwich",
+      "category": "Main Course",
+      "mood": "FEAST",
+      "ingredients": [
+        "Whole wheat bread",
+        "Halloumi",
+        "Eggplant",
+        "Caramelized onions",
+        "Lettuce",
+        "Tomato",
+        "Mustard yogurt sauce"
+      ],
+      "preparation": "Layer ingredients in bread, drizzle sauce, and serve warm or cold."
+    },
+    "15": {
+      "name": "Baked Cheese & Vegetable Village Bread Bowl",
+      "category": "Main Course",
+      "mood": "PRACTICAL",
+      "ingredients": [
+        "Village bread",
+        "Cottage cheese",
+        "Cheddar cheese",
+        "Spinach",
+        "Roasted bell pepper",
+        "Olive oil",
+        "Black pepper",
+        "Red pepper flakes"
+      ],
+      "preparation": "Fill bread with cheese, spinach, and peppers. Bake until golden."
+    },
+    "16": {
+      "name": "Baked Cottage Cheese Cauliflower Gratin",
+      "category": "Main Course",
+      "mood": "SURPRISE",
+      "ingredients": [
+        "Cauliflower",
+        "Cottage cheese",
+        "Yogurt",
+        "Egg",
+        "Mustard",
+        "Black pepper",
+        "Oregano"
+      ],
+      "preparation": "Mix ingredients, layer over cauliflower, and bake until golden."
+    },
+    "17": {
+      "name": "Baked Pear & Cherry Jam Dessert",
+      "category": "Desserts",
+      "mood": "LIGHT",
+      "ingredients": [
+        "Sourdough bread",
+        "Baked pear",
+        "Cherry jam",
+        "Tulum cheese",
+        "Crushed hazelnuts"
+      ],
+      "preparation": "Top bread with cheese, pear slices, jam, and hazelnuts."
+    },
+    "18": {
+      "name": "Fermented Fruit & Yogurt Dessert Bowl",
+      "category": "Desserts",
+      "mood": "FEAST",
+      "ingredients": [
+        "Yogurt",
+        "Apple & pear",
+        "Fig jam",
+        "Honey",
+        "Walnuts",
+        "Cinnamon"
+      ],
+      "preparation": "Layer ingredients in a bowl and garnish with cinnamon."
+    },
+    "19": {
+      "name": "Pomegranate & Cottage Cheese Dessert",
+      "category": "Desserts",
+      "mood": "PRACTICAL",
+      "ingredients": [
+        "Cottage cheese",
+        "Pomegranate seeds",
+        "Quince jam",
+        "Plums",
+        "Kefir"
+      ],
+      "preparation": "Mix ingredients and serve chilled."
+    },
+    "20": {
+      "name": "Milky & Hazelnut Plum Jam Toast",
+      "category": "Desserts",
+      "mood": "SURPRISE",
+      "ingredients": [
+        "Whole wheat bread",
+        "Milk",
+        "White cheese",
+        "Strawberry jam"
+      ],
+      "preparation": "Soak bread in milk, top with cheese and jam."
+    }
+  }
+}

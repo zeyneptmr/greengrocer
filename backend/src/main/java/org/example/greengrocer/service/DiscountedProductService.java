@@ -24,7 +24,11 @@ public class DiscountedProductService {
     public List<DiscountedProduct> getAllActiveDiscounts() {
         return discountedProductRepository.findAllActiveDiscounts();
     }
-    
+
+    public List<DiscountedProduct> getAllActiveDiscountsByLanguage(String language) {
+        return discountedProductRepository.findAllActiveDiscountsByLanguage(language);
+    }
+
     @Transactional
     public DiscountedProduct createDiscount(DiscountedProduct discountedProduct) {
         // Set discount date to now if not provided

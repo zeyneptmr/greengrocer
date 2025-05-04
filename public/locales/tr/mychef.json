@@ -1,0 +1,25 @@
+{
+  "chefIntro1": "Merhaba! Hangi öğün için bir tarif istersiniz?",
+  "chefIntro2": "Bugün nasıl hissediyorsunuz?",
+  "meals": {
+    "breakfast": "Kahvaltı",
+    "salad": "Salata",
+    "soup": "Çorba",
+    "mainCourse": "Ana Yemek",
+    "desserts": "Tatlılar"
+  },
+  "moods": {
+    "light": "Hafif bir şeyler istiyorum",
+    "feast": "Şölen yapalım",
+    "practical": "Yorgunum, hızlı olsun",
+    "surprise": "Beni şaşırt"
+  },
+  "continue": "Devam Et",
+  "goBack": "⬅ Geri Dön",
+  "showRecipe": "Tarifi Göster",
+  "recipeTitle": "Senin için hazırladığım tarif 🍽️",
+  "noRecipe": "Bu seçim için tarif bulunamadı.",
+  "ingredients": "🛒 Malzemeler:",
+  "preparation": "🍳 Hazırlık:",
+  "backToMood": "⬅ Geri dön"
+}

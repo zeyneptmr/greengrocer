@@ -1,0 +1,25 @@
+{
+  "promo1": "Fast delivery within the same day with suitable conditions",
+  "promo2": "Wide range of completely organic and high quality products!",
+  "promo3": "Carefully cultivated and safely selected for you",
+  "promo4": "Safe shopping without worrying",
+  "fastDelivery": "Fast Delivery",
+  "freshness": "Freshness",
+  "safeProducts": "Safe Products",
+  "securePayment": "Secure Payment",
+  "todaysDiscountedProducts": "Today's Discounted Products",
+  "chosenForYou": "Chosen for You",
+  "exploreMore": "Explore More",
+  "chefsRecommendation": "🍽️ Chef's Recommendation",
+  "chefsText": "Not sure what to eat? Let the chef decide for you! Select your preferences and get a unique recipe recommendation based on what you feel like eating today!",
+  "clickToSee": "Click to see the chef's special!",
+  "categories": {
+  "vegetables": "Vegetables",
+  "fruits": "Fruits",
+  "bakedGoods": "Baked Goods",
+  "olivesOils": "Olives & Oils",
+  "sauces": "Sauces",
+  "dairy": "Dairy"
+}
+
+}

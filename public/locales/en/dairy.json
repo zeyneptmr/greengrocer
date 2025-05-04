@@ -1,0 +1,8 @@
+{
+  "title": "Dairy",
+  "loading": "Loading products...",
+  "error": "Failed to fetch products:",
+  "noProducts": "No dairy products available",
+  "prev": "< Previous",
+  "next": "Next >"
+}

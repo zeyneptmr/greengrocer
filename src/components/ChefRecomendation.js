@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import chefImage from "../assets/chef.jpg";
-import  Recipes  from "../data/Recipes";
+import { useTranslation } from "react-i18next";
+import recipes from "../data/Recipes";
 
 export default function ChefRecommendationModal({ isOpen, onClose }) {
     const [step, setStep] = useState(1);
     const [meal, setMeal] = useState(null);
     const [mood, setMood] = useState(null);
     const [showRecipe, setShowRecipe] = useState(false);
+
+    const { t } = useTranslation(["mychef", "recipes"]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -18,21 +21,21 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
     }, [isOpen]);
 
     const meals = [
-        { name: "Breakfast", icon: "🔍" },
-        { name: "Salad", icon: "🥗" },
-        { name: "Soup", icon: "🍜" },
-        { name: "Main Course", icon: "🍛" },
-        { name: "Desserts", icon: "🧁" },
+        { name: t("meals.breakfast"), icon: "🔍", value: "Breakfast" },
+        { name: t("meals.salad"), icon: "🥗", value: "Salad" },
+        { name: t("meals.soup"), icon: "🍜", value: "Soup" },
+        { name: t("meals.mainCourse"), icon: "🍛", value: "Main Course" },
+        { name: t("meals.desserts"), icon: "🧁", value: "Desserts" },
     ];
 
     const moods = [
-        { name: "I want something light", value: "LIGHT", icon: "🥑 " },
-        { name: "Let's have a feast", value: "FEAST", icon: "🍔 " },
-        { name: "I'm tired, make it quick", value: "PRACTICAL", icon: "🍜 " },
-        { name: "Surprise me", value: "SURPRISE", icon: "🍽️ " },
+        { name: t("moods.light"), value: "LIGHT", icon: "🥑 " },
+        { name: t("moods.feast"), value: "FEAST", icon: "🍔 " },
+        { name: t("moods.practical"), value: "PRACTICAL", icon: "🍜 " },
+        { name: t("moods.surprise"), value: "SURPRISE", icon: "🍽️ " },
     ];
 
-    const filteredRecipes = Recipes.filter(recipe => {
+    const filteredRecipes = recipes.filter(recipe => {
         return recipe.category === meal && recipe.mood === mood;
     });
 
@@ -43,34 +46,36 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
                     <button className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl" onClick={onClose}>✖</button>
 
                     <h2 className="text-2xl font-extrabold text-center mb-4 text-orange-600 flex items-center justify-center">
-                        Here is a recipe I prepared for you 🍽️
+                        {t("recipeTitle")}
                     </h2>
 
                     {filteredRecipes.length === 0 ? (
-                        <p className="text-center text-lg text-gray-500">No recipe found for this selection.</p>
+                        <p className="text-center text-lg text-gray-500">{t("noRecipe")}</p>
                     ) : (
                         filteredRecipes.map(recipe => (
                             <div key={recipe.id} className="mb-4 text-center">
                                 <h3 className="text-xl font-semibold text-gray-900 flex items-center justify-center gap-2">
-                                    {recipe.name}
+                                    {t(recipe.nameKey, { ns: "recipes" })}
                                 </h3>
 
-                                <h4 className="mt-4 text-lg font-semibold text-gray-700">🛒 Ingredients:</h4>
+                                <h4 className="mt-4 text-lg font-semibold text-gray-700">{t("ingredients")}</h4>
                                 <ul className="list-disc list-inside text-gray-600 text-md mt-1">
-                                    {recipe.ingredients.map((ingredient, index) => (
-                                        <li key={index}>{ingredient}</li>
+                                    {recipe.ingredientsKeys.map((key, index) => (
+                                        <li key={index}>{t(key, { ns: "recipes" })}</li>
                                     ))}
                                 </ul>
 
-                                <h4 className="mt-4 text-lg font-semibold text-gray-700">🍳 Preparation:</h4>
-                                <p className="text-md text-gray-600 leading-relaxed mt-1">{recipe.preparation}</p>
+                                <h4 className="mt-4 text-lg font-semibold text-gray-700">{t("preparation")}</h4>
+                                <p className="text-md text-gray-600 leading-relaxed mt-1">
+                                    {t(recipe.preparationKey, { ns: "recipes" })}
+                                </p>
                             </div>
                         ))
                     )}
 
                     <button onClick={() => setShowRecipe(false)}
                             className="bg-orange-500 hover:bg-orange-600 text-white text-lg py-3 px-6 rounded-xl mt-6 w-full transition-all">
-                        ⬅ Go back
+                        {t("goBack")}
                     </button>
                 </div>
             </div>
@@ -91,8 +96,8 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
                 <div className="flex items-start mb-4">
                     <img src={chefImage} alt="Şef" className="w-16 h-16 rounded-full" />
                     <div className="bg-gray-100 p-3 rounded-lg ml-3 max-w-xs">
-                        {step === 1 && <p>Hi! Which meal would you like a recipe for?</p>}
-                        {step === 2 && <p>How are you feeling today?</p>}
+                        {step === 1 && <p>{t("chefIntro1")}</p>}
+                        {step === 2 && <p>{t("chefIntro2")}</p>}
                     </div>
                 </div>
 
@@ -101,8 +106,8 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
                         {meals.map((m) => (
                             <button
                                 key={m.name}
-                                onClick={() => setMeal(m.name)}
-                                className={`flex items-center p-2 border rounded-lg w-full mb-2 ${meal === m.name ? "bg-green-500 text-white" : "bg-white text-black border-gray-300"}`}
+                                onClick={() => setMeal(m.value)}
+                                className={`flex items-center p-2 border rounded-lg w-full mb-2 ${meal === m.value ? "bg-green-500 text-white" : "bg-white text-black border-gray-300"}`}
                             >
                                 {m.icon} <span>{m.name}</span>
                             </button>
@@ -112,7 +117,7 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
                             onClick={() => setStep(2)}
                             className={`w-full py-2 rounded-lg mt-4 ${meal ? "bg-orange-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
                         >
-                            Continue
+                            {t("continue")}
                         </button>
                     </div>
                 )}
@@ -130,14 +135,14 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
                         ))}
                         <div className="flex justify-between mt-4">
                             <button onClick={() => setStep(1)}
-                                    className="bg-gray-300 text-black py-2 px-4 rounded-lg flex items-center">⬅ Go Back
+                                    className="bg-gray-300 text-black py-2 px-4 rounded-lg flex items-center">{t("backToMood")}
                             </button>
                             <button
                                 disabled={!mood}
                                 onClick={() => setShowRecipe(true)}
                                 className={`py-2 px-4 rounded-lg ${mood ? "bg-orange-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
                             >
-                                Show Recipe
+                                {t("showRecipe")}
                             </button>
                         </div>
                     </div>
@@ -145,6 +150,4 @@ export default function ChefRecommendationModal({ isOpen, onClose }) {
             </div>
         </div>
     );
-
 }
-

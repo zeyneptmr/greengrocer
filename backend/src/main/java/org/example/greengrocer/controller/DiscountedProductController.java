@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import org.example.greengrocer.model.Product;
+import java.util.HashMap;
+import java.util.Map;
+
+
 @RestController
 @RequestMapping("/api/discountedProducts")
 @CrossOrigin(origins = {"http://localhost:3000",}, allowCredentials = "true")
@@ -23,11 +29,45 @@ public class DiscountedProductController {
     @Autowired
     private DiscountedProductService discountedProductService;
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<List<DiscountedProduct>> getAllDiscountedProducts() {
         List<DiscountedProduct> products = discountedProductService.getAllActiveDiscounts();
         return ResponseEntity.ok(products);
+    }*/
+
+    @GetMapping
+    public ResponseEntity<List<?>> getAllDiscountedProducts(
+            @RequestParam(name = "language", defaultValue = "en") String language) {
+
+        List<DiscountedProduct> discounts = discountedProductService.getAllActiveDiscountsByLanguage(language);
+
+        List<Map<String, Object>> response = discounts.stream().map(dp -> {
+            Product p = dp.getProduct();
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", dp.getId());
+            map.put("oldPrice", dp.getOldPrice());
+            map.put("discountedPrice", dp.getDiscountedPrice());
+            map.put("discountRate", dp.getDiscountRate());
+            map.put("discountDate", dp.getDiscountDate());
+
+            Map<String, Object> productMap = new HashMap<>();
+            productMap.put("id", p.getId());
+            productMap.put("productKey", p.getProductKey());
+            productMap.put("price", p.getPrice());
+            productMap.put("stock", p.getStock());
+            productMap.put("imagePath", p.getImagePath());
+            productMap.put("category", p.getCategory());
+            productMap.put("translatedName", p.getTranslatedName(language));
+
+            map.put("product", productMap);
+
+            return map;
+        }).toList();
+
+
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping
     public ResponseEntity<?> createDiscountedProduct(@RequestBody DiscountedProduct discountedProduct) {

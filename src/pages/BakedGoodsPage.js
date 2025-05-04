@@ -6,6 +6,7 @@ import bakedgoods1 from '../assets/bakedgoods1.jpg.avif';
 import bakedgoods2 from '../assets/bakedgoods2.jpg';
 import bakedgoods3 from '../assets/bakedgoods3.jpg';
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const importAll = (r) => {
     let images = {};
@@ -29,6 +30,8 @@ const BakedGoodsPage = () => {
     const [bakedGoodsProducts, setBakedGoodsProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { t } = useTranslation('bakedgoods');
 
     // Pagination States
     const [currentPage, setCurrentPage] = useState(1);
@@ -116,11 +119,11 @@ const BakedGoodsPage = () => {
     return (
         <div className="p-4 sm:p-6">
             <SlideBar items={slideItems} />
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Baked Goods</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">{t("title")}</h2>
             <FilterBar columns={columns} setColumns={setColumns} setSortOption={setSortOption} />
 
-            {loading && <p className="text-center py-8">Loading products...</p>}
-            {error && <p className="text-center text-red-500 py-8">{error}</p>}
+            {loading && <p className="text-center py-8">{t("loading")}</p>}
+            {error && <p className="text-center text-red-500 py-8">{t("error")} {error}</p>}
 
             {!loading && !error && (
                 <div>
@@ -142,7 +145,7 @@ const BakedGoodsPage = () => {
                                 />
                             ))
                         ) : (
-                            <p className="col-span-full text-center py-8">No baked goods products available</p>
+                            <p className="col-span-full text-center py-8">{t("noProducts")}</p>
                         )}
                     </div>
 
@@ -153,7 +156,7 @@ const BakedGoodsPage = () => {
                             onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
                             disabled={currentPage === 1}
                         >
-                            &lt; Previous
+                            {t("prev")}
                         </button>
                         <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
                         <button
@@ -161,7 +164,7 @@ const BakedGoodsPage = () => {
                             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
                             disabled={currentPage === totalPages}
                         >
-                            Next &gt;
+                            {t("next")}
                         </button>
                     </div>
                 </div>

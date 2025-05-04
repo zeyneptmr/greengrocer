@@ -8,6 +8,7 @@ import vegetables3 from '../assets/vegetables3.jpg';
 import vegetables4 from '../assets/vegetables4.jpg';
 import vegetables5 from '../assets/vegetables5.jpg';
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const importAll = (r) => {
     let images = {};
@@ -35,6 +36,8 @@ const VegetablesPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
     //const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
+
+    const { t } = useTranslation('vegetables');
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
@@ -109,15 +112,15 @@ const VegetablesPage = () => {
     return (
         <div className="p-4 sm:p-6">
             <SlideBar items={slideItems}/>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">Vegetables</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-orange-500 text-center mt-10 sm:mt-16 md:mt-20">{t("title")}</h2>
             <FilterBar
                 columns={columns}
                 setColumns={setColumns}
                 setSortOption={setSortOption}
             />
 
-            {loading && <p className="text-center py-8">Loading products...</p>}
-            {error && <p className="text-center text-red-500 py-8">{error}</p>}
+            {loading && <p className="text-center py-8">{t("loading")}</p>}
+            {error && <p className="text-center text-red-500 py-8">{t("error")} {error}</p>}
 
             {!loading && !error && (
                 <div>
@@ -139,7 +142,7 @@ const VegetablesPage = () => {
                                 />
                             ))
                         ) : (
-                            <p className="col-span-full text-center py-8">No vegetable products available</p>
+                            <p className="col-span-full text-center py-8">{t("noProducts")}</p>
                         )}
                     </div>
 
@@ -150,7 +153,7 @@ const VegetablesPage = () => {
                             onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
                             disabled={currentPage === 1}
                         >
-                            &lt; Previous
+                            {t("prev")}
                         </button>
                         <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
                         <button
@@ -158,7 +161,7 @@ const VegetablesPage = () => {
                             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
                             disabled={currentPage === totalPages}
                         >
-                            Next &gt;
+                            {t("next")}
                         </button>
                     </div>
                 </div>

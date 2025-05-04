@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { LanguageContext } from "../context/LanguageContext";
 
@@ -9,7 +9,7 @@ export const FavoritesProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState(null);
 
-    const { language } = useContext(LanguageContext);  // ✅ Dil desteği
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -33,7 +33,7 @@ export const FavoritesProvider = ({ children }) => {
             return '/placeholder.png';
         }
 
-        return images[filename] || '/placeholder.png';
+        return images[imagePath] || '/placeholder.png';
     };
 
     const formatPrice = (price) => {
@@ -43,27 +43,27 @@ export const FavoritesProvider = ({ children }) => {
         return parseFloat(price).toFixed(2);
     };
 
-    // ✅ Kullanıcıyı kontrol et
-    const checkAuthStatus = () => {
+    const checkAuthStatus = useCallback(() => {
         axios.get(`http://localhost:8080/api/users/me`, { withCredentials: true })
             .then(res => setCurrentUser(res.data))
             .catch(() => setCurrentUser(null));
-    };
+    }, []);
 
-    // ✅ Tek ürün güncellemesi (dile göre)
-    const fetchLatestProductData = async (productId) => {
+    const fetchLatestProductData = useCallback(async (productId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/products/${productId}?language=${language}`, {
+            const response = await axios.get(`http://localhost:8080/api/products/${productId}`, {
+                params: { language },
                 headers: { 'Cache-Control': 'no-cache' }
             });
+            console.log(`Fetched product ${productId} with language: ${language}`, response.data);
             return response.data;
-        } catch {
+        } catch (error) {
+            console.error(`Error fetching product ${productId}:`, error);
             return null;
         }
-    };
+    }, [language]);
 
-    // ✅ Tüm favorileri güncelle (dile göre)
-    const refreshFavoritesWithLatestData = async (favoriteIds) => {
+    const refreshFavoritesWithLatestData = useCallback(async (favoriteIds) => {
         if (!favoriteIds || favoriteIds.length === 0) return [];
 
         const productPromises = favoriteIds.map(id => fetchLatestProductData(id));
@@ -79,59 +79,66 @@ export const FavoritesProvider = ({ children }) => {
                 stock: product.stock,
                 category: product.category
             }));
-    };
+    }, [fetchLatestProductData]);
 
-    const loadFavorites = async () => {
+    const loadFavorites = useCallback(async () => {
+        console.log(`Loading favorites with language: ${language}`);
         setLoading(true);
 
         if (currentUser) {
             try {
-                const res = await axios.get("http://localhost:8080/api/favorites", {
+                const res = await axios.get(`http://localhost:8080/api/favorites`, {
+                    params: { language },
                     withCredentials: true,
                     headers: { 'Cache-Control': 'no-cache' }
                 });
 
-                const favoriteIds = res.data.map(product => product.id);
-                const updatedFavorites = await refreshFavoritesWithLatestData(favoriteIds);
+                const updatedFavorites = res.data.map(product => ({
+                    id: product.id,
+                    name: product.translatedName || product.productName || product.productKey,
+                    price: formatPrice(product.price),
+                    image: getImageFromPath(product.imagePath),
+                    stock: product.stock,
+                    category: product.category
+                }));
+
                 setFavorites(updatedFavorites);
-            } catch {
+            } catch (error) {
+                console.error("Error loading favorites:", error);
                 setFavorites([]);
             }
         } else {
-            setFavorites([]);
+            const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+            if (storedFavorites.length > 0) {
+                const refreshedFavorites = await refreshFavoritesWithLatestData(
+                    storedFavorites.map(fav => fav.id)
+                );
+                setFavorites(refreshedFavorites);
+            } else {
+                setFavorites([]);
+            }
         }
 
         setLoading(false);
-    };
+    }, [currentUser, language, refreshFavoritesWithLatestData]);
 
-    // ✅ Kullanıcı giriş yaptı mı kontrol
     useEffect(() => {
-        checkAuthStatus();
-    }, []);
-
-    // ✅ Kullanıcı değişince favorileri yükle
-    useEffect(() => {
-        if (currentUser) {
-            loadFavorites();
-        } else {
-            setFavorites([]);
-            setLoading(false);
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        if (loggedInUser) {
+            localStorage.removeItem("favorites");
         }
     }, [currentUser]);
 
-    // ✅ Dil değişince favorileri güncelle
     useEffect(() => {
-        if (favorites.length > 0) {
-            const refreshFavoritesLanguage = async () => {
-                const favoriteIds = favorites.map(product => product.id);
-                const updatedFavorites = await refreshFavoritesWithLatestData(favoriteIds);
-                setFavorites(updatedFavorites);
-            };
-            refreshFavoritesLanguage();
-        }
-    }, [language]);
+        checkAuthStatus();
+    }, [checkAuthStatus]);
 
-    // ✅ Favori ekle/çıkar
+    useEffect(() => {
+        console.log(`Language changed to: ${language}, reloading favorites`);
+        loadFavorites();
+    }, [currentUser, language, loadFavorites]);
+
     const toggleFavorite = async (product) => {
         if (!currentUser) {
             const latestProduct = await fetchLatestProductData(product.id);
@@ -153,11 +160,12 @@ export const FavoritesProvider = ({ children }) => {
             };
 
             const isAlreadyFavorite = favorites.some(fav => fav.id === formattedProduct.id);
-            setFavorites(prev => isAlreadyFavorite ?
-                prev.filter(fav => fav.id !== formattedProduct.id) :
-                [...prev, formattedProduct]
-            );
+            const updatedFavorites = isAlreadyFavorite ?
+                favorites.filter(fav => fav.id !== formattedProduct.id) :
+                [...favorites, formattedProduct];
 
+            setFavorites(updatedFavorites);
+            localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
             return;
         }
 

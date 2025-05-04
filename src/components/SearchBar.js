@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from 'react-i18next';
 
 const SearchBar = () => {
     const [query, setQuery] = useState("");
@@ -13,6 +14,7 @@ const SearchBar = () => {
     const navigate = useNavigate();
 
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation('search');
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -241,7 +243,7 @@ const SearchBar = () => {
                                 </li>
                             ))
                         ) : (
-                            <li className="p-2 text-center text-red-500">Product not found!</li>
+                            <li className="p-2 text-center text-red-500">{t("productNotFound")}</li>
                         )}
                     </ul>
                 )}

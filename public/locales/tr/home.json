@@ -1,0 +1,24 @@
+{
+  "promo1": "Uygun koşullarda aynı gün hızlı teslimat",
+  "promo2": "Tamamen organik ve yüksek kaliteli ürünlerin geniş yelpazesi!",
+  "promo3": "Özenle yetiştirilmiş ve güvenle seçilmiş ürünler",
+  "promo4": "Endişelenmeden güvenli alışveriş",
+  "fastDelivery": "Hızlı Teslimat",
+  "freshness": "Tazelik",
+  "safeProducts": "Güvenli Ürünler",
+  "securePayment": "Güvenli Ödeme",
+  "todaysDiscountedProducts": "Günün İndirimli Ürünleri",
+  "chosenForYou": "Sizin İçin Seçtiklerimiz",
+  "exploreMore": "Daha Fazlasını Keşfet",
+  "chefsRecommendation": "🍽️ Şefin Önerisi",
+  "chefsText": "Ne yiyeceğinize karar veremiyor musunuz? Şefin sizin için karar vermesine izin verin! Tercihlerinizi seçin ve bugün ne yemek istediğinize göre benzersiz bir tarif önerisi alın!",
+  "clickToSee": "Şefin özel tarifini görmek için tıklayın!",
+  "categories": {
+    "vegetables": "Sebzeler",
+    "fruits": "Meyveler",
+    "bakedGoods": "Fırın Ürünleri",
+    "olivesOils": "Zeytin ve Yağlar",
+    "sauces": "Soslar",
+    "dairy": "Süt Ürünleri"
+  }
+}

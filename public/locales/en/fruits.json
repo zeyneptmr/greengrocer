@@ -1,0 +1,8 @@
+{
+  "title": "Fruits",
+  "loading": "Loading products...",
+  "error": "Failed to fetch products:",
+  "noProducts": "No fruit products available",
+  "prev": "< Previous",
+  "next": "Next >"
+}

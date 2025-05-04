@@ -30,20 +30,14 @@ import dairyImg from "../assets/dairy1.svg";
 import axios from "axios";
 import { useContext } from "react";
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 
 const banners = [banner1];
 // Function to shuffle the array
 
 
-const categories = [
-    { name: "Vegetables", image: vegetablesImg, path: "/vegetables" },
-    { name: "Fruits", image: fruitsImg, path: "/fruits" },
-    { name: "Baked Goods", image: bakedGoodsImg, path: "/bakedgoods" },
-    { name: "Olives & Oils", image: olivesOilsImg, path: "/olives" },
-    { name: "Sauces", image: saucesImg, path: "/sauces" },
-    { name: "Dairy", image: dairyImg, path: "/dairy" }
-];
+
 
 export default function HomePage() {
     const [showModal, setShowModal] = useState(false); // Modal visibility state
@@ -54,6 +48,8 @@ export default function HomePage() {
     const [index, setIndex] = useState(0);
     const { favorites } = useFavorites();
     const { language } = useContext(LanguageContext);
+
+    const { t } = useTranslation("home");
 
     const importAll = (r) => {
         let images = {};
@@ -84,6 +80,15 @@ export default function HomePage() {
         // Find the matching image from the images object
         return images[filename] || '/placeholder.png';
     };
+
+    const categories = [
+        { name: t("categories.vegetables"), image: vegetablesImg, path: "/vegetables" },
+        { name: t("categories.fruits"), image: fruitsImg, path: "/fruits" },
+        { name: t("categories.bakedGoods"), image: bakedGoodsImg, path: "/bakedgoods" },
+        { name: t("categories.olivesOils"), image: olivesOilsImg, path: "/olives" },
+        { name: t("categories.sauces"), image: saucesImg, path: "/sauces" },
+        { name: t("categories.dairy"), image: dairyImg, path: "/dairy" }
+    ];
     
     const formatPrice = (price) => {
         if (typeof price === "number") {
@@ -171,10 +176,10 @@ export default function HomePage() {
                             >
                                 <p className="text-center text-lg font-semibold leading-6 text-black">
                                     {[
-                                        'Fast delivery within the same day with suitable conditions',
-                                        'Wide range of completely organic and high quality products!',
-                                        'Carefully cultivated and safely selected for you',
-                                        'Safe shopping without worrying'
+                                        t("promo1"),
+                                        t("promo2"),
+                                        t("promo3"),
+                                        t("promo4")
                                     ][index]}
                                 </p>
                             </motion.div>
@@ -194,7 +199,12 @@ export default function HomePage() {
                             animate={{opacity: 1}}
                             transition={{duration: 0.5}}
                         >
-                            {['Fast Delivery', 'Freshness', 'Safe Products', 'Secure Payment'][index]}
+                            {[
+                                t("fastDelivery"),
+                                t("freshness"),
+                                t("safeProducts"),
+                                t("securePayment")
+                            ][index]}
                         </motion.p>
                     </motion.div>
                 ))}
@@ -203,13 +213,13 @@ export default function HomePage() {
             {/* Discounted Products */}
             <section className="py-8">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold mt-6">Today's Discounted Products</h2>
+                    <h2 className="text-3xl font-bold mt-6">{t("todaysDiscountedProducts")}</h2>
                     <TodaysDiscountedProducts />
                 </div>
             </section>
 
             {/* Products Section - Scrollable */}
-            <h2 className="text-3xl font-bold mt-6">Chosen for You</h2>
+            <h2 className="text-3xl font-bold mt-6">{t("chosenForYou")}</h2>
             <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     {randomProducts.map((product, index) => (
@@ -232,7 +242,7 @@ export default function HomePage() {
 
             <br/>
 
-            <h2 className="text-3xl font-bold mt-6">Explore More</h2>
+            <h2 className="text-3xl font-bold mt-6">{t("exploreMore")}</h2>
             <br/>
             <br/>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4 justify-items-center">
@@ -251,12 +261,10 @@ export default function HomePage() {
                 {/* Text Section (Left) */}
                 <div className="text-left flex-1 pr-10">
                     <h2 className="text-3xl font-bold text-green-600 flex items-center gap-2">
-                        🍽️ Chef's Recommendation
+                        {t("chefsRecommendation")}
                     </h2>
                     <p className="text-orange-500 text-lg mt-2 leading-relaxed">
-                        Not sure what to eat? Let the chef decide for you!
-                        Select your preferences and get a unique recipe recommendation
-                        based on what you feel like eating today!
+                        {t("chefsText")}
                     </p>
                 </div>
 
@@ -271,7 +279,7 @@ export default function HomePage() {
                     </div>
                     <span
                         className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-sm px-4 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-            Click to see the chef's special!
+            {t("chefsText")}
         </span>
                 </button>
 

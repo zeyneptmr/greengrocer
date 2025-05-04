@@ -1,0 +1,279 @@
+{
+  "recipes": {
+    "1": {
+      "name": "Köy Ekmeğinde Bal ve Lor Peynirli Kahvaltı",
+      "category": "Kahvaltı",
+      "mood": "HAFİF",
+      "ingredients": [
+        "Köy ekmeği (kalın dilimler)",
+        "Lor peyniri",
+        "Ceviz",
+        "Bal"
+      ],
+      "preparation": "Köy ekmeğini hafifçe kızartın. Üzerine lor peyniri serpin, ceviz ekleyin ve bal gezdirerek servis yapın."
+    },
+    "2": {
+      "name": "Tam Buğday Reçelli ve Peynirli Tost",
+      "category": "Kahvaltı",
+      "mood": "ŞÖLEN",
+      "ingredients": [
+        "Tam buğday ekmeği",
+        "Kaşar peyniri",
+        "Vişne reçeli"
+      ],
+      "preparation": "Kaşar peyniri ve vişne reçelini ekmek dilimleri arasına yerleştirin. Tost makinesinde kızartın ve sıcak servis yapın."
+    },
+    "3": {
+      "name": "Avokadolu ve Beyaz Peynirli Sandviç (Kadim Buğday Ekmeğinde)",
+      "category": "Kahvaltı",
+      "mood": "PRATİK",
+      "ingredients": [
+        "Kadim buğday ekmeği",
+        "Avokado",
+        "Beyaz peynir",
+        "Limon suyu",
+        "Karabiber"
+      ],
+      "preparation": "Avokadoyu ezin ve limon suyu ile karabiberle karıştırın. Ekmeğin üzerine sürün, beyaz peynir ekleyin ve sandviçi tamamlayın."
+    },
+    "4": {
+      "name": "Peynirli ve Köz Sebzeli Açık Sandviç",
+      "category": "Kahvaltı",
+      "mood": "SÜRPRİZ",
+      "ingredients": [
+        "Ekşi maya ekmeği",
+        "Tulum peyniri",
+        "Közlenmiş kırmızı biber",
+        "Közlenmiş patlıcan",
+        "Zeytinyağı"
+      ],
+      "preparation": "Ekmeğin üzerine tulum peyniri koyun, közlenmiş biber ve patlıcan ekleyin. Zeytinyağı gezdirerek servis yapın."
+    },
+    "5": {
+      "name": "Fermente Yeşil Salata",
+      "category": "Salata",
+      "mood": "HAFİF",
+      "ingredients": [
+        "Karışık yeşillikler",
+        "Doğranmış kornişon turşu",
+        "Şerit halinde doğranmış kırmızı biber turşusu",
+        "Küp doğranmış beyaz peynir",
+        "Limon suyu & zeytinyağı"
+      ],
+      "preparation": "Yeşillikleri kaseye alın. Turşular ve beyaz peyniri ekleyin. Limon suyu ve zeytinyağıyla tatlandırıp karıştırın."
+    },
+    "6": {
+      "name": "Ekşi Tatlı Pancar Salatası",
+      "category": "Salata",
+      "mood": "ŞÖLEN",
+      "ingredients": [
+        "Haşlanmış küp pancar",
+        "Rendelenmiş havuç turşusu",
+        "Elma dilimleri",
+        "Ceviz",
+        "Lor peyniri",
+        "Nar ekşisi & zeytinyağı"
+      ],
+      "preparation": "Pancar, havuç ve elmayı karıştırın. Ceviz ve lor peyniri ekleyin. Nar ekşisi ve zeytinyağı ile tatlandırın."
+    },
+    "7": {
+      "name": "Renkli Köz Biber Salatası",
+      "category": "Salata",
+      "mood": "PRATİK",
+      "ingredients": [
+        "Şerit doğranmış köz kırmızı biber",
+        "İnce dilimlenmiş yeşil biber turşusu",
+        "Taze soğan",
+        "Mısır",
+        "Ufalanmış beyaz peynir",
+        "Zeytinyağı & sirke"
+      ],
+      "preparation": "Malzemeleri karıştırın, üzerine beyaz peynir ufalayın. Zeytinyağı ve sirke ile tatlandırın."
+    },
+    "8": {
+      "name": "Turşulu Avokado Salatası",
+      "category": "Salata",
+      "mood": "SÜRPRİZ",
+      "ingredients": [
+        "Avokado dilimleri",
+        "Doğranmış salatalık turşusu",
+        "İnce doğranmış kırmızı soğan",
+        "Dereotu",
+        "Ufalanmış keçi peyniri",
+        "Limon suyu & zeytinyağı"
+      ],
+      "preparation": "Avokadoyu tabağa alın. Üzerine diğer malzemeleri ekleyin. Limon suyu ve zeytinyağı gezdirin."
+    },
+    "9": {
+      "name": "Fırınlanmış Balkabağı Çorbası",
+      "category": "Çorba",
+      "mood": "HAFİF",
+      "ingredients": [
+        "Küp doğranmış balkabağı",
+        "Soğan",
+        "Ezilmiş sarımsak",
+        "Zeytinyağı",
+        "Süt",
+        "Sebze suyu",
+        "Karabiber"
+      ],
+      "preparation": "Balkabağını fırınlayın. Soğan ve sarımsağı soteleyin, balkabağı ve sebze suyunu ekleyin. Püre haline getirip süt ekleyin."
+    },
+    "10": {
+      "name": "Pırasa ve Patates Çorbası",
+      "category": "Çorba",
+      "mood": "ŞÖLEN",
+      "ingredients": [
+        "Doğranmış pırasa",
+        "Küp patates",
+        "Soğan",
+        "Zeytinyağı",
+        "Süt",
+        "Sebze suyu",
+        "Beyaz peynir"
+      ],
+      "preparation": "Sebzeleri soteleyin, sebze suyunda pişirin. Blenderdan geçirip süt ekleyin. Üzerine beyaz peynir serpin."
+    },
+    "11": {
+      "name": "Köz Patlıcan Yoğurt Çorbası",
+      "category": "Çorba",
+      "mood": "PRATİK",
+      "ingredients": [
+        "Közlenmiş patlıcan",
+        "Yoğurt",
+        "Haşlanmış nohut",
+        "Dereotu",
+        "Ezilmiş sarımsak",
+        "Zeytinyağı",
+        "Sebze suyu"
+      ],
+      "preparation": "Yoğurt, sarımsak ve sebze suyunu karıştırın. Patlıcan ve nohut ekleyin. Üzerine zeytinyağı gezdirin ve dereotu serpin."
+    },
+    "12": {
+      "name": "Pazılı Lor Peynirli Çorba",
+      "category": "Çorba",
+      "mood": "SÜRPRİZ",
+      "ingredients": [
+        "Doğranmış pazı",
+        "Lor peyniri",
+        "Soğan",
+        "Sarımsak",
+        "Zeytinyağı",
+        "Sebze suyu",
+        "Karabiber"
+      ],
+      "preparation": "Soğan ve sarımsağı soteleyin, pazıyı ekleyin. Sebze suyunda pişirin. Üzerine lor peyniri serpin."
+    },
+    "13": {
+      "name": "Izgara Sebzeli ve Peynirli Sandviç",
+      "category": "Ana Yemek",
+      "mood": "HAFİF",
+      "ingredients": [
+        "Tam buğday ekmeği",
+        "Izgara sebzeler",
+        "Beyaz peynir",
+        "Zeytinyağı",
+        "Kekik"
+      ],
+      "preparation": "Izgara sebzeleri ve peyniri kızartılmış ekmek dilimlerinin arasına yerleştirin. Kekik ve zeytinyağı ekleyin."
+    },
+    "14": {
+      "name": "Dolu Dolu Tam Buğday Sandviç",
+      "category": "Ana Yemek",
+      "mood": "ŞÖLEN",
+      "ingredients": [
+        "Tam buğday ekmeği",
+        "Hellim peyniri",
+        "Patlıcan",
+        "Karamelize soğan",
+        "Marul",
+        "Domates",
+        "Hardal yoğurt sosu"
+      ],
+      "preparation": "Tüm malzemeleri ekmeğin arasına dizin. Üzerine sos gezdirin. Ilık veya soğuk servis yapın."
+    },
+    "15": {
+      "name": "Fırınlanmış Peynir ve Sebzeli Köy Ekmeği",
+      "category": "Ana Yemek",
+      "mood": "PRATİK",
+      "ingredients": [
+        "İçi oyulmuş köy ekmeği",
+        "Lor peyniri veya beyaz peynir",
+        "Rendelenmiş kaşar peyniri",
+        "Ispanak",
+        "Közlenmiş sarı biber",
+        "Zeytinyağı",
+        "Karabiber",
+        "Pul biber"
+      ],
+      "preparation": "Peynir, ıspanak ve biberi ekmeğin içine doldurun. 180°C'de 10-12 dakika fırınlayın."
+    },
+    "16": {
+      "name": "Fırın Lor Peynirli Karnabahar Graten",
+      "category": "Ana Yemek",
+      "mood": "SÜRPRİZ",
+      "ingredients": [
+        "Karnabahar",
+        "Lor peyniri",
+        "Yoğurt",
+        "Yumurta",
+        "Hardal",
+        "Karabiber",
+        "Kekik"
+      ],
+      "preparation": "Malzemeleri karıştırın, karnabaharın üzerine dökün. Altın rengi alana kadar pişirin."
+    },
+    "17": {
+      "name": "Fırın Armut ve Vişne Reçelli Tatlı",
+      "category": "Tatlı",
+      "mood": "HAFİF",
+      "ingredients": [
+        "Ekşi maya ekmeği",
+        "Fırınlanmış armut",
+        "Vişne reçeli",
+        "Tulum peyniri",
+        "Ezilmiş fındık"
+      ],
+      "preparation": "Ekmeğin üzerine peynir, armut dilimleri, reçel ve fındık ekleyin."
+    },
+    "18": {
+      "name": "Fermente Meyveli Yoğurt Kasesi",
+      "category": "Tatlı",
+      "mood": "ŞÖLEN",
+      "ingredients": [
+        "Yoğurt",
+        "Elma & armut",
+        "İncir reçeli",
+        "Bal",
+        "Ceviz",
+        "Tarçın"
+      ],
+      "preparation": "Malzemeleri bir kaseye dizin, üzerine tarçın serpin."
+    },
+    "19": {
+      "name": "Nar ve Lor Peynirli Tatlı",
+      "category": "Tatlı",
+      "mood": "PRATİK",
+      "ingredients": [
+        "Lor peyniri",
+        "Nar taneleri",
+        "Ayva reçeli",
+        "Erik",
+        "Kefir"
+      ],
+      "preparation": "Tüm malzemeleri karıştırın ve soğuk servis yapın."
+    },
+    "20": {
+      "name": "Sütlü ve Fındıklı Erişte Reçelli Tost",
+      "category": "Tatlı",
+      "mood": "SÜRPRİZ",
+      "ingredients": [
+        "Tam buğday ekmeği",
+        "Süt",
+        "Beyaz peynir",
+        "Çilek reçeli"
+      ],
+      "preparation": "Ekmeği süte batırın, üzerine peynir ve reçel ekleyin."
+    }
+  }
+}

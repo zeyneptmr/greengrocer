@@ -1,0 +1,8 @@
+{
+  "title": "Olives & Oils",
+  "loading": "Loading products...",
+  "error": "Failed to fetch products:",
+  "noProducts": "No olive oil products available",
+  "prev": "< Previous",
+  "next": "Next >"
+}

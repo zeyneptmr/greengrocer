@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from "../components/ProductCard";
+import { LanguageContext } from "../context/LanguageContext";
+import { useContext } from "react";
 
 const TodaysDiscountedProducts = () => {
     const [discountedProducts, setDiscountedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const { language } = useContext(LanguageContext);
 
     const importAll = (r) => {
         let images = {};
@@ -16,7 +19,6 @@ const TodaysDiscountedProducts = () => {
         return images;
     };
 
-    
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
     const formatPrice = (price) => {
@@ -51,6 +53,7 @@ const TodaysDiscountedProducts = () => {
             const baseUrl = 'http://localhost:8080';
             
             const response = await axios.get(`${baseUrl}/api/discountedProducts`, {
+                params: { language },
                 withCredentials: true,
                 headers: {
                     'Accept': 'application/json',
@@ -81,7 +84,7 @@ const TodaysDiscountedProducts = () => {
         }, 5 * 60 * 1000); // 5 minutes
         
         return () => clearInterval(intervalId);
-    }, []);
+    }, [language]);
 
     // Refresh data when the trigger changes
     useEffect(() => {
@@ -101,7 +104,7 @@ const TodaysDiscountedProducts = () => {
                     key={`${item.id}-${item.product.id}-${refreshTrigger}`}
                     product={{
                         id: item.product.id,
-                        name: item.product.productName,
+                        name: item.product.translatedName || item.product.productName,
                         price: formatPrice(item.oldPrice),
                         discountedPrice: formatPrice(item.discountedPrice),
                         image: getImageFromPath(item.product.imagePath),

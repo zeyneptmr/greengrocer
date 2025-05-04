@@ -1,0 +1,25 @@
+{
+  "chefIntro1": "Hi! Which meal would you like a recipe for?",
+  "chefIntro2": "How are you feeling today?",
+  "meals": {
+    "breakfast": "Breakfast",
+    "salad": "Salad",
+    "soup": "Soup",
+    "mainCourse": "Main Course",
+    "desserts": "Desserts"
+  },
+  "moods": {
+    "light": "I want something light",
+    "feast": "Let's have a feast",
+    "practical": "I'm tired, make it quick",
+    "surprise": "Surprise me"
+  },
+  "continue": "Continue",
+  "goBack": "⬅ Go Back",
+  "showRecipe": "Show Recipe",
+  "recipeTitle": "Here is a recipe I prepared for you 🍽️",
+  "noRecipe": "No recipe found for this selection.",
+  "ingredients": "🛒 Ingredients:",
+  "preparation": "🍳 Preparation:",
+  "backToMood": "⬅ Go back"
+}

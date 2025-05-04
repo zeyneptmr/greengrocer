@@ -16,4 +16,12 @@ public interface DiscountedProductRepository extends JpaRepository<DiscountedPro
     
     @Query("SELECT dp FROM DiscountedProduct dp WHERE dp.discountDate < :date AND dp.active = true")
     List<DiscountedProduct> findExpiredDiscounts(LocalDateTime date);
+
+
+    @Query("SELECT DISTINCT dp FROM DiscountedProduct dp " +
+            "LEFT JOIN FETCH dp.product p " +
+            "LEFT JOIN FETCH p.productTranslations pt " +
+            "WHERE dp.active = true AND pt.language = :language")
+    List<DiscountedProduct> findAllActiveDiscountsByLanguage(String language);
+
 }
