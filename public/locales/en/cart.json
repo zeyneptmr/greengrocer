@@ -1,0 +1,22 @@
+{
+  "myCart": "My Cart",
+  "products": "Products",
+  "editCart": "Edit Cart",
+  "finishEditing": "Finish Editing",
+  "emptyCartMessage": "You haven't added anything to your cart yet.",
+  "discoverProducts": "Discover Our Products",
+  "deleteSelected": "Delete Selected Products",
+  "deleteAll": "Delete All",
+  "cartSummary": "Cart Summary",
+  "cartTotal": "Cart Total",
+  "freeDelivery": "Free Delivery",
+  "deliveryAmount": "Delivery Amount",
+  "addMoreForFreeDelivery": "Add {{amount}} TL worth of products to your cart for free delivery",
+  "totalAmount": "Total Amount",
+  "continue": "Continue",
+  "productsCount": "{{count}} products",
+  "successfullyAdded": "Success! Item added to cart.",
+  "insufficientStock": "Insufficient stock available!",
+  "deleted": "Product deleted from cart!",
+  "allDeleted": "All products deleted from cart!"
+}

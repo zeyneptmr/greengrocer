@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const CartContext = createContext();
 
@@ -8,6 +10,8 @@ function CartProvider({ children }) {
     const [notification, setNotification] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [addedToCart, setAddedToCart] = useState(false);
+    const { language } = useContext(LanguageContext);
+    const { t } = useTranslation("cart");
 
 
     // Görselleri assets klasöründen al
@@ -48,7 +52,10 @@ function CartProvider({ children }) {
 
     const fetchCartFromBackend = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/cart", { withCredentials: true });
+            const response = await axios.get("http://localhost:8080/api/cart", {
+                withCredentials: true,
+                params: { language }
+            });
             const updatedCart = response.data.map(item => ({
                 ...item,
                 image: getImageFromPath(item.imagePath),
@@ -60,6 +67,7 @@ function CartProvider({ children }) {
         }
     };
 
+
     const addToCart = async (product, quantityToAdd = 1) => {
         if (isUserLoggedIn()) {
             try {
@@ -70,11 +78,11 @@ function CartProvider({ children }) {
                     },
                     withCredentials: true,
                 });
-                showNotification("Success! Item added to cart.", "success");
+                showNotification(t("successfullyAdded"), "success");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Insufficient stock available!", error);
-                showNotification("Insufficient stock available!", "warning");
+                showNotification(t("insufficientStock"), "warning");
             }
         } else {
             const existingItem = cart.find(item => item.id === product.id);
@@ -90,7 +98,7 @@ function CartProvider({ children }) {
             }
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
-            showNotification("Success! Item added to cart!", "success");
+            showNotification(t("successfullyAdded"), "success");
         }
     };
 
@@ -100,7 +108,7 @@ function CartProvider({ children }) {
                 await axios.patch(`http://localhost:8080/api/cart/increase/${cartItemId}`, null, { withCredentials: true });
                 fetchCartFromBackend();
             } catch (error) {
-                showNotification("Insufficient stock available!", "warning");
+                showNotification(t("insufficientStock"), "warning");
             }
         } else {
             const updatedCart = cart.map(item =>
@@ -139,7 +147,7 @@ function CartProvider({ children }) {
         if (isUserLoggedIn()) {
             try {
                 await axios.delete(`http://localhost:8080/api/cart/remove/${cartItemId}`, { withCredentials: true });
-                showNotification("Product deleted from cart!", "success");
+                showNotification(t("deleted"), "success");
                 fetchCartFromBackend();
             } catch (error) {
                 console.error("Remove item error:", error);
@@ -148,13 +156,14 @@ function CartProvider({ children }) {
             const updatedCart = cart.filter(item => item.id !== cartItemId);
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
+           // showNotification(t("cart.deleted"), "success");
         }
     };
 
 
     const clearCart = () => {
         cart.forEach(item => removeItem(item.id));
-        showNotification("All products deleted from cart!", "info");
+        showNotification(t("allDeleted"), "info");
     };
 
     const clearCarto = () => {
@@ -170,14 +179,22 @@ function CartProvider({ children }) {
     const getTotalProductTypes = () => cart.length;
 
     useEffect(() => {
-        if (isLoggedIn) {
-            localStorage.removeItem("cart");
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (loggedInUser) {
+            // USER GİRİŞ YAPMIŞSA
             fetchCartFromBackend();
         } else {
-            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-            setCart(localCart);
+            // GUEST İSE dil değişse bile localCart'ı tekrar state'e aktar (çünkü translatedName cartta yok)
+            const updatedCart = localCart.map(item => ({
+                ...item,
+                image: getImageFromPath(item.imagePath),
+            }));
+            setCart(updatedCart);
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, language]);  // 👈 language burada bağımlılık
+
 
     useEffect(() => {
         const loggedInUser = localStorage.getItem("loggedInUser");

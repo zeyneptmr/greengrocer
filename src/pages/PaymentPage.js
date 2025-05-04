@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket, FaTimes } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
 import { useCart } from "../helpers/CartContext"; // yol değişebilir
 import { generateInvoice } from "../helpers/generateInvoice";
+import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 import axios from "axios";
 
@@ -28,6 +31,10 @@ const PaymentPage = () => {
     //const { refreshAuth } = useFavorites();
     const { clearCarto } = useCart(); // burası önemli
     const [orderId, setOrderId] = useState(null); // en üstte
+    const { language } = useContext(LanguageContext);
+    const { t } = useTranslation("payment");
+
+
 
     const handleGeneratePDF = async (orderId) => {
         try {
@@ -75,7 +82,7 @@ const PaymentPage = () => {
                 totalPrice: orderDetails.totalPrice,
                 address: orderDetails.shippingAddress,
                 items: products.map(product => ({
-                    name: product.productName,
+                    name: product.translatedName || product.productName,
                     quantity: product.quantity,
                     price: product.pricePerProduct,
                 })),
@@ -135,7 +142,7 @@ const PaymentPage = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/products');
+            const response = await axios.get('http://localhost:8080/api/products', {});
             console.log(response.data);
             setProducts(response.data);
             setFilteredProducts(response.data);
@@ -151,7 +158,10 @@ const PaymentPage = () => {
             const [addressRes, cardRes, cartRes] = await Promise.all([
                 axios.get("http://localhost:8080/api/addresses", { withCredentials: true }),
                 axios.get("http://localhost:8080/api/cards", { withCredentials: true }),
-                axios.get("http://localhost:8080/api/cart", { withCredentials: true }),
+                axios.get("http://localhost:8080/api/cart", {
+                    withCredentials: true,
+                    params: { language }
+                }),
             ]);
 
             setAddresses(addressRes.data);
@@ -186,7 +196,7 @@ const PaymentPage = () => {
         fetchProducts();
         fetchData();
         fetchOrderTotal();
-    }, []);
+    }, [language]);
 
     const handlePayment = async () => {
         const totalCost = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -263,7 +273,7 @@ const PaymentPage = () => {
             {/* Addresses */}
             <div className="w-full md:w-2/3">
                 <div className="border p-1 rounded-lg mb-2">
-                    <h3 className="font-semibold mb-2 mt-4">Delivery Address</h3>
+                    <h3 className="font-semibold mb-2 mt-4">{t("deliveryAddress")}</h3>
 
                     {/* Verinin geçerli olup olmadığını kontrol et */}
                     {Array.isArray(addresses) && addresses.length > 0 ? (
@@ -294,29 +304,29 @@ const PaymentPage = () => {
                                 </label>
                             ))
                         ) : (
-                            <p>No default address found. Please add one.</p>
+                            <p>{t("noDefaultAddress")}</p>
                         )
                     ) : (
-                        <p>Loading addresses...</p>
+                        <p>{t("loadingAddresses")}</p>
                     )}
 
                     <div
                         className="border rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 mt-2"
                         onClick={() => navigate("/address")}
                     >
-                        + Add New Address
+                        {t("addNewAddress")}
                     </div>
                 </div>
 
                 {/* Payment */}
                 <div className="border p-6 rounded-lg mb-4">
-                    <h3 className="font-semibold mb-2">Payment Method</h3>
+                    <h3 className="font-semibold mb-2">{t("paymentMethod")}</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div
                             className="border rounded-lg p-4 flex justify-center items-center cursor-pointer hover:bg-gray-100"
                             onClick={() => navigate("/credit-card")}
                         >
-                            + Add New Card
+                            {t("addNewCard")}
                         </div>
                         {Array.isArray(savedCards) && savedCards.filter(card => card.isDefault === true).length > 0 ? (
                             savedCards.filter(card => card.isDefault === true).map((card, index) => (
@@ -335,12 +345,12 @@ const PaymentPage = () => {
                                         * * ** {card.cardNumberLast4}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        Expiration Date: {card.expiryMonth}/{card.expiryYear}
+                                        {t("expirationDate")}: {card.expiryMonth}/{card.expiryYear}
                                     </p>
                                 </div>
                             ))
                         ) : (
-                            <p>No default card found. Please add one.</p>
+                            <p>{t("noDefaultCard")}</p>
                         )}
                     </div>
                 </div>
@@ -349,7 +359,7 @@ const PaymentPage = () => {
             {/* Cart Summary */}
             <div
                 className="w-full md:w-1/3 border p-6 rounded-lg bg-white shadow-lg flex flex-col justify-between max-h-[600px] transition-transform transform hover:scale-105 ease-in-out duration-300">
-                <h3 className="font-semibold text-2xl text-gray-800 mb-4">Cart Summary</h3>
+                <h3 className="font-semibold text-2xl text-gray-800 mb-4">{t("cartSummary")}</h3>
                 {/* Product List (Product Images and Quantities) */}
                 <div className="max-h-[300px] overflow-auto mb-4">
                     {cart.map((item, index) => (
@@ -361,7 +371,7 @@ const PaymentPage = () => {
                                 className="w-16 h-16 object-cover rounded-lg mr-4 shadow-md"
                             />
                             <div>
-                                <p className="font-medium text-lg text-gray-700">{item.name}</p>
+                                <p className="font-medium text-lg text-gray-700">{item.translatedName}</p>
                                 <p className="text-sm text-gray-500">
                                     {item.quantity} piece -{" "}
                                     <span className="font-semibold text-gray-900">
@@ -375,21 +385,21 @@ const PaymentPage = () => {
 
                 {/* Cart Summary Details */}
                 <div className="space-y-1 text-lg text-gray-700 mt-2">
-                    <p className="text">{`Cart Total: ${orderTotal.totalPrice} TL`}</p>
+                    <p className="text">{t("cartTotal", { amount: orderTotal.totalPrice })}</p>
 
                     {/* Conditional Rendering for Shipping Fee */}
                     {orderTotal.shippingFee === 0 && orderTotal.totalPrice !== 0 ? (
-                        <p className="text-green-500 font-semibold">Free Delivery</p>
+                        <p className="text-green-500 font-semibold">{t("freeDelivery")}</p>
                     ) : (
                         <p className="text">
                             {orderTotal.totalPrice === 0
-                                ? "Delivery Fee: 0 TL"
-                                :` Delivery Fee: ${orderTotal.shippingFee} TL`}
+                                ? t("deliveryFeeZero")
+                                : t("deliveryFeeAmount", { fee: orderTotal.shippingFee })}
                         </p>
 
                     )}
 
-                    <p className="font-semibold text-xl mt-2">Total Amount: {orderTotal.totalAmount} TL</p>
+                    <p className="font-semibold text-xl mt-2">{t("totalAmount", { amount: orderTotal.totalAmount })}</p>
                 </div>
 
                 {/* Confirm Payment Button */}
@@ -405,7 +415,7 @@ const PaymentPage = () => {
             <FaShoppingBasket
                 className="h-7 w-7 text-white inline transform hover:scale-110 transition-all duration-200 ease-in-out"/>
         </span>
-                        <span className="mx-1 text-lg font-bold">Confirm Cart</span>
+                        <span className="mx-1 text-lg font-bold">{t("confirmCart")}</span>
                     </button>
                 </div>
 
@@ -435,11 +445,11 @@ const PaymentPage = () => {
                         <div className="flex flex-col items-center">
                             <FaShoppingBasket className="text-orange-500 text-6xl mb-4"/>
                             <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center">
-                                Order Received 🎉
+                                {t("orderReceived")}
                             </h2>
-                            <p className="text-center text-sm md:text-base text-gray-600 font-medium leading-relaxed">
-                                Your order has been successfully placed.
-                                You can track it from the <strong>"Order Tracking"</strong> section in your user panel.
+                            <p className="mt-4 text-center text-sm md:text-base text-gray-600 font-medium leading-relaxed">
+                                <Trans i18nKey="orderPlacedMessage" t={t} components={{ br: <br />, strong: <strong /> }} />
+
                             </p>
                         </div>
 
@@ -451,7 +461,7 @@ const PaymentPage = () => {
                                 onClick={() => handleGeneratePDF(orderId)}
                                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
                             >
-                                Download Order Details (PDF)
+                                {t("downloadPDF")}
                             </button>
 
                             {/* OK Button */}
@@ -459,7 +469,7 @@ const PaymentPage = () => {
                                 onClick={() => setIsOrderConfirmed(false)}
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
                             >
-                                OK
+                                {t("ok")}
                             </button>
 
                             {/* Go to My Orders */}
@@ -467,7 +477,7 @@ const PaymentPage = () => {
                                 onClick={() => navigate("/my-orders")}
                                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg text-base tracking-wide shadow hover:shadow-lg transition duration-300"
                             >
-                                Go to My Orders
+                                {t("goToOrders")}
                             </button>
                         </div>
                     </div>
@@ -493,13 +503,13 @@ const PaymentPage = () => {
                 </span>
                         </div>
                         <p className="font-semibold text-xl text-gray-800 mb-4">
-                            Please choose address and payment method.
+                            {t("chooseAddressPayment")}
                         </p>
                         <button
                             onClick={() => setShowPopUp(false)}
                             className="mt-4 px-6 py-2 bg-green-500 text-white rounded-full shadow-md hover:bg-orange-600 transition-all duration-300"
                         >
-                            Okey
+                            {t("okay")}
                         </button>
                     </div>
                 </div>
@@ -529,14 +539,20 @@ const PaymentPage = () => {
 
                         {/* Uyarı Metni */}
                         <p className="font-bold text-xl text-gray-800 mb-8">
-                            🛒 Minimum cart amount is <span className="text-red-600 font-bold">50 TL</span>!
+                            <Trans
+                                i18nKey="minimumAmountWarning"
+                                t={t}
+                                values={{minAmount: 50}}
+                                components={{strong: <span className="text-red-600 font-bold"/>}}
+                            />
                         </p>
+
 
                         <button
                             onClick={() => setIsLowCostWarning(false)}
                             className="px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-400 text-white text-lg font-semibold rounded-xl shadow hover:brightness-110 transition duration-300"
                         >
-                            Okay, Got it!
+                            {t("gotIt")}
                         </button>
 
                     </div>

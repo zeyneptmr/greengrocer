@@ -23,9 +23,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
 
     const getImageFromPath = (path) => {
         if (!path) return null;
-        if (path.startsWith("data:image")) {
-            return path;
-        }
+        if (path.startsWith("data:image")) return path;
         const filename = path.split('/').pop();
         const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
         return imagePath ? images[imagePath] : '/placeholder.png';
@@ -40,7 +38,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
         vegetables: ["se", "seb", "sebz", "sebze", "sebzele", "sebzeler"],
         fruits: ["m", "me", "mey", "meyv", "meyve", "meyvel", "meyvele", "meyveler"],
         olivesoils: ["y", "ya", "yağ", "yağl", "yağla", "yağlar"],
-        dairy: [ "sü", "süt", "süt ü", "süt ür", "süt ürü", "süt ürün", "süt ürünl", "süt ürünle", "süt ürünler", "süt ürünleri"],
+        dairy: ["sü", "süt", "süt ü", "süt ür", "süt ürü", "süt ürün", "süt ürünl", "süt ürünle", "süt ürünler", "süt ürünleri"],
         bakedgoods: ["u", "un", "unl", "unlu", "unlu m", "unlu ma", "unlu mam", "unlu mamü", "unlu mamül", "unlu mamüll", "unlu mamülle", "unlu mamüller"],
         sauces: ["so", "sos", "sosl", "sosla", "soslar"]
     };
@@ -112,15 +110,18 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
             e.preventDefault();
             if (selectedIndex >= 0 && suggestions[selectedIndex]) {
                 handleProductClick(suggestions[selectedIndex]);
+            } else if (suggestions.length > 0) {
+                // Enter’a basınca seçim yoksa ilk ürünü seç
+                handleProductClick(suggestions[0]);
             } else {
                 setShowSuggestions(false);
             }
         } else if (e.key === "ArrowDown") {
             e.preventDefault();
-            setSelectedIndex(prevIndex => prevIndex < suggestions.length - 1 ? prevIndex + 1 : prevIndex);
+            setSelectedIndex(prevIndex => prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0);
         } else if (e.key === "ArrowUp") {
             e.preventDefault();
-            setSelectedIndex(prevIndex => prevIndex > 0 ? prevIndex - 1 : prevIndex);
+            setSelectedIndex(prevIndex => prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1);
         }
     };
 
