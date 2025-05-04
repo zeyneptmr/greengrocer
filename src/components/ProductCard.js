@@ -4,7 +4,8 @@ import { CardContent } from "./CardContent";
 import { Button } from "./Button";
 import { useFavorites } from "../helpers/FavoritesContext"
 import { useCart } from "../helpers/CartContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { LanguageContext } from "../context/LanguageContext";
 import axios from "axios";
 
 export default function ProductCard({ product, hideCartView=false }) {
@@ -15,6 +16,9 @@ export default function ProductCard({ product, hideCartView=false }) {
 
     const isFavorite = favorites.some((fav) => fav.id === currentProduct.id);
     const discountPercentage = currentProduct.discountRate;
+
+    const { language } = useContext(LanguageContext);
+
 
     // Find cart item - check multiple possible ID mappings
     const cartItem = cart.find((item) => {
@@ -107,8 +111,9 @@ export default function ProductCard({ product, hideCartView=false }) {
                         </div>
                     ) : (
                         <Button className="mt-4 w-full md:w-auto" onClick={handleAddToCart}>
-                            Add to Cart
+                            {language === "tr" ? "Sepete Ekle" : "Add to Cart"}
                         </Button>
+
                     )
                 )}
             </CardContent>

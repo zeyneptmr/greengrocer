@@ -205,12 +205,13 @@ const SearchBar = () => {
             <div className="flex gap-2 w-full md:w-4/5 lg:w-3/4 xl:w-2/3 relative h-16">
                 <input
                     type="text"
-                    placeholder="Search product..."
+                    placeholder={language === "tr" ? "Ürün ara..." : "Search product..."}
                     className="p-7 rounded-full bg-[#f7f7f7] text-black w-full border border-[#B6D1A7] z-10 text-lg"
                     value={query}
                     onChange={handleSearch}
                     onKeyDown={handleKeyDown}
                 />
+
                 <button
                     className="bg-green-600 text-white p-4 rounded-full z-10"
                     onClick={handleSearchClick}
