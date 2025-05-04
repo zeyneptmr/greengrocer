@@ -27,21 +27,23 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getFavorites(
-            HttpServletRequest request,
-            @RequestParam(defaultValue = "en") String language) {
+
+        HttpServletRequest request,
+        @RequestParam(defaultValue = "en") String language) {
         try {
-            System.out.println("Fetching favorites with language: " + language);
-            Long userId = favoriteService.getUserIdFromRequest(request);
-            List<ProductDTO> favorites = favoriteService.getUserFavoritesWithTranslation(userId, language);
-            System.out.println("Favorites retrieved count: " + favorites.size());
-            // Alınan çevirileri kontrol et
-            favorites.forEach(p -> System.out.println("Product: " + p.getProductKey() + ", Translation: " + p.getTranslatedName()));
-            return ResponseEntity.ok(favorites);
+        System.out.println("Fetching favorites with language: " + language);
+        Long userId = favoriteService.getUserIdFromRequest(request);
+        List<ProductDTO> favorites = favoriteService.getUserFavoritesWithTranslation(userId, language);
+        System.out.println("Favorites retrieved count: " + favorites.size());
+        // Alınan çevirileri kontrol et
+        favorites.forEach(p -> System.out.println("Product: " + p.getProductKey() + ", Translation: " + p.getTranslatedName()));
+        return ResponseEntity.ok(favorites);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-    }
+}
 
     @PostMapping("/{productId}")
     public ResponseEntity<Void> toggleFavorite(HttpServletRequest request, @PathVariable Long productId) {
