@@ -324,7 +324,7 @@ const Account = ({ isOpen, onClose }) => {
                             <input
                                 type="email"
                                 name="email"
-                                placeholder={t('surname_placeholder')}
+                                placeholder={t('email_placeholder')}
                                 value={formData.email}
                                 onChange={handleEmailChange}
                                 className={`block w-full p-4 my-2 border rounded-md text-lg focus:border-orange-600 ${errors.emailError ? "border-red-500" : "border-gray-300"}`}

@@ -304,10 +304,10 @@ const PaymentPage = () => {
                                 </label>
                             ))
                         ) : (
-                            <p>{t("noDefaultAddress")}</p>
+                            <p>{t("loadingAddresses")}</p>
                         )
                     ) : (
-                        <p>{t("loadingAddresses")}</p>
+                        <p>{t("noDefaultAddress")}</p>
                     )}
 
                     <div

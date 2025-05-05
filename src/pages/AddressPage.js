@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import {FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
+import { useTranslation, Trans } from "react-i18next";
 
 const AddressPage = () => {
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ const AddressPage = () => {
     const [errors, setErrors] = useState({});
     const [editingIndex, setEditingIndex] = useState(null); // For editing
     const [error, setError] = useState("");
+    const { t } = useTranslation("address");  // JSON dosyasının adı "address.json" olacak
 
 
     const cityData = {
@@ -84,16 +86,16 @@ const AddressPage = () => {
     const validateForm = () => {
         const newErrors = {};
         if (!formData.email.includes('@')) {
-            newErrors.emailError = 'Enter an valid e-mail.';
+            newErrors.emailError = t('invalidEmail');
         }
         if (!formData.phone.match(/^\d{3} \d{3} \d{4}$/)) {
-            newErrors.phoneError = 'Enter an valid phone number (555 555 5555).';
+            newErrors.phoneError = t('invalidPhone');
         }
         if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.firstName)) {
-            newErrors.firstNameError = 'Enter valid name';
+            newErrors.firstNameError = t('invalidName');
         }
         if (!/^[A-Za-zçÇğĞıİöÖşŞüÜ\s]+$/.test(formData.lastName)) {
-            newErrors.lastNameError = 'Enter valid surname';
+            newErrors.lastNameError = t('invalidSurname');
         }
         return newErrors;
     };
@@ -211,29 +213,27 @@ const AddressPage = () => {
 
         if (address.isDefault) {
             setTimeout(() => setError(""), 3000);
-            setError("Default address cannot be deleted. Please make another address the default first.");
+            setError(t("defaultCannotDelete"));
             return;
         }
 
         try {
             await axios.delete(`http://localhost:8080/api/addresses/${address.id}`, {
-                withCredentials: true,  // Token'ı içeren cookie'yi gönder
+                withCredentials: true,
             });
 
             const updatedAddresses = addresses.filter((_, i) => i !== index);
             setAddresses(updatedAddresses);
-            setSuccessMessage("Address deleted in success.");
+            setSuccessMessage(t("addressDeleted"));
             setTimeout(() => setSuccessMessage(""), 3000);
         } catch (error) {
             console.error('Error while deleting address:', error);
-            //setError("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
 
     };
 
     const handleSetDefault = async (addressId) => {
         try {
-            // Sadece id’yi gönderiyoruz
             const response = await axios.put(
                 'http://localhost:8080/api/addresses/default',
                 { id: addressId },
@@ -255,7 +255,7 @@ const AddressPage = () => {
         setFormData({
             ...formData,
             district: e.target.value,
-            neighborhood: '' // Reset neighborhood when district changes
+            neighborhood: ''
         });
     };
 
@@ -265,7 +265,7 @@ const AddressPage = () => {
                 onClick={toggleForm}
                 className="mb-6 p-5 bg-green-500 text-white rounded text-2xl w-full sm:w-auto hover:bg-green-600 transition-all"
             >
-                + Add New Address 🏠
+                {t("addNewAddress")}
             </button>
 
             {successMessage && (
@@ -294,14 +294,14 @@ const AddressPage = () => {
                             &times;
                         </button>
                         <form onSubmit={handleSubmit}>
-                            <h2 className="text-2xl mb-6 text-green-600">{editingIndex !== null ? 'Edit Address' : 'New Address'}</h2>
+                            <h2 className="text-2xl mb-6 text-green-600">{editingIndex !== null ? t("editAddress") : t("newAddress")}</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <input
                                     type="text"
                                     name="firstName"
                                     value={formData.firstName}
                                     onChange={handleInputChange}
-                                    placeholder="Name"
+                                    placeholder={t("name")}
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 />
@@ -313,7 +313,7 @@ const AddressPage = () => {
                                     name="lastName"
                                     value={formData.lastName}
                                     onChange={handleInputChange}
-                                    placeholder="Surname"
+                                    placeholder={t("surname")}
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 />
@@ -326,7 +326,7 @@ const AddressPage = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    placeholder="E-mail"
+                                    placeholder={t("email")}
                                     className={`p-3 border border-gray-300 rounded text-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400 ${errors.emailError ? 'border-red-500' : ''}`}
                                     required
                                 />
@@ -338,7 +338,7 @@ const AddressPage = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
-                                    placeholder="Phone Number"
+                                    placeholder={t("phoneNumber")}
                                     className={`p-3 border border-gray-300 rounded text-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400 shadow-md ${errors.phoneError ? 'border-red-500' : ''}`}
                                     required
                                 />
@@ -360,7 +360,7 @@ const AddressPage = () => {
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
-                                    <option value="">District</option>
+                                    <option value="">{t("district")}</option>
                                     {Object.keys(cityData['İstanbul'].districts).map((district) => (
                                         <option key={district} value={district}>{district}</option>
                                     ))}
@@ -372,7 +372,7 @@ const AddressPage = () => {
                                     className="p-3 border border-gray-300 rounded text-lg w-full"
                                     required
                                 >
-                                    <option value="">Neighbourhood</option>
+                                    <option value="">{t("neighborhood")}</option>
                                     {formData.district &&
                                         cityData['İstanbul'].districts[formData.district].map((neighborhood, index) => (
                                             <option key={index} value={neighborhood}>{neighborhood}</option>
@@ -382,7 +382,7 @@ const AddressPage = () => {
                                     name="address"
                                     value={formData.address}
                                     onChange={handleInputChange}
-                                    placeholder="Address"
+                                    placeholder={t("address")}
                                     className="p-3 border border-gray-300 rounded col-span-2 text-lg w-full"
                                     required
                                 />
@@ -390,7 +390,7 @@ const AddressPage = () => {
                                     name="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
-                                    placeholder="Notes"
+                                    placeholder={t("notes")}
                                     className="p-3 border border-gray-300 rounded col-span-2 text-lg w-full"
                                 />
                             </div>
@@ -398,7 +398,7 @@ const AddressPage = () => {
                                 type="submit"
                                 className="mt-6 p-3 bg-green-600 text-white rounded text-xl w-full"
                             >
-                                {editingIndex !== null ? 'Update' : 'Save'}
+                                {editingIndex !== null ? t("update") : t("save")}
                             </button>
                         </form>
                     </div>
@@ -406,9 +406,9 @@ const AddressPage = () => {
             )}
 
             <div className="mt-8">
-                <h2 className="text-3xl font-bold text-green-700 mb-6">Saved Addresses</h2>
+                <h2 className="text-3xl font-bold text-green-700 mb-6">{t("savedAddresses")}</h2>
                 {addresses.length === 0 ? (
-                    <p className="text-lg text-gray-500">No address saved yet 🛒</p>
+                    <p className="text-lg text-gray-500">{t("noSavedAddresses")}</p>
                 ) : (
                     <ul className="mt-6 space-y-4">
                         {addresses.map((address, index) => (
@@ -416,7 +416,7 @@ const AddressPage = () => {
 
                                 {address.isDefault && (
                                     <div className="text-green-600 font-semibold text-xl mb-4">
-                                        <span className="font-semibold">Default Address</span>
+                                        <span className="font-semibold">{t("defaultAddress")}</span>
                                     </div>
                                 )}
                                 <FaCheckCircle
@@ -425,20 +425,20 @@ const AddressPage = () => {
                                     size={30} // İkonun boyutunu buradan ayarlıyoruz
                                 />
 
-                                <p className="text-lg"><strong>Receiver:</strong> {address.firstName} {address.lastName}</p>
-                                <p className="text-lg"><strong>E-mail:</strong> {address.email}</p>
-                                <p className="text-lg"><strong>Phone Number:</strong> {address.phone}</p>
+                                <p className="text-lg"><strong>{t("receiver")}:</strong> {address.firstName} {address.lastName}</p>
+                                <p className="text-lg"><strong>{t("email")}:</strong> {address.email}</p>
+                                <p className="text-lg"><strong>{t("phoneNumber")}:</strong> {address.phone}</p>
                                 <p className="text-lg">
-                                    <strong>Address:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}
+                                    <strong>{t("address")}:</strong> {address.address}, {address.neighborhood}, {address.district}, {address.city}
                                 </p>
-                                <p className="text-lg"><strong>Notes:</strong> {address.description}</p>
+                                <p className="text-lg"><strong>{t("notes")}:</strong> {address.description}</p>
 
                                 <div className="flex justify-center items-center space-x-4">
                                     <button
                                         className="mt-2 p-2 bg-green-moss text-white rounded w-auto text-center sm:w-auto"
                                         onClick={() => handleEdit(index)}
                                     >
-                                        <span>Edit</span>
+                                        <span>{t("edit")}</span>
 
                                     </button>
                                     <button
