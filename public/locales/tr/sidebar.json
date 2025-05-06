@@ -1,0 +1,14 @@
+
+{
+  "manager_panel": "Yönetici Paneli",
+  "admin_panel": "Admin Paneli",
+  "user_home": "Kullanıcı Anasayfa",
+  "dashboard": "Anasayfa",
+  "inventory": "Envanter",
+  "display_products": "Ürünler",
+  "discounts": "İndirimler",
+  "customer_orders": "Müşteri Siparişleri",
+  "customer_forms": "İletişim Formları",
+  "add_products": "Ürün Ekle",
+  "update_products": "Ürün Güncelle"
+}
