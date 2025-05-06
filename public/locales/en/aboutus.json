@@ -1,0 +1,57 @@
+{
+  "aboutUsTitle": "About Us",
+  "whoWeAre": {
+    "title": "Who We Are",
+    "text1": "We are four entrepreneurial women who embarked on a journey with a dream to create a market that emphasizes natural products, promotes healthy living, and blends traditional flavors with modern touches.",
+    "text2": "At TapTaze Market, our mission is to offer reliable, additive-free, and natural products to our customers. By collaborating with local producers, we aim to contribute both to the environment and to society."
+  },
+  "items": {
+    "ourMission": {
+      "title": "Our Mission",
+      "text": "Our mission is to deliver the highest quality with a focus on trust, bringing fresh, organic products just a tap away."
+    },
+    "ourProducts": {
+      "title": "Our Products",
+      "text": "We offer a wide range of homemade, daily fresh, organic, and natural products, ensuring quality and freshness."
+    },
+    "forFuture": {
+      "title": "For Future",
+      "text": "We aim to support sustainable farming practices and innovate for a better future, helping farmers and the planet."
+    }
+  },
+  "achievements": {
+    "title": "What Have We Achieved?",
+    "items": {
+      "1": { "icon": "😊", "title": "Over 10,000 Happy Customers", "text": "Our dedication to quality and service has helped us earn the trust of thousands." },
+      "2": { "icon": "🤝", "title": "Partnership with 50+ Local Producers", "text": "We support local farmers and artisans by creating a sustainable supply chain." },
+      "3": { "icon": "🌍", "title": "Zero-Waste Policy Implementation", "text": "We've reduced plastic usage by 80% through eco-friendly packaging and recycling programs." },
+      "4": { "icon": "🧘‍♀️", "title": "Community Wellness Workshops", "text": "We’ve organized 30+ workshops promoting healthy living and conscious nutrition." },
+      "5": { "icon": "🥬", "title": "100% Natural Product Line", "text": "Every product on our shelves is free from additives, GMOs, and artificial preservatives." },
+      "6": { "icon": "📈", "title": "Growing Brand Recognition", "text": "Our brand has been featured in 10+ local magazines and food blogs." }
+    }
+  },
+  "purpose": {
+    "title": "Our Purpose",
+    "items": {
+      "1": { "icon": "💚", "title": "Promoting Healthy Living", "text": "We aim to inspire healthier lifestyles through organic and additive-free products." },
+      "2": { "icon": "🌱", "title": "Supporting Sustainable Agriculture", "text": "We collaborate with farmers who use eco-friendly and ethical farming practices." },
+      "3": { "icon": "🏡", "title": "Strengthening Local Economy", "text": "We invest in local producers and help them reach wider markets through our platform." }
+    }
+  },
+  "testimonials": {
+    "title": "Customer Testimonials",
+    "items": {
+      "1": { "text": "The quality of products is unmatched. I'm so glad to be a loyal customer!", "author": "– Emily R." },
+      "2": { "text": "Great customer service and fresh, organic products every time!", "author": "– Michael T." },
+      "3": { "text": "Amazing variety of local products. Highly recommend this place!", "author": "– Sarah W." }
+    }
+  },
+  "satisfaction": {
+    "title": "Customer Satisfaction",
+    "items": {
+      "98": "We are proud to have achieved a <1>98% satisfaction rate</1> thanks to our commitment to freshness, service, and community trust.",
+      "95": "Our <1>95% customer loyalty rate</1> shows that people love coming back for more.",
+      "92": "With a <1>92% positive feedback</1>, our customers continue to express satisfaction with the quality and service we provide."
+    }
+  }
+}
