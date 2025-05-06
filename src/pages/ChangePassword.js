@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 
 const ChangePassword = () => {
@@ -13,6 +14,7 @@ const ChangePassword = () => {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation("changepassword");
 
     useEffect(() => {
         if (errorMessage || successMessage) {
@@ -32,17 +34,17 @@ const ChangePassword = () => {
         try {
 
             if (!currentPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) {
-                setErrorMessage("All fields are required!");
+                setErrorMessage(t("errorFillAllFields"));
                 return;
             }
 
             if (newPassword.length < 8) {
-                setErrorMessage("Password must be at least 8 characters long!");
+                setErrorMessage(t("errorPasswordLength"));
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                setErrorMessage("New passwords do not match!");
+                setErrorMessage(t("errorPasswordLength"));
                 return;
             }
 
@@ -57,17 +59,25 @@ const ChangePassword = () => {
                 { withCredentials: true }  
             );
 
-            setSuccessMessage("Password changed successfully!");
+            setSuccessMessage(t("successPasswordChanged"));
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
         } catch (error) {
 
             if (error.response) {
-                setErrorMessage(error.response.data || "Failed to change password!");
+                const backendMessage = error.response.data;
+
+                if (typeof backendMessage === "string" && backendMessage.toLowerCase().includes("current password is incorrect")) {
+                    setErrorMessage(t("errorCurrentPasswordIncorrect"));
+                } else {
+                    setErrorMessage(backendMessage || t("errorFailedChange"));
+                }
+
             } else {
-                setErrorMessage("Network error. Please try again later.");
+                setErrorMessage(t("errorNetwork"));
             }
+
         } finally {
             setIsLoading(false);
         }
@@ -84,10 +94,10 @@ const ChangePassword = () => {
                         {successMessage}
                     </div>
                 )}
-                <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Change Password</h2>
+                <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">{t("changePasswordTitle")}</h2>
                 <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl border-t-4 border-orange-500">
                     <div className="relative mb-4">
-                        <label className="block text-green-700 font-medium mb-1">Current Password</label>
+                        <label className="block text-green-700 font-medium mb-1">{t("currentPassword")}</label>
                         <div className="relative">
                             <input
                                 type={showCurrentPassword ? "text" : "password"}
@@ -105,7 +115,7 @@ const ChangePassword = () => {
                         </div>
                     </div>
                     <div className="relative mb-4">
-                        <label className="block text-green-700 font-medium mb-1">New Password</label>
+                        <label className="block text-green-700 font-medium mb-1">{t("newPassword")}</label>
                         <div className="relative">
                             <input
                                 type={showNewPassword ? "text" : "password"}
@@ -123,7 +133,7 @@ const ChangePassword = () => {
                         </div>
                     </div>
                     <div className="relative mb-4">
-                        <label className="block text-green-700 font-medium mb-1">New Password (Again)</label>
+                        <label className="block text-green-700 font-medium mb-1">{t("newPasswordAgain")}</label>
                         <div className="relative">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
@@ -142,7 +152,7 @@ const ChangePassword = () => {
                     </div>
 
                     {isFormIncomplete && (
-                        <p className="text-red-500 text-center font-medium mb-3">Please fill in all fields!</p>
+                        <p className="text-red-500 text-center font-medium mb-3">{t("fillAllFields")}</p>
                     )}
                     <button
                         className={`px-6 py-3 w-full rounded-lg text-lg font-semibold transition ${
@@ -153,7 +163,7 @@ const ChangePassword = () => {
                         onClick={handleChangePassword}
                         disabled={isFormIncomplete || isLoading}
                     >
-                        {isLoading ? "Processing..." : "Update"}
+                        {isLoading ? t("processing") : t("update")}
                     </button>
                     {errorMessage && <p className="mt-3 text-red-500 text-center font-medium">{errorMessage}</p>}
                 </div>

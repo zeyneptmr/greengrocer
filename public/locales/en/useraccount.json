@@ -1,0 +1,10 @@
+{
+  "welcome": "Welcome!",
+  "usePanel": "Use the <strong>User Panel</strong> to manage your account settings.",
+  "updateProfileTitle": "Update Your Profile",
+  "updateProfileDesc": "Go to <strong>\"My Profile\"</strong> to update your personal details.",
+  "manageCardsTitle": "Manage Your Saved Cards",
+  "manageCardsDesc": "View and edit your payment details in the <strong>\"Saved Cards\"</strong> section.",
+  "changePasswordTitle": "Change Your Password",
+  "changePasswordDesc": "Secure your account by updating your password in the <strong>\"Change Password\"</strong> section."
+}

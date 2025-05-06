@@ -1,0 +1,15 @@
+{
+  "accountInformation": "Hesap Bilgileri",
+  "loading": "Kullanıcı bilgileri yükleniyor...",
+  "name": "Ad",
+  "surname": "Soyad",
+  "email": "E-posta",
+  "phoneNumber": "Telefon Numarası",
+  "update": "Güncelle",
+  "successTitle": "Bilgiler TapTaze!",
+  "successMessage": "Değişiklikler başarıyla güncellendi.",
+  "Please fill out all fields completely!": "Lütfen tüm alanları eksiksiz doldurun!",
+  "Phone number must be exactly 10 digits!": "Telefon numarası tam olarak 10 haneli olmalıdır!",
+  "Update failed. Please try again.": "Güncelleme başarısız. Lütfen tekrar deneyin.",
+  "Failed to load user information. Please try again.": "Kullanıcı bilgileri yüklenemedi. Lütfen tekrar deneyin."
+}

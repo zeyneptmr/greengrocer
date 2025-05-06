@@ -1,0 +1,15 @@
+{
+  "title": "Delete Account",
+  "enterPasswordPrompt": "Enter your password to delete your account:",
+  "passwordPlaceholder": "Enter your password",
+  "continueButton": "Continue",
+  "confirmationTitle": "Are you absolutely sure? This action cannot be undone.",
+  "confirmationDetail": "Your account and all associated data will be permanently deleted.",
+  "deleting": "Deleting...",
+  "confirmDeleteButton": "Yes, Delete",
+  "cancelButton": "Cancel",
+  "errorPasswordRequired": "Password is required.",
+  "errorIncorrectPassword": "Incorrect password.",
+  "errorFailedDelete": "Failed to delete account.",
+  "errorNetwork": "Network error. Please try again later."
+}

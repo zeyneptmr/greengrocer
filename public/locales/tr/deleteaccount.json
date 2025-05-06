@@ -1,0 +1,15 @@
+{
+  "title": "Hesabımı Sil",
+  "enterPasswordPrompt": "Hesabınızı silmek için lütfen şifrenizi girin:",
+  "passwordPlaceholder": "Şifrenizi girin",
+  "continueButton": "Devam Et",
+  "confirmationTitle": "Emin misiniz? Bu işlem geri alınamaz.",
+  "confirmationDetail": "Hesabınız ve tüm verileriniz kalıcı olarak silinecek.",
+  "deleting": "Siliniyor...",
+  "confirmDeleteButton": "Evet, Sil",
+  "cancelButton": "İptal",
+  "errorPasswordRequired": "Şifre gereklidir.",
+  "errorIncorrectPassword": "Hatalı şifre!",
+  "errorFailedDelete": "Hesap silinemedi.",
+  "errorNetwork": "Ağ hatası. Lütfen daha sonra tekrar deneyin."
+}

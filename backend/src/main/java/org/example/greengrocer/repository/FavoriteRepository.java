@@ -15,4 +15,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     
     @Transactional
     void deleteByUserIdAndProductId(Long userId, Long productId);
+
+    @Transactional
+    void deleteAllByUserId(Long userId);
 }
