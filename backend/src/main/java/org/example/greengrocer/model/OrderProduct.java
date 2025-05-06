@@ -15,6 +15,7 @@ public class OrderProduct {
 
     private Long productId;
 
+
     private String productName;
 
     private String imagePath;
@@ -53,6 +54,8 @@ public class OrderProduct {
         this.productId = productId;
     }
 
+
+
     public String getProductName() {
         return productName;
     }
@@ -87,5 +90,5 @@ public class OrderProduct {
     }
 
 
-    // Getters and setters...
+
 }

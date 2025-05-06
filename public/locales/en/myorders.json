@@ -1,0 +1,24 @@
+{
+  "title": "My Orders",
+  "filters": {
+    "all": "All Orders",
+    "week": "Last Week",
+    "month": "Last Month",
+    "threeMonths": "Last 3 Months",
+    "year": "Last Year"
+  },
+  "loading": "Loading your orders...",
+  "noOrders": "No orders found in this time range.",
+  "loadingProducts": "Your products are loading...",
+  "piece": "Piece",
+  "orderId": "Order ID",
+  "date": "Date",
+  "time": "Time",
+  "totalAmount": "Total Amount",
+  "status": {
+    "Order Received": "Order Received",
+    "Confirmed": "Confirmed",
+    "Preparing": "Preparing",
+    "Dispatched": "Dispatched"
+  }
+}
