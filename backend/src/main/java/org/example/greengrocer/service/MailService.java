@@ -80,12 +80,25 @@ public class MailService {
                         color: #333;
                       }
             
-                       .logo {
-                         background-color: #ffffff;
-                         padding: 10px;
-                         text-align: left;
-                         border-radius: 10px;
-                       }
+                      .logo {
+                        background-color: #ffffff;
+                        padding: 10px;
+                        text-align: left;
+                        border-radius: 10px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                      }
+            
+                      .logo img {
+                        width: 80px;
+                      }
+            
+                      .logo-text {
+                        font-size: 28px;
+                        font-weight: bold;
+                        color: #2bb54c;
+                      }
             
                       .code-box {
                         background-color: #dfffe0;
@@ -117,13 +130,13 @@ public class MailService {
                         border-radius: 12px;
                         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
                       }
-
                     </style>
                   </head>
                   <body>
                     <div class="container">
                       <div class="logo">
-                        <img src="https://i.imgur.com/4ofG4rH.jpg" alt="Tap-Taze Logo" style="width: 120px;" />
+                        <img src="https://i.imgur.com/4ofG4rH.jpg" alt="Tap-Taze Logo" />
+                        <div class="logo-text">TapTaze</div>
                       </div>
             
                       <p>Dear Customer,</p>
