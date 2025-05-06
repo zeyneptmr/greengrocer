@@ -9,8 +9,16 @@ import FacebookIcon from '../assets/facebook.svg';
 import InstagramIcon from '../assets/instagram.svg';
 import YoutubeIcon from '../assets/youtube.svg';
 import ContactUsIcon from '../assets/contactus.svg';
+import { useTranslation } from 'react-i18next';
+import { useContext } from "react";
+import { LanguageContext } from "../context/LanguageContext";
+
 
 function Footer() {
+
+  const { language } = useContext(LanguageContext);
+  const { t } = useTranslation('footer');
+
   return (
       <div className="bg-green-600 text-white py-8">
         <div className="container mx-auto px-6">
@@ -18,7 +26,7 @@ function Footer() {
 
             {/* Contact */}
             <div className="flex-1 min-w-[200px]">
-              <h3 className="text-lg font-bold text-left pl-20">CONTACT</h3>
+              <h3 className="text-lg font-bold text-left pl-20">{t('contact')}</h3>
               <div className="mt-4 space-y-4 flex flex-col">
                 <div className="flex items-start gap-2">
                   <img src={LocationIcon} alt="Location" className="w-5 mt-1" />
@@ -28,17 +36,17 @@ function Footer() {
                       rel="noopener noreferrer"
                       className="hover:text-yellow-400 transition leading-snug"
                   >
-                    Cibali Mah. Kadir Has Cad. <br />34083 Fatih-İstanbul
+                    {t('address')}
                   </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <img src={PhoneIcon} alt="Phone" className="w-5" />
-                  <span>(0212) 533 65 32</span>
+                  <span>{t('phone')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <img src={MailIcon} alt="Mail" className="w-5" />
                   <a href="mailto:taptaze@stu.khas.edu.tr" className="hover:text-yellow-400 transition">
-                    taptaze@stu.khas.edu.tr
+                    {t('email')}
                   </a>
                 </div>
               </div>
@@ -77,14 +85,14 @@ function Footer() {
 
             {/* Company Section */}
             <div className="flex-1 text-center">
-              <h3 className="text-lg font-bold">COMPANY</h3>
+              <h3 className="text-lg font-bold">{t('company')}</h3>
               <div className="mt-4">
                 <a
                     href="/about"
                     className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
                 >
                   <img src={MegaphoneIcon} alt="Megaphone Icon" className="w-5"/>
-                  <span>About Us</span>
+                  <span>{t('about')}</span>
                 </a>
               </div>
 
@@ -94,7 +102,7 @@ function Footer() {
                     className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
                 >
                   <img src={ContactUsIcon} alt="ContactUs Icon" className="w-5"/>
-                  <span>Contact Us</span>
+                  <span>{t('contactUs')}</span>
                 </a>
               </div>
 
@@ -104,7 +112,7 @@ function Footer() {
                     className="inline-flex items-center space-x-2 hover:text-yellow-400 transition"
                 >
                   <img src={FAQIcon} alt="FAQ Icon" className="w-5"/>
-                  <span>Frequently Asked Questions</span>
+                  <span>{t('faq')}</span>
                 </a>
               </div>
             </div>
@@ -112,7 +120,7 @@ function Footer() {
 
           {/* Footer Bottom Section */}
           <hr className="border-white my-6 w-full mx-auto"/>
-          <p className="text-center text-sm">&copy; {new Date().getFullYear()} All Rights Reserved</p>
+          <p className="text-center text-sm">&copy; {new Date().getFullYear()} {t('rights')}</p>
         </div>
       </div>
   );
