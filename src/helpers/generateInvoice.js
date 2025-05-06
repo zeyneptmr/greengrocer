@@ -2,12 +2,70 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import logo from '../assets/logoyazısız.jpeg'; // Kendi logo yolunu buraya yaz
 
+
 export const generateInvoice = (orderData) => {
     const doc = new jsPDF();
 
     const green = '#2e7d32';
     const orange = '#fb8c00';
     const lightGray = '#f2f2f2';
+
+    const translations = {
+        en: {
+            customer: "Customer",
+            phone: "Phone",
+            email: "Email",
+            address: "Address",
+            orderId: "Order ID",
+            orderDate: "Order Date",
+            invoiceNo: "Invoice No",
+            invoiceDate: "Invoice Date",
+            paymentMethod: "Payment Method",
+            shipmentDate: "Shipment Date",
+            shippingFee: "Shipping Fee",
+            taxOffice: "Tax Office",
+            no: "No",
+            description: "Description",
+            quantity: "Quantity",
+            unitPrice: "Unit Price",
+            total: "Total",
+            productTotal: "Product Total",
+            totalAmount: "Total Amount",
+            eInvoice: "E-INVOICE",
+            companyName: "TapTaze Company",
+            companyAddress: "Address: Cibali, Fatih/Istanbul",
+            companyTaxOffice: "Tax Office: Fatih Tax Office",
+            disclaimer: "This sale has been made online.\nDelivered electronically as part of e-Archive permission.\nFor product complaints, support, and requests, you can submit them via the Contact Form on our website."
+        },
+        tr: {
+            customer: "Ad Soyad",
+            phone: "Telefon",
+            email: "E-posta",
+            address: "Adres",
+            orderId: "Siparis No",
+            orderDate: "Siparis Tarihi",
+            invoiceNo: "Fatura No",
+            invoiceDate: "Fatura Tarihi",
+            paymentMethod: "Ödeme Yöntemi",
+            shipmentDate: "Teslimat",
+            shippingFee: "Kargo Ücreti",
+            taxOffice: "Vergi Dairesi",
+            no: "No",
+            description: "Ürün",
+            quantity: "Adet",
+            unitPrice: "Birim Fiyat",
+            total: "Toplam",
+            productTotal: "Ürün Toplam",
+            totalAmount: "Genel Toplam",
+            eInvoice: "E-FATURA",
+            companyName: "TapTaze",
+            companyAddress: "Adres: Cibali, Fatih/Istanbul",
+            companyTaxOffice: "Vergi Dairesi: Fatih Vergi Dairesi",
+            disclaimer: "Bu belge cevirmici düzenlenmistir.\nElektronik arsiv izni kapsaminda elektronik ortamda teslim edilmistir.\nUrun sikayetleri, destek ve talepler icin web sitemizdeki Iletisim Formu'nu kullanabilirsiniz."
+        }
+    };
+
+    const t = translations[orderData.language || 'en'];
 
     doc.setFont("helvetica");  // Modern ve şık bir font
 
@@ -20,33 +78,33 @@ export const generateInvoice = (orderData) => {
 
         doc.setFontSize(24);
         doc.setTextColor(green);
-        doc.text("E-INVOICE", 105, 50, {align: 'center'});  // Başlık biraz daha aşağı alındı
+        doc.text(t.eInvoice, 105, 50, {align: 'center'});  // Başlık biraz daha aşağı alındı
 
         doc.setFontSize(10);
         doc.setTextColor(0);
-        doc.text('TapTaze Company ', 150, 15);
-        doc.text('Address: Cibali, Fatih/Istanbul', 150, 21);
-        doc.text('Tax Office: Fatih Tax Office ', 150, 27);
+        doc.text(t.companyName,150, 15);
+        doc.text(t.companyAddress, 150, 21);
+        doc.text(t.companyTaxOffice, 150, 27);
 
         const addressParts = orderData.address.split(',').map(part => part.trim());
         const middleValues = addressParts.slice(1, 3);  // Ortadaki 2 veri
 
         const buyerInfo = [
-            ['Customer:', `${orderData.userName} ${orderData.userSurname}`],
-            ['Phone:', orderData.userPhoneNumber || 'N/A'],
-            ['Email:', orderData.userEmail],
-            ['Address:', middleValues.join(', ')],
-            ['Order ID:', orderData.orderId],
-            ['Order Date:', new Date(orderData.orderDate).toLocaleString()],
+            [t.customer + ':', `${orderData.userName} ${orderData.userSurname}`],
+            [t.phone + ':' , orderData.userPhoneNumber || 'N/A'],
+            [t.email + ':' , orderData.userEmail],
+            [t.address + ':' , middleValues.join(', ')],
+            [t.orderId + ':' , orderData.orderId],
+            [t.orderDate + ':' , new Date(orderData.orderDate).toLocaleString()],
         ];
 
         const companyInfo = [
-            ['Invoice No:', orderData.invoiceNo || 'INV-' + orderData.orderId],
-            ['Invoice Date:', new Date().toLocaleString()],
-            ['Payment Method:', orderData.paymentMethod || 'Online'],
-            ['Shipment Date:', orderData.shipmentDate || 'N/A'],
-            ['Shipping Fee:', `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
-            ['Tax Office:', 'Fatih Tax Office'],
+            [t.invoiceNo + ':' , orderData.invoiceNo || 'INV-' + orderData.orderId],
+            [t.invoiceDate + ':', new Date().toLocaleString()],
+            [t.paymentMethod + ':' , orderData.paymentMethod || 'Online'],
+            [t.shipmentDate + ':' , orderData.shipmentDate || 'N/A'],
+            [t.shippingFee + ':' , `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
+            [t.taxOffice + ':' , 'Fatih Tax Office'],
         ];
 
         autoTable(doc, {
@@ -71,7 +129,7 @@ export const generateInvoice = (orderData) => {
         });
 
         autoTable(doc, {
-            head: [['No', 'Description', 'Quantity', 'Unit Price', 'Total']],
+            head: [[t.no, t.description, t.quantity, t.unitPrice, t.total]],
             body: itemRows,
             startY: doc.lastAutoTable.finalY + 10,
             styles: { fontSize: 10 },
@@ -84,9 +142,9 @@ export const generateInvoice = (orderData) => {
         const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
         autoTable(doc, {
             body: [
-                ['Product Total', `${subtotal.toFixed(2)} TL`],
-                ['Shipping Fee', `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
-                ['Total Amount', `${(orderData.totalAmount ?? 0).toFixed(2)} TL`],
+                [t.productTotal, `${subtotal.toFixed(2)} TL`],
+                [t.shippingFee, `${(orderData.shippingFee ?? 0).toFixed(2)} TL`],
+                [t.totalAmount, `${(orderData.totalAmount ?? 0).toFixed(2)} TL`],
             ],
             startY: doc.lastAutoTable.finalY + 5,
             theme: 'plain',
@@ -101,7 +159,7 @@ export const generateInvoice = (orderData) => {
         doc.setFontSize(10);
         doc.setTextColor(100);
         doc.text(
-            'This sale has been made online.\nDelivered electronically as part of e-Archive permission.\nFor product complaints, support, and requests, you can submit them via the Contact Form on our website.',
+            t.disclaimer,
             14,
             doc.lastAutoTable.finalY + 20
         );

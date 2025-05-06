@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import UserSidebar from "../components/UserSidebar";
+import { useTranslation } from "react-i18next";
 import axios from 'axios';
 
 const CustomerInfo = () => {
@@ -16,6 +17,7 @@ const CustomerInfo = () => {
     const [success, setSuccess] = useState(false);
     const [isUpdated, setIsUpdated] = useState(false);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation("customerinfo");  // customerinfo.json kullanacağız
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -103,7 +105,7 @@ const CustomerInfo = () => {
             <div className="flex bg-green-50 min-h-screen">
                 <UserSidebar />
                 <div className="flex items-center justify-center w-full">
-                    <div className="text-green-700 text-xl">Loading user information...</div>
+                    <div className="text-green-700 text-xl">{t("loading")}</div>
                 </div>
             </div>
         );
@@ -114,19 +116,18 @@ const CustomerInfo = () => {
             <UserSidebar/>
 
             <div className="p-8 max-w-2xl mx-auto w-full bg-white shadow-lg rounded-xl mt-12 mb-12 min-h-[600px]">
-                <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Account Information</h2>
+                <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">{t("accountInformation")}</h2>
                 <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl border-t-4 border-orange-500">
-                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                    {error && <p className="text-red-500 text-center mb-4">{t(error)}</p>}
                     {success && (
                         <div
                             className="bg-green-100 border border-green-500 text-green-700 px-4 py-3 rounded relative mb-4 text-center">
-                            <strong className="font-bold">Information is TapTaze !</strong> Changes have been updated
-                            successfully.
+                            <strong className="font-bold">{t("successTitle")}</strong> {t("successMessage")}
                         </div>
                     )}
 
                     <div className="mb-4">
-                        <label className="block text-gray-700 font-semibold">Name</label>
+                        <label className="block text-gray-700 font-semibold">{t("name")}</label>
                         <input
                             type="text"
                             name="name"
@@ -136,7 +137,7 @@ const CustomerInfo = () => {
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700 font-semibold">Surname</label>
+                        <label className="block text-gray-700 font-semibold">{t("surname")}</label>
                         <input
                             type="text"
                             name="surname"
@@ -146,7 +147,7 @@ const CustomerInfo = () => {
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700 font-semibold">E-mail</label>
+                        <label className="block text-gray-700 font-semibold">{t("email")}</label>
                         <input
                             type="email"
                             name="email"
@@ -156,7 +157,7 @@ const CustomerInfo = () => {
                         />
                     </div>
                     <div className="mb-6">
-                        <label className="block text-gray-700 font-semibold">Phone Number</label>
+                        <label className="block text-gray-700 font-semibold">{t("phoneNumber")}</label>
                         <input
                             type="text"
                             name="phoneNumber"
@@ -174,7 +175,7 @@ const CustomerInfo = () => {
                             ? "bg-orange-600 text-white hover:bg-orange-700"
                             : "bg-gray-400 text-gray-200 cursor-not-allowed"}`}
                     >
-                        Update
+                        {t("update")}
                     </button>
                 </div>
             </div>

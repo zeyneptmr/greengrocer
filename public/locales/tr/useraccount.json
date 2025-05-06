@@ -1,0 +1,10 @@
+{
+  "welcome": "Hoş Geldiniz!",
+  "usePanel": "Hesap ayarlarınızı yönetmek için <strong>Kullanıcı Panelini </strong> kullanın.",
+  "updateProfileTitle": "Profilinizi Güncelleyin",
+  "updateProfileDesc": "<strong>\"Profilim\"</strong> bölümünden kişisel bilgilerinizi güncelleyebilirsiniz.",
+  "manageCardsTitle": "Kayıtlı Kartlarınızı Yönetin",
+  "manageCardsDesc": "<strong>\"Kayıtlı Kartlarım\"</strong> bölümünde ödeme bilgilerinizi görüntüleyin ve düzenleyin.",
+  "changePasswordTitle": "Şifrenizi Değiştirin",
+  "changePasswordDesc": "<strong>\"Şifremi Değiştir\"</strong> bölümünde hesabınızın güvenliğini artırmak için şifrenizi güncelleyin."
+}

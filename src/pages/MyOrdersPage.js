@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useContext} from "react";
 import { ShoppingCart, CheckCircle, Truck, Package, Clock } from "lucide-react";
 import { FaApple } from 'react-icons/fa';
 import { generateInvoice } from "../helpers/generateInvoice"; // senin dosya yolu neyse ona göre değiştir
 import { FaFileInvoice } from "react-icons/fa";
-
+import { useTranslation, Trans } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
 
 import axios from "axios";
 
@@ -31,22 +32,25 @@ const getImageFromPath = (path) => {
 };
 
 const statusIcons = {
-    "Order Received": <Package className="w-6 h-6" />, // Başlangıç
-    "Confirmed": <CheckCircle className="w-6 h-6" />,  // Onaylandı
-    "Preparing": <Clock className="w-6 h-6" />,       // Hazırlanıyor
-    "Dispatched": <Truck className="w-6 h-6" />,       // Kargoya verildi
+    "Order Received": <Package className="w-6 h-6" />,
+    "Confirmed": <CheckCircle className="w-6 h-6" />,
+    "Preparing": <Clock className="w-6 h-6" />,
+    "Dispatched": <Truck className="w-6 h-6" />,
 };
 
-// Filtre seçenekleri
-const filterOptions = [
-    { id: "all", label: "All Orders" },
-    { id: "week", label: "Last Week" },
-    { id: "month", label: "Last Month" },
-    { id: "threeMonths", label: "Last 3 Months" },
-    { id: "year", label: "Last Year" }
-];
-
 export default function MyOrdersPage() {
+    const { t } = useTranslation("myorders");
+    const { language } = useContext(LanguageContext);
+
+    // Filtre seçenekleri
+    const filterOptions = [
+        { id: "all", label: t("filters.all") },
+        { id: "week", label: t("filters.week") },
+        { id: "month", label: t("filters.month") },
+        { id: "threeMonths", label: t("filters.threeMonths") },
+        { id: "year", label: t("filters.year") }
+    ];
+
     const [allOrders, setAllOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
     const [productsByOrderId, setProductsByOrderId] = useState({});
@@ -79,6 +83,7 @@ export default function MyOrdersPage() {
 
             const productsResponse = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`, {
                 withCredentials: true,
+                params: { language }
             });
 
             if (productsResponse.status !== 200) {
@@ -99,11 +104,12 @@ export default function MyOrdersPage() {
                 totalPrice: orderDetails.totalPrice,
                 address: orderDetails.shippingAddress,
                 items: products.map(product => ({
-                    name: product.productName,
+                    name: product.translatedName || product.productName,
                     quantity: product.quantity,
-                    price: product.pricePerProduct,
+                    price: product.pricePerProduct
                 })),
                 totalAmount: orderDetails.totalAmount,
+                language: language,
             };
 
             generateInvoice(orderData); // PDF oluşturma fonksiyonunu çağır
@@ -134,7 +140,8 @@ export default function MyOrdersPage() {
 
     const fetchOrderProducts = async (orderId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`, { withCredentials: true });
+            const response = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`,
+                { withCredentials: true, params: { language } });
             setProductsByOrderId(prev => ({ ...prev, [orderId]: response.data }));
         } catch (error) {
             console.error("Sipariş ürünleri alınamadı", error);
@@ -144,6 +151,17 @@ export default function MyOrdersPage() {
     useEffect(() => {
         fetchOrders();
     }, []);
+
+    // Dil değişince ürün isimlerini güncelle
+    useEffect(() => {
+        if (displayedOrders.length > 0) {
+            displayedOrders.forEach(order => {
+                fetchOrderProducts(order.orderId);
+            });
+        }
+    }, [language]);
+
+
 
     // Filtre değiştiğinde siparişleri filtreleme
     const filterOrders = (filterId) => {
@@ -203,7 +221,7 @@ export default function MyOrdersPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-orange-50 py-10 px-6 lg:px-20">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold text-orange-600 mb-8 text-center">My Orders</h1>
+                <h1 className="text-3xl font-bold text-orange-600 mb-8 text-center">{t("title")}</h1>
                 
                 {/* Filtre butonları */}
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -224,7 +242,7 @@ export default function MyOrdersPage() {
                 
                 {isLoading ? (
                     <div className="flex justify-center items-center min-h-[300px]">
-                        <div className="text-xl font-bold text-orange-500">Loading your orders...</div>
+                        <div className="text-xl font-bold text-orange-500">{t("loading")}</div>
                     </div>
                 ) : Array.isArray(displayedOrders) && displayedOrders.length > 0 ? (
                     <div className="flex flex-col gap-12">
@@ -261,7 +279,7 @@ export default function MyOrdersPage() {
                                     <div className="md:w-1/2 pr-4 relative">
                                         {/* Sipariş No Sol Üst */}
                                         <div className="absolute top-0 left-0 text-xs font-semibold text-orange-500">
-                                            Order ID: {order.orderId}
+                                            {t("orderId")}: {order.orderId}
                                         </div>
 
                                         <div className="mt-4 max-h-[230px] overflow-y-auto custom-scrollbar pr-2">
@@ -271,7 +289,7 @@ export default function MyOrdersPage() {
                                                     className="flex justify-center items-center text-green-600 font-semibold gap-2 h-[230px]">
                                                     {/* Elma İkonu */}
                                                     <ShoppingCart className="w-6 h-6 text-green-600"/>
-                                                    <span>Your products are loading...</span>
+                                                    <span>{t("loadingProducts")}</span>
                                                 </div>
                                             ) : (
                                                 productsByOrderId[order.orderId].map((product, index) => (
@@ -281,12 +299,12 @@ export default function MyOrdersPage() {
                                                     >
                                                         <img
                                                             src={getImageFromPath(product.imagePath)}
-                                                            alt={product.productName}
+                                                            alt={product.translatedName}
                                                             className="w-16 h-16 object-cover rounded-lg"
                                                         />
                                                         <div className="ml-4 flex-1">
-                                                            <p className="font-semibold">{product.productName}</p>
-                                                            <p className="text-sm text-gray-500">Piece: {product.quantity}</p>
+                                                            <p className="font-semibold">{product.translatedName}</p>
+                                                            <p className="text-sm text-gray-500">{t("piece")}: {product.quantity}</p>
                                                         </div>
                                                         <span
                                                             className="font-semibold">{product.totalPerProduct} ₺</span>
@@ -301,16 +319,16 @@ export default function MyOrdersPage() {
                                         className="md:w-1/2 border-l border-orange-200 pl-4 flex flex-col justify-between">
                                         <div className="flex flex-col gap-2">
                                             {/* Sipariş No */}
-                                            <div className="text-sm text-gray-600 inline">Order ID:</div>
+                                            <div className="text-sm text-gray-600 inline">{t("orderId")}:</div>
                                             <div className="font-semibold inline ml-2">{order.orderId}</div>
 
                                             {/* Tarih */}
-                                            <div className="text-sm text-gray-600 inline ml-4">Date:</div>
+                                            <div className="text-sm text-gray-600 inline ml-4">{t("date")}:</div>
                                             <div
                                                 className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleDateString()}</div>
 
                                             {/* Saat */}
-                                            <div className="text-sm text-gray-600 inline ml-4">Time:</div>
+                                            <div className="text-sm text-gray-600 inline ml-4">{t("time")}:</div>
                                             <div
                                                 className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleTimeString([], {
                                                 hour: '2-digit',
@@ -318,7 +336,7 @@ export default function MyOrdersPage() {
                                             })}</div>
 
                                             {/* Toplam Tutar */}
-                                            <div className="text-sm text-gray-600 inline ml-4">Total Amount:</div>
+                                            <div className="text-sm text-gray-600 inline ml-4">{t("totalAmount")}:</div>
                                             <div
                                                 className="font-bold text-lg text-orange-600 inline ml-2">{order.totalAmount} ₺
                                             </div>
@@ -327,7 +345,7 @@ export default function MyOrdersPage() {
                                             <div className="flex justify-end">
                                                 <div
                                                     className={`font-semibold flex items-center gap-2 inline ml-2 ${order.latestStatus === "Dispatched" ? 'text-green-600' : 'text-orange-500'}`}>
-                                                    {statusIcons[order.latestStatus]} <span>{order.latestStatus}</span>
+                                                    {statusIcons[order.latestStatus]} <span>{t(`status.${order.latestStatus}`)}</span>
                                                 </div>
                                             </div>
                                         </div>

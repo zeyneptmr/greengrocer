@@ -46,7 +46,7 @@ const UpdateProductsPage = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         const grouped = categorizeProducts(filteredProducts.length > 0 ? filteredProducts : products);

@@ -279,7 +279,7 @@ export default function HomePage() {
                     </div>
                     <span
                         className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-sm px-4 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-            {t("chefsText")}
+            {t("clickToSee")}
         </span>
                 </button>
 

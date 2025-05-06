@@ -1,0 +1,57 @@
+{
+  "aboutUsTitle": "Hakkımızda",
+  "whoWeAre": {
+    "title": "Biz Kimiz",
+    "text1": "Doğal ürünleri vurgulayan, sağlıklı yaşamı teşvik eden ve geleneksel tatları modern dokunuşlarla harmanlayan bir pazar oluşturma hayaliyle yola çıkan dört girişimci kadınız.",
+    "text2": "TapTaze Market olarak amacımız, müşterilerimize güvenilir, katkısız ve doğal ürünler sunmaktır. Yerel üreticilerle iş birliği yaparak hem çevreye hem de topluma katkıda bulunmayı hedefliyoruz."
+  },
+  "items": {
+    "ourMission": {
+      "title": "Misyonumuz",
+      "text": "Misyonumuz, güven odaklı en yüksek kaliteyi sunmak ve taze, organik ürünleri sadece bir dokunuş uzağınıza getirmektir."
+    },
+    "ourProducts": {
+      "title": "Ürünlerimiz",
+      "text": "Ev yapımı, günlük taze, organik ve doğal ürünlerin geniş bir yelpazesini sunuyoruz ve kalite ile tazeliği garanti ediyoruz."
+    },
+    "forFuture": {
+      "title": "Gelecek İçin",
+      "text": "Sürdürülebilir tarım uygulamalarını desteklemeyi ve çiftçiler ile gezegen için daha iyi bir gelecek yaratmak adına yenilik yapmayı amaçlıyoruz."
+    }
+  },
+  "achievements": {
+    "title": "Neler Başardık?",
+    "items": {
+      "1": { "icon": "😊", "title": "10.000'den Fazla Mutlu Müşteri", "text": "Kalite ve hizmete olan bağlılığımız binlerce kişinin güvenini kazanmamıza yardımcı oldu." },
+      "2": { "icon": "🤝", "title": "50+ Yerel Üretici ile Ortaklık", "text": "Sürdürülebilir bir tedarik zinciri oluşturarak yerel çiftçileri ve zanaatkârları destekliyoruz." },
+      "3": { "icon": "🌍", "title": "Sıfır Atık Politikası Uygulaması", "text": "Çevre dostu ambalajlama ve geri dönüşüm programları sayesinde plastik kullanımını %80 azalttık." },
+      "4": { "icon": "🧘‍♀️", "title": "Topluluk Sağlık Atölyeleri", "text": "Sağlıklı yaşam ve bilinçli beslenmeyi teşvik eden 30'dan fazla atölye düzenledik." },
+      "5": { "icon": "🥬", "title": "%100 Doğal Ürün Serisi", "text": "Raflarımızdaki her ürün katkı maddesi, GDO ve yapay koruyucu içermez." },
+      "6": { "icon": "📈", "title": "Büyüyen Marka Tanınırlığı", "text": "Markamız 10'dan fazla yerel dergi ve yemek blogunda yer aldı." }
+    }
+  },
+  "purpose": {
+    "title": "Amacımız",
+    "items": {
+      "1": { "icon": "💚", "title": "Sağlıklı Yaşamı Teşvik Etmek", "text": "Organik ve katkısız ürünlerle daha sağlıklı yaşam tarzlarını ilham vermeyi hedefliyoruz." },
+      "2": { "icon": "🌱", "title": "Sürdürülebilir Tarımı Desteklemek", "text": "Çevre dostu ve etik tarım uygulamaları kullanan çiftçilerle iş birliği yapıyoruz." },
+      "3": { "icon": "🏡", "title": "Yerel Ekonomiyi Güçlendirmek", "text": "Yerel üreticilere yatırım yapıyor ve platformumuz aracılığıyla daha geniş pazarlara ulaşmalarına yardımcı oluyoruz." }
+    }
+  },
+  "testimonials": {
+    "title": "Müşteri Yorumları",
+    "items": {
+      "1": { "text": "Ürünlerin kalitesi eşsiz. Sadık bir müşteri olmaktan çok mutluyum!", "author": "– Emily R." },
+      "2": { "text": "Harika müşteri hizmeti ve her zaman taze, organik ürünler!", "author": "– Michael T." },
+      "3": { "text": "Yerel ürünlerin muhteşem çeşitliliği. Kesinlikle tavsiye ederim!", "author": "– Sarah W." }
+    }
+  },
+  "satisfaction": {
+    "title": "Müşteri Memnuniyeti",
+    "items": {
+      "98": "Tazelik, hizmet ve topluluk güvenine olan bağlılığımız sayesinde <1>%98 memnuniyet oranına</1> ulaşmaktan gurur duyuyoruz.",
+      "95": "<1>%95 müşteri sadakat oranımız</1>, insanların tekrar tekrar gelmeyi sevdiğini gösteriyor.",
+      "92": "<1>%92 olumlu geri bildirim</1> ile müşterilerimiz sağladığımız kalite ve hizmetten memnuniyetlerini dile getirmeye devam ediyor."
+    }
+  }
+}

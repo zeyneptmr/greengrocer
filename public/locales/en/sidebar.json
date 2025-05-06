@@ -1,0 +1,14 @@
+
+{
+  "manager_panel": "Manager Panel",
+  "admin_panel": "Admin Panel",
+  "user_home": "User Home",
+  "dashboard": "Dashboard",
+  "inventory": "Inventory",
+  "display_products": "Display Products",
+  "discounts": "Discounts",
+  "customer_orders": "Customer Orders",
+  "customer_forms": "Customer Forms",
+  "add_products": "Add Products",
+  "update_products": "Update Products"
+}

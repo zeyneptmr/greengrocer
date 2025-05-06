@@ -86,7 +86,7 @@ const Inventory = () => {
             }
         };
         fetchProducts();
-    }, []);
+    }, [language]);
 
     // Tek ürün stoğunu güncelle
     const updateProductStock = (id, newStock) => {

@@ -413,7 +413,7 @@ const Account = ({ isOpen, onClose }) => {
                         </>
                     ) : (
                         <>
-                            <h2 className="text-xl font-bold text-green-600">Log In</h2>
+                            <h2 className="text-xl font-bold text-green-600">{t("login_title")}</h2>
                             <input
                                 type="email"
                                 name="email"

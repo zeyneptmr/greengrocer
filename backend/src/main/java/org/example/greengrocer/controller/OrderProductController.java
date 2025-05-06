@@ -2,6 +2,7 @@ package org.example.greengrocer.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.greengrocer.repository.ProductRepository;
 import org.example.greengrocer.model.OrderProduct;
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.CustomerOrderRepository;
@@ -11,6 +12,8 @@ import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.example.greengrocer.model.ProductTranslation;
+
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +30,9 @@ import org.example.greengrocer.service.ProductService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class OrderProductController {
     
+    @Autowired
+    private ProductRepository productRepository;
+
     @Autowired
     private OrderProductRepository orderProductRepository;
 
@@ -49,6 +55,7 @@ public class OrderProductController {
                 .findFirst().orElse(null);
     }
 
+
     // Check if user is admin or manager
     private boolean isUserManagerOrAdmin(String email) {
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -59,7 +66,124 @@ public class OrderProductController {
         return user.getRole() != null && (user.getRole().equals("ADMIN") || user.getRole().equals("MANAGER"));
     }
 
+
     @GetMapping("/by-order/{orderId}")
+    public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request, @RequestParam(required = false) String language) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
+        // Sadece kullanıcının kendi siparişine erişebilmesi için kontrol
+        List<OrderProduct> products = orderProductRepository.findByCustomerOrder_OrderId(orderId);
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found for this order");
+        }
+
+         // Check if user has permission (either owner of the order or manager/admin)
+         boolean isOwner = products.get(0).getCustomerOrder().getUser().getEmail().equals(email);
+         boolean isManager = isUserManagerOrAdmin(email);
+         
+         if (!isOwner && !isManager) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+         }
+
+
+        List<Map<String, Object>> productData = products.stream().map(product -> {
+            Map<String, Object> productInfo = new HashMap<>();
+            productInfo.put("productName", product.getProductName()); // Varsayılan adı
+            productInfo.put("quantity", product.getQuantity());
+            productInfo.put("pricePerProduct", product.getPricePerProduct());
+            productInfo.put("totalPerProduct", product.getTotalPerProduct());
+            productInfo.put("imagePath", product.getImagePath());
+
+            // Eğer ürün id varsa ve language parametresi verilmişse
+            if (product.getProductId() != null && language != null) {
+                Optional<Product> realProductOpt = productRepository.findById(product.getProductId());
+                if (realProductOpt.isPresent()) {
+                    Product realProduct = realProductOpt.get();
+                    // Çeviri arıyoruz
+                    String translatedName = realProduct.getProductTranslations().stream()
+                            .filter(tr -> tr.getLanguage().equalsIgnoreCase(language))
+                            .findFirst()
+                            .map(ProductTranslation::getTranslatedName)
+                            .orElse(product.getProductName()); // Yoksa orijinal adı kullan
+
+                    productInfo.put("translatedName", translatedName);
+                }
+            }
+
+            return productInfo;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(productData);
+    }
+
+
+    // (Opsiyonel) Toplu olarak ürün kaydetmek istersen
+    @PostMapping("/save-all")
+    public ResponseEntity<?> saveAll(@RequestBody List<OrderProduct> products, HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        List<OrderProduct> saved = orderProductRepository.saveAll(products);
+        return ResponseEntity.ok(saved);
+    }
+
+
+    @PostMapping("/process-order/{orderId}")
+    public ResponseEntity<?> processOrderAndUpdateStock(@PathVariable String orderId, HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        // Get all OrderProduct records for this order
+        List<OrderProduct> orderProducts = orderProductRepository.findByCustomerOrder_OrderId(orderId);
+
+        if (orderProducts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found in this order");
+        }
+        System.out.println("Found " + orderProducts.size() + " products in order");
+
+        // Process each product and update stock
+        for (OrderProduct orderProduct : orderProducts) {
+            Long productId = orderProduct.getProductId();
+            int quantity = orderProduct.getQuantity();
+
+            System.out.println("OrderProduct details - ID: " + orderProduct.getProductId() +
+                    ", Product ID: " + productId +
+                    ", Name: " + orderProduct.getProductName() +
+                    ", Quantity: " + quantity);
+            // Update stock in product table
+            Product updatedProduct = productService.decreaseProductStock(productId, quantity);
+
+            if (updatedProduct == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Product with ID " + productId + " not found");
+            }
+        }
+
+        return ResponseEntity.ok("Stock updated successfully for order: " + orderId);
+    }
+
+}
+
+
+
+    /* @GetMapping("/by-order/{orderId}")
+    public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return false;
+        
+        User user = userOpt.get();
+       
+        return user.getRole() != null && (user.getRole().equals("ADMIN") || user.getRole().equals("MANAGER"));
+    }
+
+   /* @GetMapping("/by-order/{orderId}")
     public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
         if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -101,48 +225,39 @@ public class OrderProductController {
 
         return ResponseEntity.ok(productData);
     }
+ */
 
-    
-    @PostMapping("/save-all")
-    public ResponseEntity<?> saveAll(@RequestBody List<OrderProduct> products, HttpServletRequest request) {
-        String email = getUserEmailFromToken(request);
-        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 
-        List<OrderProduct> saved = orderProductRepository.saveAll(products);
-        return ResponseEntity.ok(saved);
-    }
 
-    @PostMapping("/process-order/{orderId}")
-    public ResponseEntity<?> processOrderAndUpdateStock(@PathVariable String orderId, HttpServletRequest request) {
-        String email = getUserEmailFromToken(request);
-        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 
-        // Get all OrderProduct records for this order
-        List<OrderProduct> orderProducts = orderProductRepository.findByCustomerOrder_OrderId(orderId);
-        
-        if (orderProducts.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found in this order");
-        }
-        System.out.println("Found " + orderProducts.size() + " products in order");
-        
-        // Process each product and update stock
-        for (OrderProduct orderProduct : orderProducts) {
-            Long productId = orderProduct.getProductId();
-            int quantity = orderProduct.getQuantity();
 
-            System.out.println("OrderProduct details - ID: " + orderProduct.getProductId() + 
-                          ", Product ID: " + productId + 
-                          ", Name: " + orderProduct.getProductName() + 
-                          ", Quantity: " + quantity);
-            // Update stock in product table
-            Product updatedProduct = productService.decreaseProductStock(productId, quantity);
-            
-            if (updatedProduct == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with ID " + productId + " not found");
+
+        /*@GetMapping("/by-order/{orderId}")
+        public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request) {
+            String email = getUserEmailFromToken(request);
+            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+            List<OrderProduct> products = orderProductRepository
+                    .findByCustomerOrder_OrderIdAndCustomerOrder_User_Email(orderId, email);
+
+            if (products.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
             }
-        }
-        
-        return ResponseEntity.ok("Stock updated successfully for order: " + orderId);
-    }
-}
+
+            return ResponseEntity.ok(products);
+        }*/
+
+
+    // Belirli bir siparişe ait ürünleri getir
+    /*@GetMapping("/by-order/{orderId}")
+    public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request) {
+        String email = getUserEmailFromToken(request);
+        if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+
+        List<OrderProduct> products = orderProductRepository.findByCustomerOrder_OrderId(orderId);
+        return ResponseEntity.ok(products);
+    }*/
+

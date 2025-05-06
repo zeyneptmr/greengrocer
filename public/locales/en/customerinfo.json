@@ -1,0 +1,15 @@
+{
+  "accountInformation": "Account Information",
+  "loading": "Loading user information...",
+  "name": "Name",
+  "surname": "Surname",
+  "email": "E-mail",
+  "phoneNumber": "Phone Number",
+  "update": "Update",
+  "successTitle": "Information is Fresh!",
+  "successMessage": "Changes have been updated successfully.",
+  "Please fill out all fields completely!": "Please fill out all fields completely!",
+  "Phone number must be exactly 10 digits!": "Phone number must be exactly 10 digits!",
+  "Update failed. Please try again.": "Update failed. Please try again.",
+  "Failed to load user information. Please try again.": "Failed to load user information. Please try again."
+}

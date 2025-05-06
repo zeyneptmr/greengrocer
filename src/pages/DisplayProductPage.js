@@ -36,7 +36,7 @@ const DisplayProductsPage = () => {
         };
 
         fetchProducts();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         if (products.length > 0) {

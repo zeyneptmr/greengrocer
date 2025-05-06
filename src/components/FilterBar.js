@@ -1,6 +1,9 @@
 import { Grid3x3GapFill } from "react-bootstrap-icons";
+import { useTranslation } from "react-i18next";
 
 const FilterBar = ({ columns, setColumns, setSortOption }) => {
+
+    const { t } = useTranslation("filterbar");
 
     return (
         <div className="flex items-center justify-between border rounded-lg px-4 py-2 mb-4 flex-wrap">
@@ -31,11 +34,11 @@ const FilterBar = ({ columns, setColumns, setSortOption }) => {
             <div className="relative">
                 <select onChange={(e) => setSortOption(e.target.value)}
                         className="border rounded-lg px-4 py-2 bg-white text-gray-600">
-                    <option value="default">Sort</option>
-                    <option value="price-asc">Low to High</option>
-                    <option value="price-desc">High to Low</option>
-                    <option value="name-asc">A to Z</option>
-                    <option value="name-desc">Z to A</option>
+                    <option value="default">{t("sort")}</option>
+                    <option value="price-asc">{t("lowToHigh")}</option>
+                    <option value="price-desc">{t("highToLow")}</option>
+                    <option value="name-asc">{t("aToZ")}</option>
+                    <option value="name-desc">{t("zToA")}</option>
                 </select>
             </div>
         </div>

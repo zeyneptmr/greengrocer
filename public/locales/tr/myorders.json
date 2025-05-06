@@ -1,0 +1,24 @@
+{
+  "title": "Siparişlerim",
+  "filters": {
+    "all": "Tüm Siparişler",
+    "week": "Son 1 Hafta",
+    "month": "Son 1 Ay",
+    "threeMonths": "Son 3 Ay",
+    "year": "Son 1 Yıl"
+  },
+  "loading": "Siparişleriniz yükleniyor...",
+  "noOrders": "Bu tarih aralığında sipariş bulunamadı.",
+  "loadingProducts": "Ürünleriniz yükleniyor...",
+  "piece": "Adet",
+  "orderId": "Sipariş No",
+  "date": "Tarih",
+  "time": "Saat",
+  "totalAmount": "Toplam Tutar",
+  "status": {
+    "Order Received": "Sipariş Alındı",
+    "Confirmed": "Onaylandı",
+    "Preparing": "Hazırlanıyor",
+    "Dispatched": "Yola çıktı"
+  }
+}

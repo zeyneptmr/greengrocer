@@ -12,6 +12,11 @@ import org.example.greengrocer.repository.CustomerOrderRepository;
 import org.example.greengrocer.repository.OrderProductRepository;
 import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.TokenProvider;
+import org.example.greengrocer.repository.OrderTotalRepository;
+import org.example.greengrocer.repository.CartItemRepository;
+import org.example.greengrocer.repository.FavoriteRepository;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +39,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000") // CORS yapılandırması (Frontend'in çalıştığı port)
 public class UserController {
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+
+    @Autowired
+    private OrderTotalRepository orderTotalRepository;
+
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;  // BCrypt için
@@ -151,7 +167,7 @@ public class UserController {
     // Token'ı döndüren sınıf (login response)
     public static class LoginResponse {
         private String token;
-        private String role; 
+        private String role;
 
         public LoginResponse(String token, String role) {
             this.token = token;
@@ -196,7 +212,7 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<?> updateUserInfo(@RequestBody User updatedUser, HttpServletRequest request) {
         try {
-        
+
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No authentication token found.");
@@ -213,28 +229,28 @@ public class UserController {
             }
 
             String email = tokenProvider.getEmailFromToken(token);
-            
+
             Optional<User> existingUserOpt = userRepository.findByEmail(email);
             if (!existingUserOpt.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
             }
 
             User existingUser = existingUserOpt.get();
-            
+
 
             existingUser.setName(updatedUser.getName());
             existingUser.setSurname(updatedUser.getSurname());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-            
-            
+
+
             userRepository.save(existingUser);
-            
+
             existingUser.setPassword(null);
-            
+
             return ResponseEntity.ok(existingUser);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + e.getMessage());
+                    .body("Error: " + e.getMessage());
         }
     }
 
@@ -243,28 +259,28 @@ public class UserController {
         private String currentPassword;
         private String newPassword;
         private String confirmPassword;
-        
-    
+
+
         public String getCurrentPassword() {
             return currentPassword;
         }
-        
+
         public void setCurrentPassword(String currentPassword) {
             this.currentPassword = currentPassword;
         }
-        
+
         public String getNewPassword() {
             return newPassword;
         }
-        
+
         public void setNewPassword(String newPassword) {
             this.newPassword = newPassword;
         }
-        
+
         public String getConfirmPassword() {
             return confirmPassword;
         }
-        
+
         public void setConfirmPassword(String confirmPassword) {
             this.confirmPassword = confirmPassword;
         }
@@ -283,65 +299,65 @@ public class UserController {
                         .map(Cookie::getValue)
                         .orElse(null);
             }
-            
+
             if (token == null || !tokenProvider.validateToken(token)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid or expired token.");
             }
 
             String email = tokenProvider.getEmailFromToken(token);
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (!userOpt.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
             }
-            
+
             User user = userOpt.get();
-            
-        
+
+
             if (!passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password is incorrect.");
             }
-            
-            
+
+
             if (passwordRequest.getNewPassword().length() < 8) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must be at least 8 characters long.");
             }
-            
+
             if (passwordRequest.getNewPassword().trim().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password cannot be empty.");
             }
-            
+
             if (!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New passwords do not match.");
             }
-            
-        
+
+
             if (passwordEncoder.matches(passwordRequest.getNewPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password cannot be the same as current password.");
             }
-            
-            
+
+
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
             userRepository.save(user);
-            
+
             return ResponseEntity.ok("Password changed successfully!");
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("An error occurred: " + e.getMessage());
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 
 
 
-    
+
     public static class DeleteAccountRequest {
         private String password;
-        
+
         public String getPassword() {
             return password;
         }
-        
+
         public void setPassword(String password) {
             this.password = password;
         }
@@ -354,11 +370,11 @@ public class UserController {
     @Autowired
     private CardRepository cardRepository;
 
-    
+
     @Autowired
     private CustomerOrderRepository customerOrderRepository;
 
-    
+
     @Autowired
     private OrderProductRepository orderProductRepository;
 
@@ -366,7 +382,7 @@ public class UserController {
     @Transactional
     public ResponseEntity<?> deleteAccount(@RequestBody DeleteAccountRequest deleteRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
-    
+
             String token = null;
             if (request.getCookies() != null) {
                 token = Arrays.stream(request.getCookies())
@@ -375,52 +391,59 @@ public class UserController {
                         .map(Cookie::getValue)
                         .orElse(null);
             }
-            
+
             if (token == null || !tokenProvider.validateToken(token)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid or expired token.");
             }
 
             String email = tokenProvider.getEmailFromToken(token);
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (!userOpt.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
             }
-            
+
             User user = userOpt.get();
-            
-    
+
+
             if (!passwordEncoder.matches(deleteRequest.getPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password.");
             }
 
 
             // First find all orders for this user
-        List<CustomerOrder> userOrders = customerOrderRepository.findByUserId(user.getId());
-        
-        // Delete order products for each order
-        for (CustomerOrder order : userOrders) {
-            orderProductRepository.deleteAllByCustomerOrder(order);
-        }
-        
+            List<CustomerOrder> userOrders = customerOrderRepository.findByUserId(user.getId());
+
+            cartItemRepository.deleteAllByUserId(user.getId());
+
+            favoriteRepository.deleteAllByUserId(user.getId());
+
+            orderTotalRepository.deleteByUser(user);
+
+
+            // Delete order products for each order
+            for (CustomerOrder order : userOrders) {
+                orderProductRepository.deleteAllByCustomerOrder(order);
+            }
+
             customerOrderRepository.deleteAllByUserId(user.getId());
             addressRepository.deleteAllByUserId(user.getId());
             cardRepository.deleteAllByUserId(user.getId());
             userRepository.delete(user);
-            
-    
+
+
             Cookie cookie = new Cookie("token", null);
             cookie.setHttpOnly(true);
             cookie.setSecure(false);
             cookie.setPath("/");
             cookie.setMaxAge(0);
             response.addCookie(cookie);
-            
+
             return ResponseEntity.ok("Account deleted successfully.");
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("An error occurred: " + e.getMessage());
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 

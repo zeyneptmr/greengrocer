@@ -98,7 +98,7 @@ const DiscountPage = () => {
 
     useEffect(() => {
         fetchAllProducts();
-    }, []);
+    }, [language]);
 
     const handleCategoryChange = (e) => {
         const selectedLabel = e.target.value;

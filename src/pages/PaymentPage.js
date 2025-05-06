@@ -61,6 +61,7 @@ const PaymentPage = () => {
 
             const productsResponse = await axios.get(`http://localhost:8080/api/orderproduct/by-order/${orderId}`, {
                 withCredentials: true,
+                params: { language }
             });
 
             if (productsResponse.status !== 200) {
@@ -87,6 +88,7 @@ const PaymentPage = () => {
                     price: product.pricePerProduct,
                 })),
                 totalAmount: orderDetails.totalAmount,
+                language: language
             };
 
         // Invoice pdf

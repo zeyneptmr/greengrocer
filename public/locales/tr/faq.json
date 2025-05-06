@@ -1,0 +1,61 @@
+{
+  "title": "Sıkça Sorulan Sorular",
+  "questions": {
+    "whyBecomeMember": {
+      "question": "Neden üye olmalıyım?",
+      "answer": "Üyelik size özel fırsatlar, indirimler, yeni ürünler ve kişiselleştirilmiş öneriler sunar, alışveriş deneyiminizi daha keyifli ve avantajlı hale getirir. Ayrıca her alışverişte iletişim bilgilerinizi, teslimat ve fatura adresinizi tekrar girmeniz gerekmez. Önceki siparişlerinizi görüntüleyebilir, favori ürünler oluşturabilir ve sepetinizi görüntüleyebilirsiniz."
+    },
+    "howBecomeMember": {
+      "question": "Nasıl üye olabilirim?",
+      "answer": "Üye olmak için sağ üst köşedeki 'Kayıt Ol' butonuna tıklayın. Giriş ekranında açılan formu doldurun. Adınızı, soyadınızı, telefon numaranızı ve şifrenizi girerek kaydınızı tamamlayabilirsiniz."
+    },
+    "forgotPassword": {
+      "question": "Şifremi unuttum, ne yapmalıyım?",
+      "answer": "Şifrenizi sıfırlamak için giriş ekranındaki 'Şifremi Unuttum' seçeneğine tıklayın. E-posta adresinizi girin ve size gönderilen 6 haneli kodu girerek şifrenizi sıfırlayın."
+    },
+    "updateAddress": {
+      "question": "Teslimat adresimi nasıl güncellerim?",
+      "answer": "Hesabınıza giriş yaptıktan sonra profil sayfanızdaki 'Adres' bölümüne gidin. Mevcut adresinizi düzenleyebilir ve yeni bilgileri kaydedebilirsiniz."
+    },
+    "updatePhone": {
+      "question": "Telefon numaramı nasıl güncellerim?",
+      "answer": "'Profilim' bölümüne gidin. Kişisel bilgileriniz arasında telefon numaranızı göreceksiniz. Telefon numaranızı düzenleyip değişiklikleri kaydedebilirsiniz."
+    },
+    "dataSecurity": {
+      "question": "Verilerim güvende mi?",
+      "answer": "Müşteri verileri bizim için çok önemlidir ve en yüksek güvenlik önlemleriyle korunur. Kredi kartı bilgileri, teslimat adresleri ve diğer kişisel veriler güvenli ödeme sistemleri ve şifreleme teknolojileri kullanılarak saklanır. Kullanıcı güvenliği tüm işlemlerde önceliklidir."
+    },
+    "homeDelivery": {
+      "question": "Ürünleri evime teslim ediyor musunuz?",
+      "answer": "Evet, tüm ürünlerimizi kapınıza kadar teslim ediyoruz. Teslimatlar özenle yapılır ve taze, kaliteli ürünler sunulur."
+    },
+    "productsOrganic": {
+      "question": "Ürünleriniz organik mi?",
+      "answer": "Evet, tüm ürünlerimiz organik tarım yöntemleri kullanılarak üretilmektedir. Tarımda katkı maddeleri veya pestisitler kullanılmaz."
+    },
+    "productDiscounts": {
+      "question": "Ürünlerinizde indirimler ne zaman oluyor?",
+      "answer": "Ürünlerimiz için belirli günlerde indirimler yapılmaktadır. Bu indirimleri takip ederek ürünleri daha uygun fiyatlarla satın alabilirsiniz."
+    },
+    "placeOrder": {
+      "question": "Nasıl sipariş verebilirim?",
+      "answer": "Ürünleri sepetinize ekleyin ve ödeme işlemini tamamlayarak hızlıca sipariş verebilirsiniz. Web sitemiz üzerinden güvenli ödeme seçeneklerini kullanabilirsiniz."
+    },
+    "returnExchange": {
+      "question": "Ürünleri iade edebilir veya değiştirebilir miyim?",
+      "answer": "Şu anda iade veya değişim kabul edilmiyor. Ancak ürününüzle ilgili bir sorun yaşarsanız bizimle iletişime geçebilirsiniz."
+    },
+    "paymentMethods": {
+      "question": "Hangi ödeme yöntemlerini kullanabilirim?",
+      "answer": "Sadece kredi kartı ödemeleri kabul edilmektedir. Kapıda ödeme seçeneği mevcut değildir."
+    },
+    "trackOrder": {
+      "question": "Siparişimi nasıl takip edebilirim?",
+      "answer": "Siparişiniz kargoya verildiğinde gönderinizi uygulama üzerinden kolayca takip edebilirsiniz. Kargonuzun durumunu gerçek zamanlı olarak kontrol edebilirsiniz."
+    },
+    "deleteMembership": {
+      "question": "Üyeliğimi nasıl silebilirim?",
+      "answer": "Hesabınızı silmek için 'Profilim' bölümüne gidin ve 'Hesabı Sil' seçeneğine tıklayın. Şifrenizi tekrar girdikten sonra üyeliğiniz tamamen silinecektir."
+    }
+  }
+}
