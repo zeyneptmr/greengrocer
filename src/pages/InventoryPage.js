@@ -6,7 +6,9 @@ import AdminSearchBar from "../components/AdminSearchBar";
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaTimesCircle } from 'react-icons/fa';
 import { LanguageContext } from "../context/LanguageContext";
+
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 
 const Inventory = () => {
     const [products, setProducts] = useState([]);
@@ -21,6 +23,7 @@ const Inventory = () => {
     const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 10;
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation('inventory');
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -101,7 +104,7 @@ const Inventory = () => {
     // Tüm ürünlerin stoğunu belirli bir değere set et
     const updateAllProductStocks = (newStock) => {
         if (isNaN(newStock) || newStock === '') {
-            setErrorMessage('Please enter a valid number.');
+            setErrorMessage(t("invalidNumber"));
             setTimeout(() => setErrorMessage(''), 3000);
             return;
         }
@@ -142,7 +145,7 @@ const Inventory = () => {
             setTimeout(() => setSuccessMessage(false), 3000);
         } catch (err) {
             console.error("Error saving stocks:", err);
-            setErrorMessage("Failed to save stocks.");
+            setErrorMessage(t("errorMessage"));
             setTimeout(() => setErrorMessage(''), 3000);
         }
     };
@@ -154,9 +157,9 @@ const Inventory = () => {
 
             <main className="flex-1 flex flex-col overflow-hidden">
                 <header className="bg-white shadow-md p-4 flex justify-between items-center">
-                    <h1 className="text-2xl font-semibold text-gray-700">Product Inventory</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700">{t("title")}</h1>
                     <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Manager Panel</span>
+                        <span className="text-gray-500">{t("managerPanel")}</span>
                         <img src={managerIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
@@ -171,10 +174,10 @@ const Inventory = () => {
                 </div>
 
                 <div className="px-6 py-4 overflow-y-auto flex-1">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Manage Products</h2>
+                    <h2 className="text-xl font-semibold text-gray-700 mb-4">{t("manageProducts")}</h2>
 
                     {loading ? (
-                        <p className="text-center text-gray-500">Loading products...</p>
+                        <p className="text-center text-gray-500">{t("loadingProducts")}</p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {productsToDisplay.map(product => (
@@ -187,9 +190,9 @@ const Inventory = () => {
                                         />
                                     </div>
                                     <h3 className="text-lg font-semibold">{product.translatedName}</h3>
-                                    <p className="text-gray-500">Price: ₺{formatPrice(product.price)}</p>
+                                    <p className="text-gray-500">{t("price")}{formatPrice(product.price)}</p>
                                     <div className="flex items-center space-x-2 mt-4">
-                                        <span className="text-gray-700">Stock:</span>
+                                        <span className="text-gray-700">{t("stock")}</span>
                                         <input
                                             type="number"
                                             min="0"
@@ -211,7 +214,7 @@ const Inventory = () => {
                             onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
                             disabled={currentPage === 1}
                         >
-                            &lt; Previous
+                            &lt; {t("previous")}
                         </button>
                         <span className="px-5 py-2 text-gray-700 font-medium">{currentPage} / {totalPages}</span>
                         <button
@@ -219,7 +222,7 @@ const Inventory = () => {
                             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
                             disabled={currentPage === totalPages}
                         >
-                            Next &gt;
+                            {t("next")} &gt;
                         </button>
                     </div>
 
@@ -248,14 +251,14 @@ const Inventory = () => {
                                 onClick={() => updateAllProductStocks(stockInput)}
                                 className="px-6 py-3 bg-orange-500 text-white rounded-3xl text-lg shadow-md hover:bg-orange-600 transition-transform transform hover:scale-105"
                             >
-                                Set All Stocks
+                                {t("setAllStocks")}
                             </button>
 
                             <button
                                 onClick={() => addStockToAllProducts(stockInput)}
                                 className="px-6 py-3 bg-yellow-500 text-white rounded-3xl text-lg shadow-md hover:bg-yellow-600 transition-transform transform hover:scale-105"
                             >
-                                Add Stock to All
+                                {t("addStockToAll")}
                             </button>
                         </div>
 
@@ -263,14 +266,14 @@ const Inventory = () => {
                             onClick={saveAllStocks}
                             className="mt-6 px-6 py-3 bg-green-600 text-white rounded-3xl text-lg shadow-md hover:bg-green-700 transition-transform transform hover:scale-105"
                         >
-                            Save All Stocks
+                            {t("saveAllStocks")}
                         </button>
 
                         {successMessage && (
                             <div
                                 className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center shadow-md">
                                 <FaCheckCircle className="h-8 w-8 text-green-600 mr-3"/>
-                                <span>Stocks saved successfully!</span>
+                                <span>{t("successMessage")}</span>
                             </div>
                         )}
                     </div>

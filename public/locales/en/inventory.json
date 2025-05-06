@@ -1,0 +1,16 @@
+{
+    "title": "Product Inventory",
+    "managerPanel": "Manager Panel",
+    "manageProducts": "Manage Products",
+    "loadingProducts": "Loading products...",
+    "price": "Price: ₺",
+    "stock": "Stock:",
+    "previous": "< Previous",
+    "next": "Next >",
+    "setAllStocks": "Set All Stocks",
+    "addStockToAll": "Add Stock to All",
+    "saveAllStocks": "Save All Stocks",
+    "successMessage": "Stocks saved successfully!",
+    "errorMessage": "Failed to save stocks.",
+    "invalidNumber": "Please enter a valid number."
+  }
