@@ -1,0 +1,61 @@
+{
+  "title": "Frequently Asked Questions",
+  "questions": {
+    "whyBecomeMember": {
+      "question": "Why should I become a member?",
+      "answer": "Membership offers you exclusive opportunities, discounts, new products, and personalized suggestions, making your shopping experience more enjoyable and advantageous. Additionally, you won’t have to re-enter your contact information, delivery address, and billing address every time you complete a purchase. You can view your previous orders, create favorite products, and view your cart."
+    },
+    "howBecomeMember": {
+      "question": "How can I become a member?",
+      "answer": "To become a member, click on the 'Sign Up' button in the top right corner. Fill out the form that appears on the login screen. You can complete your registration by entering your name, surname, phone number, and password."
+    },
+    "forgotPassword": {
+      "question": "I forgot my password, what should I do?",
+      "answer": "To reset your password, click on 'Forgot Password' on the login screen. Enter your email address, and once you receive a 6-digit code, enter it to reset your password."
+    },
+    "updateAddress": {
+      "question": "How can I update my delivery address?",
+      "answer": "After logging into your account, go to the 'Address' section in your profile page. You can edit your current address and save the new information there."
+    },
+    "updatePhone": {
+      "question": "How can I update my phone number?",
+      "answer": "Go to the 'My Profile' section and you will see your personal information, including your phone number. You can edit your phone number and save the changes."
+    },
+    "dataSecurity": {
+      "question": "Is my data secure?",
+      "answer": "Customer data is very important to us and is protected with the highest security measures. Credit card details, delivery addresses, and other personal data are stored using secure payment systems and encryption technologies. User security is prioritized in all transactions."
+    },
+    "homeDelivery": {
+      "question": "Do you deliver to my home?",
+      "answer": "Yes, we deliver all our products right to your door. Our deliveries are made with care to ensure fresh and quality products."
+    },
+    "productsOrganic": {
+      "question": "Are your products organic?",
+      "answer": "Yes, all of our products are produced using organic farming methods. No additives or pesticides are used in our agriculture."
+    },
+    "productDiscounts": {
+      "question": "When are discounts available for your products?",
+      "answer": "Discounts are available on specific days for our products. You can follow these discounts and purchase products at a lower price."
+    },
+    "placeOrder": {
+      "question": "How can I place an order?",
+      "answer": "Add products to your cart and complete the payment process to quickly place your order. You can use secure payment options through our website."
+    },
+    "returnExchange": {
+      "question": "Can I return or exchange products?",
+      "answer": "Unfortunately, we do not currently accept returns or exchanges. However, if you have an issue with your product, you can contact us."
+    },
+    "paymentMethods": {
+      "question": "What payment methods can I use?",
+      "answer": "Only credit card payments are accepted. Cash on delivery is not available."
+    },
+    "trackOrder": {
+      "question": "How can I track my order?",
+      "answer": "Once your order is shipped, you can easily track your shipment through the application. You can check the status of your shipment in real-time."
+    },
+    "deleteMembership": {
+      "question": "How can I delete my membership?",
+      "answer": "To delete your account, go to the 'My Profile' section and click on 'Delete Account'. After entering your password again, your membership will be completely deleted."
+    }
+  }
+}
