@@ -16,7 +16,7 @@ const DiscountPage = () => {
     const [discountRate, setDiscountRate] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const [selectAllChecked, setSelectAllChecked] = useState(false); // "Select All" butonu durumu
+    const [selectAllChecked, setSelectAllChecked] = useState(false); 
     const { language } = useContext(LanguageContext);
     const { t } = useTranslation('discount');
 
@@ -35,12 +35,12 @@ const DiscountPage = () => {
     ];
 
     const categoryMap = {
-        "Fruits": "fruits",
-        "Vegetables": "vegetables",
-        "Baked Goods": "bakedgoods",
-        "Olives & Oils": "olivesoils",
-        "Sauces": "sauces",
-        "Dairy": "dairy"
+        "fruits": "fruits",
+        "vegetables": "vegetables", 
+        "bakedgoods": "bakedgoods",
+        "olivesoils": "olivesoils",
+        "sauces": "sauces",
+        "dairy": "dairy"
     };
 
     const importAll = (r) => {
@@ -96,10 +96,19 @@ const DiscountPage = () => {
 
     const fetchProductsByCategory = async (category) => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/products/search/category`, {
-                params: { category }
-            });
-            setFilteredProducts(res.data);  
+            console.log(`Fetching products for category: ${category} with language: ${language}`);
+            
+        
+            const res = await axios.get(`http://localhost:8080/api/products?language=${language}`);
+            
+
+            const filteredByCategory = res.data.filter(product => 
+                product.category && product.category.toLowerCase() === category.toLowerCase()
+            );
+            
+            console.log(`Found ${filteredByCategory.length} products for category ${category}`);
+            
+            setFilteredProducts(filteredByCategory);
         } catch (error) {
             console.error("Category fetch error:", error);
         }
@@ -107,14 +116,18 @@ const DiscountPage = () => {
 
     useEffect(() => {
         fetchAllProducts();
+
+        setSelectedCategory('');
     }, [language]);
 
     const handleCategoryChange = (e) => {
-        const selectedLabel = e.target.value;
-        setSelectedCategory(selectedLabel);
-        const apiCategory = categoryMap[selectedLabel];
-        if (apiCategory) {
-            fetchProductsByCategory(apiCategory);
+        const selectedCategoryKey = e.target.value;
+        setSelectedCategory(selectedCategoryKey);
+        
+        if (selectedCategoryKey) {
+        
+            console.log("Filtering by category:", selectedCategoryKey);
+            fetchProductsByCategory(selectedCategoryKey);
         } else {
             fetchAllProducts();
         }
@@ -202,33 +215,33 @@ const DiscountPage = () => {
 
         try {
             const updatedDiscountedProducts = await Promise.all(discountedProducts.map(async (product) => {
-                // İndirimli fiyatı hesapla
+            
                 const discountedPrice = (product.price * (1 - discountRate / 100)).toFixed(2);
                 
-                // Ürün fiyatını güncelle
+            
                 await axios.patch(`http://localhost:8080/api/products/${product.id}/update-price`, {
                     price: parseFloat(discountedPrice)
                 });
                 
-                // İndirimli ürün bilgisini ekle
+            
                 const discountInfo = await addDiscountedProduct(product, discountedPrice);
                 
-                // Orijinal fiyatı ve indirimli fiyatı döndür
+            
                 return { 
                     ...product, 
-                    oldPrice: product.price, // Orijinal fiyatı saklayalım
+                    oldPrice: product.price, 
                     discountedPrice: parseFloat(discountedPrice),
                     discountId: discountInfo.id 
                 };
             }));
             
-            // Güncellenmiş ürünlerin fiyatlarını filteredProducts'a yansıt
+    
             const updatedProducts = filteredProducts.map(product => {
-                // Eğer ürün indirimli ise, güncellenmiş fiyatı ekle
+                
                 const updatedProduct = updatedDiscountedProducts.find(updated => updated.id === product.id);
                 return updatedProduct ? { 
                     ...product, 
-                    oldPrice: updatedProduct.oldPrice, // Orijinal fiyatı ekleyelim 
+                    oldPrice: updatedProduct.oldPrice, 
                     discountedPrice: updatedProduct.discountedPrice,
                     discountId: updatedProduct.discountId
                 } : product;
@@ -247,10 +260,6 @@ const DiscountPage = () => {
             setErrorNotification(t("failedMessage") + (error.response?.data?.message || error.message));
             setTimeout(() => setErrorNotification(''), 5000);
         }
-    };
-
-    const getTranslatedCategory = (category) => {
-        return t(`${category}`);
     };
 
     return (
