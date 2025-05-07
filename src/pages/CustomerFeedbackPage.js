@@ -106,7 +106,7 @@ const ContactFormsPage = () => {
 
                 <div className="p-6 space-y-5">
                     {forms.length === 0 ? (
-                        <p className="text-green-600 italic">No contact forms submitted yet.</p>
+                        <p className="text-green-600 italic">{t("noForms")}</p>
                     ) : (
                         filteredForms.map((form) => (
                             <div
