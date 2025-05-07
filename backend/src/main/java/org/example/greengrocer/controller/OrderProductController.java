@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.greengrocer.repository.ProductRepository;
 import org.example.greengrocer.model.OrderProduct;
 import org.example.greengrocer.model.User;
+import org.example.greengrocer.repository.CustomerOrderRepository;
 import org.example.greengrocer.repository.OrderProductRepository;
 import org.example.greengrocer.repository.UserRepository;
 import org.example.greengrocer.security.TokenProvider;
@@ -14,40 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import org.example.greengrocer.model.ProductTranslation;
 
 
-import org.example.greengrocer.model.CustomerOrder;
-
-
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 import org.example.greengrocer.model.Product;
-
 import org.example.greengrocer.service.ProductService;
-
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/api/orderproduct")
 @CrossOrigin(origins = "http://localhost:3000")
 public class OrderProductController {
-
+    
     @Autowired
     private ProductRepository productRepository;
 
@@ -59,8 +41,11 @@ public class OrderProductController {
 
     @Autowired
     private TokenProvider tokenProvider;
+    
+    @Autowired
+    private ProductService productService;
 
-    // Token'dan email çekme fonksiyonu
+    
     private String getUserEmailFromToken(HttpServletRequest request) {
         return Arrays.stream(request.getCookies())
                 .filter(c -> "token".equals(c.getName()))
@@ -68,6 +53,17 @@ public class OrderProductController {
                 .filter(token -> tokenProvider.validateToken(token))
                 .map(tokenProvider::getEmailFromToken)
                 .findFirst().orElse(null);
+    }
+
+
+    // Check if user is admin or manager
+    private boolean isUserManagerOrAdmin(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return false;
+        
+        User user = userOpt.get();
+       
+        return user.getRole() != null && (user.getRole().equals("ADMIN") || user.getRole().equals("MANAGER"));
     }
 
 
@@ -81,9 +77,18 @@ public class OrderProductController {
 
         // Sadece kullanıcının kendi siparişine erişebilmesi için kontrol
         List<OrderProduct> products = orderProductRepository.findByCustomerOrder_OrderId(orderId);
-        if (products.isEmpty() || !products.get(0).getCustomerOrder().getUser().getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found for this order");
         }
+
+         // Check if user has permission (either owner of the order or manager/admin)
+         boolean isOwner = products.get(0).getCustomerOrder().getUser().getEmail().equals(email);
+         boolean isManager = isUserManagerOrAdmin(email);
+         
+         if (!isOwner && !isManager) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+         }
+
 
         List<Map<String, Object>> productData = products.stream().map(product -> {
             Map<String, Object> productInfo = new HashMap<>();
@@ -126,8 +131,6 @@ public class OrderProductController {
         return ResponseEntity.ok(saved);
     }
 
-    @Autowired
-    private ProductService productService;
 
     @PostMapping("/process-order/{orderId}")
     public ResponseEntity<?> processOrderAndUpdateStock(@PathVariable String orderId, HttpServletRequest request) {
@@ -173,17 +176,12 @@ public class OrderProductController {
         if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-
-
-        // Sadece kullanıcının kendi siparişine erişebilmesi için kontrol
-        List<OrderProduct> products = orderProductRepository.findByCustomerOrder_OrderId(orderId);
-        if (products.isEmpty() || !products.get(0).getCustomerOrder().getUser().getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
-        }
-
-        return ResponseEntity.ok(products);
-    } */
+        if (userOpt.isEmpty()) return false;
+        
+        User user = userOpt.get();
+       
+        return user.getRole() != null && (user.getRole().equals("ADMIN") || user.getRole().equals("MANAGER"));
+    }
 
    /* @GetMapping("/by-order/{orderId}")
     public ResponseEntity<?> getOrderProducts(@PathVariable String orderId, HttpServletRequest request) {
@@ -193,19 +191,28 @@ public class OrderProductController {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 
-        // Sadece kullanıcının kendi siparişine erişebilmesi için kontrol
+        // Get order products
         List<OrderProduct> products = orderProductRepository.findByCustomerOrder_OrderId(orderId);
-        if (products.isEmpty() || !products.get(0).getCustomerOrder().getUser().getEmail().equals(email)) {
+        
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found for this order");
+        }
+        
+        // Check if user has permission (either owner of the order or manager/admin)
+        boolean isOwner = products.get(0).getCustomerOrder().getUser().getEmail().equals(email);
+        boolean isManager = isUserManagerOrAdmin(email);
+        
+        if (!isOwner && !isManager) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
         }
 
+        // Log for debugging
         System.out.println("Order ID: " + orderId);
         System.out.println("Email from token: " + email);
-        System.out.println("Siparişin sahibi email: " + products.get(0).getCustomerOrder().getUser().getEmail());
+        System.out.println("Order owner email: " + products.get(0).getCustomerOrder().getUser().getEmail());
         System.out.println("OrderProducts size: " + products.size());
-        System.out.println("Order user email: " + (products.isEmpty() ? "none" : products.get(0).getCustomerOrder().getUser()));
 
-        // Sadece gerekli alanları içeren bir liste oluşturuyoruz
+        // Return simplified product data
         List<Map<String, Object>> productData = products.stream().map(product -> {
             Map<String, Object> productInfo = new HashMap<>();
             productInfo.put("productName", product.getProductName());
@@ -219,19 +226,6 @@ public class OrderProductController {
         return ResponseEntity.ok(productData);
     }
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

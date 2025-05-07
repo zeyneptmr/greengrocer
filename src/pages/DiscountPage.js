@@ -5,6 +5,7 @@ import AdminSearchBar from "../components/AdminSearchBar";
 import axios from "axios";
 import {FaCheckCircle, FaTimesCircle} from "react-icons/fa";
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from 'react-i18next';
 
 const DiscountPage = () => {
     const [products, setProducts] = useState([]);
@@ -17,13 +18,21 @@ const DiscountPage = () => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [selectAllChecked, setSelectAllChecked] = useState(false); // "Select All" butonu durumu
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation('discount');
 
 
     // Bildirimler için state
     const [successNotification, setSuccessNotification] = useState('');
     const [errorNotification, setErrorNotification] = useState('');
 
-    const categories = ["Fruits", "Vegetables", "Baked Goods", "Olives & Oils", "Sauces", "Dairy"];
+    const categories = [
+        { key: "fruits", i18nKey: "fruits" },
+        { key: "vegetables", i18nKey: "vegetables" },
+        { key: "bakedgoods", i18nKey: "bakedGoods" },
+        { key: "olivesoils", i18nKey: "olivesOils" },
+        { key: "sauces", i18nKey: "sauces" },
+        { key: "dairy", i18nKey: "dairy" }
+    ];
 
     const categoryMap = {
         "Fruits": "fruits",
@@ -160,19 +169,19 @@ const DiscountPage = () => {
     const applyDiscount = async () => {
         // Eğer discountRate içinde sayı dışı bir karakter varsa
         if (!/^\d+$/.test(discountRate)) { // Sadece tam sayılara izin verir
-            setErrorNotification('Please enter valid number of rate!');
+            setErrorNotification(t("validNumberMessage"));
             setTimeout(() => setErrorNotification(''), 3000);  // Bildirimi 3 saniye sonra kaybet
             return;
         }
 
         if (parseInt(discountRate) > 99) {
-            setErrorNotification('Discount rate cannot be more than 99%.');
+            setErrorNotification(t("maxRateMessage"));
             setTimeout(() => setErrorNotification(''), 3000);
             return;
         }
 
         if (selectedProducts.length === 0) {
-            setErrorNotification('Please make a selection');
+            setErrorNotification(t("makeSelectionMessage"));
             setTimeout(() => setErrorNotification(''), 3000);  // Bildirimi 3 saniye sonra kaybet
             return;
         }
@@ -186,7 +195,7 @@ const DiscountPage = () => {
         });
 
         if (tooCheapProduct) {
-            setErrorNotification(`Discounts cannot be applied to products less than 1 TL.`);
+            setErrorNotification(t("minPriceMessage"));
             setTimeout(() => setErrorNotification(''), 4000);
             return;
         }
@@ -230,14 +239,18 @@ const DiscountPage = () => {
             setSelectedProducts([]);
             setSelectAllChecked(false);
             
-            setSuccessNotification('Discount applied successfully! Prices will automatically revert after 24 hours.');
+            setSuccessNotification(t("successMessage"));
             setTimeout(() => setSuccessNotification(''), 5000);  
             console.log("Discount applied successfully!");
         } catch (error) {
             console.error("Discount application failed:", error);
-            setErrorNotification("Discount application failed: " + (error.response?.data?.message || error.message));
+            setErrorNotification(t("failedMessage") + (error.response?.data?.message || error.message));
             setTimeout(() => setErrorNotification(''), 5000);
         }
+    };
+
+    const getTranslatedCategory = (category) => {
+        return t(`${category}`);
     };
 
     return (
@@ -246,9 +259,9 @@ const DiscountPage = () => {
 
             <main className="flex-1 flex flex-col overflow-y-auto">
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700">Discount & Campaign</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700">{t("title")}</h1>
                     <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Manager Panel</span>
+                        <span className="text-gray-500">{t("managerPanel")}</span>
                         <img src={managerIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
@@ -261,38 +274,37 @@ const DiscountPage = () => {
                 </div>
 
                 <div className="px-6 py-4">
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4">Manage Discounts</h2>
+                    <h2 className="text-xl font-semibold text-gray-700 mb-4">{t("manageDiscounts")}</h2>
 
                     <div className="bg-blue-50 border-l-4 border-blue-700 p-4 mb-6">
                         <p className="text-blue-700">
-                            All discounts applied here will automatically expire after 24 hours.
-                            Products will return to their original prices automatically.
+                        {t("discountInfo")}
                         </p>
                     </div>
 
                     <div className="flex flex-wrap gap-4 mb-6">
                         <div className="flex flex-col">
-                            <label className="mb-1 text-sm text-gray-600">Discount Rate (%)</label>
+                            <label className="mb-1 text-sm text-gray-600">{t("discountRate")}</label>
                             <input
                                 type="number"
                                 value={discountRate}
                                 onChange={handleDiscountChange}
-                                placeholder="Enter rate (1-99)"
+                                placeholder={t('enterRate')}
                                 className="border px-3 py-2 rounded w-48"
                             />
                         </div>
 
                         <div className="flex flex-col">
-                            <label className="mb-1 text-sm text-gray-600">Filter by Category</label>
+                            <label className="mb-1 text-sm text-gray-600">{t("filterByCategory")}</label>
                             <select
                                 value={selectedCategory}
                                 onChange={handleCategoryChange}
                                 className="p-2 border rounded"
                             >
-                                <option value="">All Categories</option>
+                                <option value="">{t("allCategories")}</option>
                                 {categories.map((category) => (
-                                    <option key={category} value={category}>
-                                        {category}
+                                    <option key={category.key} value={category.key}>
+                                       {t(`categories.${category.i18nKey}`)}
                                     </option>
                                 ))}
                             </select>
@@ -302,7 +314,7 @@ const DiscountPage = () => {
                             <button onClick={handleSelectAll}
                                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                             >
-                                {selectAllChecked ? 'Deselect All' : 'Select All'}
+                                {selectAllChecked ? t('deselectAll') : t('selectAll')}
                             </button>
                         </div>
 
@@ -315,7 +327,7 @@ const DiscountPage = () => {
                                     ? 'bg-gray-400 cursor-not-allowed' 
                                     : 'bg-green-500 hover:bg-green-600'}`}
                             >
-                                Apply Discount
+                                {t('applyDiscount')}
                             </button>
                         </div>
                     </div>
@@ -323,17 +335,17 @@ const DiscountPage = () => {
                     <div className="bg-white rounded-lg shadow">
                         <div className="grid grid-cols-12 p-4 bg-gray-100 font-medium text-gray-700 border-b">
                             <div className="col-span-1"></div>
-                            <div className="col-span-2">Image</div>
-                            <div className="col-span-3">Product Name</div>
-                            <div className="col-span-2">Stock</div>
-                            <div className="col-span-2">Regular Price</div>
-                            <div className="col-span-2">Discounted Price</div>
+                            <div className="col-span-2">{t('image')}</div>
+                            <div className="col-span-3">{t('productName')}</div>
+                            <div className="col-span-2">{t('stock')}</div>
+                            <div className="col-span-2">{t('regularPrice')}</div>
+                            <div className="col-span-2">{t('discountedPrice')}</div>
                         </div>
 
                         <div className="divide-y">
                             {loading ? (
                                 <div className="p-8 text-center">
-                                    <p>Loading products...</p>
+                                    <p>{t('loadingProducts')}</p>
                                 </div>
                             ) : errorMessage ? (
                                 <div className="p-8 text-center">
@@ -341,7 +353,7 @@ const DiscountPage = () => {
                                 </div>
                             ) : filteredProducts.length === 0 ? (
                                 <div className="p-8 text-center">
-                                    <p className="text-gray-500">No products found.</p>
+                                    <p className="text-gray-500">{t('noProductsFound')}</p>
                                 </div>
                             ) : (
                                 filteredProducts.map((product) => (
@@ -365,7 +377,7 @@ const DiscountPage = () => {
                                             {product.translatedName}
                                         </div>
                                         <div className="col-span-2 text-gray-600">
-                                            {product.stock} units
+                                            {product.stock} {t('units')}
                                         </div>
                                         <div className="col-span-2 font-medium">
                                             ₺{formatPrice(product.discountedPrice ? product.oldPrice : product.price)}
@@ -375,7 +387,7 @@ const DiscountPage = () => {
                                                 <div className="text-green-600 font-bold">
                                                     ₺{formatPrice(product.discountedPrice)}
                                                     <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                                                        {Math.round((1 - product.discountedPrice / product.price) * 100)}% off
+                                                        {Math.round((1 - product.discountedPrice / product.price) * 100)}{t('off')}
                                                     </span>
                                                 </div>
                                             ) : (

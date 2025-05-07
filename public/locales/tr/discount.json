@@ -1,0 +1,41 @@
+{
+    "title": "İndirim & Kampanya",
+    "managerPanel": "Menejer Paneli",
+    "manageDiscounts": "İndirimleri Yönet",
+    "discountInfo": "Burada uygulanan tüm indirimler 24 saat sonra otomatik olarak sona erecektir. Ürünler otomatik olarak orijinal fiyatlarına dönecektir.",
+    "discountRate": "İndirim Oranı (%)",
+    "enterRate": "Oran girin (1-99)",
+    "filterByCategory": "Kategoriye Göre Filtrele",
+    "allCategories": "Tüm Kategoriler",
+    "selectAll": "Tümünü Seç",
+    "deselectAll": "Seçimi Kaldır",
+    "applyDiscount": "İndirimi Uygula",
+    "image": "Görsel",
+    "productName": "Ürün Adı",
+    "stock": "Stok",
+    "regularPrice": "Normal Fiyat",
+    "discountedPrice": "İndirimli Fiyat",
+    "loadingProducts": "Ürünler yükleniyor...",
+    "noProductsFound": "Ürün bulunamadı.",
+    "units": "adet",
+    "off": "% indirim",
+    "successMessage": "İndirim başarıyla uygulandı! Fiyatlar 24 saat sonra otomatik olarak eski haline dönecektir.",
+    "validNumberMessage": "Lütfen geçerli bir oran girin!",
+    "maxRateMessage": "İndirim oranı %99'dan fazla olamaz.",
+    "makeSelectionMessage": "Lütfen bir seçim yapın",
+    "minPriceMessage": "1 TL'den düşük ürünlere indirim uygulanamaz.",
+    "failedMessage": "İndirim uygulanamadı: ",
+    "categories": {
+    "vegetables": "Sebzeler",
+    "fruits": "Meyveler",
+    "bakedGoods": "Fırın Ürünleri",
+    "olivesOils": "Zeytin ve Yağlar",
+    "sauces": "Soslar",
+    "dairy": "Süt Ürünleri"
+    }
+    
+
+
+
+}
+  

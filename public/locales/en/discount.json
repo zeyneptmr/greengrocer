@@ -1,0 +1,40 @@
+{
+    "title": "Discount & Campaign",
+    "managerPanel": "Manager Panel",
+    "manageDiscounts": "Manage Discounts",
+    "discountInfo": "All discounts applied here will automatically expire after 24 hours. Products will return to their original prices automatically.",
+    "discountRate": "Discount Rate (%)",
+    "enterRate": "Enter rate (1-99)",
+    "filterByCategory": "Filter by Category",
+    "allCategories": "All Categories",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "applyDiscount": "Apply Discount",
+    "image": "Image",
+    "productName": "Product Name",
+    "stock": "Stock",
+    "regularPrice": "Regular Price",
+    "discountedPrice": "Discounted Price",
+    "loadingProducts": "Loading products...",
+    "noProductsFound": "No products found.",
+    "units": "units",
+    "off": "% off",
+    "successMessage": "Discount applied successfully! Prices will automatically revert after 24 hours.",
+    "validNumberMessage": "Please enter valid number of rate!",
+    "maxRateMessage": "Discount rate cannot be more than 99%.",
+    "makeSelectionMessage": "Please make a selection",
+    "minPriceMessage": "Discounts cannot be applied to products less than 1 TL.",
+    "failedMessage": "Discount application failed: ",
+    "categories": {
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "bakedGoods": "Baked Goods",
+    "olivesOils": "Olives & Oils",
+    "sauces": "Sauces",
+    "dairy": "Dairy"
+    }
+    
+
+
+}
+  

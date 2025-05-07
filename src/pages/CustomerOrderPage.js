@@ -1,47 +1,273 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, ChevronRight, Info, Eye } from "lucide-react";
 
 const statusSteps = ["Order Received", "Confirmed", "Preparing", "Dispatched"];
 
+
+const filterOptions = [
+    { id: "all", label: "All Orders" },
+    { id: "week", label: "Last Week" },
+    { id: "month", label: "Last Month" },
+    { id: "threeMonths", label: "Last 3 Months" },
+    { id: "year", label: "Last Year" }
+];
+
+const API_BASE_URL = "http://localhost:8080";
+
+
+const importAll = (r) => {
+    let images = {};
+    r.keys().forEach((item) => {
+        const key = item.replace('./', '');
+        images[key] = r(item);
+    });
+    return images;
+};
+
+
+let images = {};
+try {
+    images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
+    console.log('Images loaded successfully:', Object.keys(images).length);
+} catch (err) {
+    console.warn('Could not load images from assets folder:', err.message);
+    
+    images = {
+        'placeholder.png': '/placeholder.png'
+    };
+}
+
+
+const getImageFromPath = (path) => {
+    
+    if (!path) return '/api/placeholder/80/80';
+    
+    
+    if (path.startsWith("data:image")) return path;
+
+    try {
+        
+        const filename = path.split('/').pop();
+        
+        
+        if (images[filename]) {
+            return images[filename];
+        }
+        
+    
+        const imagePath = Object.keys(images).find(key => 
+            key.includes(filename.split('.')[0])
+        );
+        
+        if (imagePath) {
+            return images[imagePath];
+        }
+        
+    
+        console.warn(`Image not found: ${filename}, using placeholder`);
+        return '/api/placeholder/80/80';
+    } catch (err) {
+        console.error('Error in getImageFromPath:', err);
+        return '/api/placeholder/80/80';
+    }
+};
+
+
+const formatProductName = (name) => {
+    if (!name) return '';
+    
+    
+    let formattedName = name.replace(/_/g, ' ');
+    
+    formattedName = formattedName.split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    
+    return formattedName;
+};
+
 const CustomerOrderPage = () => {
-    const [orders, setOrders] = useState([]);
+    const [allOrders, setAllOrders] = useState([]);
+    const [displayedOrders, setDisplayedOrders] = useState([]);
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [isLoading, setIsLoading] = useState(true);
+    const [isUpdating, setIsUpdating] = useState(false);
+    
+    
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orderProducts, setOrderProducts] = useState([]);
+    const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
+    
+    
+    const scrollPositionRef = useRef(0);
+    const mainContainerRef = useRef(null);
+
+    const fetchOrders = async () => {
+        setIsLoading(true);
+        try {
+            const res = await axios.get(`${API_BASE_URL}/api/customerorder/orders/all`, { withCredentials: true });
+            if (Array.isArray(res.data)) {
+                const sortedOrders = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setAllOrders(sortedOrders);
+                setDisplayedOrders(sortedOrders);
+            }
+            setIsLoading(false);
+        } catch (err) {
+            console.error("Orders could not be fetched:", err);
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true })
-            .then(res => {
-                if (Array.isArray(res.data)) {
-                    const sortedOrders = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    setOrders(sortedOrders);
-                }
-            })
-            .catch(err => console.error("Orders could not be fetched:", err));
+        fetchOrders();
+        
     }, []);
+
+    
+    useEffect(() => {
+        if (showPopup) {
+    
+            scrollPositionRef.current = window.scrollY || document.documentElement.scrollTop;
+            
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.top = `-${scrollPositionRef.current}px`;
+        } else {
+    
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+        
+            window.scrollTo(0, scrollPositionRef.current);
+        }
+    }, [showPopup]);
+
+    
+    const filterOrders = (filterId) => {
+        if (isUpdating) return;
+        
+        setActiveFilter(filterId);
+        
+        if (allOrders.length === 0) {
+            setDisplayedOrders([]);
+            return;
+        }
+        
+        const now = new Date();
+        let filteredList = [];
+        
+        switch(filterId) {
+            case "week":
+                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneWeekAgo);
+                break;
+            case "month":
+                const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneMonthAgo);
+                break;
+            case "threeMonths":
+                const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= threeMonthsAgo);
+                break;
+            case "year":
+                const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                filteredList = allOrders.filter(order => new Date(order.createdAt) >= oneYearAgo);
+                break;
+            default:
+                filteredList = [...allOrders];
+        }
+        
+
+        setDisplayedOrders(filteredList);
+    };
 
     const handleStatusChange = async (orderId, currentStatus) => {
         const nextStatus = statusSteps[statusSteps.indexOf(currentStatus) + 1];
-        if (!nextStatus) return;
+        if (!nextStatus || isUpdating) return;
 
+        setIsUpdating(true);
+        
         try {
-            await axios.post(`http://localhost:8080/api/customerorder/orders/${orderId}/status`,
+    
+            const updatedAllOrders = allOrders.map(order => {
+                if (order.orderId === orderId) {
+                    return { ...order, latestStatus: nextStatus };
+                }
+                return order;
+            });
+            
+            setAllOrders(updatedAllOrders);
+            
+            setDisplayedOrders(prev => 
+                prev.map(order => {
+                    if (order.orderId === orderId) {
+                        return { ...order, latestStatus: nextStatus };
+                    }
+                    return order;
+                })
+            );
+            
+        
+            await axios.post(
+                `${API_BASE_URL}/api/customerorder/orders/${orderId}/status`,
                 { status: nextStatus },
                 { withCredentials: true }
-
-        );
-
-            const updated = await axios.get("http://localhost:8080/api/customerorder/orders/all", { withCredentials: true });
-            const sortedUpdated = updated.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setOrders(sortedUpdated);
+            );
+            
         } catch (error) {
             console.error("Status could not be updated:", error);
+    
+            fetchOrders();
+        } finally {
+            setIsUpdating(false);
         }
+    };
+
+
+    const viewOrderDetails = async (order) => {
+        setSelectedOrder(order);
+        setLoadingOrderDetails(true);
+        setShowPopup(true);
+        
+        try {
+    
+            const productsResponse = await axios.get(
+                `${API_BASE_URL}/api/orderproduct/by-order/${order.orderId}`, 
+                { withCredentials: true }
+            );
+            
+            if (Array.isArray(productsResponse.data)) {
+                setOrderProducts(productsResponse.data);
+            } else {
+                setOrderProducts([]);
+            }
+        } catch (err) {
+            console.error(`Error fetching products for order ${order.orderId}:`, err);
+            setOrderProducts([]);
+        } finally {
+            setLoadingOrderDetails(false);
+        }
+    };
+
+
+    const calculateTotalProducts = (products) => {
+        if (!products || !Array.isArray(products) || products.length === 0) return 0;
+        return products.reduce((total, product) => {
+            return total + (product.totalPerProduct || 0);
+        }, 0).toFixed(2);
     };
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
             <Sidebar />
-            <main className="flex-1 flex flex-col overflow-y-auto">
+            <main ref={mainContainerRef} className="flex-1 flex flex-col overflow-y-auto">
                 <header className="bg-white shadow p-6 flex justify-between items-center">
                     <h1 className="text-3xl font-bold text-green-700">Customer Order Management</h1>
                     <div className="flex items-center gap-4">
@@ -51,10 +277,31 @@ const CustomerOrderPage = () => {
                 </header>
 
                 <div className="p-6">
-                    {orders.length === 0 ? (
+                    {/* Filter buttons */}
+                    <div className="flex flex-wrap justify-center gap-2 mb-8">
+                        {filterOptions.map(option => (
+                            <button
+                                key={option.id}
+                                onClick={() => filterOrders(option.id)}
+                                className={`px-4 py-2 rounded-full ${
+                                    activeFilter === option.id 
+                                        ? 'bg-green-600 text-white' 
+                                        : 'bg-white text-green-600 border border-green-600'
+                                } transition-colors`}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {isLoading ? (
+                        <div className="flex justify-center items-center min-h-[300px]">
+                            <div className="text-xl font-bold text-green-600">Loading orders...</div>
+                        </div>
+                    ) : displayedOrders.length === 0 ? (
                         <div className="text-center p-12 bg-gray-200 rounded-xl shadow-lg text-xl font-semibold text-gray-600">
-                            <p>Your current orders are empty.</p>
-                            <p className="text-sm text-gray-500 mt-2">There are no orders to manage at the moment.</p>
+                            <p>No orders found in this time range.</p>
+                            <p className="text-sm text-gray-500 mt-2">Try selecting a different time filter.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -74,94 +321,115 @@ const CustomerOrderPage = () => {
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200">
-                                {orders.map((order, idx) => {
+                                {displayedOrders.map((order, idx) => {
                                     const currentStatus = order.latestStatus || "Order Received";
                                     return (
                                         <tr key={order.orderId} className="hover:bg-gray-50 transition">
-                                            <td className="px-6 py-4 text-lg">{idx + 1}</td>
+                                            <td className="px-6 py-4 text-lg">
+                                                <div className="flex items-center justify-center">
+                                                    <span className="mr-2">{idx + 1}</span>
+                                                    <button 
+                                                        onClick={() => viewOrderDetails(order)}
+                                                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                                        title="View Order Details"
+                                                    >
+                                                        <Eye size={20} />
+                                                    </button>
+                                                </div>
+                                            </td>
                                             <td className="px-6 py-4 text-lg font-semibold text-gray-700">{order.orderId}</td>
                                             <td className="px-6 py-4 text-base text-gray-600">{order.createdAt?.slice(0, 19).replace("T", " ")}</td>
                                             <td className="px-6 py-4 text-lg">{order.userId}</td>
                                             <td className="px-6 py-4 text-lg">{order.userEmail}</td>
                                             <td className="px-6 py-4 text-base">{order.shippingAddress}</td>
-                                            <td className="px-6 py-4 text-lg text-orange-600 font-bold">{order.productTotal}₺</td>
+                                            <td className="px-6 py-4 text-lg text-orange-600 font-bold">{order.totalAmount}₺</td>
                                             <td className="px-6 py-4 text-lg">
-
                                                 <div className="flex items-center justify-center space-x-3">
                                                     <span
                                                         className="px-4 py-2 bg-green-100 text-green-800 text-lg rounded-full">
                                                         {currentStatus}
                                                     </span>
-                                                    {currentStatus === "Order Received" && (
-                                                        <svg className="w-7 h-7 text-green-600" fill="none"
-                                                             stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8"/>
-                                                            <path
-                                                                d="M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                                        </svg>
-                                                    )}
+                                                    
+                                                    <div className="w-7 h-7">
+                                                        {currentStatus === "Order Received" && (
+                                                            <svg className="w-full h-full text-green-600" fill="none"
+                                                                 stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8"/>
+                                                                <path
+                                                                    d="M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                                            </svg>
+                                                        )}
 
-                                                    {currentStatus === "Confirmed" && (
-                                                        <svg className="w-7 h-7 text-yellow-500" fill="none"
-                                                             stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                            <path d="M5 13l4 4L19 7"/>
-                                                        </svg>
-                                                    )}
+                                                        {currentStatus === "Confirmed" && (
+                                                            <svg className="w-full h-full text-yellow-500" fill="none"
+                                                                 stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M5 13l4 4L19 7"/>
+                                                            </svg>
+                                                        )}
 
-                                                    {currentStatus === "Preparing" && (
-                                                        <svg className="w-7 h-7 text-purple-600" fill="none"
-                                                             stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                            <path d="M12 6v6l4 2"/>
-                                                            <circle cx="12" cy="12" r="10"/>
-                                                        </svg>
-                                                    )}
+                                                        {currentStatus === "Preparing" && (
+                                                            <svg className="w-full h-full text-purple-600" fill="none"
+                                                                 stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M12 6v6l4 2"/>
+                                                                <circle cx="12" cy="12" r="10"/>
+                                                            </svg>
+                                                        )}
 
-                                                    {currentStatus === "Dispatched" && (
-                                                        <svg className="w-7 h-7 text-orange-500" fill="none"
-                                                             stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                            <path
-                                                                d="M3 7V17H5A2 2 0 0 0 9 17H15A2 2 0 0 0 19 17H21V11L17 7H3Z"
-                                                                strokeLinecap="round" strokeLinejoin="round"/>
-                                                            <circle cx="7" cy="17" r="2"/>
-                                                            <circle cx="17" cy="17" r="2"/>
-                                                        </svg>
-                                                    )}
+                                                        {currentStatus === "Dispatched" && (
+                                                            <svg className="w-full h-full text-orange-500" fill="none"
+                                                                 stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path
+                                                                    d="M3 7V17H5A2 2 0 0 0 9 17H15A2 2 0 0 0 19 17H21V11L17 7H3Z"
+                                                                    strokeLinecap="round" strokeLinejoin="round"/>
+                                                                <circle cx="7" cy="17" r="2"/>
+                                                                <circle cx="17" cy="17" r="2"/>
+                                                            </svg>
+                                                        )}
 
-                                                    {currentStatus === "Delivered" && (
-                                                        <svg className="w-7 h-7 text-blue-500" fill="none"
-                                                             stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                                                        </svg>
-                                                    )}
+                                                        {currentStatus === "Delivered" && (
+                                                            <svg className="w-full h-full text-blue-500" fill="none"
+                                                                 stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                                                            </svg>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </td>
 
                                             <td className="px-6 py-4 space-y-2">
-                                                {/* Dikey sıralama için flex-col ekledik */}
-                                                {statusSteps.map((step, i) => (
-                                                    <button
-                                                        key={i}
-                                                        className={`w-full py-2 rounded-md text-sm font-medium transition-all duration-300
-        ${step === currentStatus
-                                                            ? "bg-green-600 text-white"
-                                                            : step === "Order Received"
-                                                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                                                : statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1
-                                                                    ? "bg-orange-400 text-white hover:bg-orange-500"
-                                                                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                                        }`}
-                                                        disabled={
-                                                            step === "Order Received" || (
-                                                                step !== currentStatus &&
-                                                                statusSteps.indexOf(step) !== statusSteps.indexOf(currentStatus) + 1
-                                                            )
-                                                        }
-                                                        onClick={() => handleStatusChange(order.orderId, currentStatus)}
-                                                    >
-                                                        {step}
-                                                    </button>
-
-                                                ))}
+                                                {statusSteps.map((step, i) => {
+                                                    const isCurrentStatus = step === currentStatus;
+                                                    const isNextPossibleStatus = statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1;
+                                                    const isOrderReceived = step === "Order Received";
+                                                    const isDisabled = isOrderReceived || (!isCurrentStatus && !isNextPossibleStatus);
+                                                    
+                                                    let buttonClass = "w-full py-2 rounded-md text-sm font-medium transition-all duration-300 ";
+                                                    
+                                                    if (isCurrentStatus) {
+                                                        buttonClass += "bg-green-600 text-white";
+                                                    } else if (isOrderReceived) {
+                                                        buttonClass += "bg-gray-200 text-gray-500 cursor-not-allowed";
+                                                    } else if (isNextPossibleStatus) {
+                                                        buttonClass += "bg-orange-400 text-white hover:bg-orange-500";
+                                                    } else {
+                                                        buttonClass += "bg-gray-200 text-gray-500 cursor-not-allowed";
+                                                    }
+                                                    
+                                                    return (
+                                                        <button
+                                                            key={i}
+                                                            className={buttonClass}
+                                                            disabled={isDisabled}
+                                                            onClick={() => {
+                                                                if (!isDisabled && isNextPossibleStatus) {
+                                                                    handleStatusChange(order.orderId, currentStatus);
+                                                                }
+                                                            }}
+                                                        >
+                                                            {step}
+                                                        </button>
+                                                    );
+                                                })}
                                             </td>
                                         </tr>
                                     );
@@ -172,6 +440,149 @@ const CustomerOrderPage = () => {
                     )}
                 </div>
             </main>
+
+            {/* Order Details Popup */}
+            <AnimatePresence>
+                {showPopup && selectedOrder && (
+                    <motion.div 
+                        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowPopup(false)}
+                    >
+                        <motion.div 
+                            className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto p-6"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-gray-800">
+                                    Order Details #{selectedOrder.orderId}
+                                </h2>
+                                <button 
+                                    onClick={() => setShowPopup(false)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    <X size={24} />
+                                </button>
+                            </div>
+                            
+                            {loadingOrderDetails ? (
+                                <div className="flex justify-center items-center p-12">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {/* Order Information */}
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">Order Information</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Order ID:</span> {selectedOrder.orderId}
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Date:</span> {selectedOrder.createdAt?.slice(0, 10)}
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Time:</span> {selectedOrder.createdAt?.slice(11, 19)}
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Status:</span>{" "}
+                                                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                                        {selectedOrder.latestStatus || "Order Received"}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Customer Email:</span> {selectedOrder.userEmail}
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">User ID:</span> {selectedOrder.userId}
+                                                </p>
+                                                <p className="text-gray-600">
+                                                    <span className="font-medium">Shipping Address:</span> {selectedOrder.shippingAddress}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Products */}
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">Products</h3>
+                                        
+                                        {orderProducts && orderProducts.length > 0 ? (
+                                            <>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    {orderProducts.map((product, index) => (
+                                                        <div key={index} className="flex border rounded p-3 bg-gray-50">
+                                                            <div className="w-20 h-20 bg-gray-200 rounded flex-shrink-0 mr-3 overflow-hidden">
+                                                                {product.imagePath ? (
+                                                                    <img 
+                                                                        src={getImageFromPath(product.imagePath)} 
+                                                                        alt={formatProductName(product.productName)} 
+                                                                        className="w-full h-full object-cover"
+                                                                        onError={(e) => {
+                                                                            e.target.onerror = null;
+                                                                            e.target.src = "/api/placeholder/80/80";
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                                        <img
+                                                                            src="/api/placeholder/80/80"
+                                                                            alt="Product placeholder"
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <h5 className="font-medium text-gray-800">{formatProductName(product.productName)}</h5>
+                                                                <p className="text-sm text-gray-600">
+                                                                    {product.quantity} x {product.pricePerProduct?.toFixed(2)}₺
+                                                                </p>
+                                                                <p className="text-sm font-medium text-green-700 mt-1">
+                                                                    Total: {product.totalPerProduct?.toFixed(2)}₺
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            
+                                                {/* Order Totals */}
+                                                <div className="mt-4 text-right">
+                                                    <p className="text-lg font-bold text-green-700">
+                                                        Products Total: {calculateTotalProducts(orderProducts)}₺
+                                                    </p>
+                                                    <p className="text-xl font-bold text-green-800 mt-2">
+                                                        Grand Total: {selectedOrder.totalAmount?.toFixed(2)}₺
+                                                    </p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <p className="text-center text-gray-500 py-4">No products found for this order.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <div className="mt-6 text-right">
+                                <button 
+                                    onClick={() => setShowPopup(false)}
+                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
