@@ -5,7 +5,7 @@ import DisplayProducts from "../components/DisplayProducts";
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
 import { LanguageContext } from "../context/LanguageContext";
-
+import { useTranslation } from "react-i18next";
 
 const DisplayProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -16,6 +16,7 @@ const DisplayProductsPage = () => {
     const categoryRefs = useRef({}); // Scroll için referanslar
 
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation("displayproducts");
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -67,10 +68,10 @@ const DisplayProductsPage = () => {
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">All Products</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">{t("allProducts")}</h1>
 
                     <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Admin Panel</span>
+                        <span className="text-gray-500">{t("adminPanel")}</span>
                         <img src={adminIcon} alt="Admin" className="rounded-full w-32 h-28" />
                     </div>
                 </header>
@@ -102,11 +103,11 @@ const DisplayProductsPage = () => {
                 <div id="search-results" className="overflow-y-auto px-4 md:px-6">
                     {loading ? (
                         <div className="flex justify-center items-center h-64">
-                            <div className="text-green-700 text-lg">Products are loading...</div>
+                            <div className="text-green-700 text-lg">{t("loading")}</div>
                         </div>
                     ) : error ? (
                         <div className="text-center py-10">
-                            <p className="text-red-500 text-lg">Error: {error}</p>
+                            <p className="text-red-500 text-lg">{t("error")}: {error}</p>
                         </div>
                     ) : filteredProducts.length > 0 ? (
                         // Display only the categorized products dynamically without repeating headings
@@ -117,7 +118,7 @@ const DisplayProductsPage = () => {
                         ))
                     ) : (
                         <div className="text-center py-10">
-                            <p className="text-gray-500 text-lg">No products found matching your search criteria</p>
+                            <p className="text-gray-500 text-lg">{t("noProductsFound")}</p>
                         </div>
                     )}
                 </div>
