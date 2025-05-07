@@ -1,6 +1,6 @@
 {
     "title": "Ürün Envanteri",
-    "managerPanel": "Menejer Paneli",
+    "managerPanel": "Yönetici Paneli",
     "manageProducts": "Ürünleri Yönet",
     "loadingProducts": "Ürünler yükleniyor...",
     "price": "Fiyat: ₺",
@@ -9,7 +9,7 @@
     "next": "Sonraki >",
     "setAllStocks": "Tüm Stokları Ayarla",
     "addStockToAll": "Tüm Stoklara Ekle",
-    "saveAllStocks": "Tüm Stokları Kaydet",
+    "saveAllStocks": "Değişiklikleri Kaydet",
     "successMessage": "Stoklar başarıyla kaydedildi!",
     "errorMessage": "Stokları kaydetme başarısız.",
     "invalidNumber": "Lütfen geçerli bir sayı girin."

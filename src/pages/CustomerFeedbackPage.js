@@ -5,6 +5,7 @@ import { FaReply, FaCheck, FaTrash } from 'react-icons/fa';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios"; // Axios import
+import { useTranslation } from "react-i18next";
 
 const ContactFormsPage = () => {
     const [forms, setForms] = useState([]);
@@ -18,6 +19,7 @@ const ContactFormsPage = () => {
 
     const topicOptions = [...new Set(forms.map(f => f.topic))];
     const filteredForms = forms.filter(form => selectedTopic === "all" || form.topic === selectedTopic);
+    const { t } = useTranslation("managercontact");
 
     useEffect(() => {
         axios.get("http://localhost:8080/api/contact/all")
@@ -76,16 +78,17 @@ const ContactFormsPage = () => {
 
             <main className="flex-1 flex flex-col overflow-y-auto">
                 <header className="bg-white shadow p-6 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-green-700">Customer Contact Forms</h1>
+                    <h1 className="text-3xl font-bold text-green-700">{t("header")}</h1>
                     <div className="flex items-center gap-4">
-                        <span className="text-orange-500 font-semibold text-lg">Manager Panel</span>
+                        <span className="text-orange-500 font-semibold text-lg">{t("managerPanel")}</span>
                         <img src={managerIcon} alt="Manager" className="w-14 h-14 rounded-full"/>
                     </div>
                 </header>
 
                 <div
                     className="p-4 bg-green-100 border-b border-green-300 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-                    <h2 className="text-green-800 font-semibold text-md"></h2>
+                    <h2 className="text-green-800 font-semibold text-md">
+                    </h2>
 
                     <div className="flex justify-end">
                         <select
@@ -93,7 +96,7 @@ const ContactFormsPage = () => {
                             onChange={(e) => setSelectedTopic(e.target.value)}
                             className="px-4 py-2 rounded-xl shadow-md border border-green-400 text-green-800 bg-white hover:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200 font-medium"
                         >
-                            <option value="all" className="text-gray-600 italic"> Show All Topics</option>
+                            <option value="all" className="text-gray-600 italic"> {t("showAll")}</option>
                             {topicOptions.map((topic, idx) => (
                                 <option key={idx} value={topic}>{topic}</option>
                             ))}
@@ -119,12 +122,12 @@ const ContactFormsPage = () => {
 
                                 {expandedId === form.id && (
                                     <div className="mt-4 text-base text-green-900 space-y-2">
-                                        <p><strong>Name:</strong> {form.name}</p>
-                                        <p><strong>Surname:</strong> {form.surname}</p>
-                                        <p><strong>Email:</strong> {form.email}</p>
-                                        <p><strong>Phone:</strong> {form.phoneNumber}</p>
-                                        <p><strong>Message:</strong> {form.message}</p>
-                                        <p><strong>Sent At:</strong> {new Date(form.timestamp).toLocaleString()}</p>
+                                        <p><strong>{t("name")}:</strong> {form.name}</p>
+                                        <p><strong>{t("surname")}:</strong> {form.surname}</p>
+                                        <p><strong>{t("email")}:</strong> {form.email}</p>
+                                        <p><strong>{t("phone")}:</strong> {form.phoneNumber}</p>
+                                        <p><strong>{t("message")}:</strong> {form.message}</p>
+                                        <p><strong>{t("sentAt")}:</strong> {new Date(form.timestamp).toLocaleString()}</p>
 
                                         <div className="absolute top-4 right-4 flex space-x-2">
                                             <button
@@ -133,7 +136,7 @@ const ContactFormsPage = () => {
                                                     handleReply(form.email);
                                                 }}
                                                 className="bg-white border border-blue-500 text-blue-600 rounded-full p-3 hover:bg-blue-100 hover:shadow-md transition-all duration-200"
-                                                title="Reply"
+                                                title={t("reply")}
                                             >
                                                 <FaReply className="text-lg"/>
                                             </button>
@@ -145,7 +148,7 @@ const ContactFormsPage = () => {
                                                     setShowDeleteModal(true);
                                                 }}
                                                 className="bg-white border border-red-500 text-red-600 rounded-full p-3 hover:bg-red-100 hover:shadow-md transition-all duration-200"
-                                                title="Delete"
+                                                title={t("delete")}
                                             >
                                                 <FaTrash className="text-lg"/>
                                             </button>
@@ -156,22 +159,20 @@ const ContactFormsPage = () => {
                                                     <div
                                                         className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
                                                         <h2 className="text-xl font-semibold text-red-600 mb-4">
-                                                            Are you sure you want to delete this message?
+                                                            <p>{t("deleteWarning")}</p>
                                                         </h2>
-                                                        <p className="text-gray-700 mb-6">This action cannot be
-                                                            undone.</p>
                                                         <div className="flex justify-center space-x-4">
                                                             <button
                                                                 onClick={() => setShowDeleteModal(false)}
                                                                 className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
                                                             >
-                                                                Cancel
+                                                                {t("cancel")}
                                                             </button>
                                                             <button
                                                                 onClick={confirmDelete}
                                                                 className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
                                                             >
-                                                                Yes, Delete
+                                                                {t("yesDelete")}
                                                             </button>
                                                         </div>
                                                     </div>

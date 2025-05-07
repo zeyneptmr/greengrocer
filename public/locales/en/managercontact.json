@@ -1,0 +1,21 @@
+{
+  "header": "Customer Contact Forms",
+  "managerPanel": "Manager Panel",
+  "unreadCount": "Unread Messages",
+  "showAll": "Show All Topics",
+  "showUnreadOnly": "Show Unread Only",
+  "noForms": "No contact forms submitted yet.",
+  "name": "Name",
+  "surname": "Surname",
+  "email": "Email",
+  "phone": "Phone",
+  "message": "Message",
+  "sentAt": "Sent At",
+  "reply": "Reply",
+  "delete": "Delete",
+  "markAsRead": "Mark as Read",
+  "confirmDelete": "Are you sure you want to delete this message?",
+  "deleteWarning": "This action cannot be undone.",
+  "cancel": "Cancel",
+  "yesDelete": "Yes, Delete"
+}

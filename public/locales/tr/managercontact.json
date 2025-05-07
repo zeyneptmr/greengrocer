@@ -1,0 +1,21 @@
+{
+  "header": "Müşteri İletişim Formları",
+  "managerPanel": "Yönetici Paneli",
+  "unreadCount": "Okunmamış Mesajlar",
+  "showAll": "Tüm Konuları Göster",
+  "showUnreadOnly": "Sadece Okunmamışları Göster",
+  "noForms": "Henüz iletişim formu gönderilmedi.",
+  "name": "Ad",
+  "surname": "Soyad",
+  "email": "E-posta",
+  "phone": "Telefon",
+  "message": "Mesaj",
+  "sentAt": "Gönderilme Zamanı",
+  "reply": "Yanıtla",
+  "delete": "Sil",
+  "markAsRead": "Okundu Olarak İşaretle",
+  "confirmDelete": "Bu mesajı silmek istediğinize emin misiniz?",
+  "deleteWarning": "Bu işlem geri alınamaz.",
+  "cancel": "İptal",
+  "yesDelete": "Evet, Sil"
+}
