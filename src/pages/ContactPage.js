@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Flag from "react-world-flags"; // Import the flag component
+import { useTranslation } from "react-i18next";
 
 export default function ContactForm() {
     const topics = [
@@ -32,6 +33,7 @@ export default function ContactForm() {
     const [countryCode, setCountryCode] = useState("+90"); // Default country code set to Turkey
     const [bannerMessage, setBannerMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { t } = useTranslation("contact");
 
     const countries = [
         { code: "+1", flag: "US" },
@@ -63,7 +65,7 @@ export default function ContactForm() {
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setFormData({ ...formData, email: value });
-        setEmailError(value && !validateEmail(value) ? "Please enter a valid email address." : "");
+        setEmailError(value && !validateEmail(value) ? t("errors.email") : "");
     };
 
     const handleChange = (e) => {
@@ -74,7 +76,7 @@ export default function ContactForm() {
             }
         } else if (name === "message") {
             setFormData({ ...formData, [name]: value });
-            setMessageError(countLettersOnly(value) < 20 ? "Your message must be at least 20 characters." : "");
+            setMessageError(countLettersOnly(value) < 20 ? t("errors.message") : "");
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -91,7 +93,7 @@ export default function ContactForm() {
         setPhoneNumber(formattedValue);
 
         if (value.length < 10) {
-            setPhoneError("Please enter a valid phone number!");
+            setPhoneError(t("errors.phone"));
         } else {
             setPhoneError(null);
         }
@@ -109,15 +111,15 @@ export default function ContactForm() {
         e.preventDefault();
 
         if (countLettersOnly(formData.message) < 20) {
-            alert("The message must contain at least 20 letters.");
+            alert(t("alerts.messageTooShort"));
             return;
         }
         if (phoneNumber.replace(/\D/g, "").length !== 10) {
-            setPhoneError("Please enter a valid phone number.");
+            setPhoneError(t("errors.phone"));
             return;
         }
         if (emailError || phoneError) {
-            alert("Please correct the errors in the form..");
+            alert(t("alerts.correctErrors"));
             return;
         }
 
@@ -165,9 +167,9 @@ export default function ContactForm() {
                                 </div>
                                 <div>
                                     <h3 className={`text-lg font-semibold ${bannerMessage.includes("Error") ? "text-red-700" : "text-green-700"}`}>
-                                        {bannerMessage.includes("Error") ? "Submission Failed" : "Message Sent Successfully"}
+                                        {bannerMessage.includes("Error") ? t("submissionFailed") : t("messageSent")}
                                     </h3>
-                                    <p className="text-sm text-gray-700 mt-1">{bannerMessage.includes("Error") ? "Please try again later or check your input." : "Thank you for your feedback! We’ll get back to you shortly."}</p>
+                                    <p className="text-sm text-gray-700 mt-1">{bannerMessage.includes("Error") ?  t("tryAgain") : t("thankYou")}</p>
                                 </div>
                                 <button
                                     onClick={() => setIsModalOpen(false)}
@@ -181,13 +183,13 @@ export default function ContactForm() {
                 )}
 
                 <div>
-                    <h2 className="text-3xl font-semibold text-green-800 mb-4">Contact Form 📞</h2>
+                    <h2 className="text-3xl font-semibold text-green-800 mb-4">{t("contactFormTitle")}</h2>
                     <p className="text-sm text-orange-500 mb-4"></p>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <input
                             type="text"
                             name="name"
-                            placeholder="Green"
+                            placeholder={t("placeholders.name")}
                             value={formData.name}
                             onChange={handleChange}
                             className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
@@ -196,7 +198,7 @@ export default function ContactForm() {
                         <input
                             type="text"
                             name="surname"
-                            placeholder="Grocer"
+                            placeholder={t("placeholders.surname")}
                             value={formData.surname}
                             onChange={handleChange}
                             className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
@@ -205,13 +207,13 @@ export default function ContactForm() {
                         <input
                             type="email"
                             name="email"
-                            placeholder="example@taptaze.com"
+                            placeholder={t("placeholders.email")}
                             value={formData.email}
                             onChange={handleEmailChange}
                             className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         />
-                        {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+                        {emailError && <p className="text-red-500 text-sm">{t("errors.email")}</p>}
 
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
                             <div
@@ -235,14 +237,14 @@ export default function ContactForm() {
                             <input
                                 type="tel"
                                 name="phone"
-                                placeholder="234 567 8901"
+                                placeholder={t("placeholders.phone")}
                                 value={phoneNumber}
                                 onChange={handlePhoneChange}
                                 className={`w-full sm:w-auto border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm ${phoneError ? "border-red-500" : ""}`}
                                 required
                             />
                         </div>
-                        {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
+                        {phoneError && <p className="text-red-500 text-sm">{t("errors.phone")}</p>}
 
                         <select
                             name="topic"
@@ -251,25 +253,27 @@ export default function ContactForm() {
                             className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         >
-                            <option value="">-- Select --</option>
+                            <option value="">{t("topicSelect")}</option>
                             {topics.map((topic, index) => (
-                                <option key={index} value={topic}>{topic}</option>
+                                <option key={index} value={t(`topics.${index}`)}>
+                                    {t(`topics.${index}`)}
+                                </option>
                             ))}
                         </select>
 
                         <textarea
                             name="message"
-                            placeholder="Message*"
+                            placeholder={t("placeholders.message")}
                             value={formData.message}
                             onChange={handleChange}
                             className="w-full border p-4 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl shadow-sm"
                             required
                         />
-                        {messageError && <p className="text-red-500 text-sm">{messageError}</p>}
+                        {messageError && <p className="text-red-500 text-sm">{t("errors.message")}</p>}
 
                         <button type="submit"
                                 className="bg-green-600 text-white py-3 px-6 w-full rounded-xl hover:bg-green-700 transition duration-300 ease-in-out">
-                            Submit ✉️
+                            {t("submit")}
                         </button>
                     </form>
                 </div>
@@ -277,15 +281,15 @@ export default function ContactForm() {
                 {/* Customer Service Section */}
                 <div className="bg-white p-8 shadow-xl w-full max-w-4xl space-y-8 mx-auto my-10 rounded-xl"
                      style={{boxShadow: '0 0 50px rgba(0, 128, 0, 0.3)'}}>
-                    <h2 className="text-2xl font-semibold text-green-700 mb-2">Customer Service 📞</h2>
+                    <h2 className="text-2xl font-semibold text-green-700 mb-2">{t("customerService")}</h2>
                     <p className="text-2xl font-bold text-orange-400">(0212) 533 65 32</p>
-                    <p className="text-2xl text-green-700 font-semibold">TapTaze Food Services Inc.</p>
+                    <p className="text-2xl text-green-700 font-semibold">{t("companyName")}</p>
                     <p className="text-sm text-orange-400">
-                        Address: Cibali Mah. Kadir Has Cad. 34083 Fatih / İSTANBUL
+                        {t("address")}
                         <br/>
-                        Phone Number: (0212) 533 65 32
+                        {t("phone")}
                         <br/>
-                        Fax: (0212) 533 65 32
+                        {t("fax")}
                     </p>
                 </div>
             </div>

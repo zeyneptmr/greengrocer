@@ -36,9 +36,6 @@ import { useTranslation } from "react-i18next";
 const banners = [banner1];
 // Function to shuffle the array
 
-
-
-
 export default function HomePage() {
     const [showModal, setShowModal] = useState(false); // Modal visibility state
     const [modalContent, setModalContent] = useState(""); // Modal content

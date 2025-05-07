@@ -1,0 +1,43 @@
+{
+  "contactFormTitle": "Contact Form 📞",
+  "submit": "Submit ✉️",
+  "messageSent": "Message Sent Successfully",
+  "submissionFailed": "Submission Failed",
+  "thankYou": "Thank you for your feedback! We’ll get back to you shortly.",
+  "tryAgain": "Please try again later or check your input.",
+  "customerService": "Customer Service 📞",
+  "companyName": "TapTaze Food Services Inc.",
+  "address": "Address: Cibali Mah. Kadir Has Cad. 34083 Fatih / ISTANBUL",
+  "phone": "Phone Number: (0212) 533 65 32",
+  "fax": "Fax: (0212) 533 65 32",
+  "topicSelect": "-- Select --",
+  "topics": [
+    "Product Complaint",
+    "Product Quality",
+    "Product Suggestion",
+    "Order/Shipment Shortage",
+    "Order/Shipment Delay",
+    "Order Issues",
+    "Payment Issues",
+    "Campaign Problems",
+    "Congratulations/Thank You",
+    "Other"
+  ],
+  "errors": {
+    "email": "Please enter a valid email address.",
+    "phone": "Please enter a valid phone number!",
+    "message": "Your message must be at least 20 characters."
+  },
+  "placeholders": {
+    "name": "Green",
+    "surname": "Grocer",
+    "email": "example@taptaze.com",
+    "phone": "234 567 8901",
+    "message": "Your message*"
+  },
+  "alerts": {
+    "messageTooShort": "The message must contain at least 20 letters.",
+    "correctErrors": "Please correct the errors in the form."
+  }
+
+}

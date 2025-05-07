@@ -1,0 +1,43 @@
+{
+  "contactFormTitle": "İletişim Formu 📞",
+  "submit": "Gönder ✉️",
+  "messageSent": "Mesaj Başarıyla Gönderildi",
+  "submissionFailed": "Gönderim Başarısız",
+  "thankYou": "Geri bildiriminiz için teşekkür ederiz! Kısa sürede sizinle iletişime geçeceğiz.",
+  "tryAgain": "Lütfen daha sonra tekrar deneyin veya bilgilerinizi kontrol edin.",
+  "customerService": "Müşteri Hizmetleri 📞",
+  "companyName": "TapTaze Gıda Hizmetleri A.Ş.",
+  "address": "Adres: Cibali Mah. Kadir Has Cad. 34083 Fatih / İSTANBUL",
+  "phone": "Telefon: (0212) 533 65 32",
+  "fax": "Faks: (0212) 533 65 32",
+  "topicSelect": "-- Seçiniz --",
+  "topics": [
+    "Ürün Şikayeti",
+    "Ürün Kalitesi",
+    "Ürün Önerisi",
+    "Sipariş/Kargo Eksikliği",
+    "Sipariş/Kargo Gecikmesi",
+    "Sipariş Sorunları",
+    "Ödeme Sorunları",
+    "Kampanya Problemleri",
+    "Tebrik/Teşekkür",
+    "Diğer"
+  ],
+  "errors": {
+    "email": "Lütfen geçerli bir e-posta adresi girin.",
+    "phone": "Lütfen geçerli bir telefon numarası girin!",
+    "message": "Mesajınız en az 20 karakter olmalıdır."
+  },
+
+  "placeholders": {
+    "name": "Taze",
+    "surname": "Market",
+    "email": "ornek@taptaze.com",
+    "phone": "234 567 8901",
+    "message": "Mesajınız*"
+  },
+  "alerts": {
+    "messageTooShort": "Mesaj en az 20 harf içermelidir.",
+    "correctErrors": "Lütfen formdaki hataları düzeltin."
+  }
+}
