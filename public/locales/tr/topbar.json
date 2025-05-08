@@ -1,0 +1,7 @@
+{
+  "welcome": "Hoş geldiniz, {{name}}",
+  "adminPanel": "Admin Paneli",
+  "managerPanel": "Yönetici Paneli",
+  "admin": "Admin",
+  "manager": "Yönetici"
+}

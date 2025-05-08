@@ -2,19 +2,21 @@ import React from "react";
 import adminIcon from '../assets/admin.svg';
 import managerIcon from '../assets/manager.svg';  // Manager ikonu
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 const Topbar = () => {
     const location = useLocation();
+    const { t } = useTranslation("topbar");
 
     // Adjust icon and title dynamically according to page
     const isManagerPage = location.pathname.includes("manager");
-    const pageTitle = isManagerPage ? "Manager Panel" : "Admin Panel";
+    const pageTitle = isManagerPage ? t("managerPanel") : t("adminPanel");
     const icon = isManagerPage ? managerIcon : adminIcon;
-    const userName = isManagerPage ? "Manager" : "Admin";
+    const userName = isManagerPage ? t("manager") : t("admin");
 
     return (
         <header className="bg-white shadow-md p-4 flex justify-between items-center">
-            <h1 className="text-2xl font-semibold text-gray-700">{`Welcome, ${userName}`}</h1>
+            <h1 className="text-2xl font-semibold text-gray-700">{t("welcome", { name: userName })}</h1>
             <div className="flex items-center space-x-4">
                 <span className="text-gray-500">{pageTitle}</span>
                 <img src={icon} alt="User Icon" className="rounded-full w-32 h-28" />

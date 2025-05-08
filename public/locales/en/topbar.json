@@ -1,0 +1,7 @@
+{
+  "welcome": "Welcome, {{name}}",
+  "adminPanel": "Admin Panel",
+  "managerPanel": "Manager Panel",
+  "admin": "Admin",
+  "manager": "Manager"
+}
