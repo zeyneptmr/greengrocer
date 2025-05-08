@@ -55,7 +55,7 @@ const DiscountPage = () => {
 
     const formatPrice = (price) => {
         if (price === undefined || price === null || isNaN(price)) {
-            return "0.00"; // NaN durumunda varsayılan değer
+            return "0.00"; 
         }
         if (typeof price === "number") {
             return price.toFixed(2);
@@ -67,7 +67,7 @@ const DiscountPage = () => {
         if (!path) return null;
 
         if (path.startsWith("data:image")) {
-            return path;  // Base64 görseli döndür
+            return path;  
         }
 
         const filename = path.split('/').pop(); 
@@ -75,7 +75,7 @@ const DiscountPage = () => {
 
         if (!imagePath) {
             console.error(`Image not found : ${filename} `);
-            return '/placeholder.png';  // Placeholder görseli
+            return '/placeholder.png'; 
         }
 
         return images[imagePath] || '/placeholder.png';
@@ -166,24 +166,30 @@ const DiscountPage = () => {
         } else {
             setSelectedProducts(filteredProducts.map(product => product.id));
         }
-        setSelectAllChecked(!selectAllChecked); // Toggle "Select All" state
+        setSelectAllChecked(!selectAllChecked); 
     };
 
     const handleDiscountChange = (e) => {
-        // Sadece sayıları kabul et, ve yüzdeyi 99 ile sınırla
+    
         const value = e.target.value;
 
-        // Sadece rakamları kabul et ve nokta, virgül, +, - gibi karakterlere izin verme
+
         if (/^\d*$/.test(value) && (value === '' || parseInt(value) <= 99)) {
             setDiscountRate(value);
         }
     };
 
     const applyDiscount = async () => {
-        // Eğer discountRate içinde sayı dışı bir karakter varsa
-        if (!/^\d+$/.test(discountRate)) { // Sadece tam sayılara izin verir
+        
+        if (!/^\d+$/.test(discountRate)) { 
             setErrorNotification(t("validNumberMessage"));
-            setTimeout(() => setErrorNotification(''), 3000);  // Bildirimi 3 saniye sonra kaybet
+            setTimeout(() => setErrorNotification(''), 3000); 
+            return;
+        }
+
+        if (parseInt(discountRate) <= 0) {
+            setErrorNotification(t("validNumberMessage"));
+            setTimeout(() => setErrorNotification(''), 3000);
             return;
         }
 
@@ -195,7 +201,7 @@ const DiscountPage = () => {
 
         if (selectedProducts.length === 0) {
             setErrorNotification(t("makeSelectionMessage"));
-            setTimeout(() => setErrorNotification(''), 3000);  // Bildirimi 3 saniye sonra kaybet
+            setTimeout(() => setErrorNotification(''), 3000);  
             return;
         }
 
@@ -261,6 +267,9 @@ const DiscountPage = () => {
             setTimeout(() => setErrorNotification(''), 5000);
         }
     };
+
+    // Check if discount rate is valid
+    const isDiscountRateValid = discountRate !== '' && parseInt(discountRate) > 0;
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -330,9 +339,9 @@ const DiscountPage = () => {
                         <div className="flex items-end">
                             <button
                                 onClick={applyDiscount}
-                                disabled={!discountRate || selectedProducts.length === 0}
+                                disabled={!isDiscountRateValid || selectedProducts.length === 0}
                                 className={`px-4 py-2 rounded text-white 
-                                ${(!discountRate || selectedProducts.length === 0) 
+                                ${(!isDiscountRateValid || selectedProducts.length === 0) 
                                     ? 'bg-gray-400 cursor-not-allowed' 
                                     : 'bg-green-500 hover:bg-green-600'}`}
                             >
