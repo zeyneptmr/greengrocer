@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight, Info, Eye } from "lucide-react";
+import { useTranslation, Trans } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
 
 const statusSteps = ["Order Received", "Confirmed", "Preparing", "Dispatched"];
 
@@ -76,36 +78,20 @@ const getImageFromPath = (path) => {
     }
 };
 
-
-const formatProductName = (name) => {
-    if (!name) return '';
-    
-    
-    let formattedName = name.replace(/_/g, ' ');
-    
-    formattedName = formattedName.split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    
-    return formattedName;
-};
-
 const CustomerOrderPage = () => {
     const [allOrders, setAllOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
     const [activeFilter, setActiveFilter] = useState("all");
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
-    
-    
     const [showPopup, setShowPopup] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [orderProducts, setOrderProducts] = useState([]);
     const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
-    
-    
     const scrollPositionRef = useRef(0);
     const mainContainerRef = useRef(null);
+
+    const { language } = useContext(LanguageContext);
 
     const fetchOrders = async () => {
         setIsLoading(true);
@@ -239,8 +225,9 @@ const CustomerOrderPage = () => {
         try {
     
             const productsResponse = await axios.get(
-                `${API_BASE_URL}/api/orderproduct/by-order/${order.orderId}`, 
-                { withCredentials: true }
+                `${API_BASE_URL}/api/orderproduct/by-order/${order.orderId}`,
+                { withCredentials: true,
+                    params: { language }}
             );
             
             if (Array.isArray(productsResponse.data)) {
@@ -523,8 +510,8 @@ const CustomerOrderPage = () => {
                                                             <div className="w-20 h-20 bg-gray-200 rounded flex-shrink-0 mr-3 overflow-hidden">
                                                                 {product.imagePath ? (
                                                                     <img 
-                                                                        src={getImageFromPath(product.imagePath)} 
-                                                                        alt={formatProductName(product.productName)} 
+                                                                        src={getImageFromPath(product.imagePath)}
+                                                                        alt={product.translatedName}
                                                                         className="w-full h-full object-cover"
                                                                         onError={(e) => {
                                                                             e.target.onerror = null;
@@ -542,7 +529,7 @@ const CustomerOrderPage = () => {
                                                                 )}
                                                             </div>
                                                             <div className="flex-1">
-                                                                <h5 className="font-medium text-gray-800">{formatProductName(product.productName)}</h5>
+                                                                <h5 className="font-medium text-gray-800">{product.translatedName}</h5>
                                                                 <p className="text-sm text-gray-600">
                                                                     {product.quantity} x {product.pricePerProduct?.toFixed(2)}₺
                                                                 </p>
