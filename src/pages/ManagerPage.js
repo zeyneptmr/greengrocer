@@ -61,7 +61,7 @@ const getImageFromPath = (path) => {
     }
 };
 
-const formatProductName = (name) => {
+/*const formatProductName = (name) => {
     if (!name) return '';
     
     let formattedName = name.replace(/_/g, ' ');
@@ -71,7 +71,7 @@ const formatProductName = (name) => {
         .join(' ');
     
     return formattedName;
-};
+}; */
 
 const ManagerPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -231,7 +231,7 @@ const ManagerPage = () => {
             const ordersWithProducts = await Promise.all(sortedDateOrders.map(async (order) => {
                 try {
                     const productsResponse = await axios.get(`${API_BASE_URL}/api/orderproduct/by-order/${order.orderId}`, {
-                        withCredentials: true
+                        withCredentials: true, params: { language }
                     });
                     
                     return {
@@ -619,7 +619,7 @@ const ManagerPage = () => {
                                                                     {product.imagePath ? (
                                                                         <img 
                                                                             src={getImageFromPath(product.imagePath)} 
-                                                                            alt={formatProductName(product.productName)} 
+                                                                            alt={product.translatedName}
                                                                             className="w-full h-full object-cover"
                                                                             onError={(e) => {
                                                                                 e.target.onerror = null;
@@ -637,7 +637,7 @@ const ManagerPage = () => {
                                                                     )}
                                                                 </div>
                                                                 <div className="flex-1">
-                                                                    <h5 className="font-medium text-gray-800">{formatProductName(product.productName)}</h5>
+                                                                    <h5 className="font-medium text-gray-800">{product.translatedName}</h5>
                                                                     <p className="text-sm text-gray-600">
                                                                         {product.quantity} x {product.pricePerProduct?.toFixed(2)}₺
                                                                     </p>
