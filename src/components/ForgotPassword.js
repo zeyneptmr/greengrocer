@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ResetPassword from './ResetPassword';
 import { FaClock, FaKey } from 'react-icons/fa';
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
+
 
 import axios from 'axios';
 
@@ -17,6 +20,8 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
     const [codeVerified, setCodeVerified] = useState(false); // Başarı mesajı durumu
     const [isResetPassword, setIsResetPassword] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation("forgotpassword");
+    const { language } = useContext(LanguageContext);
 
     useEffect(() => {
         return () => {
@@ -37,7 +42,7 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
         // Validate email format as user types
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!emailRegex.test(inputEmail)) {
-            setEmailError('Please enter a valid email address.');
+            setEmailError(t("emailError"));
         } else {
             setEmailError('');  // Clear error if email is valid
         }
@@ -46,7 +51,7 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
    // Send verification code
 const handleSendCode = async () => {
     if (!email) {
-        setEmailError('Please provide a valid email address.');
+        setEmailError(t("emailError"));
         return;
     }
     try {
@@ -79,7 +84,7 @@ const handleSendCode = async () => {
                 });
             }, 1000);
         } else {
-            setEmailError(response.data.message || 'Email not found.');
+            setEmailError(response.data.message || t("emailNotFound"));
         }
     } catch (error) {
         if (error.response) {
@@ -87,10 +92,10 @@ const handleSendCode = async () => {
             if (data && typeof data.error === 'string') {
                 setEmailError(data.error); 
             } else {
-                setEmailError('Something went wrong. Please try again.');
+                setEmailError(t("serverError"));
             }
         } else {
-            setEmailError('Cannot connect to the server.');
+            setEmailError(t("connectionError"));
         }
     } finally {
         setLoading(false);
@@ -134,10 +139,10 @@ const handleResendCode = async () => {
             if (data && typeof data.error === 'string') {
                 setEmailError(data.error); 
             } else {
-                setEmailError('Something went wrong. Please try again.');
+                setEmailError(t("serverError"));
             }
         } else {
-            setEmailError('Cannot connect to the server.');
+            setEmailError(t("connectionError"));
         }
     } finally {
         setLoading(false);
@@ -147,7 +152,7 @@ const handleResendCode = async () => {
     // Verify code input handler
     const handleVerifyCode = async () => {
         if (!verificationCode) {
-            setCodeError('Please enter the verification code.');
+            setCodeError(t("codeError"));
             return;
         }
 
@@ -174,7 +179,7 @@ const handleResendCode = async () => {
             }
         } catch (error) {
             console.error(error);
-            setCodeError('An error occurred while verifying the code.');
+            setCodeError(t("serverError"));
             setCodeVerified(false);
         } finally {
             setLoading(false);
@@ -235,12 +240,12 @@ const handleResendCode = async () => {
                             onClick={handleBackToLogin}
                             className="absolute top-4 left-4 text-lg text-gray-500 hover:text-green-600 font-semibold transition"
                         >
-                            ⬅️ Back to Login
+                            ⬅️ {t('backToLogin')}
                         </button>
     
                         {/* Başlık */}
                         <h2 className="text-3xl font-extrabold text-green-700 text-center mb-6 mt-10">
-                            🔐 Reset Password
+                            🔐 {t('title')}
                         </h2>
     
                         <div className="mb-4"></div>
@@ -248,7 +253,7 @@ const handleResendCode = async () => {
                             {!isCodeSent ? (
                                 <>
                                     <p className="text-md text-green-800 font-semibold text-center">
-                                        Please enter your email to receive a verification code
+                                        {t('enterEmail')}
                                     </p>
                                     <div className="mb-6"></div>
                                     <input
@@ -257,7 +262,7 @@ const handleResendCode = async () => {
                                         onChange={handleEmailChange}
                                         onKeyDown={(e) => handleKeyPress(e)}
                                         className="w-full px-4 py-3 border-2 border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-md transition-all duration-200"
-                                        placeholder="you@example.com"
+                                        placeholder={t('emailPlaceholder')}
                                     />
                                     {emailError && <div className="text-red-500 text-sm">{emailError}</div>}
     
@@ -270,13 +275,13 @@ const handleResendCode = async () => {
                                                 : 'bg-green-600 hover:bg-green-700 hover:scale-105'
                                         }`}
                                     >
-                                        📩 Send Verification Code
+                                        📩 {t('sendCode')}
                                     </button>
                                 </>
                             ) : (
                                 <>
                                     <p className="text-green-800 font-medium text-center">
-                                        Enter the 6-digit code sent to your email
+                                    {t('enterCode')}
                                     </p>
     
                                     <div className="flex justify-center space-x-2 mt-2">
@@ -299,20 +304,20 @@ const handleResendCode = async () => {
                                         <div className="text-red-500 text-sm mt-2">{codeError}</div>
                                     )}
     
-                                    <p className="text-sm text-orange-600 mt-3">⏱️ Time left: {countdown}s</p>
+                                    <p className="text-sm text-orange-600 mt-3">⏱️ {t('timeLeft', {countdown: countdown })}</p>
     
                                     <button
                                         onClick={handleVerifyCode}
                                         className="w-full py-3 mt-4 bg-orange-500 text-white rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:scale-105 transition-all duration-300"
                                     >
-                                        ✅ Verify Code
+                                        ✅ {t('verifyCode')}
                                     </button>
     
                                     <button
                                         onClick={handleResendCode}
                                         className="text-sm text-green-700 underline mt-2 hover:text-orange-600 transition"
                                     >
-                                        🔁 Resend Code
+                                        🔁 {t('resendCode')}
                                     </button>
                                 </>
                             )}
