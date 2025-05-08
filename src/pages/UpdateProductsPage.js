@@ -5,8 +5,8 @@ import axios from "axios";
 import adminIcon from '../assets/admin.svg';
 import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
-
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const UpdateProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -17,6 +17,14 @@ const UpdateProductsPage = () => {
     const categoryRefs = useRef({}); // Scroll için referanslar
 
     const { language } = useContext(LanguageContext);
+
+    const { t } = useTranslation("updateproducts"); // JSON dosyanın namespace'i
+
+    const getTranslatedCategory = (category) => {
+        const key = category.toLowerCase().replace(/\s+/g, '');
+        return t(`categories.${key}`, category);  // Çeviri yoksa orijinali göster
+    };
+
 
     const importAll = (r) => {
         let images = {};
@@ -114,9 +122,9 @@ const UpdateProductsPage = () => {
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">Update Products</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">{t("update_products")}</h1>
                     <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Admin Panel</span>
+                        <span className="text-gray-500">{t("admin_panel")}</span>
                         <img src={adminIcon} alt="Admin" className="rounded-full w-32 h-28"/>
                     </div>
                 </header>
@@ -138,7 +146,7 @@ const UpdateProductsPage = () => {
                                 onClick={() => scrollToCategory(category)} // Tıklandığında scrollToCategory çağrılır
                                 className="bg-white hover:bg-green-600 text-black font-medium px-6 py-2 rounded-full shadow-sm border border-gray-300 transition duration-300 mb-2 md:mb-0"
                             >
-                                {category}
+                                {getTranslatedCategory(category)}
                             </button>
                         ))}
                     </div>
@@ -150,7 +158,7 @@ const UpdateProductsPage = () => {
                         Object.entries(categorizedProducts).map(([category, categoryProducts]) => (
                             <div key={category} ref={(el) => categoryRefs.current[category] = el}
                                  className="bg-white rounded-lg shadow-md p-4">
-                                <h3 className="text-lg font-bold mb-4 text-gray-700">{category}</h3>
+                                <h3 className="text-lg font-bold mb-4 text-gray-700">{getTranslatedCategory(category)}</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     {categoryProducts.map((product) => (
                                         <div
@@ -175,14 +183,14 @@ const UpdateProductsPage = () => {
                                                     className="flex-1 py-2 text-center bg-green-500 text-white hover:bg-green-600 flex items-center justify-center"
                                                 >
                                                     <Edit size={16} className="mr-1"/>
-                                                    EDIT
+                                                    {t("edit")}
                                                 </Link>
                                                 <button
                                                     onClick={() => handleDelete(product.id)}
                                                     className="flex-1 py-2 text-center bg-red-500 text-white hover:bg-red-600 flex items-center justify-center"
                                                 >
                                                     <Trash2 size={16} className="mr-1"/>
-                                                    DELETE
+                                                    {t("delete")}
                                                 </button>
                                             </div>
                                         </div>

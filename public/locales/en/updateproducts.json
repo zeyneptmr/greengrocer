@@ -1,0 +1,17 @@
+{
+  "loading": "Loading products...",
+  "error": "Error loading products.",
+  "noProducts": "No products found matching your search criteria.",
+  "edit": "EDIT",
+  "delete": "DELETE",
+  "update_products": "Update Products",
+  "admin_panel": "Admin Panel",
+  "categories": {
+    "vegetables": "VEGETABLES",
+    "fruits": "FRUITS",
+    "dairy": "DAIRY",
+    "bakedgoods": "BAKED GOODS",
+    "sauces": "SAUCES",
+    "olivesoils": "OLIVESOILS"
+  }
+}

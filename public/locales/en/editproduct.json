@@ -1,0 +1,22 @@
+{
+  "updateProductTitle": "Update Product",
+  "productName": "Product Name",
+  "price": "Price",
+  "category": "Category",
+  "selectCategory": "Select Category",
+  "update_button": "Update",
+  "product_image" : "Product Image",
+  "updateSuccess": "Product Updated Successfully.",
+  "updateError" : "An error occurred while updating the product",
+  "productImage": "Product Image",
+  "chooseFile": "Choose File",
+  "noFileChosen": "No file chosen",
+  "categories": {
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "dairy": "Dairy",
+    "bakedgoods": "Baked Goods",
+    "sauces": "Sauces",
+    "olivesoils": "Olive Oils"
+  }
+}

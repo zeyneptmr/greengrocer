@@ -1,0 +1,22 @@
+{
+  "updateProductTitle": "Ürünü Güncelle",
+  "productName": "Ürün Adı",
+  "price": "Fiyat",
+  "category": "Kategori",
+  "selectCategory": "Kategori Seçiniz",
+  "update_button": "Güncelle",
+  "product_image": "Ürün Görseli",
+  "updateSuccess": "Ürün başarı ile güncellendi.",
+  "updateError" : "Ürün güncellenirken hata oluştu",
+  "productImage": "Ürün Görseli",
+  "chooseFile": "Dosya Seç",
+  "noFileChosen": "Dosya seçilmedi",
+  "categories": {
+    "vegetables": "Sebzeler",
+    "fruits": "Meyveler",
+    "dairy": "Süt Ürünleri",
+    "bakedgoods": "Fırın Ürünleri",
+    "sauces": "Soslar",
+    "olivesoils": "Zeytinyağlar"
+  }
+}

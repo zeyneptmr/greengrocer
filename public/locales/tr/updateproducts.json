@@ -1,0 +1,17 @@
+{
+  "loading": "Ürünler yükleniyor...",
+  "error": "Ürünler yüklenirken hata oluştu.",
+  "noProducts": "Aramanıza uygun ürün bulunamadı.",
+  "edit": "DÜZENLE",
+  "delete": "SİL",
+  "update_products": "Ürün Güncelle",
+  "admin_panel": "Admin Paneli",
+  "categories": {
+    "vegetables": "SEBZELER",
+    "fruits": "MEYVELER",
+    "dairy": "SÜT ÜRÜNLERİ",
+    "bakedgoods": "FIRIN ÜRÜNLERİ",
+    "sauces": "SOSLAR",
+    "olivesoils": "ZEYTİNYAĞLAR"
+  }
+}

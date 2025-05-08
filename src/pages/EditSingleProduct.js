@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
+
 
 const EditProductPage = () => {
     const { id } = useParams(); 
@@ -13,6 +15,8 @@ const EditProductPage = () => {
     const [previewImage, setPreviewImage] = useState(null);
 
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation("editproduct"); // JSON namespace
+
 
     const importAll = (r) => {
         let images = {};
@@ -59,12 +63,17 @@ const EditProductPage = () => {
         stock: 0
     });
 
-    const [categories, setCategories] = useState([]); 
+    const [categories, setCategories] = useState([]);
+
+    const getTranslatedCategory = (category) => {
+        const key = category.toLowerCase().replace(/\s+/g, "_");  // örn: Dairy Products -> dairy_products
+        return t(`categories.${key}`, category); // Eğer çeviri bulunamazsa orijinal adı gösterir
+    };
 
     useEffect(() => {
         fetchProduct();
         extractCategories();
-    }, [id]);
+    }, [id, language]);
 
    
     useEffect(() => {
@@ -138,11 +147,11 @@ const EditProductPage = () => {
             // Ürünü güncelle
             await axios.put(`http://localhost:8080/api/products/${product.id}`, productData);
 
-            alert("Product updated successfully!");
+            alert(t("updateSuccess"));
             navigate("/admin/updateproducts");
         } catch (err) {
             console.error("Error updating product:", err);
-            alert("Failed to update product. Please try again.");
+            alert(t("updateError"));
         }
     };
 
@@ -151,7 +160,7 @@ const EditProductPage = () => {
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
             <div className="flex-1 flex items-center justify-center">
-                <div className="text-xl font-semibold text-gray-700">Loading product data...</div>
+                <div className="text-xl font-semibold text-gray-700">{t("loading")}</div>
             </div>
         </div>
     );
@@ -173,12 +182,12 @@ const EditProductPage = () => {
             {/* Content */}
             <div className="flex-1 flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-                    <h2 className="text-2xl font-semibold text-gray-700 mb-6">Update Product</h2>
+                    <h2 className="text-2xl font-semibold text-gray-700 mb-6">{t("updateProductTitle")}</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Product Name */}
                         <div>
-                            <label className="block text-gray-600 text-sm font-medium">Product Name</label>
+                            <label className="block text-gray-600 text-sm font-medium">{t("productName")}</label>
                             <input
                                 type="text"
                                 name="productName"
@@ -191,7 +200,7 @@ const EditProductPage = () => {
 
                         {/* Price Input */}
                         <div>
-                            <label className="block text-gray-600 text-sm font-medium">Price</label>
+                            <label className="block text-gray-600 text-sm font-medium">{t("price")}</label>
                             <input
                                 type="number"
                                 name="price"
@@ -206,7 +215,7 @@ const EditProductPage = () => {
 
                         {/* Category Selection */}
                         <div>
-                            <label className="block text-gray-600 text-sm font-medium">Category</label>
+                            <label className="block text-gray-600 text-sm font-medium">{t("category")}</label>
                             <select
                                 name="category"
                                 value={product.category}
@@ -214,10 +223,10 @@ const EditProductPage = () => {
                                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
                                 required
                             >
-                                <option value="" disabled>Select Category</option> 
+                                <option value="" disabled>{t("selectCategory")}</option>
                                 {categories.map((cat, index) => (
                                     <option key={index} value={cat}>
-                                        {cat}
+                                        {getTranslatedCategory(cat)}
                                     </option>
                                 ))}
                             </select>
@@ -225,19 +234,26 @@ const EditProductPage = () => {
 
                         {/* Image Upload */}
                         <div>
-                            <label className="block text-gray-600 text-sm font-medium">Product Image</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                            />
-                            {selectedFile && (
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Selected file: {selectedFile.name}
-                                </p>
-                            )}
+                            <label className="block text-gray-600 text-sm font-medium mb-1">{t("productImage")}</label>
+
+                            <div
+                                className="relative border border-gray-300 rounded-md p-2 flex items-center justify-between">
+                                    <span className="text-gray-700">
+                                        {selectedFile ? selectedFile.name : t("noFileChosen")}
+                                    </span>
+                                    <label
+                                        className="bg-green-500 text-white px-4 py-1.5 rounded-md cursor-pointer hover:bg-green-600 ml-4">
+                                        {t("chooseFile")}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                        />
+                                    </label>
+                            </div>
                         </div>
+
 
                         {/* Image Preview */}
                         {previewImage && (
@@ -255,7 +271,7 @@ const EditProductPage = () => {
                             type="submit"
                             className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition"
                         >
-                            Update
+                            {t("update_button")}
                         </button>
                     </form>
                 </div>
