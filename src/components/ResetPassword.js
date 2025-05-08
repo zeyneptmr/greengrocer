@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import axios from 'axios';
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
 
 const ResetPassword = ({ onClose, closeParentModal }) => {
     const [newPassword, setPassword] = useState('');
@@ -7,6 +9,8 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState(''); 
     const [isSuccess, setIsSuccess] = useState(false);
+    const { t } = useTranslation("resetpassword");
+    const { language } = useContext(LanguageContext);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -18,7 +22,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
         if (e.target.value.length < 8) {
-            setError('Password must be at least 8 characters long.');
+            setError(t('passwordLengthError'));
         } else {
             setError('');
         }
@@ -32,12 +36,12 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
         console.log("Password reset initiated");
 
         if (newPassword.length < 8) {
-            setError('Password must be at least 8 characters long.');
+            setError(t('passwordLengthError'));
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setError('Passwords do not match.');
+            setError(t('passwordMismatchError'));
             return;
         }
 
@@ -58,19 +62,19 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
             console.log("Response:", response);
             if (response.status === 200) {
                 console.log("it is ok:");
-                setSuccessMessage(response.data.message || 'Password reset successfully.');
+                setSuccessMessage(response.data.message || t('successMessage'));
                 setIsSuccess(true);
                 setTimeout(() => {
                     handleCloseAll(); 
                 }, 2000);
             } else {
                 console.error('Error occurred:', error);
-                setError(response.data.error || 'An error occurred.');
+                setError(response.data.error || t('requestError'));
                 setIsSuccess(false);
             }
         } catch (error) {
             console.log("Request failed:", error);
-            setError('An error occurred while processing your request.');
+            setError(t('requestError'));
             setIsSuccess(false);
         }
     };
@@ -97,11 +101,11 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                     &times;
                 </button>
     
-                <h2 className="text-3xl font-extrabold text-green-700 mb-6 text-center">🔐 Reset Password</h2>
+                <h2 className="text-3xl font-extrabold text-green-700 mb-6 text-center">🔐 {t('title')}</h2>
     
                 <div className="flex flex-col items-center space-y-4">
                     <p className="text-md font-medium text-[#006400] text-center">
-                        Please enter your new password below
+                        {t('subtitle')}
                     </p>
     
                     <input
@@ -109,7 +113,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                         value={newPassword}
                         onChange={handlePasswordChange}
                         className="w-full p-4 border border-gray-300 rounded-md text-lg focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter new password"
+                        placeholder={t('newPasswordPlaceholder')}
                     />
                     {error && newPassword.length < 8 && (
                         <div className="text-red-500 text-sm text-center">
@@ -121,7 +125,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
                         className="w-full p-4 border border-gray-300 rounded-md text-lg focus:ring-2 focus:ring-green-500"
-                        placeholder="Confirm new password"
+                        placeholder={t('confirmPasswordPlaceholder')}
                     />
                     {error && newPassword.length >= 8 && confirmPassword && newPassword !== confirmPassword && (
                         <div className="text-red-500 text-sm text-center">
@@ -132,7 +136,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                         onClick={handleResetPassword}
                         className="w-full p-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-transform transform hover:scale-105 hover:shadow-md"
                     >
-                        Reset Password
+                        {t('resetButton')}
                     </button>
                 </div>
     
@@ -141,7 +145,7 @@ const ResetPassword = ({ onClose, closeParentModal }) => {
                     <div
                         className="mt-6 p-3 bg-green-100 text-green-800 border border-green-500 rounded-md flex items-center justify-center space-x-2">
                         <span className="text-xl">✅</span>
-                        <span className="text-sm font-medium">{successMessage}</span>
+                        <span className="text-sm font-medium">{t('successMessage')}</span>
                     </div>
                 )}
             </div>
