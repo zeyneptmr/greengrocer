@@ -1,10 +1,11 @@
-//import React from "react";
 import React, { useContext } from "react";
 import { LanguageContext } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const DisplayProducts = ({ products }) => {
 
     const { language } = useContext(LanguageContext);
+    const { t } = useTranslation("displayproducts");
 
     const importAll = (r) => {
         let images = {};
@@ -45,7 +46,10 @@ const DisplayProducts = ({ products }) => {
         return images[imagePath] || '/placeholder.png';
     };
 
-
+    const getTranslatedCategory = (category) => {
+        const key = category.toLowerCase().replace(/\s+/g, '');
+        return t(`categories.${key}`, category);  // Çeviri yoksa orijinali kullan
+    };
     // Helper function to get category key
     const getCategoryKey = (category) => category.toLowerCase();
     
@@ -71,7 +75,7 @@ const DisplayProducts = ({ products }) => {
                 
                 return (
                     <div key={getCategoryKey(category)} className="mb-10">
-                        <h2 className="text-2xl font-bold text-green-700 mb-4 capitalize text-left">{category}</h2>
+                        <h2 className="text-2xl font-bold text-green-700 mb-4 capitalize text-left">{getTranslatedCategory(category)}</h2>
                         
                         <div className="flex space-x-4 overflow-x-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-200 p-2">
                             {categoryProducts.map(product => (
@@ -87,7 +91,7 @@ const DisplayProducts = ({ products }) => {
                                     />
                                     <h3 className="text-lg font-semibold text-gray-800 mt-2">{product.translatedName}</h3>
                                     <p className="text-gray-600 text-md">{formatPrice(product.price)} TL</p>
-                                    <p className="text-gray-500 text-sm">Stock: {product.stock}</p>
+                                    <p className="text-gray-500 text-sm">{t("stock")}: {product.stock}</p>
                                 </div>
                             ))}
                         </div>

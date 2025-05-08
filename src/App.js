@@ -18,7 +18,7 @@ import FavoritesPage from "./pages/FavoritesPage";
 import SearchResults from "./components/SearchResultPage";
 import ProductPage from "./helpers/ProductPage";
 import Cart from "./pages/Cart";
-import UserPage from "./pages/UserPage";
+//import UserPage from "./pages/UserPage";
 import ManagerPage from "./pages/ManagerPage";
 import AdminPage from "./pages/AdminPage";
 import DisplayProductPage from "./pages/DisplayProductPage";

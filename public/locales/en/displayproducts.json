@@ -3,5 +3,16 @@
   "adminPanel": "Admin Panel",
   "loading": "Products are loading...",
   "error": "Error",
-  "noProductsFound": "No products found matching your search criteria"
+  "noProductsFound": "No products found matching your search criteria",
+  "stock" : "Stock",
+
+  "categories": {
+    "vegetables": "VEGETABLES",
+    "fruits": "FRUITS",
+    "dairy": "DAIRY",
+    "bakedgoods": "BAKED GOODS",
+    "sauces": "SAUCES",
+    "olivesoils": "OLIVES & OILS"
+  }
+
 }

@@ -3,5 +3,15 @@
   "adminPanel": "Admin Paneli",
   "loading": "Ürünler yükleniyor...",
   "error": "Hata",
-  "noProductsFound": "Arama kriterlerinize uygun ürün bulunamadı"
+  "noProductsFound": "Arama kriterlerinize uygun ürün bulunamadı",
+  "stock" : "Stok",
+
+  "categories": {
+    "vegetables": "SEBZELER",
+    "fruits": "MEYVELER",
+    "dairy": "SÜT ÜRÜNLERİ",
+    "bakedgoods": "FIRIN ÜRÜNLERİ",
+    "sauces": "SOSLAR",
+    "olivesoils": "ZEYTİNYAĞLAR"
+  }
 }

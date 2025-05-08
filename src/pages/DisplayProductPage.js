@@ -59,6 +59,10 @@ const DisplayProductsPage = () => {
         categoryRefs.current[category]?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
+    const getTranslatedCategory = (category) => {
+        return t(`categories.${category.toLowerCase()}`, category);
+    };
+
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden">
             {/* Sidebar */}
@@ -93,7 +97,7 @@ const DisplayProductsPage = () => {
                                 onClick={() => scrollToCategory(category)} // Tıklandığında scrollToCategory çağrılır
                                 className="bg-white hover:bg-green-600 text-black font-medium px-6 py-2 rounded-full shadow-sm border border-gray-300 transition duration-300 mb-2 md:mb-0"
                             >
-                                {category}
+                                {getTranslatedCategory(category)}
                             </button>
                         ))}
                     </div>
@@ -113,7 +117,7 @@ const DisplayProductsPage = () => {
                         // Display only the categorized products dynamically without repeating headings
                         Object.keys(categorizedProducts).map((category) => (
                             <div key={category} ref={(el) => (categoryRefs.current[category] = el)} className="mt-6">
-                                <DisplayProducts products={categorizedProducts[category]} />
+                                <DisplayProducts products={categorizedProducts[category]}/>
                             </div>
                         ))
                     ) : (
