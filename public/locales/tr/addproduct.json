@@ -1,0 +1,24 @@
+{
+  "addProduct": "Yeni Ürün Ekle",
+  "adminPanel": "Admin Paneli",
+  "productName": "Ürün Adı",
+  "price": "Fiyat",
+  "category": "Kategori",
+  "chooseCategory": "Kategori Seçin",
+  "productImage": "Ürün Görseli",
+  "uploadImage": "Görsel Yükle",
+  "fillAllFields": "Lütfen tüm alanları doldurun.",
+  "addFailed": "Ürün eklenirken hata oluştu.",
+  "addedSuccess": "Ürün başarıyla eklendi!",
+  "addingProduct": "Ürün Ekleniyor...",
+  "addProductButton": "Ürün Ekle",
+
+  "categories": {
+    "vegetables": "Sebzeler",
+    "fruits": "Meyveler",
+    "dairy": "Süt Ürünleri",
+    "bakedgoods": "Fırın Ürünleri",
+    "sauces": "Soslar",
+    "olivesoils": "Zeytin&Yağlar"
+  }
+}

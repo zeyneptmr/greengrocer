@@ -1,0 +1,24 @@
+{
+  "addProduct": "Add New Product",
+  "adminPanel": "Admin Panel",
+  "productName": "Product Name",
+  "price": "Price",
+  "category": "Category",
+  "chooseCategory": "Choose Category",
+  "productImage": "Product Image",
+  "uploadImage": "Upload Image",
+  "fillAllFields": "Please fill in all fields.",
+  "addFailed": "Failed to add product.",
+  "addedSuccess": "Product added successfully!",
+  "addingProduct": "Adding Product...",
+  "addProductButton": "Add Product",
+
+  "categories": {
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "dairy": "Dairy",
+    "bakedgoods": "Baked Goods",
+    "sauces": "Sauces",
+    "olivesoils": "Olive Oils"
+  }
+}

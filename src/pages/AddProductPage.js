@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Upload, CheckCircle } from "lucide-react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import adminIcon from '../assets/admin.svg';
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
 
 // Base API URL
 const API_URL = "http://localhost:8080";
@@ -19,6 +21,9 @@ const AddProductPage = () => {
     const [showNotification, setShowNotification] = useState(false);
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    const { t } = useTranslation("addproduct");
+    const { language } = useContext(LanguageContext);
 
 
     useEffect(() => {
@@ -47,6 +52,11 @@ const AddProductPage = () => {
         } catch (error) {
             console.error("Error fetching categories:", error);
         }
+    };
+
+    const getTranslatedCategory = (category) => {
+        const key = category?.toLowerCase().replace(/\s+/g, "_");
+        return t(`categories.${key}`, category);
     };
 
     const handleChange = (e) => {
@@ -98,7 +108,7 @@ const AddProductPage = () => {
 
         
         if (!product.productName || !product.price || !product.category || !product.imagePath) {
-            alert("Please fill in all fields.");
+            alert(t("fillAllFields"));
             setIsLoading(false);
             return;
         }
@@ -107,7 +117,7 @@ const AddProductPage = () => {
 
             const productToSave = {
                 productName: product.productName,
-                productKey: product.productKey,   // 👈 EKLENDİ
+                productKey: product.productKey,
                 price: parseFloat(product.price),
                 category: product.category,
                 imagePath: product.imagePath,
@@ -131,7 +141,7 @@ const AddProductPage = () => {
             setImagePreview(null);
         } catch (error) {
             console.error("Error adding product:", error);
-            alert("Failed to add product. Please try again.");
+            alert(t("addFailed"));
         } finally {
             setIsLoading(false);
         }
@@ -143,7 +153,7 @@ const AddProductPage = () => {
             {showNotification && (
                 <div className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg flex items-center shadow-md z-50">
                     <CheckCircle className="h-6 w-6 text-green-600 mr-3" />
-                    <span>Product added successfully!</span>
+                    <span>{t("addedSuccess")}</span>
                 </div>
             )}
 
@@ -154,9 +164,9 @@ const AddProductPage = () => {
             <main className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="bg-white shadow-md p-4 flex justify-between items-center flex-shrink-0">
-                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">Add New Product</h1>
+                    <h1 className="text-2xl font-semibold text-gray-700 pt-10">{t("addProduct")}</h1>
                     <div className="flex items-center space-x-4">
-                        <span className="text-gray-500">Admin Panel</span>
+                        <span className="text-gray-500">{t("adminPanel")}</span>
                         <img src={adminIcon} alt="Admin" className="rounded-full w-32 h-28" />
                     </div>
                 </header>
@@ -167,7 +177,7 @@ const AddProductPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {/* Product Name Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="productName" className="block text-sm font-medium text-gray-600 uppercase">Product Name</label>
+                                <label htmlFor="productName" className="block text-sm font-medium text-gray-600 uppercase">{t("productName")}</label>
                                 <input
                                     id="productName"
                                     type="text"
@@ -181,7 +191,7 @@ const AddProductPage = () => {
 
                             {/* Price Input */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="price" className="block text-sm font-medium text-gray-600 uppercase">Price</label>
+                                <label htmlFor="price" className="block text-sm font-medium text-gray-600 uppercase">{t("price")}</label>
                                 <div className="flex items-center">
                                     <input
                                         id="price"
@@ -200,7 +210,7 @@ const AddProductPage = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {/* Category Dropdown */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center justify-center w-full">
-                                <label htmlFor="category" className="block text-sm font-medium text-gray-600 uppercase text-center">Category</label>
+                                <label htmlFor="category" className="block text-sm font-medium text-gray-600 uppercase text-center">{t("category")}</label>
                                 <select
                                     id="category"
                                     name="category"
@@ -209,10 +219,10 @@ const AddProductPage = () => {
                                     className="mt-1 p-2 w-64 border border-gray-300 rounded-lg text-sm"
                                     required
                                 >
-                                    <option value="">Choose Category</option>
+                                    <option value="">{t("chooseCategory")}</option>
                                     {categories.map((category, index) => (
                                         <option key={index} value={category}>
-                                            {category}
+                                            {getTranslatedCategory(category)}
                                         </option>
                                     ))}
                                 </select>
@@ -220,7 +230,7 @@ const AddProductPage = () => {
 
                             {/* Image Upload */}
                             <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
-                                <label htmlFor="image" className="block text-sm font-medium text-gray-600 uppercase mb-2">Product Image</label>
+                                <label htmlFor="image" className="block text-sm font-medium text-gray-600 uppercase mb-2">{t("productImage")}</label>
                                 <input
                                     id="image"
                                     type="file"
@@ -241,7 +251,7 @@ const AddProductPage = () => {
                                     ) : (
                                         <div className="flex flex-col items-center text-gray-500">
                                             <Upload size={32} />
-                                            <span className="mt-2">Upload Image</span>
+                                            <span className="mt-2">{t("uploadImage")}</span>
                                         </div>
                                     )}
                                 </label>
@@ -254,7 +264,7 @@ const AddProductPage = () => {
                             className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 mt-6 text-sm"
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Adding Product...' : 'Add Product'}
+                            {isLoading ? t("addingProduct") : t("addProductButton")}
                         </button>
                     </form>
                 </div>
