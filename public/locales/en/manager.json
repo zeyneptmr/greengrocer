@@ -31,5 +31,11 @@
     "september": "September",
     "october": "October",
     "november": "November",
-    "december": "December"
+    "december": "December",
+    "statuses": {
+        "Order Received": "Order Received",
+        "Confirmed": "Confirmed",
+        "Preparing": "Preparing",
+        "Dispatched": "Dispatched"
+    }
   }

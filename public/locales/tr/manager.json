@@ -7,7 +7,7 @@
     "order_count": "Sipariş Sayısı",
     "orders": "Sipariş",
     "no_order_message": "Bu ay için sipariş yok",
-    "order_time": "Sipariş Süresi",
+    "order_time": "Sipariş Tarihi",
     "products": "Ürünler",
     "products_total": "Ürün Toplamı",
     "grand_total": "Genel Toplam",
@@ -30,5 +30,11 @@
     "september": "Eylül",
     "october": "Ekim",
     "november": "Kasım",
-    "december": "Aralık"
+    "december": "Aralık",
+    "statuses": {
+        "Order Received": "Sipariş Alındı",
+        "Confirmed": "Onaylandı",
+        "Preparing": "Hazırlanıyor",
+        "Dispatched": "Yola Çıktı"
+    }
   }

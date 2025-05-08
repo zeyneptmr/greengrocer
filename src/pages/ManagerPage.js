@@ -132,31 +132,44 @@ const ManagerPage = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-            
+
                 const salesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/total-sales`);
                 const totalSalesAmount = salesResponse.data;
-                
+
                 const formattedSales = totalSalesAmount.toFixed(2) + '₺';
                 setTotalSales(formattedSales);
-                
+
                 const userResponse = await axios.get(`${API_BASE_URL}/api/users/count/users`);
                 setUserCount(userResponse.data);
-                
+
                 const orderResponse = await axios.get(`${API_BASE_URL}/api/customerorder/orders/all`, { withCredentials: true });
                 if (Array.isArray(orderResponse.data)) {
                     setOrderCount(orderResponse.data.length);
                 }
-                
+
                 const monthlySalesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/monthly-sales`, {
                     params: { year: selectedYear },
                     withCredentials: true
                 });
-                
-                const labels = Object.keys(monthlySalesResponse.data);
-                const salesValues = Object.values(monthlySalesResponse.data);
-                
+
+                const monthMap = {
+                    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                };
+
+                const monthEntries = Object.entries(monthlySalesResponse.data)
+                    .map(([key, value]) => ({
+                        month: key,
+                        value,
+                        index: monthMap[key] ?? 99 // Bilinmeyen varsa sona atsın
+                    }))
+                    .sort((a, b) => a.index - b.index); // Sıralama: Ocaktan Aralığa
+
+                const translatedLabels = monthEntries.map(item => months[item.index] || item.month);
+                const salesValues = monthEntries.map(item => item.value);
+
                 setSalesChartData({
-                    labels: labels,
+                    labels: translatedLabels,
                     datasets: [
                         {
                             label: t("total_sales") + "(₺)",
@@ -166,7 +179,7 @@ const ManagerPage = () => {
                         },
                     ],
                 });
-                
+
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -174,7 +187,7 @@ const ManagerPage = () => {
                 setLoading(false);
             }
         };
-        
+
         fetchData();
     }, [selectedYear, language, t]);
 
@@ -592,10 +605,10 @@ const ManagerPage = () => {
                                         <div className="border rounded-lg p-4">
                                             <div className="flex justify-between items-center mb-4">
                                                 <h3 className="text-xl font-semibold text-gray-700">
-                                                    {t("order")} #{dateOrders[currentOrderIndex].orderId}
+                                                    {t("orders")} #{dateOrders[currentOrderIndex].orderId}
                                                 </h3>
                                                 <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                                    {dateOrders[currentOrderIndex].latestStatus}
+                                                     {t(`statuses.${dateOrders[currentOrderIndex].latestStatus}`)}
                                                 </span>
                                             </div>
                                             

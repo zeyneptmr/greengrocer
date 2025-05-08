@@ -35,7 +35,7 @@
         "date": "Tarih",
         "time": "Saat",
         "status": "Durum",
-        "customerEmail": "Müşteri E-postası",
+        "customerEmail": "E-posta",
         "userId": "Kullanıcı ID",
         "shippingAddress": "Teslimat Adresi",
         "products": "Ürünler",
