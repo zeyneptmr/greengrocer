@@ -1,0 +1,20 @@
+{
+  "today": "Bugün",
+  "total_sales": "Toplam Satış",
+  "total_products": "Toplam Ürün Sayısı",
+  "products_by_category": "Kategorilere Göre Ürünler",
+  "category_distribution": "Kategori Dağılımı",
+  "no_product_categories": "Hiç ürün kategorisi bulunamadı",
+  "products": "{{count}} ürün",
+  "category": "Kategori",
+  "loading_data" : "Loading Data...",
+  "retry" : "Yeniden Dene",
+  "categories": {
+    "vegetables": "SEBZELER",
+    "fruits": "MEYVELER",
+    "dairy": "SÜT ÜRÜNLERİ",
+    "bakedgoods": "FIRIN ÜRÜNLERİ",
+    "sauces": "SOSLAR",
+    "olivesoils": "ZEYTİN & YAĞLAR"
+  }
+}

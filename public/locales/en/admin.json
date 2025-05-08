@@ -1,0 +1,20 @@
+{
+  "today": "Today",
+  "total_sales": "Total Sales",
+  "total_products": "Total Number of Products",
+  "products_by_category": "Products by Category",
+  "category_distribution": "Category Distribution",
+  "no_product_categories": "No product categories found",
+  "products": "{{count}} products",
+  "category": "Category",
+  "loading_data" : "Veriler Yükleniyor...",
+  "retry" : "Retry",
+  "categories": {
+    "vegetables": "VEGETABLES",
+    "fruits": "FRUITS",
+    "dairy": "DAIRY",
+    "bakedgoods": "BAKED GOODS",
+    "sauces": "SAUCES",
+    "olivesoils": "OLIVES & OILS"
+  }
+}

@@ -4,6 +4,7 @@ import Clock from "../components/Clock";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -15,6 +16,8 @@ const AdminPage = () => {
     const [totalSales, setTotalSales] = useState("0 TL");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { t, i18n } = useTranslation('admin');
     
    // Inside AdminPage.js - update the useEffect function
 useEffect(() => {
@@ -80,7 +83,7 @@ useEffect(() => {
                     <Sidebar />
                 </div>
                 <main className="flex-1 flex flex-col items-center justify-center">
-                    <div className="text-xl text-green-700">Loading data...</div>
+                    <div className="text-xl text-green-700">{t("loading_data")}</div>
                 </main>
             </div>
         );
@@ -98,7 +101,7 @@ useEffect(() => {
                         className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                         onClick={() => window.location.reload()}
                     >
-                        Retry
+                        {t("retry")}
                     </button>
                 </main>
             </div>
@@ -118,24 +121,24 @@ useEffect(() => {
                 <div className="p-6 pb-24">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         <div className="bg-white shadow-md rounded-lg p-6">
-                            <h3 className="text-lg md:text-xl font-bold text-green-700">Today</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-green-700">{t("today")}</h3>
                             <p className="text-base md:text-xl text-gray-500 font-medium"><Clock/></p>
                         </div>
 
                         <div className="bg-white shadow-md rounded-lg p-6">
-                            <h3 className="text-lg md:text-xl font-bold text-green-700">Total Sales</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-green-700">{t("total_sales")}</h3>
                             <p className="text-base md:text-xl text-gray-500 font-medium">{totalSales}</p>
                         </div>
 
                         <div className="bg-white shadow-md rounded-lg p-6">
-                            <h3 className="text-lg md:text-xl font-bold text-green-700">Total Number of Products</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-green-700">{t("total_products")}</h3>
                             <p className="text-base md:text-xl text-gray-500 font-medium">{totalProducts}</p>
                         </div>
                     </div>
 
                     {/* Category Statistics Section */}
                     <div className="bg-white shadow-md rounded-lg p-6">
-                        <h2 className="text-2xl font-bold text-green-700 mb-4">Products by Category</h2>
+                        <h2 className="text-2xl font-bold text-green-700 mb-4">{t("products_by_category")}</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
 
@@ -147,8 +150,8 @@ useEffect(() => {
                                 >
 
                                     <div className="w-full">
-                                        <h3 className="font-semibold text-lg">{category.name}</h3>
-                                        <p className="text-sm opacity-75">Category</p>
+                                        <h3 className="font-semibold text-lg">{t(`categories.${category.name.toLowerCase()}`, category.name)}</h3>
+                                        <p className="text-sm opacity-75">{t("category")}</p>
                                     </div>
                                     <div className="text-3xl font-bold">{category.count}</div>
                                 </div>
@@ -157,7 +160,7 @@ useEffect(() => {
 
                         {categoryStats.length === 0 && (
                             <div className="text-center py-6 text-gray-500">
-                                No product categories found
+                                {t("no_product_categories")}
                             </div>
                         )}
                     </div>
@@ -165,7 +168,7 @@ useEffect(() => {
 
                     {/* Category Distribution Chart Section */}
                     <div className="bg-white shadow-md rounded-lg p-6 mt-6">
-                        <h2 className="text-2xl font-bold text-green-700 mb-4">Category Distribution</h2>
+                        <h2 className="text-2xl font-bold text-green-700 mb-4">{t("category_distribution")}</h2>
 
                         <div className="flex flex-wrap gap-2">
                             {categoryStats.map((category, index) => {
@@ -173,9 +176,9 @@ useEffect(() => {
                                 return (
                                     <div key={category.name} className="w-full mb-3">
                                         <div className="flex justify-between mb-1">
-                                            <span className="font-medium">{category.name}</span>
+                                            <span className="font-medium">{t(`categories.${category.name.toLowerCase()}`, category.name)}</span>
                                             <span
-                                                className="text-sm text-gray-500">{category.count} products ({percentage.toFixed(1)}%)</span>
+                                                className="text-sm text-gray-500">{t("products", { count: category.count })} ({percentage.toFixed(1)}%)</span>
                                         </div>
                                         <div className="w-full bg-gray-200 rounded-full h-3 sm:h-4">
                                             <div
