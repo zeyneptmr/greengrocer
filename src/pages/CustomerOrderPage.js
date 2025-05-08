@@ -1,20 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState,useContext, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import managerIcon from "../assets/manager.svg";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight, Info, Eye } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { LanguageContext } from "../context/LanguageContext";
 
-const statusSteps = ["Order Received", "Confirmed", "Preparing", "Dispatched"];
 
 
-const filterOptions = [
-    { id: "all", label: "All Orders" },
-    { id: "week", label: "Last Week" },
-    { id: "month", label: "Last Month" },
-    { id: "threeMonths", label: "Last 3 Months" },
-    { id: "year", label: "Last Year" }
-];
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -90,6 +84,10 @@ const formatProductName = (name) => {
     return formattedName;
 };
 
+
+
+
+
 const CustomerOrderPage = () => {
     const [allOrders, setAllOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
@@ -102,10 +100,30 @@ const CustomerOrderPage = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [orderProducts, setOrderProducts] = useState([]);
     const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
+
+    const { language } = useContext(LanguageContext);
+    const { t } = useTranslation('customerordermanagement');
     
     
     const scrollPositionRef = useRef(0);
     const mainContainerRef = useRef(null);
+
+
+    const statusSteps = [
+        t('orderStatus.orderReceived'), 
+        t('orderStatus.confirmed'), 
+        t('orderStatus.preparing'), 
+        t('orderStatus.dispatched')];
+    
+    
+    const filterOptions = [
+        { id: "all", label: t('filters.allOrders') },
+        { id: "week", label: t('filters.lastWeek') },
+        { id: "month", label: t('filters.lastMonth') },
+        { id: "threeMonths", label: t('filters.lastThreeMonths') },
+        { id: "year", label: t('filters.lastYear') }
+    ];
+
 
     const fetchOrders = async () => {
         setIsLoading(true);
@@ -189,16 +207,21 @@ const CustomerOrderPage = () => {
     };
 
     const handleStatusChange = async (orderId, currentStatus) => {
-        const nextStatus = statusSteps[statusSteps.indexOf(currentStatus) + 1];
-        if (!nextStatus || isUpdating) return;
+    
+        const statusInEnglish = getStatusInEnglish(currentStatus);
+        const nextStatusInEnglish = getNextStatusInEnglish(statusInEnglish);
+        
+        if (!nextStatusInEnglish || isUpdating) return;
 
         setIsUpdating(true);
         
         try {
-    
+            
+            const nextStatus = getStatusTranslation(nextStatusInEnglish);
+            
             const updatedAllOrders = allOrders.map(order => {
                 if (order.orderId === orderId) {
-                    return { ...order, latestStatus: nextStatus };
+                    return { ...order, latestStatus: nextStatusInEnglish };
                 }
                 return order;
             });
@@ -208,26 +231,58 @@ const CustomerOrderPage = () => {
             setDisplayedOrders(prev => 
                 prev.map(order => {
                     if (order.orderId === orderId) {
-                        return { ...order, latestStatus: nextStatus };
+                        return { ...order, latestStatus: nextStatusInEnglish };
                     }
                     return order;
                 })
             );
             
-        
+            
             await axios.post(
                 `${API_BASE_URL}/api/customerorder/orders/${orderId}/status`,
-                { status: nextStatus },
+                { status: nextStatusInEnglish },
                 { withCredentials: true }
             );
             
         } catch (error) {
             console.error("Status could not be updated:", error);
-    
             fetchOrders();
         } finally {
             setIsUpdating(false);
         }
+    };
+
+
+    const getStatusInEnglish = (translatedStatus) => {
+        const statusMapping = {
+            [t('orderStatus.orderReceived')]: "Order Received",
+            [t('orderStatus.confirmed')]: "Confirmed",
+            [t('orderStatus.preparing')]: "Preparing",
+            [t('orderStatus.dispatched')]: "Dispatched",
+            [t('orderStatus.delivered')]: "Delivered"
+        };
+        return statusMapping[translatedStatus] || translatedStatus;
+    };
+
+    const getNextStatusInEnglish = (currentStatus) => {
+        const englishStatusSteps = ["Order Received", "Confirmed", "Preparing", "Dispatched"];
+        const currentIndex = englishStatusSteps.indexOf(currentStatus);
+        if (currentIndex >= 0 && currentIndex < englishStatusSteps.length - 1) {
+            return englishStatusSteps[currentIndex + 1];
+        }
+        return null;
+    };
+
+    // Helper function to translate English status to current language
+    const getStatusTranslation = (englishStatus) => {
+        const statusMapping = {
+            "Order Received": t('orderStatus.orderReceived'),
+            "Confirmed": t('orderStatus.confirmed'),
+            "Preparing": t('orderStatus.preparing'),
+            "Dispatched": t('orderStatus.dispatched'),
+            "Delivered": t('orderStatus.delivered')
+        };
+        return statusMapping[englishStatus] || englishStatus;
     };
 
 
@@ -269,9 +324,9 @@ const CustomerOrderPage = () => {
             <Sidebar />
             <main ref={mainContainerRef} className="flex-1 flex flex-col overflow-y-auto">
                 <header className="bg-white shadow p-6 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-green-700">Customer Order Management</h1>
+                    <h1 className="text-3xl font-bold text-green-700">{t('title')}</h1>
                     <div className="flex items-center gap-4">
-                        <span className="text-orange-500 font-semibold text-lg">Manager Panel</span>
+                        <span className="text-orange-500 font-semibold text-lg">{t('managerPanel')}</span>
                         <img src={managerIcon} alt="Manager" className="w-14 h-14 rounded-full"/>
                     </div>
                 </header>
@@ -296,33 +351,34 @@ const CustomerOrderPage = () => {
 
                     {isLoading ? (
                         <div className="flex justify-center items-center min-h-[300px]">
-                            <div className="text-xl font-bold text-green-600">Loading orders...</div>
+                            <div className="text-xl font-bold text-green-600">{t('loadingOrders')}</div>
                         </div>
                     ) : displayedOrders.length === 0 ? (
                         <div className="text-center p-12 bg-gray-200 rounded-xl shadow-lg text-xl font-semibold text-gray-600">
-                            <p>No orders found in this time range.</p>
-                            <p className="text-sm text-gray-500 mt-2">Try selecting a different time filter.</p>
+                            <p>{t('noOrdersFound')}</p>
+                            <p className="text-sm text-gray-500 mt-2">{t('tryDifferentFilter')}</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="min-w-full bg-white shadow-2xl rounded-xl overflow-hidden">
                                 <thead className="bg-gradient-to-r from-green-500 to-lime-500 text-white">
                                 <tr>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">#</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Order ID</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Created At</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">User ID</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Email</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Shipping Address</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Total Amount</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Status</th>
-                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">Process</th>
+                                <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.number')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.orderId')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.createdAt')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.userId')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.email')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.shippingAddress')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.totalAmount')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.status')}</th>
+                                    <th className="px-4 py-4 text-center text-[16px] font-semibold">{t('table.process')}</th>
                                 </tr>
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200">
                                 {displayedOrders.map((order, idx) => {
-                                    const currentStatus = order.latestStatus || "Order Received";
+                                    const englishStatus  = order.latestStatus || "Order Received";
+                                    const currentStatus = getStatusTranslation(englishStatus);
                                     return (
                                         <tr key={order.orderId} className="hover:bg-gray-50 transition">
                                             <td className="px-6 py-4 text-lg">
@@ -351,7 +407,7 @@ const CustomerOrderPage = () => {
                                                     </span>
                                                     
                                                     <div className="w-7 h-7">
-                                                        {currentStatus === "Order Received" && (
+                                                        {englishStatus === "Order Received" && (
                                                             <svg className="w-full h-full text-green-600" fill="none"
                                                                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                                 <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8"/>
@@ -360,14 +416,14 @@ const CustomerOrderPage = () => {
                                                             </svg>
                                                         )}
 
-                                                        {currentStatus === "Confirmed" && (
+                                                        {englishStatus === "Confirmed" && (
                                                             <svg className="w-full h-full text-yellow-500" fill="none"
                                                                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                                 <path d="M5 13l4 4L19 7"/>
                                                             </svg>
                                                         )}
 
-                                                        {currentStatus === "Preparing" && (
+                                                        {englishStatus === "Preparing" && (
                                                             <svg className="w-full h-full text-purple-600" fill="none"
                                                                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                                 <path d="M12 6v6l4 2"/>
@@ -375,7 +431,7 @@ const CustomerOrderPage = () => {
                                                             </svg>
                                                         )}
 
-                                                        {currentStatus === "Dispatched" && (
+                                                        {englishStatus === "Dispatched" && (
                                                             <svg className="w-full h-full text-orange-500" fill="none"
                                                                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                                 <path
@@ -386,7 +442,7 @@ const CustomerOrderPage = () => {
                                                             </svg>
                                                         )}
 
-                                                        {currentStatus === "Delivered" && (
+                                                        {englishStatus === "Delivered" && (
                                                             <svg className="w-full h-full text-blue-500" fill="none"
                                                                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -398,9 +454,10 @@ const CustomerOrderPage = () => {
 
                                             <td className="px-6 py-4 space-y-2">
                                                 {statusSteps.map((step, i) => {
+                                                    const englishStep = getStatusInEnglish(step);
                                                     const isCurrentStatus = step === currentStatus;
                                                     const isNextPossibleStatus = statusSteps.indexOf(step) === statusSteps.indexOf(currentStatus) + 1;
-                                                    const isOrderReceived = step === "Order Received";
+                                                    const isOrderReceived = englishStep === "Order Received";
                                                     const isDisabled = isOrderReceived || (!isCurrentStatus && !isNextPossibleStatus);
                                                     
                                                     let buttonClass = "w-full py-2 rounded-md text-sm font-medium transition-all duration-300 ";
@@ -460,7 +517,7 @@ const CustomerOrderPage = () => {
                         >
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-2xl font-bold text-gray-800">
-                                    Order Details #{selectedOrder.orderId}
+                                {t('orderDetails.title')} {t('table.number')}{selectedOrder.orderId}
                                 </h2>
                                 <button 
                                     onClick={() => setShowPopup(false)}
@@ -478,34 +535,34 @@ const CustomerOrderPage = () => {
                                 <div className="space-y-6">
                                     {/* Order Information */}
                                     <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">Order Information</h3>
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">{t('orderDetails.orderInfo')}</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Order ID:</span> {selectedOrder.orderId}
+                                                    <span className="font-medium">{t('table.orderId')}:</span> {selectedOrder.orderId}
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Date:</span> {selectedOrder.createdAt?.slice(0, 10)}
+                                                    <span className="font-medium">{t('orderDetails.date')}:</span> {selectedOrder.createdAt?.slice(0, 10)}
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Time:</span> {selectedOrder.createdAt?.slice(11, 19)}
+                                                    <span className="font-medium">{t('orderDetails.time')}:</span> {selectedOrder.createdAt?.slice(11, 19)}
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Status:</span>{" "}
+                                                    <span className="font-medium">{t('orderDetails.status')}:</span>{" "}
                                                     <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                                        {selectedOrder.latestStatus || "Order Received"}
+                                                        {getStatusTranslation(selectedOrder.latestStatus || "Order Received")}
                                                     </span>
                                                 </p>
                                             </div>
                                             <div>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Customer Email:</span> {selectedOrder.userEmail}
+                                                    <span className="font-medium">{t('orderDetails.customerEmail')}:</span> {selectedOrder.userEmail}
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">User ID:</span> {selectedOrder.userId}
+                                                    <span className="font-medium">{t('table.userId')}:</span> {selectedOrder.userId}
                                                 </p>
                                                 <p className="text-gray-600">
-                                                    <span className="font-medium">Shipping Address:</span> {selectedOrder.shippingAddress}
+                                                    <span className="font-medium">{t('table.shippingAddress')}:</span> {selectedOrder.shippingAddress}
                                                 </p>
                                             </div>
                                         </div>
@@ -513,7 +570,7 @@ const CustomerOrderPage = () => {
                                     
                                     {/* Products */}
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">Products</h3>
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-3">{t('orderDetails.products')}</h3>
                                         
                                         {orderProducts && orderProducts.length > 0 ? (
                                             <>
@@ -547,7 +604,7 @@ const CustomerOrderPage = () => {
                                                                     {product.quantity} x {product.pricePerProduct?.toFixed(2)}₺
                                                                 </p>
                                                                 <p className="text-sm font-medium text-green-700 mt-1">
-                                                                    Total: {product.totalPerProduct?.toFixed(2)}₺
+                                                                {t('orderDetails.total')}: {product.totalPerProduct?.toFixed(2)}₺
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -557,15 +614,15 @@ const CustomerOrderPage = () => {
                                                 {/* Order Totals */}
                                                 <div className="mt-4 text-right">
                                                     <p className="text-lg font-bold text-green-700">
-                                                        Products Total: {calculateTotalProducts(orderProducts)}₺
+                                                    {t('orderDetails.productsTotal')}: {calculateTotalProducts(orderProducts)}₺
                                                     </p>
                                                     <p className="text-xl font-bold text-green-800 mt-2">
-                                                        Grand Total: {selectedOrder.totalAmount?.toFixed(2)}₺
+                                                    {t('orderDetails.grandTotal')}: {selectedOrder.totalAmount?.toFixed(2)}₺
                                                     </p>
                                                 </div>
                                             </>
                                         ) : (
-                                            <p className="text-center text-gray-500 py-4">No products found for this order.</p>
+                                            <p className="text-center text-gray-500 py-4">{t('orderDetails.noProductsFound')}</p>
                                         )}
                                     </div>
                                 </div>
@@ -576,7 +633,7 @@ const CustomerOrderPage = () => {
                                     onClick={() => setShowPopup(false)}
                                     className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
                                 >
-                                    Close
+                                    {t('orderDetails.close')}
                                 </button>
                             </div>
                         </motion.div>

@@ -1,0 +1,51 @@
+{
+      "title": "Customer Order Management",
+      "managerPanel": "Manager Panel",
+      "filters": {
+        "allOrders": "All Orders",
+        "lastWeek": "Last Week",
+        "lastMonth": "Last Month",
+        "lastThreeMonths": "Last 3 Months",
+        "lastYear": "Last Year"
+      },
+      "loadingOrders": "Loading orders...",
+      "noOrdersFound": "No orders found in this time range.",
+      "tryDifferentFilter": "Try selecting a different time filter.",
+      "table": {
+        "number": "#",
+        "orderId": "Order ID",
+        "createdAt": "Created At",
+        "userId": "User ID",
+        "email": "Email",
+        "shippingAddress": "Shipping Address",
+        "totalAmount": "Total Amount",
+        "status": "Status",
+        "process": "Process"
+      },
+      "orderStatus": {
+        "orderReceived": "Order Received",
+        "confirmed": "Confirmed",
+        "preparing": "Preparing",
+        "dispatched": "Dispatched",
+        "delivered": "Delivered"
+      },
+      "orderDetails": {
+        "title": "Order Details",
+        "orderInfo": "Order Information",
+        "date": "Date",
+        "time": "Time",
+        "status": "Status",
+        "customerEmail": "Customer Email",
+        "userId": "User ID",
+        "shippingAddress": "Shipping Address",
+        "products": "Products",
+        "quantity": "x",
+        "total": "Total",
+        "noProductsFound": "No products found for this order.",
+        "productsTotal": "Products Total",
+        "grandTotal": "Grand Total",
+        "close": "Close"
+      },
+      "viewOrderDetails": "View Order Details"
+    
+  }

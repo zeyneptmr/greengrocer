@@ -1,0 +1,51 @@
+{
+      "title": "Müşteri Sipariş Yönetimi",
+      "managerPanel": "Yönetici Paneli",
+      "filters": {
+        "allOrders": "Tüm Siparişler",
+        "lastWeek": "Son Hafta",
+        "lastMonth": "Son Ay",
+        "lastThreeMonths": "Son 3 Ay",
+        "lastYear": "Son Yıl"
+      },
+      "loadingOrders": "Siparişler yükleniyor...",
+      "noOrdersFound": "Bu zaman aralığında sipariş bulunamadı.",
+      "tryDifferentFilter": "Farklı bir zaman filtresi seçmeyi deneyin.",
+      "table": {
+        "number": "#",
+        "orderId": "Sipariş ID",
+        "createdAt": "Oluşturulma Tarihi",
+        "userId": "Kullanıcı ID",
+        "email": "E-posta",
+        "shippingAddress": "Teslimat Adresi",
+        "totalAmount": "Toplam Tutar",
+        "status": "Durum",
+        "process": "İşlem"
+      },
+      "orderStatus": {
+        "orderReceived": "Sipariş Alındı",
+        "confirmed": "Onaylandı",
+        "preparing": "Hazırlanıyor",
+        "dispatched": "Gönderildi",
+        "delivered": "Teslim Edildi"
+      },
+      "orderDetails": {
+        "title": "Sipariş Detayları",
+        "orderInfo": "Sipariş Bilgileri",
+        "date": "Tarih",
+        "time": "Saat",
+        "status": "Durum",
+        "customerEmail": "Müşteri E-postası",
+        "userId": "Kullanıcı ID",
+        "shippingAddress": "Teslimat Adresi",
+        "products": "Ürünler",
+        "quantity": "x",
+        "total": "Toplam",
+        "noProductsFound": "Bu sipariş için ürün bulunamadı.",
+        "productsTotal": "Ürünler Toplamı",
+        "grandTotal": "Genel Toplam",
+        "close": "Kapat"
+      },
+      "viewOrderDetails": "Sipariş Detaylarını Görüntüle"
+    
+  }
