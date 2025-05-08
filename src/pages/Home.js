@@ -43,6 +43,7 @@ export default function HomePage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
+    const [hasDiscountedProducts, setHasDiscountedProducts] = useState(false); // İndirimli ürün var mı?
     const { favorites } = useFavorites();
     const { language } = useContext(LanguageContext);
 
@@ -92,6 +93,12 @@ export default function HomePage() {
             return price.toFixed(2); 
         }
         return parseFloat(price).toFixed(2); 
+    };
+
+    // İndirimli ürünlerin durumunu takip et
+    const handleDiscountedProductsLoaded = (hasProducts) => {
+        console.log('HomePage: İndirimli ürünler durumu değişti:', hasProducts);
+        setHasDiscountedProducts(hasProducts);
     };
 
     useEffect(() => {
@@ -210,13 +217,21 @@ export default function HomePage() {
             {/* Discounted Products */}
             <section className="py-8">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold mt-6">{t("todaysDiscountedProducts")}</h2>
-                    <TodaysDiscountedProducts />
+                    {hasDiscountedProducts ? (
+                        <>
+                            <h2 className="text-3xl font-bold mt-6">{t("todaysDiscountedProducts")}</h2>
+                            <TodaysDiscountedProducts onProductsLoaded={handleDiscountedProductsLoaded} />
+                        </>
+                    ) : (
+                        <div style={{ display: 'none' }}>
+                            <TodaysDiscountedProducts onProductsLoaded={handleDiscountedProductsLoaded} />
+                        </div>
+                    )}
                 </div>
             </section>
 
             {/* Products Section - Scrollable */}
-            <h2 className="text-3xl font-bold mt-6">{t("chosenForYou")}</h2>
+            <h2 className="text-3xl font-bold mt-12">{t("chosenForYou")}</h2>
             <div className="mt-4">
                 <div className="flex space-x-4 overflow-x-auto pb-4">
                     {randomProducts.map((product, index) => (
@@ -313,4 +328,3 @@ export default function HomePage() {
         </div>
     );
 }
-
