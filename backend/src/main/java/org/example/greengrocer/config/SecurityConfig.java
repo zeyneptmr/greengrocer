@@ -69,7 +69,11 @@ public class SecurityConfig {
                     .requestMatchers("api/customerorder/orders/{orderId}/status").permitAll()
                     .requestMatchers("/api/orderproduct/by-order/{orderId}").permitAll()
                     .requestMatchers("/api/order-status/**").permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/upload/**").permitAll()
+                    .requestMatchers("/assets/**").permitAll()
+                    .requestMatchers("/uploads/**").permitAll()
+
+                    .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

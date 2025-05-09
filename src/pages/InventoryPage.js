@@ -6,6 +6,7 @@ import AdminSearchBar from "../components/AdminSearchBar";
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaTimesCircle } from 'react-icons/fa';
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 import axios from "axios";
 import { useTranslation } from 'react-i18next';
@@ -52,24 +53,6 @@ const Inventory = () => {
         return parseFloat(price).toFixed(2);
     };
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Base64 görseli döndür
-        }
-
-        const filename = path.split('/').pop(); // Örnek: "apple.jpg"
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder görseli
-        }
-
-        return images[imagePath] || '/placeholder.png';
-    };
     useEffect(() => {
         setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
     }, [filteredProducts]);
@@ -184,7 +167,7 @@ const Inventory = () => {
                                 <div key={product.id} className="bg-white p-4 rounded shadow-md">
                                     <div className="flex justify-center mb-4">
                                         <img
-                                            src={getImageFromPath(product.imagePath)}
+                                            src={getImageFromPath(product.imagePath, images)}
                                             alt={product.translatedName}
                                             className="w-32 h-32 object-contain"
                                         />

@@ -7,6 +7,7 @@ import fruits2 from '../assets/fruits2.jpg';
 import fruits3 from '../assets/fruits3.jpg';
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const importAll = (r) => {
     let images = {};
@@ -38,28 +39,6 @@ const FruitsPage = () => {
     const { t } = useTranslation('fruits');
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
-        }
-        // Extract filename from the path
-        const filename = path.split('/').pop(); // "dairy1.jpg"
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
-        }
-
-        // Find the matching image from the images object
-        return images[filename] || '/placeholder.png';
-    };
-    
     
     // Fetch products from API
     useEffect(() => {
@@ -153,7 +132,7 @@ const FruitsPage = () => {
                                         id: product.id,
                                         name: product.translatedName,
                                         price: formatPrice(product.price),
-                                        image: getImageFromPath(product.imagePath),
+                                        image: getImageFromPath(product.imagePath, images),
                                         stock: product.stock,
                                         category: product.category
                                     }}

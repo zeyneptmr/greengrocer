@@ -5,6 +5,7 @@ import { generateInvoice } from "../helpers/generateInvoice"; // senin dosya yol
 import { FaFileInvoice } from "react-icons/fa";
 import { useTranslation, Trans } from "react-i18next";
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 import axios from "axios";
 
@@ -17,19 +18,6 @@ const importAll = (r) => {
 };
 const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-const getImageFromPath = (path) => {
-    if (!path) return null;
-    if (path.startsWith("data:image")) return path;
-
-    const filename = path.split('/').pop();
-    const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-    if (!imagePath) {
-        console.error(`Image not found: ${filename}`);
-        return '/placeholder.png';
-    }
-    return images[imagePath] || '/placeholder.png';
-};
 
 const statusIcons = {
     "Order Received": <Package className="w-6 h-6" />,
@@ -298,7 +286,7 @@ export default function MyOrdersPage() {
                                                         className="flex justify-between items-center py-2 border-b border-orange-100"
                                                     >
                                                         <img
-                                                            src={getImageFromPath(product.imagePath)}
+                                                            src={getImageFromPath(product.imagePath, images)}
                                                             alt={product.translatedName}
                                                             className="w-16 h-16 object-cover rounded-lg"
                                                         />

@@ -6,7 +6,7 @@ import adminIcon from '../assets/admin.svg';
 import { useTranslation } from "react-i18next";
 import { LanguageContext } from "../context/LanguageContext";
 
-// Base API URL
+
 const API_URL = "http://localhost:8080";
 
 const AddProductPage = () => {
@@ -85,22 +85,38 @@ const AddProductPage = () => {
         }));
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            const savedPath = response.data.filePath;  // Backend’den gelen path
+
+            setProduct(prev => ({
+                ...prev,
+                imagePath: savedPath  // Artık path hazır
+            }));
+
+            // Önizleme resmi
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
-                
-                const imagePath = `../assets/${file.name}`;
-                setProduct(prev => ({
-                    ...prev,
-                    imagePath: imagePath
-                }));
             };
             reader.readAsDataURL(file);
+
+        } catch (error) {
+            console.error("Upload failed:", error);
+            alert("Image upload failed!");
         }
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();

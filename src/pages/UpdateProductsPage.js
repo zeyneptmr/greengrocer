@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 import AdminSearchBar from "../components/AdminSearchBar";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const UpdateProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -42,15 +43,6 @@ const UpdateProductsPage = () => {
     };
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) return path;
-
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-        return imagePath ? images[imagePath] : '/placeholder.png';
-    };
 
     useEffect(() => {
         fetchProducts();
@@ -168,7 +160,7 @@ const UpdateProductsPage = () => {
                                         >
                                             <div className="w-full h-32 flex justify-center items-center">
                                                 <img
-                                                    src={getImageFromPath(product.imagePath)}
+                                                    src={getImageFromPath(product.imagePath, images)}
                                                     alt={product.translatedName}
                                                     className="w-auto h-32 object-contain"
                                                 />

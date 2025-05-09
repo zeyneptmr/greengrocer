@@ -331,7 +331,6 @@ public class ProductController {
         return capitalized.toString().trim();
     }
 
-
     @GetMapping("/search/name")
     public List<ProductDTO> searchByTranslatedName(
             @RequestParam String productName,
@@ -356,5 +355,15 @@ public class ProductController {
             return dto;
         }).collect(Collectors.toList());
     }
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -6,6 +6,7 @@ import axios from "axios";
 import {FaCheckCircle, FaTimesCircle} from "react-icons/fa";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from 'react-i18next';
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const DiscountPage = () => {
     const [products, setProducts] = useState([]);
@@ -63,23 +64,6 @@ const DiscountPage = () => {
         return parseFloat(price).toFixed(2);
     };
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  
-        }
-
-        const filename = path.split('/').pop(); 
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found : ${filename} `);
-            return '/placeholder.png'; 
-        }
-
-        return images[imagePath] || '/placeholder.png';
-    };
 
     const fetchAllProducts = async () => {
         try {
@@ -386,7 +370,7 @@ const DiscountPage = () => {
                                         </div>
                                         <div className="col-span-2">
                                             <img
-                                                src={getImageFromPath(product.imagePath)}
+                                                src={getImageFromPath(product.imagePath, images)}
                                                 alt={product.translatedName}
                                                 className="w-16 h-16 object-cover rounded-md"
                                             />

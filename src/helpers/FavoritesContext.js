@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const FavoritesContext = createContext();
 
@@ -21,7 +22,7 @@ export const FavoritesProvider = ({ children }) => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
+    /*const getImageFromPath = (path) => {
         if (!path) return null;
         if (path.startsWith("data:image")) return path;
 
@@ -34,7 +35,7 @@ export const FavoritesProvider = ({ children }) => {
         }
 
         return images[imagePath] || '/placeholder.png';
-    };
+    };*/
 
     const formatPrice = (price) => {
         if (typeof price === "number") {
@@ -75,7 +76,7 @@ export const FavoritesProvider = ({ children }) => {
                 id: product.id,
                 name: product.translatedName || product.productName || product.name,
                 price: formatPrice(product.price),
-                image: getImageFromPath(product.imagePath || product.image),
+                image: getImageFromPath(product.imagePath || product.image, images),
                 stock: product.stock,
                 category: product.category
             }));
@@ -97,7 +98,7 @@ export const FavoritesProvider = ({ children }) => {
                     id: product.id,
                     name: product.translatedName || product.productName || product.productKey,
                     price: formatPrice(product.price),
-                    image: getImageFromPath(product.imagePath),
+                    image: getImageFromPath(product.imagePath, images),
                     stock: product.stock,
                     category: product.category
                 }));
@@ -147,7 +148,7 @@ export const FavoritesProvider = ({ children }) => {
                 id: latestProduct.id,
                 name: latestProduct.translatedName || latestProduct.productName || product.name,
                 price: formatPrice(latestProduct.price),
-                image: getImageFromPath(latestProduct.imagePath || product.image),
+                image: getImageFromPath(latestProduct.imagePath || product.image, images),
                 stock: latestProduct.stock,
                 category: latestProduct.category
             } : {

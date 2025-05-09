@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { Search } from "lucide-react";
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const AdminSearchBar = ({ products, setFilteredProductsList }) => {
     const [query, setQuery] = useState("");
@@ -20,14 +21,6 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
     };
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) return path;
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-        return imagePath ? images[imagePath] : '/placeholder.png';
-    };
 
     const formatPrice = (price) => {
         if (typeof price === "number") return price.toFixed(2);
@@ -199,7 +192,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
                             onClick={() => handleProductClick(product)}
                         >
                             <img
-                                src={getImageFromPath(product.imagePath)}
+                                src={getImageFromPath(product.imagePath, images)}
                                 alt={product.translatedName}
                                 className="w-8 h-8 rounded object-cover"
                             />

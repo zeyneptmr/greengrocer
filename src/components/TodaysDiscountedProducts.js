@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductCard from "../components/ProductCard";
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 import { useContext } from "react";
 
 const TodaysDiscountedProducts = ({ onProductsLoaded }) => {
@@ -27,25 +28,6 @@ const TodaysDiscountedProducts = ({ onProductsLoaded }) => {
         }
         return parseFloat(price).toFixed(2);
     };
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  
-        }
-
-        const filename = path.split('/').pop(); 
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  
-        }
-
-        return images[imagePath] || '/placeholder.png';
-    };
-
     
     const fetchDiscountedProducts = async () => {
         try {
@@ -119,7 +101,7 @@ const TodaysDiscountedProducts = ({ onProductsLoaded }) => {
                         name: item.product.translatedName || item.product.productName,
                         price: formatPrice(item.oldPrice),
                         discountedPrice: formatPrice(item.discountedPrice),
-                        image: getImageFromPath(item.product.imagePath),
+                        image: getImageFromPath(item.product.imagePath, images),
                         stock: item.product.stock,
                         category: item.product.category,
                         discountRate: item.discountRate,

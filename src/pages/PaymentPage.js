@@ -8,6 +8,7 @@ import { generateInvoice } from "../helpers/generateInvoice";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 import axios from "axios";
 
@@ -114,25 +115,6 @@ const PaymentPage = () => {
             return price.toFixed(2);
         }
         return parseFloat(price).toFixed(2);
-    };
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Base64 görseli döndür
-        }
-
-        const filename = path.split('/').pop(); // Örnek: "apple.jpg"
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder görseli
-        }
-
-        return images[imagePath] || '/placeholder.png';
     };
 
     const [orderTotal, setOrderTotal] = useState({
@@ -368,7 +350,7 @@ const PaymentPage = () => {
                         <div key={index} className="flex items-center mb-1 border-b pb-3">
                             {/* Product Image */}
                             <img
-                                src={getImageFromPath(item.imagePath)}
+                                src={getImageFromPath(item.imagePath, images)}
                                 alt={item.name}
                                 className="w-16 h-16 object-cover rounded-lg mr-4 shadow-md"
                             />

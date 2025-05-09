@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const DisplayProducts = ({ products }) => {
 
@@ -24,27 +25,6 @@ const DisplayProducts = ({ products }) => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
-        }
-
-        const filename = path.split('/').pop();
-        console.log("Filename extracted:", filename);
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));  // Dosya adıyla eşleşen anahtar
-
-        if (!imagePath) {
-            console.error(`Resim bulunamadı: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
-        }
-
-        console.log("Image path:", imagePath); // Bu noktada imagePath doğru olmalı
-        return images[imagePath] || '/placeholder.png';
-    };
 
     const getTranslatedCategory = (category) => {
         const key = category.toLowerCase().replace(/\s+/g, '');
@@ -85,7 +65,7 @@ const DisplayProducts = ({ products }) => {
                                     className="min-w-[200px] bg-white shadow-lg rounded-lg p-4 transition-all duration-300"
                                 >
                                     <img
-                                        src={getImageFromPath(product.imagePath)}
+                                        src={getImageFromPath(product.imagePath, images)}
                                         alt={product.translatedName}
                                         className="w-40 h-40 object-contain mx-auto"
                                     />

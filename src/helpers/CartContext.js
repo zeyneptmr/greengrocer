@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const CartContext = createContext();
 
@@ -26,7 +27,7 @@ function CartProvider({ children }) {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
+    /*const getImageFromPath = (path) => {
         if (!path) return null;
         if (path.startsWith("data:image")) return path;
 
@@ -39,7 +40,7 @@ function CartProvider({ children }) {
         }
 
         return images[imagePath] || '/placeholder.png';
-    };
+    };*/
 
     const showNotification = (message, type = "info") => {
         setNotification({ message, type });
@@ -58,7 +59,7 @@ function CartProvider({ children }) {
             });
             const updatedCart = response.data.map(item => ({
                 ...item,
-                image: getImageFromPath(item.imagePath),
+                image: getImageFromPath(item.imagePath, images),
             }));
             setCart(updatedCart);
 
@@ -189,11 +190,11 @@ function CartProvider({ children }) {
             // GUEST İSE dil değişse bile localCart'ı tekrar state'e aktar (çünkü translatedName cartta yok)
             const updatedCart = localCart.map(item => ({
                 ...item,
-                image: getImageFromPath(item.imagePath),
+                image: getImageFromPath(item.imagePath, images),
             }));
             setCart(updatedCart);
         }
-    }, [isLoggedIn, language]);  // 👈 language burada bağımlılık
+    }, [isLoggedIn, language]);
 
 
     useEffect(() => {

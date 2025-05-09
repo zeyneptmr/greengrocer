@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
 import {useFavorites} from "../helpers/FavoritesContext";
-//import { getImageFromPath } from "../utils/imageUtils"; // 👈 bunu ekliyoruz
+import { getImageFromPath } from "../helpers/imageHelper";
 
 // Görsel dosyalarını içe aktar
 const importAll = (r) => {
@@ -19,22 +19,6 @@ const importAll = (r) => {
     return images;
 };
 const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-// Görsel yolu çözümleyici
-const getImageFromPath = (path) => {
-    if (!path) return null;
-    if (path.startsWith("data:image")) return path;
-
-    const filename = path.split('/').pop();
-    const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-    if (!imagePath) {
-        console.error(`Image not found: ${filename}`);
-        return '/placeholder.png';
-    }
-
-    return images[imagePath] || '/placeholder.png';
-};
 
 export default function Cart() {
     const {
@@ -163,14 +147,6 @@ export default function Cart() {
         navigate("/payment");
     };
 
-
-    const calculateTotalAmount = () => {
-        //const totalPrice = Number(calculateTotalPrice());
-        //const shippingFee = Number(calculateShippingFee());
-        //const totalAmount = totalPrice + shippingFee;
-        //return totalAmount.toFixed(2); // Sonuçları iki basamağa yuvarla
-    };
-
     return (
         <div className="p-6 flex flex-col lg:flex-row gap-6">
             {/* Cart Products */}
@@ -212,7 +188,7 @@ export default function Cart() {
                                         />
                                     )}
                                     <img
-                                        src={getImageFromPath(item.image)}
+                                        src={getImageFromPath(item.image, images)}
                                         alt={item.translatedName}
                                         className="w-20 h-20 object-contain rounded-md"
                                     />

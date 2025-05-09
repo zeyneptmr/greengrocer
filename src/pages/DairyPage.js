@@ -7,6 +7,7 @@ import dairy2 from '../assets/dairy2.jpg';
 import dairy3 from '../assets/dairy3.jpg';
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper"; // ⬅️ ekle bunu
 
 const importAll = (r) => {
     let images = {};
@@ -38,24 +39,6 @@ const DairyPage = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;
-        }
-
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';
-        }
-
-        return images[filename] || '/placeholder.png';
-    };
-
     useEffect(() => {
         const fetchDairyProducts = async () => {
             try {
@@ -80,7 +63,6 @@ const DairyPage = () => {
                 setLoading(false);
             }
         };
-
         fetchDairyProducts();
     }, [language]);
 
@@ -136,22 +118,29 @@ const DairyPage = () => {
                     <div
                         className={`grid gap-4 ${columns === 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} justify-items-center w-full`}>
                         {currentItems.length > 0 ? (
-                            currentItems.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={{
-                                        id: product.id,
-                                        name: product.translatedName,
-                                        price: formatPrice(product.price),
-                                        image: getImageFromPath(product.imagePath),
-                                        stock: product.stock,
-                                        category: product.category
-                                    }}
-                                />
-                            ))
+                            currentItems.map((product) => {
+                                const finalImage = getImageFromPath(product.imagePath, images);
+                                console.log("💡 Backend'den gelen imagePath:", product.imagePath);
+                                console.log("🖼️ getImageFromPath sonucu:", finalImage);
+
+                                return (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={{
+                                            id: product.id,
+                                            name: product.translatedName,
+                                            price: formatPrice(product.price),
+                                            image: finalImage,
+                                            stock: product.stock,
+                                            category: product.category
+                                        }}
+                                    />
+                                );
+                            })
                         ) : (
                             <p className="col-span-full text-center py-8">{t("noProducts")}</p>
                         )}
+
                     </div>
 
                     {/* Pagination Controls */}

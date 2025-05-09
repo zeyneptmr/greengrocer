@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from 'react-i18next';
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const SearchBar = () => {
     const [query, setQuery] = useState("");
@@ -30,30 +31,6 @@ const SearchBar = () => {
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
-        }
-
-        const filename = path.split('/').pop();
-        console.log("Filename extracted:", filename);
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));  // Dosya adıyla eşleşen anahtar
-
-        if (!imagePath) {
-            console.error(`Resim bulunamadı: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
-        }
-
-        console.log("Image path:", imagePath); // Bu noktada imagePath doğru olmalı
-        return images[imagePath] || '/placeholder.png';
-    };
-
-
-
-
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -69,7 +46,7 @@ const SearchBar = () => {
                     name: product.translatedName,
                     price: product.price,
                     stock: product.stock,
-                    image: getImageFromPath(product.imagePath),
+                    image: getImageFromPath(product.imagePath, images),
                     category: product.category
                 }));
                 setProducts(transformedProducts);
@@ -98,14 +75,14 @@ const SearchBar = () => {
     const handleSearch = async (e) => {
         const searchTerm = e.target.value.toLowerCase();
         setQuery(searchTerm);
-        setSelectedIndex(-1); 
+        setSelectedIndex(-1);
 
         if (searchTerm.length > 0) {
             setShowSuggestions(true);
             setLoading(true);
 
             try {
-            
+
                 const response = await fetch(`${API_BASE_URL}/api/products/search/name?productName=${searchTerm}&language=${language}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -118,14 +95,14 @@ const SearchBar = () => {
                     name: product.translatedName,
                     price: product.price,
                     stock: product.stock,
-                    image: getImageFromPath(product.imagePath),
+                    image: getImageFromPath(product.imagePath, images),
                     category: product.category
                 }));
 
                 setFilteredProducts(transformedProducts);
             } catch (error) {
                 console.error("Error searching products:", error);
-        
+
                 const searchTerms = searchTerm.split(" ");
                 const filtered = products.filter((product) => {
                     const productName = product.name.toLowerCase();
@@ -146,17 +123,17 @@ const SearchBar = () => {
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
-    
+
             if (selectedIndex >= 0 && selectedIndex < filteredProducts.length) {
-            
+
                 const selectedProduct = filteredProducts[selectedIndex];
                 handleProductClick(selectedProduct);
             } else if (query) {
-                
-                navigate(`/search-results`, { 
-                    state: { 
+
+                navigate(`/search-results`, {
+                    state: {
                         results: filteredProducts,
-                        query: query 
+                        query: query
                     }
                 });
                 setShowSuggestions(false);
@@ -179,10 +156,10 @@ const SearchBar = () => {
 
     const handleSearchClick = () => {
         if (query) {
-            navigate("/search-results", { 
-                state: { 
+            navigate("/search-results", {
+                state: {
                     results: filteredProducts,
-                    query: query 
+                    query: query
                 }
             });
             setShowSuggestions(false);
@@ -235,9 +212,9 @@ const SearchBar = () => {
                                     }`}
                                     onClick={() => handleProductClick(product)}
                                 >
-                                    <img src={getImageFromPath(product.image)} alt={product.name} className="w-8 h-8 rounded"/>
+                                    <img src={product.image} alt={product.name} className="w-8 h-8 rounded"/>
                                     <div>
-                                        <p className="text-sm font-medium">{product.name}</p>
+                                    <p className="text-sm font-medium">{product.name}</p>
                                         <p className="text-xs text-gray-600">{product.price.toFixed(2)} TL</p>
                                     </div>
                                 </li>

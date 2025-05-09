@@ -31,7 +31,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
-
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const banners = [banner1];
 // Function to shuffle the array
@@ -59,7 +59,7 @@ export default function HomePage() {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
+    /*const getImageFromPath = (path) => {
         if (!path) return null;
 
         if (path.startsWith("data:image")) {
@@ -77,7 +77,7 @@ export default function HomePage() {
 
         // Find the matching image from the images object
         return images[filename] || '/placeholder.png';
-    };
+    };*/
 
     const categories = [
         { name: t("categories.vegetables"), image: vegetablesImg, path: "/vegetables" },
@@ -242,7 +242,7 @@ export default function HomePage() {
                                 id: product.id,
                                 name: product.translatedName || product.productName,
                                 price: formatPrice(product.price),
-                                image: getImageFromPath(product.imagePath),
+                                image: getImageFromPath(product.imagePath, images),
                                 stock: product.stock,
                                 category: product.category
                             }}

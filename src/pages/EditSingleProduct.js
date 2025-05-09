@@ -4,6 +4,7 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 
 const EditProductPage = () => {
@@ -33,28 +34,6 @@ const EditProductPage = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        // Base64 kontrolü
-        if (path.startsWith("data:image")) {
-            return path;
-        }
-
-        const filename = path.split('/').pop();
-        console.log("Filename extracted:", filename);
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Resim bulunamadı: ${filename}`);
-            return '/placeholder.png';
-        }
-
-        console.log("Image path:", imagePath);
-        return images[imagePath] || '/placeholder.png';
-    };
-
     const [product, setProduct] = useState({
         productName: "",
         price: "",
@@ -78,7 +57,7 @@ const EditProductPage = () => {
    
     useEffect(() => {
         if (product.imagePath) {
-            const imageUrl = getImageFromPath(product.imagePath);
+            const imageUrl = getImageFromPath(product.imagePath, images);
             setPreviewImage(imageUrl);
         }
     }, [product.imagePath]);
@@ -118,19 +97,36 @@ const EditProductPage = () => {
         setProduct({ ...product, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-            
-            const newImagePath = `../assets/${file.name}`;
-            setProduct({ ...product, imagePath: newImagePath });
-            
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewImage(reader.result);
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        setSelectedFile(file);
+
+        // Preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            const uploadedImagePath = response.data.filePath;
+            setProduct(prev => ({
+                ...prev,
+                imagePath: uploadedImagePath
+            }));
+        } catch (error) {
+            console.error("Image upload failed", error);
+            alert("Görsel yüklenemedi.");
         }
     };
 

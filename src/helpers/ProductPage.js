@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import noResultsImage from '../assets/noresult.png';
-import { LanguageContext } from "../context/LanguageContext";  // ✅ Language ekledik
+import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const importAll = (r) => {
     let images = {};
@@ -32,7 +33,7 @@ const ProductPage = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
+    /*const getImageFromPath = (path) => {
         if (!path) return null;
         if (path.startsWith("data:image")) {
             return path;
@@ -44,7 +45,7 @@ const ProductPage = () => {
             return '/placeholder.png';
         }
         return images[imagePath] || '/placeholder.png';
-    };
+    };*/
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -120,7 +121,7 @@ const ProductPage = () => {
                     id: product.id,
                     name: product.translatedName || product.productName,  // ✅ Çeviri varsa göster
                     price: formatPrice(product.price),
-                    image: getImageFromPath(product.imagePath),
+                    image: getImageFromPath(product.imagePath, images),
                     stock: product.stock,
                     category: product.category
                 }}

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import noResultsImage from '../assets/noresult.png';
 import { LanguageContext } from "../context/LanguageContext";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const importAll = (r) => {
     let images = {};
@@ -23,7 +24,7 @@ const API_BASE_URL = "http://localhost:8080";
 
 const SearchResults = () => {
     const location = useLocation();
-    const { language } = useContext(LanguageContext); // ✅ Dili alıyoruz
+    const { language } = useContext(LanguageContext);
     const [results, setResults] = useState([]);
 
     const queryFromState = location.state?.query;
@@ -32,20 +33,6 @@ const SearchResults = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;
-        }
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-        if (!imagePath) {
-            console.error(`Resim bulunamadı: ${filename}`);
-            return '/placeholder.png';
-        }
-        return images[imagePath] || '/placeholder.png';
-    };
 
     useEffect(() => {
         const fetchSearchResults = async () => {
@@ -61,7 +48,7 @@ const SearchResults = () => {
                     name: product.translatedName,
                     price: product.price,
                     stock: product.stock,
-                    image: product.imagePath,
+                    image: getImageFromPath(product.imagePath, images),
                     category: product.category
                 }));
 
@@ -121,7 +108,7 @@ const SearchResults = () => {
                             id: product.id,
                             name: product.name,
                             price: formatPrice(product.price),
-                            image: getImageFromPath(product.image),
+                            image: product.image,
                             stock: product.stock,
                             category: product.category
                         }}

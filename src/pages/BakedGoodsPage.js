@@ -7,6 +7,7 @@ import bakedgoods2 from '../assets/bakedgoods2.jpg';
 import bakedgoods3 from '../assets/bakedgoods3.jpg';
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const importAll = (r) => {
     let images = {};
@@ -38,21 +39,6 @@ const BakedGoodsPage = () => {
     const [itemsPerPage] = useState(8);
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
-
-    const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) return path;
-
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';
-        }
-
-        return images[filename] || '/placeholder.png';
-    };
 
     // Fetch products
     useEffect(() => {
@@ -138,7 +124,7 @@ const BakedGoodsPage = () => {
                                         id: product.id,
                                         name: product.translatedName,
                                         price: formatPrice(product.price),
-                                        image: getImageFromPath(product.imagePath),
+                                        image: getImageFromPath(product.imagePath, images),
                                         stock: product.stock,
                                         category: product.category
                                     }}

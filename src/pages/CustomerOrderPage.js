@@ -6,9 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight, Info, Eye } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from "../context/LanguageContext";
-
-
-
+import { getImageFromPath } from "../helpers/imageHelper";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -34,43 +32,6 @@ try {
         'placeholder.png': '/placeholder.png'
     };
 }
-
-
-const getImageFromPath = (path) => {
-    
-    if (!path) return '/api/placeholder/80/80';
-    
-    
-    if (path.startsWith("data:image")) return path;
-
-    try {
-        
-        const filename = path.split('/').pop();
-        
-        
-        if (images[filename]) {
-            return images[filename];
-        }
-        
-    
-        const imagePath = Object.keys(images).find(key => 
-            key.includes(filename.split('.')[0])
-        );
-        
-        if (imagePath) {
-            return images[imagePath];
-        }
-        
-    
-        console.warn(`Image not found: ${filename}, using placeholder`);
-        return '/api/placeholder/80/80';
-    } catch (err) {
-        console.error('Error in getImageFromPath:', err);
-        return '/api/placeholder/80/80';
-    }
-};
-
-
 
 const CustomerOrderPage = () => {
     const [allOrders, setAllOrders] = useState([]);
@@ -563,7 +524,7 @@ const CustomerOrderPage = () => {
                                                             <div className="w-20 h-20 bg-gray-200 rounded flex-shrink-0 mr-3 overflow-hidden">
                                                                 {product.imagePath ? (
                                                                     <img 
-                                                                        src={getImageFromPath(product.imagePath)}
+                                                                        src={getImageFromPath(product.imagePath, images)}
                                                                         alt={product.translatedName}
                                                                         className="w-full h-full object-cover"
                                                                         onError={(e) => {
