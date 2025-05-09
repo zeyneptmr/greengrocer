@@ -345,7 +345,7 @@ export default function MyOrdersPage() {
                     </div>
                 ) : (
                     <div className="flex justify-center items-center min-h-[300px]">
-                        <h2 className="text-xl font-bold text-green-600">No orders found in this time range.</h2>
+                        <h2 className="text-xl font-bold text-green-600">{t("noOrders")}</h2>
                     </div>
                 )}
             </div>
