@@ -34,13 +34,13 @@ const BakedGoodsPage = () => {
 
     const { t } = useTranslation('bakedgoods');
 
-    // Pagination States
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    // Fetch products
+    
     useEffect(() => {
         const fetchBakedGoods = async () => {
             try {
@@ -85,7 +85,7 @@ const BakedGoodsPage = () => {
         setBakedGoodsProducts(sortedArray);
     }, [sortOption]);
 
-    // Pagination calculations
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = bakedGoodsProducts.slice(indexOfFirstItem, indexOfLastItem);

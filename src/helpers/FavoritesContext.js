@@ -22,20 +22,7 @@ export const FavoritesProvider = ({ children }) => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    /*const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) return path;
 
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';
-        }
-
-        return images[imagePath] || '/placeholder.png';
-    };*/
 
     const formatPrice = (price) => {
         if (typeof price === "number") {

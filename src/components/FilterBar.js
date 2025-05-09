@@ -24,7 +24,7 @@ const FilterBar = ({ columns, setColumns, setSortOption }) => {
                         {[...Array(16)].map((_, index) => (
                             <div
                                 key={index}
-                                className={`w-1 h-1 ${columns === 4 ? "bg-white" : "bg-black"} rounded`} // 4x4 grid has white, 3x3 black
+                                className={`w-1 h-1 ${columns === 4 ? "bg-white" : "bg-black"} rounded`} 
                             ></div>
                         ))}
                     </div>

@@ -6,7 +6,7 @@ import org.example.greengrocer.model.OrderTotal;
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.OrderTotalRepository;
 import org.example.greengrocer.repository.UserRepository;
-import org.example.greengrocer.model.CartItem;
+
 import org.example.greengrocer.repository.CartItemRepository;
 import org.example.greengrocer.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/ordertotal")

@@ -7,7 +7,7 @@ import dairy2 from '../assets/dairy2.jpg';
 import dairy3 from '../assets/dairy3.jpg';
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
-import { getImageFromPath } from "../helpers/imageHelper"; // ⬅️ ekle bunu
+import { getImageFromPath } from "../helpers/imageHelper"; 
 
 const importAll = (r) => {
     let images = {};
@@ -33,9 +33,9 @@ const DairyPage = () => {
     const [error, setError] = useState(null);
     const { t } = useTranslation('dairy');
 
-    // Pagination States
+    
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8); // İstersen bunu artırabilirsin
+    const [itemsPerPage] = useState(8); 
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
@@ -84,7 +84,7 @@ const DairyPage = () => {
         setDairyProducts(sortedArray);
     }, [sortOption]);
 
-    // Pagination hesaplamaları
+    
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = dairyProducts.slice(indexOfFirstItem, indexOfLastItem);

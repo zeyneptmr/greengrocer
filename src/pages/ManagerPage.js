@@ -63,7 +63,7 @@ const ManagerPage = () => {
         ],
     });
 
-    // Get month names based on current language
+    
     const getMonthNames = () => {
         return [
             t("january"), t("february"), t("march"), t("april"),
@@ -74,12 +74,12 @@ const ManagerPage = () => {
 
     const months = getMonthNames();
 
-    // Update month names when language changes
+    
     useEffect(() => {
-        // Update months array when language changes
+    
         const updatedMonths = getMonthNames();
         
-        // Update chart data with translated label
+
         setSalesChartData(prevData => ({
             ...prevData,
             datasets: [{
@@ -122,9 +122,9 @@ const ManagerPage = () => {
                     .map(([key, value]) => ({
                         month: key,
                         value,
-                        index: monthMap[key] ?? 99 // Bilinmeyen varsa sona atsın
+                        index: monthMap[key] ?? 99 
                     }))
-                    .sort((a, b) => a.index - b.index); // Sıralama: Ocaktan Aralığa
+                    .sort((a, b) => a.index - b.index); 
 
                 const translatedLabels = monthEntries.map(item => months[item.index] || item.month);
                 const salesValues = monthEntries.map(item => item.value);
@@ -197,7 +197,7 @@ const ManagerPage = () => {
 
                 const orderDate = new Date(order.createdAt);
 
-                // Local tarih karşılaştırması (UTC problemi çözülüyor)
+    
                 const localDateStr = orderDate.getFullYear() + "-" +
                     String(orderDate.getMonth() + 1).padStart(2, '0') + "-" +
                     String(orderDate.getDate()).padStart(2, '0');
@@ -206,7 +206,7 @@ const ManagerPage = () => {
             });
 
 
-            // Sort orders by createdAt timestamp in descending order (newest first)
+        
             const sortedDateOrders = dateOrders.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
@@ -232,7 +232,7 @@ const ManagerPage = () => {
             }));
             
             setDateOrders(ordersWithProducts);
-            setCurrentOrderIndex(0); // Reset to first order (now the most recent one)
+            setCurrentOrderIndex(0); 
         } catch (err) {
             console.error("Error fetching orders for date:", err);
             setDateOrders([]);
@@ -313,7 +313,7 @@ const ManagerPage = () => {
         }
     };
 
-    // Get the appropriate day names based on language
+    
     const getDayNames = () => {
         if (language === 'tr') {
             return ['Pzr', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cmt'];
@@ -358,7 +358,7 @@ const ManagerPage = () => {
         }
     };
 
-    // Get localized text for orders based on language and count
+
     const getOrdersText = (count) => {
         if (language === 'tr') {
             return count === 1 ? 'Sipariş' : 'Sipariş';
@@ -366,7 +366,7 @@ const ManagerPage = () => {
         return count === 1 ? 'Order' : 'Orders';
     };
 
-    // Get localized navigation buttons text
+    
     const getNavButtonText = (type) => {
         if (type === 'prev') {
             return language === 'tr' ? 'Önceki' : 'Previous';
@@ -374,7 +374,7 @@ const ManagerPage = () => {
         return language === 'tr' ? 'Sonraki' : 'Next';
     };
 
-    // Get localized order count text
+    
     const getOrderCountText = (current, total) => {
         if (language === 'tr') {
             return `Sipariş ${current} / ${total}`;

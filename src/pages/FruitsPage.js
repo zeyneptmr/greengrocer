@@ -32,7 +32,7 @@ const FruitsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Pagination States
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8); //
 
@@ -40,7 +40,7 @@ const FruitsPage = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
     
-    // Fetch products from API
+
     useEffect(() => {
         const fetchFruits = async () => {
             try {
@@ -52,7 +52,7 @@ const FruitsPage = () => {
                 }
                 
                 const data = await response.json();
-                // Filter only fruit products
+            
                 const fruitProducts = data.filter(product => 
                     product.category.toLowerCase() === "fruits"
                 );
@@ -89,7 +89,7 @@ const FruitsPage = () => {
         setFruits(sortedArray);
     }, [sortOption]);
 
-    // Pagination hesaplamaları
+    
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = fruits.slice(indexOfFirstItem, indexOfLastItem);

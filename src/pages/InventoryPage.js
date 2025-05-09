@@ -57,7 +57,7 @@ const Inventory = () => {
         setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
     }, [filteredProducts]);
 
-    // Ürünleri veritabanından çek
+    
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -74,7 +74,7 @@ const Inventory = () => {
         fetchProducts();
     }, [language]);
 
-    // Tek ürün stoğunu güncelle
+
     const updateProductStock = (id, newStock) => {
         const updated = products.map(product =>
             product.id === id ? { ...product, stock: isNaN(newStock) ? 0 : newStock } : product
@@ -84,7 +84,7 @@ const Inventory = () => {
     };
 
 
-    // Tüm ürünlerin stoğunu belirli bir değere set et
+    
     const updateAllProductStocks = (newStock) => {
         if (isNaN(newStock) || newStock === '') {
             setErrorMessage(t("invalidNumber"));
@@ -101,7 +101,7 @@ const Inventory = () => {
         setFilteredProducts(updated);
     };
 
-    // Tüm ürünlere stok ekle
+    
     const addStockToAllProducts = (addAmount) => {
         const amountToAdd = parseInt(addAmount);
         if (isNaN(amountToAdd)) return;
@@ -115,7 +115,7 @@ const Inventory = () => {
         setFilteredProducts(updated);
     };
 
-    // Stokları veritabanına kaydet
+
     const saveAllStocks = async () => {
         try {
             await Promise.all(products.map(product => {

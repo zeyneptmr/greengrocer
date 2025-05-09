@@ -7,7 +7,7 @@ import org.example.greengrocer.repository.ProductTranslationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,19 +41,19 @@ public class ProductTranslationService {
         ).build();
     }
 
-    // language detection
+
     public String detectLanguage(String text) {
         if (text == null || text.trim().isEmpty()) {
-            return "en"; // Default fallback
+            return "en"; 
         }
         Language detectedLanguage = languageDetector.detectLanguageOf(text);
         String langCode = detectedLanguage.getIsoCode639_1().toString().toLowerCase();
-        System.out.println("Algılanan Dil: " + langCode);  // LOG
-        return langCode; // "en" veya "tr"
+        System.out.println("Algılanan Dil: " + langCode);  
+        return langCode; 
     }
 
 
-    // ------------------ MyMemory API Entegrasyonu ------------------ //
+
 
     public String autoTranslate(String text, String sourceLang, String targetLang) {
 

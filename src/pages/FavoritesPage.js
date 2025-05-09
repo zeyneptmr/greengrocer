@@ -11,9 +11,9 @@ const FavoritesPage = () => {
     const { favorites, refreshFavorites, loading } = useFavorites();
     const { language } = useContext(LanguageContext);
     const { t } = useTranslation('favorites');
-    const [key, setKey] = useState(0); // Force re-render key
+    const [key, setKey] = useState(0); 
 
-    // Language değiştiğinde favorileri yenile
+    
     useEffect(() => {
         console.log(`FavoritesPage: Language changed to ${language}, refreshing favorites`);
         refreshFavorites();

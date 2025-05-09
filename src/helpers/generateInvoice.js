@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import logo from '../assets/logoyazısız.jpeg'; // Kendi logo yolunu buraya yaz
+import logo from '../assets/logoyazısız.jpeg'; 
 
 
 export const generateInvoice = (orderData) => {
@@ -67,7 +67,7 @@ export const generateInvoice = (orderData) => {
 
     const t = translations[orderData.language || 'en'];
 
-    doc.setFont("helvetica");  // Modern ve şık bir font
+    doc.setFont("helvetica");  
 
     const img = new Image();
     img.src = logo;
@@ -78,7 +78,7 @@ export const generateInvoice = (orderData) => {
 
         doc.setFontSize(24);
         doc.setTextColor(green);
-        doc.text(t.eInvoice, 105, 50, {align: 'center'});  // Başlık biraz daha aşağı alındı
+        doc.text(t.eInvoice, 105, 50, {align: 'center'});  
 
         doc.setFontSize(10);
         doc.setTextColor(0);
@@ -87,7 +87,7 @@ export const generateInvoice = (orderData) => {
         doc.text(t.companyTaxOffice, 150, 27);
 
         const addressParts = orderData.address.split(',').map(part => part.trim());
-        const middleValues = addressParts.slice(1, 3);  // Ortadaki 2 veri
+        const middleValues = addressParts.slice(1, 3);  
 
         const buyerInfo = [
             [t.customer + ':', `${orderData.userName} ${orderData.userSurname}`],

@@ -25,7 +25,7 @@ const ProductPage = () => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("query");
 
-    const { language } = useContext(LanguageContext);  // ✅ Dil bilgisini aldık
+    const { language } = useContext(LanguageContext);  
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -33,25 +33,13 @@ const ProductPage = () => {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    /*const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) {
-            return path;
-        }
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-        if (!imagePath) {
-            console.error(`Resim bulunamadı: ${filename}`);
-            return '/placeholder.png';
-        }
-        return images[imagePath] || '/placeholder.png';
-    };*/
+    
 
     useEffect(() => {
         const fetchProduct = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/api/products/${id}?language=${language}`); // ✅ language parametresi eklendi
+                const response = await fetch(`http://localhost:8080/api/products/${id}?language=${language}`); 
                 if (!response.ok) {
                     throw new Error('Product not found');
                 }
@@ -70,9 +58,9 @@ const ProductPage = () => {
         if (id) {
             fetchProduct();
         }
-    }, [id, language]); // ✅ language değişirse yeniden fetch yap
+    }, [id, language]); 
 
-    // ✅ YAZILARIN DİL KARŞILIKLARI
+
     const loadingText = language === "tr" ? "Ürün yükleniyor..." : "Loading product...";
     const notFoundTitle = language === "tr"
         ? (query ? `"${query}" için sonuç bulunamadı :(` : "Ürün bulunamadı")
@@ -119,7 +107,7 @@ const ProductPage = () => {
                 <ProductCard
                     key={product.id} product={{
                     id: product.id,
-                    name: product.translatedName || product.productName,  // ✅ Çeviri varsa göster
+                    name: product.translatedName || product.productName,  
                     price: formatPrice(product.price),
                     image: getImageFromPath(product.imagePath, images),
                     stock: product.stock,

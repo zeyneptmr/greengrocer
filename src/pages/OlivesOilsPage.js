@@ -31,7 +31,7 @@ const OlivesOilsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Pagination States
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
 
@@ -85,7 +85,7 @@ const OlivesOilsPage = () => {
         setOlivesOils(sortedArray);
     }, [sortOption]);
 
-    // Pagination calculations
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = olivesOils.slice(indexOfFirstItem, indexOfLastItem);

@@ -104,7 +104,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
             if (selectedIndex >= 0 && suggestions[selectedIndex]) {
                 handleProductClick(suggestions[selectedIndex]);
             } else if (suggestions.length > 0) {
-                // Enter’a basınca seçim yoksa ilk ürünü seç
+            
                 handleProductClick(suggestions[0]);
             } else {
                 setShowSuggestions(false);
@@ -141,7 +141,7 @@ const AdminSearchBar = ({ products, setFilteredProductsList }) => {
         setShowSuggestions(false);
     };
 
-    // Dil bazlı metinler
+    
     const placeholderText = language === "tr"
         ? "Ürün adı veya kategoriye göre ara..."
         : "Search products by name or category...";

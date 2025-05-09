@@ -216,7 +216,7 @@ const CustomerOrderPage = () => {
         return null;
     };
 
-    // Helper function to translate English status to current language
+
     const getStatusTranslation = (englishStatus) => {
         const statusMapping = {
             "Order Received": t('orderStatus.orderReceived'),

@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import {useFavorites} from "../helpers/FavoritesContext";
 import { getImageFromPath } from "../helpers/imageHelper";
 
-// Görsel dosyalarını içe aktar
+
 const importAll = (r) => {
     let images = {};
     r.keys().forEach((item) => {
@@ -72,18 +72,18 @@ export default function Cart() {
 
             if (response.status === 200) {
                 console.log("OrderTotal başarıyla güncellendi.");
-                // UI'ye başarı mesajı gösterilebilir
+                
             }
             else if (response.status === 404) {
                 console.error("Order Total'a yansıtacak veri yok.");
-                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
+                
             }
             else if (response.status === 403) {
                 console.error("Sepet boş, order total'a yansıtılacak veri yok.");
-                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
+                
             } else {
                 console.error("OrderTotal güncellenirken bir sorun oluştu.");
-                // UI'ye kullanıcıya özel bir mesaj gösterilebilir
+            
             }
         } catch (error) {
             console.error("OrderTotal güncellenirken bir hata oluştu:", error);
@@ -105,7 +105,7 @@ export default function Cart() {
         }
     };
 
-    // Sepet değişince OrderTotal'ı backend'e gönder
+    
     useEffect(() => {
         const totalProductCount = getTotalProductTypes();
         const totalPrice = calculateTotalPrice();
@@ -113,7 +113,7 @@ export default function Cart() {
         updateOrderTotal(totalProductCount, totalPrice, shippingFee);
     }, [cart]);
 
-    // Backend'den veriyi çekme işlemi (500ms delay ile)
+    
     useEffect(() => {
         const timeout = setTimeout(() => {
             fetchOrderTotal();

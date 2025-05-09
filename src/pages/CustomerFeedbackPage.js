@@ -4,16 +4,16 @@ import managerIcon from "../assets/manager.svg";
 import { FaReply, FaCheck, FaTrash } from 'react-icons/fa';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import axios from "axios"; // Axios import
+import axios from "axios"; 
 import { useTranslation } from "react-i18next";
 
 const ContactFormsPage = () => {
     const [forms, setForms] = useState([]);
-    const [unreadForms, setUnreadForms] = useState([]); // Add unreadForms state
+    const [unreadForms, setUnreadForms] = useState([]); 
     const [expandedId, setExpandedId] = useState(null);
-    const unreadCount = unreadForms.length; // Use unreadForms for unread count
+    const unreadCount = unreadForms.length; 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showUnreadOnly, setShowUnreadOnly] = useState(false); // Yeni: filtre kontrolü
+    const [showUnreadOnly, setShowUnreadOnly] = useState(false); 
     const [selectedFormId, setSelectedFormId] = useState(null);
     const [selectedTopic, setSelectedTopic] = useState("all");
 
@@ -29,10 +29,10 @@ const ContactFormsPage = () => {
             .catch(error => {
                 console.error("There was an error fetching the contact forms!", error);
             });
-        // Okunmamış formları al
+        
         axios.get("http://localhost:8080/api/contact/unread")
             .then(response => {
-                setUnreadForms(response.data); // Set unreadForms state
+                setUnreadForms(response.data); 
             })
             .catch(error => {
                 console.error("There was an error fetching unread contact forms!", error);
@@ -43,7 +43,7 @@ const ContactFormsPage = () => {
         window.location.href = `mailto:${email}`;
     };
 
-    // Okundu olarak işaretleme işlevi
+    
     const handleMarkAsRead = async (id) => {
         try {
             const response = await axios.patch(`http://localhost:8080/api/contact/${id}`, {
@@ -60,7 +60,7 @@ const ContactFormsPage = () => {
         try {
             await axios.delete(`http://localhost:8080/api/contact/${selectedFormId}`);
             setForms(forms.filter(form => form.id !== selectedFormId));
-            setUnreadForms(unreadForms.filter(form => form.id !== selectedFormId)); // Remove from unread list
+            setUnreadForms(unreadForms.filter(form => form.id !== selectedFormId)); 
             setShowDeleteModal(false);
             setSelectedFormId(null);
         } catch (error) {

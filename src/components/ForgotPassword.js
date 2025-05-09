@@ -13,11 +13,11 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
     const [isCodeSent, setIsCodeSent] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
     const [countdown, setCountdown] = useState(60);
-    const [emailError, setEmailError] = useState('');  // Error message for email
+    const [emailError, setEmailError] = useState('');  
     const [codeError, setCodeError] = useState('');
     const [serverCode, setServerCode] = useState('');
-    const [loading, setLoading] = useState(false); // ⏳ Spinner kontrolü
-    const [codeVerified, setCodeVerified] = useState(false); // Başarı mesajı durumu
+    const [loading, setLoading] = useState(false); 
+    const [codeVerified, setCodeVerified] = useState(false); 
     const [isResetPassword, setIsResetPassword] = useState(false);
     const navigate = useNavigate();
     const { t } = useTranslation("forgotpassword");
@@ -31,24 +31,24 @@ const ForgotPassword = ({ onClose, closeParentModal }) => {
 
 
     const handleBackToLogin = () => {
-        onClose(); // Modal'ı kapat
-        navigate('/login'); // Geri dönme tuşuna basıldığında login sayfasına yönlendir
+        onClose(); 
+        navigate('/login'); 
     };
 
-    // Email input change handler
+    
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
         setEmail(inputEmail);
-        // Validate email format as user types
+    
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!emailRegex.test(inputEmail)) {
             setEmailError(t("emailError"));
         } else {
-            setEmailError('');  // Clear error if email is valid
+            setEmailError('');  
         }
     };
 
-   // Send verification code
+   
 const handleSendCode = async () => {
     if (!email) {
         setEmailError(t("emailError"));
@@ -149,7 +149,7 @@ const handleResendCode = async () => {
     }
 };
 
-    // Verify code input handler
+
     const handleVerifyCode = async () => {
         if (!verificationCode) {
             setCodeError(t("codeError"));
@@ -186,7 +186,7 @@ const handleResendCode = async () => {
         }
     };
 
-    // Handle input for verification code
+
     const handleVerificationCodeChange = (e, index) => {
         const newCode = verificationCode.split('');
         newCode[index] = e.target.value;
@@ -235,7 +235,7 @@ const handleResendCode = async () => {
                             &times;
                         </button>
                         
-                        {/* Geri dönme butonu */}
+                        {/* Back button */}
                         <button
                             onClick={handleBackToLogin}
                             className="absolute top-4 left-4 text-lg text-gray-500 hover:text-green-600 font-semibold transition"
@@ -243,7 +243,7 @@ const handleResendCode = async () => {
                             ⬅️ {t('backToLogin')}
                         </button>
     
-                        {/* Başlık */}
+                        {/* Title */}
                         <h2 className="text-3xl font-extrabold text-green-700 text-center mb-6 mt-10">
                             🔐 {t('title')}
                         </h2>

@@ -15,15 +15,15 @@ const UpdateProductsPage = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const categoryRefs = useRef({}); // Scroll için referanslar
+    const categoryRefs = useRef({}); 
 
     const { language } = useContext(LanguageContext);
 
-    const { t } = useTranslation("updateproducts"); // JSON dosyanın namespace'i
+    const { t } = useTranslation("updateproducts"); 
 
     const getTranslatedCategory = (category) => {
         const key = category.toLowerCase().replace(/\s+/g, '');
-        return t(`categories.${key}`, category);  // Çeviri yoksa orijinali göster
+        return t(`categories.${key}`, category);  
     };
 
 
@@ -135,7 +135,7 @@ const UpdateProductsPage = () => {
                         {Object.keys(categorizedProducts).map((category) => (
                             <button
                                 key={category}
-                                onClick={() => scrollToCategory(category)} // Tıklandığında scrollToCategory çağrılır
+                                onClick={() => scrollToCategory(category)} 
                                 className="bg-white hover:bg-green-600 text-black font-medium px-6 py-2 rounded-full shadow-sm border border-gray-300 transition duration-300 mb-2 md:mb-0"
                             >
                                 {getTranslatedCategory(category)}

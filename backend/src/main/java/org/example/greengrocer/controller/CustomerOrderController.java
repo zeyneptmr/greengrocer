@@ -20,7 +20,7 @@ import org.example.greengrocer.model.CustomerOrder;
 import org.example.greengrocer.model.OrderProduct;
 import org.example.greengrocer.model.OrderStatus;
 import org.example.greengrocer.model.OrderTotal;
-import org.example.greengrocer.model.Product;
+
 import org.example.greengrocer.model.User;
 import org.example.greengrocer.repository.AddressRepository;
 import org.example.greengrocer.repository.CartItemRepository;

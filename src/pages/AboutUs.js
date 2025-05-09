@@ -20,22 +20,22 @@ const AboutUs = () => {
             title: t("items.ourMission.title"),
             text: t("items.ourMission.text"),
             color: "bg-green-700",
-            icon: "🎯", // Örnek bir emoji ikonu
-            background: "bg-gradient-to-r from-green-500 to-blue-500" // İkon ve arka plan rengiyle daha dikkat çekici
+            icon: "🎯", 
+            background: "bg-gradient-to-r from-green-500 to-blue-500" 
         },
         {
             title: t("items.ourProducts.title"),
             text: t("items.ourProducts.text"),
             color: "bg-orange-600",
-            icon: "🥕", // Sebze ikonu
-            background: "bg-gradient-to-r from-orange-400 to-yellow-500" // Ürünleri vurgulayan renk geçişi
+            icon: "🥕", 
+            background: "bg-gradient-to-r from-orange-400 to-yellow-500" 
         },
         {
             title: t("items.forFuture.title"),
             text: t("items.forFuture.text"),
             color: "bg-yellow-500",
-            icon: "🌱", // Doğa ikonu
-            background: "bg-gradient-to-r from-yellow-400 to-green-500" // Çevreyi temsil eden renk geçişi
+            icon: "🌱", 
+            background: "bg-gradient-to-r from-yellow-400 to-green-500" 
         },
     ];
 
@@ -86,13 +86,13 @@ const AboutUs = () => {
             <span className={`${activeItems.includes(index) ? 'text-xl' : 'text-lg'} font-semibold`}>
                 {item.title}
             </span>
-                        {/* İkonu aşağıya taşıdım */}
+            
                         <div className="text-5xl mt-3">{item.icon}</div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Metinler, açılan baloncuğun altında */}
+        
             <div className="flex gap-16 items-center justify-center w-full mt-6">
                 {items.map((item, index) => (
                     activeItems.includes(index) && (
@@ -103,7 +103,7 @@ const AboutUs = () => {
                             animate={{opacity: 1, scale: 1}}
                             transition={{duration: 0.3}}
                             style={{
-                                backgroundColor: "#F5F5DC", //creme background
+                                backgroundColor: "#F5F5DC", 
                             }}
                         >
                             {item.text}
@@ -116,7 +116,7 @@ const AboutUs = () => {
             <div className="h-16"></div>
 
 
-            {/* Başarılarımız Alanı */}
+            {/* Our Achievements Area */}
             <div className="max-w-6xl bg-white border-l-8 border-orange-500 shadow-xl rounded-2xl p-10 mb-20">
                 <h2 className="text-3xl font-bold text-orange-600 mb-10 text-center">{t("achievements.title")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-700 text-lg">
@@ -131,7 +131,7 @@ const AboutUs = () => {
                 </div>
             </div>
 
-            {/* Amaçlarımız (Our Purpose) */}
+            {/* Our Purpose Section */}
             <div className="max-w-6xl bg-white border-l-8 border-green-600 shadow-xl rounded-2xl p-10 mb-20">
                 <h2 className="text-3xl font-bold text-green-700 mb-10 text-center">{t("purpose.title")}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-700 text-lg">
@@ -159,16 +159,16 @@ const AboutUs = () => {
                 </div>
             </div>
 
-            {/* Müşteri Memnuniyet Oranı */}
+            {/* Customer Satisfaction Rate */}
             <div className="flex flex-col items-center justify-center mb-20">
                 <div className="text-3xl font-bold text-green-800 mb-4 text-center">
                     {t("satisfaction.title")}
                 </div>
 
-                {/* Memnuniyet Oranları */}
+                {/* Satisfaction Rates */}
                 <div className="flex justify-center gap-12 mb-6">
 
-                    {/* 98% Memnuniyet Oranı */}
+                    {/* 98% Satisfaction Rate */}
                     <div className="flex flex-col items-center">
                         <div
                             className="w-36 h-36 flex items-center justify-center rounded-full bg-gradient-to-tr from-green-500 to-orange-400 shadow-lg mb-4">
@@ -181,7 +181,7 @@ const AboutUs = () => {
                         </p>
                     </div>
 
-                    {/* 95% Memnuniyet Oranı */}
+                    {/* 95% Satisfaction Rate */}
                     <div className="flex flex-col items-center">
                         <div
                             className="w-36 h-36 flex items-center justify-center rounded-full bg-gradient-to-tr from-blue-500 to-teal-400 shadow-lg mb-4">
@@ -194,7 +194,7 @@ const AboutUs = () => {
                         </p>
                     </div>
 
-                    {/* 92% Memnuniyet Oranı */}
+                    {/* 92% Satisfaction Rate */}
                     <div className="flex flex-col items-center">
                         <div
                             className="w-36 h-36 flex items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-pink-400 shadow-lg mb-4">

@@ -28,12 +28,12 @@ const DisplayProducts = ({ products }) => {
 
     const getTranslatedCategory = (category) => {
         const key = category.toLowerCase().replace(/\s+/g, '');
-        return t(`categories.${key}`, category);  // Çeviri yoksa orijinali kullan
+        return t(`categories.${key}`, category);  
     };
-    // Helper function to get category key
+
     const getCategoryKey = (category) => category.toLowerCase();
     
-    // Get unique categories
+    
     const uniqueCategories = [];
     const categoryMap = new Map();
     
@@ -48,7 +48,7 @@ const DisplayProducts = ({ products }) => {
     return (
         <div className="p-6">
             {uniqueCategories.map(category => {
-                // Filter products by category
+            
                 const categoryProducts = products.filter(
                     product => getCategoryKey(product.category) === getCategoryKey(category)
                 );

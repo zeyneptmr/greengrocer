@@ -22,7 +22,7 @@ const DiscountPage = () => {
     const { t } = useTranslation('discount');
 
 
-    // Bildirimler için state
+    
     const [successNotification, setSuccessNotification] = useState('');
     const [errorNotification, setErrorNotification] = useState('');
 
@@ -252,7 +252,7 @@ const DiscountPage = () => {
         }
     };
 
-    // Check if discount rate is valid
+    
     const isDiscountRateValid = discountRate !== '' && parseInt(discountRate) > 0;
 
     return (

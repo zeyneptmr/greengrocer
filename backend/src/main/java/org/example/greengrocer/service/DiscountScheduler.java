@@ -20,7 +20,7 @@ public class DiscountScheduler {
     @Autowired
     private ProductRepository productRepository;
     
-    // Run every hour to check for expired discounts
+    
     @Scheduled(fixedRate = 3600000)
     public void checkExpiredDiscounts() {
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);

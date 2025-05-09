@@ -54,7 +54,7 @@ public class ProductService {
         return null;
     }
 
-     // Search methods
+     
      public List<Product> searchByProductKey(String productKey) {
          return productRepository.findByProductKeyContainingIgnoreCase(productKey);
      }
@@ -89,20 +89,12 @@ public class ProductService {
     @Autowired
     private ProductTranslationService translationService;
 
-    /*public List<Product> searchByTranslatedName(String translatedName, String language) {
-        List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
-        return translations.stream()
-                .map(t -> productRepository.findByProductKey(t.getProductKey()))
-                .filter(opt -> opt.isPresent())
-                .map(opt -> opt.get())
-                .collect(Collectors.toList());
-    }*/
-
+   
     public List<Product> searchByTranslatedName(String translatedName, String language) {
         List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
         return translations.stream()
                 .map(t -> productRepository.findByProductKey(t.getProductKey()))
-                .flatMap(opt -> opt.stream())  // Optional varsa içindeki Product'ı açar
+                .flatMap(opt -> opt.stream())  
                 .collect(Collectors.toList());
     }
 

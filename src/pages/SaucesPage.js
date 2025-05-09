@@ -32,7 +32,7 @@ const SaucesPage = () => {
     const [error, setError] = useState(null);
     const { t } = useTranslation('sauces');
 
-    // Pagination States
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
 
@@ -80,7 +80,7 @@ const SaucesPage = () => {
         setSauces(sortedArray);
     }, [sortOption]);
 
-    // Pagination hesaplamaları
+    
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = sauces.slice(indexOfFirstItem, indexOfLastItem);
