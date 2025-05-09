@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public class JwtAuthentication extends AbstractAuthenticationToken {
 
     private final String email;
-    private final String role;  // Role bilgisini de tutmak için ekledik
+    private final String role;
 
     public JwtAuthentication(String email, String role, List<SimpleGrantedAuthority> authorities) {
         super(authorities);
@@ -22,7 +22,7 @@ public class JwtAuthentication extends AbstractAuthenticationToken {
     }
 
     public String getRole() {
-        return role;  // Role bilgisini döndüren bir getter ekledik
+        return role;
     }
 
     @Override

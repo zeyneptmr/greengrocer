@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -36,7 +35,6 @@ public class User implements UserDetails {
     private String password;
     private String phoneNumber;
 
-    // Getter ve setter metodları
     public String getRole() {
         return role;
     }
@@ -55,7 +53,6 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    // Getter ve Setter metodları
     public Long getId() {
         return id;
     }
@@ -99,7 +96,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Burada kullanıcıya ait role'yi dönüyoruz.
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
     }
 
@@ -114,7 +110,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Spring Security "username" beklediği için email döndürülüyor.
+        return email;
     }
 
     @Override

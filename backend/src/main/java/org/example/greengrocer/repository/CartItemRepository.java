@@ -10,10 +10,8 @@ import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-    // Kullanıcıya ait sepet ürünlerini getiren metot
     List<CartItem> findByUser(User user);
 
-    // Kullanıcının sepetindeki ürünü bulmak için
     Optional<CartItem> findByUserAndProductId(User user, Long productId);
 
     @Transactional

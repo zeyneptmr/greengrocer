@@ -44,8 +44,6 @@ public class OrderTotalController {
                 .orElse(null);
     }
 
-    // Kullanıcının sepet toplam verisini getirme
-    // Kullanıcının sepet toplam verisini getirme
     @GetMapping("/getOrderTotal")
     public ResponseEntity<?> getOrderTotal(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -62,7 +60,6 @@ public class OrderTotalController {
         }
 
         OrderTotal orderTotal = orderTotalOpt.get();
-        // Return the order total data to the client
         return ResponseEntity.ok(orderTotal);
     }
 
@@ -81,7 +78,6 @@ public class OrderTotalController {
 
         OrderTotal existingOrderTotal = orderTotalOpt.get();
 
-        // Checkout işlemi: yeni OrderTotal oluşturulabilir ya da mevcut bilgiler kullanılabilir.
         OrderTotal newOrder = new OrderTotal();
         newOrder.setUser(user);
         newOrder.setTotalProductCount(existingOrderTotal.getTotalProductCount());
@@ -91,13 +87,11 @@ public class OrderTotalController {
 
         orderTotalRepository.save(newOrder);
 
-        // Mevcut OrderTotal siliniyor (checkout sonrası sepet boşaltma gibi düşünülebilir)
         orderTotalRepository.delete(existingOrderTotal);
 
         return ResponseEntity.ok("Checkout completed successfully.");
     }
 
-    // Sepet toplamını güncelleme veya ekleme
     @PostMapping("/update")
     public ResponseEntity<?> updateOrderTotal(@RequestBody OrderTotal incomingData, HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -119,8 +113,6 @@ public class OrderTotalController {
         return ResponseEntity.ok("Order total saved successfully.");
     }
 
-
-    // Sepet verilerini sıfırlama (isteğe bağlı)
     @DeleteMapping
     public ResponseEntity<?> clearOrderTotal(HttpServletRequest request) {
         String email = getUserEmailFromToken(request);

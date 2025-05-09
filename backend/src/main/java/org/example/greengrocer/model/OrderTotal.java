@@ -22,7 +22,6 @@ public class OrderTotal {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    // Manual getter and setter methods
     public Long getId() {
         return id;
     }
@@ -70,7 +69,6 @@ public class OrderTotal {
     public void setUser(User user) {
         this.user = user;
     }
-
 
 
 }

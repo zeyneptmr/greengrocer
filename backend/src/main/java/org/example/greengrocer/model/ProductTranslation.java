@@ -18,12 +18,10 @@ public class ProductTranslation {
     private String productKey;
 
     @Column(nullable = false)
-    private String language; // "en", "tr" gibi
+    private String language;
 
     @Column(nullable = false)
     private String translatedName;
-
-    // GETTER & SETTER
 
     public Long getId() {
         return id;

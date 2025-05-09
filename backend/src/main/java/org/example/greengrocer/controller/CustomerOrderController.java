@@ -1,6 +1,4 @@
-// --- CONTROLLER: OrderController.java ---
 package org.example.greengrocer.controller;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import java.util.Locale;
 import java.util.Map;
-
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,15 +88,12 @@ public class CustomerOrderController {
         if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         User user = userOpt.get();
 
-        // Yalnızca gerekli bilgileri alıyoruz
         List<CustomerOrder> orders = orderRepository.findAll();
 
         if (orders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders available");
         }
 
-
-        // Yalnızca gerekli alanları döndür
         List<Map<String, Object>> simplifiedOrders = orders.stream().map(order -> {
             Map<String, Object> orderMap = new HashMap<>();
             orderMap.put("orderId", order.getOrderId());
@@ -119,7 +112,6 @@ public class CustomerOrderController {
                 statusMap.put("timestamp", status.getTimestamp());
                 return statusMap;
             }).collect(Collectors.toList()));
-
 
             return orderMap;
         }).collect(Collectors.toList());
@@ -144,7 +136,6 @@ public class CustomerOrderController {
 
     @PostMapping("/orders/{orderId}/status")
     public ResponseEntity<?> updateOrderStatus(@PathVariable String orderId, @RequestBody Map<String, String> body, HttpServletRequest request) {
-        // Token ile kullanıcı doğrulaması
         String email = getUserEmailFromToken(request);
         if (email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -167,7 +158,6 @@ public class CustomerOrderController {
             return ResponseEntity.badRequest().body("Status is required");
         }
 
-        // Yeni status kaydını oluştur
         OrderStatus status = new OrderStatus();
         status.setStatus(newStatus);
         status.setTimestamp(LocalDateTime.now());
@@ -175,7 +165,6 @@ public class CustomerOrderController {
 
         orderStatusRepository.save(status);
 
-        // Siparişin son durumunu da güncelle
         order.setLatestStatus(newStatus);
         orderRepository.save(order);
         System.out.println("Saved order with ID: " + order.getOrderId());
@@ -192,7 +181,7 @@ public class CustomerOrderController {
         if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         User user = userOpt.get();
 
-        List<CustomerOrder> orders = orderRepository.findByUser(user); // Kullanıcının siparişlerini al
+        List<CustomerOrder> orders = orderRepository.findByUser(user);
 
         if (orders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders found for user");
@@ -235,7 +224,6 @@ public class CustomerOrderController {
 
         CustomerOrder order = orderOpt.get();
 
-        // Kullanıcının kendi siparişi mi kontrolü
         if (!order.getUser().getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This order does not belong to you");
         }
@@ -258,7 +246,6 @@ public class CustomerOrderController {
 
         return ResponseEntity.ok(orderMap);
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(HttpServletRequest request) {
@@ -285,11 +272,9 @@ public class CustomerOrderController {
 
         OrderStatus initialStatus = new OrderStatus("Order Received", order);
 
-        order.getStatusHistory().add(initialStatus); // önce listeye ekle
+        order.getStatusHistory().add(initialStatus);
         orderRepository.save(order);
         System.out.println("Saved order with ID: " + order.getOrderId());
-
-        //orderStatusRepository.save(initialStatus);
 
         List<CartItem> cartItems = cartRepository.findByUser(user);
 
@@ -320,45 +305,21 @@ public class CustomerOrderController {
         if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         User user = userOpt.get();
 
-        // Siparişleri bul
         List<CustomerOrder> userOrders = orderRepository.findByUser(user);
         if (userOrders.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found");
 
-        // En son siparişi al
-        //CustomerOrder lastOrder = userOrders.get(userOrders.size() - 1);
-
-        // Sipariş ürünlerini getir
-        //List<OrderProduct> orderProducts = orderProductRepo.findByCustomerOrder(lastOrder);
-
-        // Her ürünün stok bilgisini güncelle
-        /* for (OrderProduct op : orderProducts) {
-            System.out.println("OrderProduct ID: " + op.getProductId());
-            Optional<Product> productOpt = productService.getProductById(op.getProductId());
-            productOpt.ifPresent(product -> {
-                int newStock = product.getStock() - op.getQuantity();
-                product.setStock(Math.max(newStock, 0));  // stok eksiye düşmesin diye
-                productService.updateProduct(product);
-                System.out.println("Updating stock for productId: " + op.getProductId());
-            });
-        } */
-
-        // Cart sil
         List<CartItem> cartItems = cartRepository.findByUser(user);
         cartRepository.deleteAll(cartItems);
 
-        // OrderTotal sil
         Optional<OrderTotal> orderTotalOptional = orderTotalRepository.findByUser(user);
-        orderTotalOptional.ifPresent(orderTotalRepository::delete);  // OrderTotal item'ını sil
-
+        orderTotalOptional.ifPresent(orderTotalRepository::delete);
 
         return ResponseEntity.ok("Payment handled, cart cleared, stock updated for user" + email);
     }
 
-
     @GetMapping("/total-sales")
     public ResponseEntity<Double> getTotalSales() {
         Double totalSales = orderRepository.calculateTotalSales();
-        // Handle null case (when there are no orders)
         if (totalSales == null) {
             totalSales = 0.0;
         }
@@ -366,7 +327,6 @@ public class CustomerOrderController {
         return ResponseEntity.ok(totalSales);
 
     }
-
 
 @GetMapping("/orders-by-date")
 public ResponseEntity<Map<String, Integer>> getOrdersByDate(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
@@ -384,7 +344,6 @@ public ResponseEntity<Map<String, Integer>> getOrdersByDate(@RequestParam(requir
         endDate.atTime(23, 59, 59)
     );
     
-    
     Map<String, Integer> ordersByDate = new HashMap<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
@@ -393,7 +352,6 @@ public ResponseEntity<Map<String, Integer>> getOrdersByDate(@RequestParam(requir
         LocalDate date = LocalDate.of(year, month, day);
         ordersByDate.put(date.format(formatter), 0);
     }
-    
 
     for (CustomerOrder order : orders) {
         String dateStr = order.getCreatedAt().toLocalDate().format(formatter);
@@ -415,7 +373,6 @@ public ResponseEntity<Map<String, Double>> getMonthlySales(@RequestParam(require
     
 
     for (int month = 1; month <= 12; month++) {
-        // Format month names as "Jan", "Feb", etc.
         String monthName = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
         monthlySales.put(monthName, 0.0);
     }
@@ -439,8 +396,5 @@ public ResponseEntity<Map<String, Double>> getMonthlySales(@RequestParam(require
     
     return ResponseEntity.ok(monthlySales);
 }
-
-
-
 
 }

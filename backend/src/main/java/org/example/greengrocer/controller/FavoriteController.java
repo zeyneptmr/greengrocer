@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -35,7 +34,7 @@ public class FavoriteController {
         Long userId = favoriteService.getUserIdFromRequest(request);
         List<ProductDTO> favorites = favoriteService.getUserFavoritesWithTranslation(userId, language);
         System.out.println("Favorites retrieved count: " + favorites.size());
-        // Alınan çevirileri kontrol et
+
         favorites.forEach(p -> System.out.println("Product: " + p.getProductKey() + ", Translation: " + p.getTranslatedName()));
         return ResponseEntity.ok(favorites);
 

@@ -9,8 +9,6 @@ public class ProductDTO {
     private String category;
     private String imagePath;
 
-    // Getter & Setter
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -12,32 +12,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")  // frontend portunu yaz
+@CrossOrigin(origins = "http://localhost:3000")
 public class UploadController {
 
     @PostMapping("/api/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            // ⛳ Klasörü tanımla
-            String uploadDir = new File("target/classes/static/assets").getAbsolutePath();
+            String runtimePath = new File("target/classes/static/assets").getAbsolutePath();
+            String resourcePath = new File("src/main/resources/static/assets").getAbsolutePath();
 
-            // ❗ Klasör yoksa oluştur
-            File uploadDirFile = new File(uploadDir);
-            if (!uploadDirFile.exists()) {
-                uploadDirFile.mkdirs();
-            }
+            new File(runtimePath).mkdirs();
+            new File(resourcePath).mkdirs();
 
-            // 🕒 Dosya adını oluştur
             String originalFilename = file.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String uniqueFilename = timestamp + extension;
 
-            // 📂 Kaydet
-            File saveFile = new File(uploadDir, uniqueFilename);
-            file.transferTo(saveFile);
+            byte[] bytes = file.getBytes();
 
-            // 🌐 Geri dönecek path
+            File runtimeFile = new File(runtimePath, uniqueFilename);
+            File resourceFile = new File(resourcePath, uniqueFilename);
+
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(runtimeFile, bytes);
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(resourceFile, bytes);
+
             String filePath = "http://localhost:8080/assets/" + uniqueFilename;
 
             Map<String, String> response = new HashMap<>();
@@ -50,9 +49,5 @@ public class UploadController {
                     .body(Map.of("error", "Upload failed"));
         }
     }
-
-
-
-
 
 }

@@ -9,9 +9,7 @@ import java.util.List;
 @Repository
 public interface ContactFormRepository extends JpaRepository<ContactForm, Long> {
 
-    // Mesajları zaman damgasına göre sıralı bir şekilde al
     List<ContactForm> findAllByOrderByTimestampDesc();
 
-    // Okunmamış mesajları getir
-    List<ContactForm> findByIsReadFalse(); // Okunmamış form sorgulama
+    List<ContactForm> findByIsReadFalse();
 }

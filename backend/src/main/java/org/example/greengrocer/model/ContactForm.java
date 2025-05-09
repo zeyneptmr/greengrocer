@@ -29,7 +29,6 @@ public class ContactForm {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getter ve Setter'lar
     public Long getId() {
         return id;
     }

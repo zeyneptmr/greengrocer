@@ -9,7 +9,7 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String cardNumberLast4;  // Sadece son 4 hane
+    private String cardNumberLast4;
 
     private String holderName;
 
@@ -27,12 +27,10 @@ public class Card {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Getter - Setter
     public Long getId() {
         return id;
     }
 
-    // Kart numarasının son 4 hanesi
     public String getCardNumberLast4() {
         return cardNumberLast4;
     }
@@ -49,7 +47,6 @@ public class Card {
         this.holderName = holderName;
     }
 
-    // Getter ve Setter
     public String getCvvEncrypted() {
         return cvvEncrypted;
     }
@@ -89,8 +86,5 @@ public class Card {
     public void setIsDefault(Boolean isDefault) {
         this.isDefault = isDefault;
     }
-
-
-
 
 }

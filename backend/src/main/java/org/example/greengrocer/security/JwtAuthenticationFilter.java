@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,10 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Check if the request is for the '/api/contact/submit' endpoint, and skip the JWT authentication if true
         String requestURI = request.getRequestURI();
         if (requestURI.equals("/api/contact/submit")) {
-            filterChain.doFilter(request, response); // Skip JWT authentication for this endpoint
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -62,7 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
-        // 1. Cookie içinden al
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {
                 if ("token".equals(cookie.getName())) {
@@ -71,7 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 2. (Opsiyonel) Authorization header'dan da destekle
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);

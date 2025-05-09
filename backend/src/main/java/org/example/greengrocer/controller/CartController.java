@@ -12,9 +12,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
-
-import org.example.greengrocer.model.Product; // Product sınıfını import et
-import org.example.greengrocer.repository.ProductRepository; // ProductRepository'i import et
+import org.example.greengrocer.model.Product;
+import org.example.greengrocer.repository.ProductRepository;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -50,10 +49,9 @@ public class CartController {
         return tokenProvider.getEmailFromToken(token);
     }
 
-    // Kullanıcının sepete ürün eklemesi
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(@RequestParam Long productId, @RequestParam int quantity, HttpServletRequest request) {
-        // Token'ı al
+
         String email = getUserEmailFromToken(request);
         if (email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -65,15 +63,12 @@ public class CartController {
         }
         User user = userOpt.get();
 
-        // Sepette var mı kontrol et
         Optional<CartItem> existingItem = cartItemRepository.findByUserAndProductId(user, productId);
         if (existingItem.isPresent()) {
-            // Eğer ürün zaten sepette varsa, miktarı güncelle
             CartItem cartItem = existingItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
             cartItemRepository.save(cartItem);
         } else {
-            // Yeni ürün ekle
             Optional<Product> productOpt = productRepository.findById(productId);
             if (productOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
@@ -90,32 +85,13 @@ public class CartController {
             newCartItem.setProductId(productId);
             newCartItem.setQuantity(quantity);
             newCartItem.setPrice(product.getPrice());
-            newCartItem.setName(product.getProductKey());        // EKLENDİ
-            newCartItem.setImagePath(product.getImagePath()); // EKLENDİ
+            newCartItem.setName(product.getProductKey());
+            newCartItem.setImagePath(product.getImagePath());
             cartItemRepository.save(newCartItem);
         }
 
         return ResponseEntity.ok("Product with ID " + productId + " added to cart");
     }
-
-    // Kullanıcının sepetindeki ürünleri almak
-    /*@GetMapping
-    public ResponseEntity<?> getCart(HttpServletRequest request) {
-        String email = getUserEmailFromToken(request);
-        if (email == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-
-        User user = userOpt.get();
-        // Sepetteki ürünleri getirelim ve gönderelim
-        var cartItems = cartItemRepository.findByUser(user);
-        return ResponseEntity.ok(cartItems);
-    }*/
 
     @GetMapping
     public ResponseEntity<?> getCart(HttpServletRequest request,
@@ -139,7 +115,7 @@ public class CartController {
 
             if (productOpt.isPresent()) {
                 Product product = productOpt.get();
-                translatedName = product.getTranslatedName(language); // parametre olarak gelen language kullanılıyor
+                translatedName = product.getTranslatedName(language);
             }
 
             return Map.of(
@@ -156,12 +132,6 @@ public class CartController {
         return ResponseEntity.ok(responseList);
     }
 
-
-
-
-
-
-    // Sepet ürününü artırmak
     @PatchMapping("/increase/{id}")
     public ResponseEntity<?> increaseQuantity(@PathVariable Long id, HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -186,7 +156,6 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to update this item.");
         }
 
-        // Stok kontrolü eklendi
         Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
         if (productOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
@@ -197,14 +166,12 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough stock");
         }
 
-
-        cartItem.setQuantity(cartItem.getQuantity() + 1); // Miktarı bir artırıyoruz
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
         cartItemRepository.save(cartItem);
 
         return ResponseEntity.ok("Quantity increased for item " + id);
     }
 
-    // Sepet ürününü azaltmak
     @PatchMapping("/decrease/{id}")
     public ResponseEntity<?> decreaseQuantity(@PathVariable Long id, HttpServletRequest request) {
         String email = getUserEmailFromToken(request);
@@ -230,17 +197,15 @@ public class CartController {
         }
 
         if (cartItem.getQuantity() > 1) {
-            cartItem.setQuantity(cartItem.getQuantity() - 1); // Miktarı bir azaltıyoruz
+            cartItem.setQuantity(cartItem.getQuantity() - 1);
             cartItemRepository.save(cartItem);
             return ResponseEntity.ok("Quantity decreased for item " + id);
         } else {
-            // Miktar 1 ise, ürünü sepetten sil
             cartItemRepository.delete(cartItem);
             return ResponseEntity.ok("Item removed from cart as quantity is 1");
         }
     }
 
-    // Sepet ürününü silmek
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<?> removeFromCart(@PathVariable Long id, HttpServletRequest request) {
         String email = getUserEmailFromToken(request);

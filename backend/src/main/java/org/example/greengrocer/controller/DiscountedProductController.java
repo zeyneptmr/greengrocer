@@ -20,7 +20,6 @@ import org.example.greengrocer.model.Product;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RestController
 @RequestMapping("/api/discountedProducts")
 @CrossOrigin(origins = {"http://localhost:3000",}, allowCredentials = "true")
@@ -28,12 +27,6 @@ public class DiscountedProductController {
 
     @Autowired
     private DiscountedProductService discountedProductService;
-
-    /*@GetMapping
-    public ResponseEntity<List<DiscountedProduct>> getAllDiscountedProducts() {
-        List<DiscountedProduct> products = discountedProductService.getAllActiveDiscounts();
-        return ResponseEntity.ok(products);
-    }*/
 
     @GetMapping
     public ResponseEntity<List<?>> getAllDiscountedProducts(
@@ -64,10 +57,8 @@ public class DiscountedProductController {
             return map;
         }).toList();
 
-
         return ResponseEntity.ok(response);
     }
-
 
     @PostMapping
     public ResponseEntity<?> createDiscountedProduct(@RequestBody DiscountedProduct discountedProduct) {
@@ -85,7 +76,6 @@ public class DiscountedProductController {
             return ResponseEntity.notFound().build();
         }
     }
-    
 
     @PostMapping("/check-expired")
     public ResponseEntity<?> checkExpiredDiscounts() {

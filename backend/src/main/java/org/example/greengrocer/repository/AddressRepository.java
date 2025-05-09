@@ -1,4 +1,3 @@
-// AddressRepository.java
 package org.example.greengrocer.repository;
 
 import java.util.List;
@@ -10,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    // Kullanıcıya ait adresleri alacak bir metod
     List<Address> findByUser(User user);
 
     Optional<Address> findByUserAndIsDefaultTrue(User user);

@@ -23,44 +23,36 @@ public class ContactFormController {
         this.contactFormService = contactFormService;
     }
 
-
-    // Yeni gelen mesajları kaydetmek için sadece tüm kullanıcılara izin veriyoruz
     @PostMapping("/submit")
     public String submitContactForm(@RequestBody ContactForm form) {
         contactFormService.saveContactForm(form);
         return "Your message has been received.";
     }
 
-    // Tüm mesajları getir
     @GetMapping("/all")
     public List<ContactForm> getAllForms() {
         return contactFormService.getAllContactForms();
     }
 
-    // Okunmamış mesajları getir
     @GetMapping("/unread")
     public List<ContactForm> getUnreadForms() {
-        return contactFormService.getUnreadForms(); // Okunmamış formlar
+        return contactFormService.getUnreadForms();
     }
 
-    // Mevcut mesajları güncelle
     @PutMapping("/{id}")
     public ContactForm updateMessage(@PathVariable Long id, @RequestBody ContactForm updatedForm) {
         return contactFormService.updateForm(id, updatedForm);
     }
 
-    // Mesajları sil
     @DeleteMapping("/{id}")
     public String deleteMessage(@PathVariable Long id) {
         contactFormService.deleteForm(id);
         return "Message deleted successfully.";
     }
 
-    // Okunmuş olarak işaretle
-// Okunmuş olarak işaretle
     @PatchMapping("/{id}")
     public ContactForm markAsRead(@PathVariable Long id) {
-        return contactFormService.markAsRead(id);  // Service'e yönlendir
+        return contactFormService.markAsRead(id);
     }
 
 }

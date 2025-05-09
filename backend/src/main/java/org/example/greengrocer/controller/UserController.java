@@ -16,7 +16,6 @@ import org.example.greengrocer.repository.OrderTotalRepository;
 import org.example.greengrocer.repository.CartItemRepository;
 import org.example.greengrocer.repository.FavoriteRepository;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000") // CORS yapılandırması (Frontend'in çalıştığı port)
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -46,42 +45,37 @@ public class UserController {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
-
     @Autowired
     private OrderTotalRepository orderTotalRepository;
 
-
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;  // BCrypt için
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private TokenProvider tokenProvider;  // TokenProvider'ı autowire ediyoruz
+    private TokenProvider tokenProvider;
 
-    // Kullanıcı kaydı
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
         try {
-            // E-posta kontrolü
+
             if (userRepository.existsByEmail(user.getEmail())) {
                 return ResponseEntity.badRequest().body("This email is already registered.");
             }
 
-            // Manager ve Admin kontrolü, eğer veritabanında yoksa, belirli e-posta adreslerine özel roller verilecek
             if (!userRepository.existsByRole("ADMIN") && user.getEmail().equals("admin@taptaze.com")) {
                 user.setRole("ADMIN");
             } else if (!userRepository.existsByRole("MANAGER") && user.getEmail().equals("manager@taptaze.com")) {
                 user.setRole("MANAGER");
             } else {
-                // Admin veya Manager'dan başka bir kullanıcı kaydediliyorsa, sadece "USER" rolü verilecek
+
                 user.setRole("USER");
             }
 
-            // Şifreyi hash'leyerek kaydet
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            // Kullanıcıyı kaydet
+
             userRepository.save(user);
             return ResponseEntity.ok("Registration successful!");
         } catch (Exception e) {
@@ -89,11 +83,10 @@ public class UserController {
         }
     }
 
-    // Kullanıcı girişi
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
         try {
-            // Optional kullanıyoruz
+
             Optional<User> existingUserOpt = userRepository.findByEmail(user.getEmail());
 
             if (existingUserOpt.isPresent() &&
@@ -102,25 +95,18 @@ public class UserController {
                 User authenticatedUser = existingUserOpt.get();
                 String role = authenticatedUser.getRole();
 
-                // Token oluşturuluyor, email ve rol bilgisi ile
                 String token = tokenProvider.generateToken(authenticatedUser.getEmail(), role);
 
-                // Cookie oluştur
                 Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(false);
                 cookie.setPath("/");
-                cookie.setMaxAge(86400); // 1 gün (saniye cinsinden)
+                cookie.setMaxAge(86400);
 
-                // Çerezi yanıta ekle
                 response.addCookie(cookie);
 
-                //  Alternatif olarak Header'dan da çerez ekleyebilirim, csrf saldıırlarına karşı güvenli
-                //response.setHeader("Set-Cookie", "token=" + token + "; Path=/; Secure; HttpOnly; SameSite=Strict");
-
-                // LoginResponse döndürüyoruz
                 LoginResponse loginresponse = new LoginResponse("Login successful!", role);
-                return ResponseEntity.ok(loginresponse);  // Token ve rolü döndürüyoruz
+                return ResponseEntity.ok(loginresponse);
             }
 
             return ResponseEntity.badRequest().body("Geçersiz e-posta veya şifre.");
@@ -131,7 +117,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
-        // Çerezi alın
+
         String token = Arrays.stream(request.getCookies())
                 .filter(cookie -> "token".equals(cookie.getName()))
                 .findFirst()
@@ -139,12 +125,12 @@ public class UserController {
                 .orElse(null);
 
         if (token != null && tokenProvider.validateToken(token)) {
-            // Token geçerli, kullanıcıyı doğrulama işlemi
+
             String username = tokenProvider.getEmailFromToken(token);
             Optional<User> userOpt = userRepository.findByEmail(username);
 
             if (userOpt.isPresent()) {
-                return ResponseEntity.ok(userOpt.get());  // Kullanıcı bilgisi
+                return ResponseEntity.ok(userOpt.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
@@ -159,12 +145,10 @@ public class UserController {
             long userCount = userRepository.countByRole("USER");
             return ResponseEntity.ok(userCount);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0L);  // Return 0 if there's an error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0L);
         }
     }
 
-
-    // Token'ı döndüren sınıf (login response)
     public static class LoginResponse {
         private String token;
         private String role;
@@ -194,15 +178,13 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletResponse response) {
         try {
-            // Token'ı iptal etmek için çerezi sıfırlıyoruz
             Cookie cookie = new Cookie("token", null);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false); // HTTPS kullanıyorsanız true yapmalısınız
+            cookie.setSecure(false);
             cookie.setPath("/");
-            cookie.setMaxAge(0); // Çerez süresini 0 yaparak silinmesini sağlıyoruz
+            cookie.setMaxAge(0);
             response.addCookie(cookie);
 
-            // Çıkış işlemi başarılı, mesaj dönüyoruz
             return ResponseEntity.ok("Logout successful!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Logout failed: " + e.getMessage());
@@ -237,11 +219,9 @@ public class UserController {
 
             User existingUser = existingUserOpt.get();
 
-
             existingUser.setName(updatedUser.getName());
             existingUser.setSurname(updatedUser.getSurname());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-
 
             userRepository.save(existingUser);
 
@@ -254,12 +234,10 @@ public class UserController {
         }
     }
 
-
     public static class PasswordChangeRequest {
         private String currentPassword;
         private String newPassword;
         private String confirmPassword;
-
 
         public String getCurrentPassword() {
             return currentPassword;
@@ -290,7 +268,6 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest passwordRequest, HttpServletRequest request) {
         try {
-            // Get token from cookies or Authorization header (handled by getTokenFromRequest in JwtAuthenticationFilter)
             String token = null;
             if (request.getCookies() != null) {
                 token = Arrays.stream(request.getCookies())
@@ -313,11 +290,9 @@ public class UserController {
 
             User user = userOpt.get();
 
-
             if (!passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password is incorrect.");
             }
-
 
             if (passwordRequest.getNewPassword().length() < 8) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must be at least 8 characters long.");
@@ -331,11 +306,9 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New passwords do not match.");
             }
 
-
             if (passwordEncoder.matches(passwordRequest.getNewPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password cannot be the same as current password.");
             }
-
 
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
             userRepository.save(user);
@@ -347,9 +320,6 @@ public class UserController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
-
-
-
 
     public static class DeleteAccountRequest {
         private String password;
@@ -363,17 +333,14 @@ public class UserController {
         }
     }
 
-
     @Autowired
     private AddressRepository addressRepository;
 
     @Autowired
     private CardRepository cardRepository;
 
-
     @Autowired
     private CustomerOrderRepository customerOrderRepository;
-
 
     @Autowired
     private OrderProductRepository orderProductRepository;
@@ -410,8 +377,6 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password.");
             }
 
-
-            // First find all orders for this user
             List<CustomerOrder> userOrders = customerOrderRepository.findByUserId(user.getId());
 
             cartItemRepository.deleteAllByUserId(user.getId());
@@ -420,8 +385,6 @@ public class UserController {
 
             orderTotalRepository.deleteByUser(user);
 
-
-            // Delete order products for each order
             for (CustomerOrder order : userOrders) {
                 orderProductRepository.deleteAllByCustomerOrder(order);
             }
@@ -446,7 +409,5 @@ public class UserController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
-
-
 
 }

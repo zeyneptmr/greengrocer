@@ -9,8 +9,6 @@ public class ProductUpdateRequest {
     private String translatedName;
     private String language;
 
-    // === GETTER and SETTER ===
-
     public double getPrice() {
         return price;
     }

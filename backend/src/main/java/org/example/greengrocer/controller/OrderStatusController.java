@@ -18,13 +18,11 @@ public class OrderStatusController {
     @Autowired
     private OrderStatusRepository orderStatusRepository;
 
-    // Belirli bir siparişin statü geçmişini getir
     @GetMapping("/history/{orderId}")
     public ResponseEntity<List<OrderStatus>> getStatusHistory(@PathVariable String orderId) {
         List<OrderStatus> statusList = orderStatusRepository.findByCustomerOrderOrderIdOrderByTimestampAsc(orderId);
         return ResponseEntity.ok(statusList);
     }
-
 
     @GetMapping("/count")
     public ResponseEntity<Long> getOrderStatusCount() {

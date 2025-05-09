@@ -1,4 +1,3 @@
-// --- MODEL: CustomerOrder.java ---
 package org.example.greengrocer.model;
 import org.example.greengrocer.service.OrderIdGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -17,13 +15,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
-
-
 @Entity
 public class CustomerOrder {
     @Id
     private String orderId;
-
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -126,13 +121,6 @@ public class CustomerOrder {
         this.createdAt = createdAt;
     }
 
-    /*public String getLatestStatus() {
-        if (statusHistory == null || statusHistory.isEmpty()) {
-            return "Sipariş Alındı";
-        }
-        return statusHistory.get(statusHistory.size() - 1).getStatus();
-    }*/
-
     public String getLatestStatus() {
         return latestStatus;
     }
@@ -141,6 +129,4 @@ public class CustomerOrder {
         this.latestStatus = latestStatus;
     }
 
-
-    // Getters and setters...
 }

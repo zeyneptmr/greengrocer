@@ -28,7 +28,6 @@ public class OrderStatus {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getters & Setters
 
     public Long getId() {
         return id;

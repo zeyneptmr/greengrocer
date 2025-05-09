@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 
-
 import java.util.List;
 
 @Entity
@@ -42,8 +41,7 @@ public class Product {
     @OneToMany
     @JoinColumn(name = "productKey", referencedColumnName = "productKey", insertable = false, updatable = false)
     private List<ProductTranslation> productTranslations;
-    
-    
+
     public Long getId() { 
         return id; 
     }
@@ -96,7 +94,6 @@ public class Product {
         this.productTranslations = productTranslations;
     }
 
-    // ---- TRANSLATED NAME METODU ----
     public String getTranslatedName(String language) {
         if (this.productTranslations == null) return productKey;
 
@@ -104,9 +101,7 @@ public class Product {
                 .filter(t -> t.getLanguage().equalsIgnoreCase(language))
                 .findFirst()
                 .map(ProductTranslation::getTranslatedName)
-                .orElse(productKey); // Eğer çeviri yoksa productKey dön
+                .orElse(productKey);
     }
-
-
 
 }

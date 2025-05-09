@@ -1,4 +1,3 @@
-// AddressController.java
 package org.example.greengrocer.controller;
 
 import jakarta.servlet.http.Cookie;
@@ -15,8 +14,6 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.List;
@@ -34,7 +31,6 @@ public class AddressController {
     @Autowired
     private TokenProvider tokenProvider;
 
-    // Adres ekleme
     @PostMapping
     public ResponseEntity<?> saveAddress(@RequestBody Address incomingAddress, HttpServletRequest request) {
         String token = Arrays.stream(request.getCookies())
@@ -62,9 +58,6 @@ public class AddressController {
         Boolean isFirstAddress = userAddresses.isEmpty();
 
 
-
-
-        // Adres objesini oluştur ve kaydet
         Address addressToSave = new Address();
         addressToSave.setFirstName(incomingAddress.getFirstName());
         addressToSave.setLastName(incomingAddress.getLastName());
@@ -82,11 +75,9 @@ public class AddressController {
         return ResponseEntity.ok("Address saved successfully");
     }
 
-    // Adres güncelleme
     @PutMapping("/{id}")
     public ResponseEntity<String> updateAddress(@PathVariable Long id, @RequestBody Address updatedAddress, HttpServletRequest request) {
         try {
-            // Cookie üzerinden token alınır
             String token = Arrays.stream(request.getCookies())
                     .filter(c -> "token".equals(c.getName()))
                     .findFirst()
@@ -103,16 +94,13 @@ public class AddressController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Güncellenmek istenen adres alınır
             Address existingAddress = addressRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Address not found"));
 
-            // Adresin kullanıcıya ait olup olmadığı kontrol edilir
             if (!existingAddress.getUser().getId().equals(user.getId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only update your own address");
             }
 
-            // Güncellenmiş bilgileri mevcut adrese aktar
             existingAddress.setFirstName(updatedAddress.getFirstName());
             existingAddress.setLastName(updatedAddress.getLastName());
             existingAddress.setEmail(updatedAddress.getEmail());
@@ -123,7 +111,6 @@ public class AddressController {
             existingAddress.setAddress(updatedAddress.getAddress());
             existingAddress.setDescription(updatedAddress.getDescription());
 
-            // Adres kaydedilir
             addressRepository.save(existingAddress);
 
             return ResponseEntity.ok("Address updated successfully");
@@ -134,43 +121,34 @@ public class AddressController {
     }
 
 
-
-    // Kullanıcıya ait adresleri listeleme
     @GetMapping
     public ResponseEntity<?> getAddresses(HttpServletRequest request) {
-        // Token'ı al
         String token = Arrays.stream(request.getCookies())
                 .filter(c -> "token".equals(c.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
 
-        // Token doğrulaması
         if (token == null || !tokenProvider.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
 
-        // Token'dan email'i al
         String email = tokenProvider.getEmailFromToken(token);
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        // Kullanıcıya ait adresleri getir
         User user = userOpt.get();
         List<Address> savedAddresses = addressRepository.findByUser(user);
 
-        // Adresler yoksa
         if (savedAddresses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No saved addresses found");
         }
 
-        // Adresleri döndür
         return ResponseEntity.ok(savedAddresses);
     }
 
-    // Adres silme
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAddress(@PathVariable Long id, HttpServletRequest request) {
         String token = null;
@@ -199,7 +177,6 @@ public class AddressController {
         }
 
         Address address = addressOpt.get();
-        // Sadece kullanıcının kendi adresini silmesine izin ver
         if (!address.getUser().getId().equals(userOpt.get().getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this address.");
         }

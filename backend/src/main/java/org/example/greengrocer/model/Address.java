@@ -30,8 +30,6 @@ public class Address {
     @Column(name = "is_default")
     private Boolean isDefault =  false;
 
-
-    // Getter - Setter
     public Long getId() {
         return id;
     }
@@ -105,7 +103,7 @@ public class Address {
     }
 
     public String getFullAddress() {
-        return this.phone + "," + this.neighborhood + ", " + this.district + ", " + this.city; // örnek
+        return this.phone + "," + this.neighborhood + ", " + this.district + ", " + this.city;
     }
 
     public String getDescription() {
