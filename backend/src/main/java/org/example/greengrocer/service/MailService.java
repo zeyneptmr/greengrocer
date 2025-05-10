@@ -19,7 +19,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+
 
 
 @Service
@@ -59,7 +59,7 @@ public class MailService {
             ));
 
             emailData.put("to", new Object[]{Map.of("email", userEmail)});
-            //emailData.put("subject", "Reset your password");
+            
 
             String verificationCode = generateVerificationCode();
 

@@ -43,7 +43,7 @@ public class FavoriteService {
     public Long getUserIdFromRequest(HttpServletRequest request) {
         String token = null;
 
-        // Önce cookie içinden token al
+    
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {
                 if ("token".equals(cookie.getName())) {
@@ -53,7 +53,7 @@ public class FavoriteService {
             }
         }
 
-        // Eğer cookie'den alınamazsa, Authorization header'dan dene
+        
         if (token == null) {
             String bearerToken = request.getHeader("Authorization");
             if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -86,7 +86,7 @@ public class FavoriteService {
                     dto.setImagePath(product.getImagePath());
                     dto.setCategory(product.getCategory());
 
-                    // Dil çevirisini ayarla
+            
                     String productKey = product.getProductKey();
 
                     System.out.println("Looking for translation: productKey=" + productKey + ", language=" + language);
@@ -106,7 +106,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    // Eskisi gibi Product sınıfını dönmesi gereken durumlarda
+
     public List<Product> getUserFavorites(Long userId) {
         System.out.println("Fetching favorites for userId: " + userId);
         List<Favorite> favorites = favoriteRepository.findByUserId(userId);

@@ -36,7 +36,7 @@ const VegetablesPage = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
-    //const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
+    
 
     const { t } = useTranslation('vegetables');
 
@@ -79,7 +79,7 @@ const VegetablesPage = () => {
         setVegetables(sortedArray);
     }, [sortOption]);
 
-    // Pagination
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = vegetables.slice(indexOfFirstItem, indexOfLastItem);

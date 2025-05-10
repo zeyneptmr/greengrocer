@@ -39,16 +39,16 @@ import { useTranslation } from "react-i18next";
 import { getImageFromPath } from "../helpers/imageHelper";
 
 const banners = [banner1];
-// Function to shuffle the array
+
 
 export default function HomePage() {
-    const [showModal, setShowModal] = useState(false); // Modal visibility state
-    const [modalContent, setModalContent] = useState(""); // Modal content
-    const [modalTitle, setModalTitle] = useState(""); // Modal title
+    const [showModal, setShowModal] = useState(false); 
+    const [modalContent, setModalContent] = useState(""); 
+    const [modalTitle, setModalTitle] = useState(""); 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [randomProducts, setRandomProducts] = useState([]);
     const [index, setIndex] = useState(0);
-    const [hasDiscountedProducts, setHasDiscountedProducts] = useState(false); // İndirimli ürün var mı?
+    const [hasDiscountedProducts, setHasDiscountedProducts] = useState(false); 
     const { favorites } = useFavorites();
     const { language } = useContext(LanguageContext);
 
@@ -64,25 +64,6 @@ export default function HomePage() {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    /*const getImageFromPath = (path) => {
-        if (!path) return null;
-
-        if (path.startsWith("data:image")) {
-            return path;  // Doğrudan Base64 resmini döndür
-        }
-        // Extract filename from the path
-        const filename = path.split('/').pop(); // "dairy1.jpg"
-
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';  // Placeholder resim
-        }
-
-        // Find the matching image from the images object
-        return images[filename] || '/placeholder.png';
-    };*/
 
     const categories = [
         { name: t("categories.vegetables"), image: vegetablesImg, path: "/vegetables" },
@@ -100,7 +81,7 @@ export default function HomePage() {
         return parseFloat(price).toFixed(2); 
     };
 
-    // İndirimli ürünlerin durumunu takip et
+    
     const handleDiscountedProductsLoaded = (hasProducts) => {
         console.log('HomePage: İndirimli ürünler durumu değişti:', hasProducts);
         setHasDiscountedProducts(hasProducts);
@@ -116,7 +97,7 @@ export default function HomePage() {
             }
         };
 
-        fetchRandomProducts(); // Call function to fetch products
+        fetchRandomProducts(); 
     }, [language]);
 
     useEffect(() => {
@@ -128,8 +109,8 @@ export default function HomePage() {
 
     useEffect(() => {
         if (isModalOpen) {
-            document.documentElement.style.overflow = "hidden"; // HTML banned
-            document.body.style.overflow = "hidden"; // Body banned
+            document.documentElement.style.overflow = "hidden"; 
+            document.body.style.overflow = "hidden"; 
         } else {
             document.documentElement.style.overflow = "";
             document.body.style.overflow = "";
@@ -141,14 +122,14 @@ export default function HomePage() {
     }, [isModalOpen]);
 
 
-    // Handle opening the modal with specific content and title
+
     const openModal = (title, content) => {
         setModalTitle(title);
         setModalContent(content);
         setShowModal(true);
     };
 
-    // Handle closing the modal
+    
     const closeModal = () => {
         setShowModal(false);
         setModalContent("");

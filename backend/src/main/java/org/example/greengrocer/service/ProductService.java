@@ -86,7 +86,7 @@ public class ProductService {
         return null;
     }
 
-     // Search methods
+     
      public List<Product> searchByProductKey(String productKey) {
          return productRepository.findByProductKeyContainingIgnoreCase(productKey);
      }
@@ -125,7 +125,7 @@ public class ProductService {
         List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
         return translations.stream()
                 .map(t -> productRepository.findByProductKey(t.getProductKey()))
-                .flatMap(opt -> opt.stream())  // Optional varsa içindeki Product'ı açar
+                .flatMap(opt -> opt.stream())  
                 .collect(Collectors.toList());
     }
 

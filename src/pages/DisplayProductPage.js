@@ -13,7 +13,7 @@ const DisplayProductsPage = () => {
     const [categorizedProducts, setCategorizedProducts] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const categoryRefs = useRef({}); // Scroll için referanslar
+    const categoryRefs = useRef({}); 
 
     const { language } = useContext(LanguageContext);
     const { t } = useTranslation("displayproducts");
@@ -22,7 +22,7 @@ const DisplayProductsPage = () => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                // Replace with your actual API endpoint
+            
                 const response = await axios.get(`http://localhost:8080/api/products?language=${language}`);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
@@ -94,7 +94,7 @@ const DisplayProductsPage = () => {
                         {Object.keys(categorizedProducts).map((category) => (
                             <button
                                 key={category}
-                                onClick={() => scrollToCategory(category)} // Tıklandığında scrollToCategory çağrılır
+                                onClick={() => scrollToCategory(category)} 
                                 className="bg-white hover:bg-green-600 text-black font-medium px-6 py-2 rounded-full shadow-sm border border-gray-300 transition duration-300 mb-2 md:mb-0"
                             >
                                 {getTranslatedCategory(category)}
@@ -114,7 +114,7 @@ const DisplayProductsPage = () => {
                             <p className="text-red-500 text-lg">{t("error")}: {error}</p>
                         </div>
                     ) : filteredProducts.length > 0 ? (
-                        // Display only the categorized products dynamically without repeating headings
+                    
                         Object.keys(categorizedProducts).map((category) => (
                             <div key={category} ref={(el) => (categoryRefs.current[category] = el)} className="mt-6">
                                 <DisplayProducts products={categorizedProducts[category]}/>

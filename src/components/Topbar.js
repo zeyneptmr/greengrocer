@@ -1,6 +1,6 @@
 import React from "react";
 import adminIcon from '../assets/admin.svg';
-import managerIcon from '../assets/manager.svg';  // Manager ikonu
+import managerIcon from '../assets/manager.svg';  
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +8,7 @@ const Topbar = () => {
     const location = useLocation();
     const { t } = useTranslation("topbar");
 
-    // Adjust icon and title dynamically according to page
+    
     const isManagerPage = location.pathname.includes("manager");
     const pageTitle = isManagerPage ? t("managerPanel") : t("adminPanel");
     const icon = isManagerPage ? managerIcon : adminIcon;

@@ -162,7 +162,7 @@ const Sidebar = () => {
                     </ul>
                 </nav>
 
-                {/* Dil seçme butonu */ }
+                {/* Language selection button */ }
                 <div className="relative flex justify-center mb-4">
                     <button
                         onClick={toggleLanguageMenu}

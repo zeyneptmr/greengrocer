@@ -97,14 +97,14 @@ const AddProductPage = () => {
                 headers: { "Content-Type": "multipart/form-data" }
             });
 
-            const savedPath = response.data.filePath;  // Backend’den gelen path
+            const savedPath = response.data.filePath;  
 
             setProduct(prev => ({
                 ...prev,
-                imagePath: savedPath  // Artık path hazır
+                imagePath: savedPath  
             }));
 
-            // Önizleme resmi
+            
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);

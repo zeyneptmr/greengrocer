@@ -19,7 +19,7 @@ const CardEntryForm = () => {
     const [cardToDelete, setCardToDelete] = useState(null);
     const { t } = useTranslation("creditcard");
 
-    // Kartları getir
+
     const fetchSavedCards = () => {
         axios.get("http://localhost:8080/api/cards", { withCredentials: true })
             .then((res) => {
@@ -95,14 +95,14 @@ const CardEntryForm = () => {
         }
         setError("");
 
-        // Kart numarasını temizle ve sadece son 4 hanesini al
+        
         const cardNumberWithoutSpaces = cardNumber.replace(/\s+/g, '');
         if (cardNumberWithoutSpaces.length !== 16) {
             setError(t("invalidCardNumber"));
             return;
         }
 
-        //console.log('Card number without spaces:', cardNumberWithoutSpaces);
+        
 
         const newCard = {
             cardNumberLast4: cardNumberWithoutSpaces.substring(cardNumberWithoutSpaces.length - 4),

@@ -20,7 +20,7 @@ export default function ProductCard({ product, hideCartView=false }) {
     const { language } = useContext(LanguageContext);
 
 
-    // Find cart item - check multiple possible ID mappings
+
     const cartItem = cart.find((item) => {
         return item.productId === currentProduct.id ||
             item.id === currentProduct.id ||
@@ -43,8 +43,7 @@ export default function ProductCard({ product, hideCartView=false }) {
         if (cartItem?.quantity > 1) {
             decreaseQuantity(cartItem.id);
         } else if (cartItem?.quantity === 1) {
-            // Ürün 0'a düşecekse, decrease işlemi çağrılırsa ve context'te zaten çıkarılıyorsa,
-            // buraya ayrıca bir şey eklemeye gerek yok çünkü cartItem zaten yok olacak.
+            
             decreaseQuantity(cartItem.id);
         }
     };

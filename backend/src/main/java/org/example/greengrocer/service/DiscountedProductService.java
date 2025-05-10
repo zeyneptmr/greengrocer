@@ -31,15 +31,15 @@ public class DiscountedProductService {
 
     @Transactional
     public DiscountedProduct createDiscount(DiscountedProduct discountedProduct) {
-        // Set discount date to now if not provided
+        
         if (discountedProduct.getDiscountDate() == null) {
             discountedProduct.setDiscountDate(LocalDateTime.now());
         }
         
-        // Ensure discount is active
+    
         discountedProduct.setActive(true);
         
-        // Save the discounted product
+        
         return discountedProductRepository.save(discountedProduct);
     }
     
@@ -70,16 +70,16 @@ public class DiscountedProductService {
     
     @Transactional
     public void checkAndDeactivateExpiredDiscounts() {
-        // Find discounts older than 24 hours
+        
         LocalDateTime oneDayAgo = LocalDateTime.now().minusHours(24);
         List<DiscountedProduct> expiredDiscounts = discountedProductRepository.findExpiredDiscounts(oneDayAgo);
         
         for (DiscountedProduct discount : expiredDiscounts) {
-            // Mark as inactive
+        
             discount.setActive(false);
             discountedProductRepository.save(discount);
             
-            // Restore original price
+            
             restoreOriginalPrice(discount);
         }
     }
@@ -87,7 +87,7 @@ public class DiscountedProductService {
     private void restoreOriginalPrice(DiscountedProduct discount) {
         Product product = discount.getProduct();
         
-        // If product still exists, restore its price
+        
         if (product != null && product.getId() != null) {
             Optional<Product> currentProduct = productRepository.findById(product.getId());
             if (currentProduct.isPresent()) {

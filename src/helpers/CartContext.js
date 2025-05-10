@@ -15,7 +15,7 @@ function CartProvider({ children }) {
     const { t } = useTranslation("cart");
 
 
-    // Görselleri assets klasöründen al
+    
 
     const importAll = (r) => {
         let images = {};
@@ -27,20 +27,6 @@ function CartProvider({ children }) {
 
     const images = importAll(require.context('../assets', false, /\.(png|jpe?g|svg|webp)$/));
 
-    /*const getImageFromPath = (path) => {
-        if (!path) return null;
-        if (path.startsWith("data:image")) return path;
-
-        const filename = path.split('/').pop();
-        const imagePath = Object.keys(images).find(key => key.includes(filename.split('.')[0]));
-
-        if (!imagePath) {
-            console.error(`Image not found: ${filename}`);
-            return '/placeholder.png';
-        }
-
-        return images[imagePath] || '/placeholder.png';
-    };*/
 
     const showNotification = (message, type = "info") => {
         setNotification({ message, type });
@@ -139,7 +125,7 @@ function CartProvider({ children }) {
 
             const cartItem = updatedCart.find(item => item.id === cartItemId);
             if (cartItem?.quantity <= 1) {
-                setAddedToCart(false);  // Add to Cart butonunu göster
+                setAddedToCart(false);  
             }
         }
     };
@@ -157,7 +143,7 @@ function CartProvider({ children }) {
             const updatedCart = cart.filter(item => item.id !== cartItemId);
             setCart(updatedCart);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
-           // showNotification(t("cart.deleted"), "success");
+        
         }
     };
 
@@ -184,10 +170,10 @@ function CartProvider({ children }) {
         const localCart = JSON.parse(localStorage.getItem('cart')) || [];
 
         if (loggedInUser) {
-            // USER GİRİŞ YAPMIŞSA
+            
             fetchCartFromBackend();
         } else {
-            // GUEST İSE dil değişse bile localCart'ı tekrar state'e aktar (çünkü translatedName cartta yok)
+
             const updatedCart = localCart.map(item => ({
                 ...item,
                 image: getImageFromPath(item.imagePath, images),

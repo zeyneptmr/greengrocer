@@ -10,8 +10,8 @@ i18n
     .init({
         fallbackLng: 'en',
         debug: true,
-        ns: ['navbar', 'account', 'recipes', 'mychef'],  // Namespace listemiz
-        defaultNS: 'navbar', // Genel metinler için
+        ns: ['navbar', 'account', 'recipes', 'mychef'],  
+        defaultNS: 'navbar', 
         interpolation: {
             escapeValue: false,
         }

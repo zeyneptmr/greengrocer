@@ -19,19 +19,19 @@ const AdminPage = () => {
 
     const { t, i18n } = useTranslation('admin');
     
-   // Inside AdminPage.js - update the useEffect function
+   
 useEffect(() => {
     const fetchData = async () => {
         try {
             setLoading(true);
             
-            // Fetch products data
+        
             const productsResponse = await axios.get(`${API_BASE_URL}/api/products`);
             const products = productsResponse.data;
             
             setTotalProducts(products.length);
             
-            // Process category data
+    
             const categoryMap = {};
             products.forEach(product => {
                 const category = product.category.toUpperCase();
@@ -45,11 +45,11 @@ useEffect(() => {
             
             setCategoryStats(categoryArray);
             
-            // Fetch total sales from the new endpoint
+        
             const salesResponse = await axios.get(`${API_BASE_URL}/api/customerorder/total-sales`);
             const totalSalesAmount = salesResponse.data;
 
-            // Format the number with a dot as decimal separator and add TL
+        
             const formattedSales = totalSalesAmount.toFixed(2) + '₺';
 
             setTotalSales(formattedSales);

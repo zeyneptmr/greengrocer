@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { CartContext } from "../helpers/CartContext";
-import { useFavorites } from "../helpers/FavoritesContext"; // Import the FavoritesContext
+import { useFavorites } from "../helpers/FavoritesContext"; 
 import { useTranslation } from 'react-i18next';
 
 import ForgotPassword from './ForgotPassword';
@@ -15,7 +15,7 @@ const Account = ({ isOpen, onClose }) => {
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const navigate = useNavigate();
     const [isRegister, setIsRegister] = useState(false);
-    //const [isLoggedIn, setIsLoggedIn] = useState(false);
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ const Account = ({ isOpen, onClose }) => {
         password: "",
         confirmPassword: "",
         phoneNumber: "",
-        countryCode: "+90", // Default country code
+        countryCode: "+90", 
     });
 
     const [errors, setErrors] = useState({
@@ -155,7 +155,7 @@ const Account = ({ isOpen, onClose }) => {
             const userData = { name: formData.name, surname: formData.surname, email, password, phoneNumber };
 
             if (isRegister) {
-                // Register - Backend'e veri gönderme
+    
                 axios.post("http://localhost:8080/api/users/register", userData, { withCredentials: true })
                     .then(response => {
                         console.log("Response Data:", response.data);
@@ -180,7 +180,7 @@ const Account = ({ isOpen, onClose }) => {
 
                             setTimeout(() => {
                                     setIsRegister(false);
-                                    setMessage(""); // Kullanıcıyı giriş ekranına yönlendir
+                                    setMessage(""); 
                             }, 4000);
 
                             return <Navigate to="/*" />;
@@ -191,7 +191,7 @@ const Account = ({ isOpen, onClose }) => {
                         setMessage("An account with this email already exists!");
                     });
             } else {
-                // Login - Backend'e giriş isteği gönderme
+            
                 axios.post("http://localhost:8080/api/users/login", { email, password }, { withCredentials: true })
                     .then(response => {
                         console.log("Login Response:", response.data);
@@ -204,7 +204,7 @@ const Account = ({ isOpen, onClose }) => {
 
                             setIsLoggedIn(true);
 
-                            //syncCartIfUserLoggedIn();
+                        
                            
                             refreshAuth();
                             refreshFavorites();
@@ -220,16 +220,16 @@ const Account = ({ isOpen, onClose }) => {
                                 navigate("/user/home", { replace: true });
                             }
 
-                            // Kullanıcı bilgilerini doğrulamak için /me endpoint'ini çağır
+                        
                             axios.get("http://localhost:8080/api/users/me", { 
                                 withCredentials: true,
                                 headers: {
-                                    'Cache-Control': 'no-cache'  // Prevent caching
+                                    'Cache-Control': 'no-cache'  
                                 }
                             })
                                 .then(authResponse => {
-                                    //console.log("Authenticated user:", authResponse.data);
-                                    // User authenticated, favorites will be refreshed via useEffect in FavoritesContext
+
+                
                                 })
                                 .catch(error => {
                                     console.error("Error during authentication check:", error);
@@ -255,7 +255,7 @@ const Account = ({ isOpen, onClose }) => {
                         } else {
                             setMessage("Invalid email or password.");
                             setTimeout(() => {
-                                setMessage("");  // 5 saniye sonra mesajı temizle
+                                setMessage("");  
                             }, 3000);
                         }
                     })
@@ -263,7 +263,7 @@ const Account = ({ isOpen, onClose }) => {
                         console.error("Login error:", error.response ? error.response.data : error.message);
                         setMessage("Invalid email or password!");
                         setTimeout(() => {
-                            setMessage("");  // 5 saniye sonra mesajı temizle
+                            setMessage("");  
                         }, 3000);
                     });
             }

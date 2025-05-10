@@ -16,7 +16,7 @@ const EditProductPage = () => {
     const [previewImage, setPreviewImage] = useState(null);
 
     const { language } = useContext(LanguageContext);
-    const { t } = useTranslation("editproduct"); // JSON namespace
+    const { t } = useTranslation("editproduct"); 
 
 
     const importAll = (r) => {
@@ -45,8 +45,8 @@ const EditProductPage = () => {
     const [categories, setCategories] = useState([]);
 
     const getTranslatedCategory = (category) => {
-        const key = category.toLowerCase().replace(/\s+/g, "_");  // örn: Dairy Products -> dairy_products
-        return t(`categories.${key}`, category); // Eğer çeviri bulunamazsa orijinal adı gösterir
+        const key = category.toLowerCase().replace(/\s+/g, "_");  
+        return t(`categories.${key}`, category); 
     };
 
     useEffect(() => {
@@ -81,7 +81,7 @@ const EditProductPage = () => {
                 const response = await axios.get(`http://localhost:8080/api/products/${productId}?language=${language}`);
                 setProduct({
                     ...response.data,
-                    productName: response.data.translatedName  // Burası önemli!
+                    productName: response.data.translatedName  
                 });
             }
             setLoading(false);
@@ -103,14 +103,14 @@ const EditProductPage = () => {
 
         setSelectedFile(file);
 
-        // Preview
+        
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreviewImage(reader.result);
         };
         reader.readAsDataURL(file);
 
-        // Upload
+        
         const formData = new FormData();
         formData.append("file", file);
 
@@ -136,11 +136,11 @@ const EditProductPage = () => {
         try {
             const productData = {
                 ...product,
-                translatedName: product.productName,  // yeni çeviri
-                language: language                      // şu anki dil
+                translatedName: product.productName,  
+                language: language                      
             };
 
-            // Ürünü güncelle
+            
             await axios.put(`http://localhost:8080/api/products/${product.id}`, productData);
 
             alert(t("updateSuccess"));

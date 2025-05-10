@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; // Import Bell icon
+import { ShoppingCart, Heart, User, Home, ChevronDown, Bell } from "lucide-react"; 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Account from "./Account";
 import logo from "../assets/logoyazısız.jpeg";
-//import { useCart } from "../helpers/CartContext";
-//import products from "../data/products";
+
 import { useFavorites } from "../helpers/FavoritesContext";
 import SearchBar from "./SearchBar";
 import axios from "axios";
 import { useContext } from "react";
-//import { CartContext } from "/Users/zeynep/greengrocer/src/helpers/CartContext.js";
+
 import { useCart } from "../helpers/CartContext";
 import { useTranslation } from 'react-i18next';
 import { LanguageContext } from '../context/LanguageContext';
@@ -31,24 +30,23 @@ const Navbar = () => {
     const { getTotalProductTypes } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
-    const [loggedInUser, setLoggedInUser] = useState(null); // Giriş yapan kullanıcı bilgisi
-    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); // Profil menüsünün açık olup olmadığı
+    const [loggedInUser, setLoggedInUser] = useState(null); 
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false); 
     const profileMenuRef = useRef();
     const { favorites } = useFavorites();
     const { refreshAuth } = useFavorites();
     const [Cart, setCart] = useState(null);
     const [role, setRole] = useState("");
-    //const [hoveredMenu, setHoveredMenu] = useState(null);
-    //const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
+    
     const { language, setLanguage } = useContext(LanguageContext);
     const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
-    const { t } = useTranslation('navbar'); // navbar namespace kullanıyoruz
+    const { t } = useTranslation('navbar'); 
     console.log('Çeviri test (profile):', t('profile'));
 
 
     const handleLanguageChange = (lang) => {
         setLanguage(lang);
-        //localStorage.setItem('language', lang);
+        
         i18n.changeLanguage(lang);
         setIsLanguageMenuOpen(false);
     };
@@ -58,7 +56,7 @@ const Navbar = () => {
         setIsLanguageMenuOpen(!isLanguageMenuOpen);
     };
 
-    // Giriş yapan kullanıcıyı kontrol et
+    
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
         setLoggedInUser(storedUser);
@@ -68,7 +66,7 @@ const Navbar = () => {
             navigate("/");
         }
 
-    }, [navigate, location]); // navigate değiştiğinde kullanıcı bilgisini tekrar kontrol et
+    }, [navigate, location]); 
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -104,18 +102,18 @@ const Navbar = () => {
 
 
     const handleCartClick = () => {
-        console.log("loggedInUser:", loggedInUser); // Kullanıcı bilgisi konsolda görünüyor mu?
+        console.log("loggedInUser:", loggedInUser); 
 
         if (!loggedInUser) {
             setIsCartAccessRestricted(true);
         } else {
-            console.log("Navigating to /cart"); // Bu çalışıyor mu kontrol et
+            console.log("Navigating to /cart"); 
             navigate("/cart");
         }
     };
 
     const handleProfileMenuToggle = (e) => {
-        e.preventDefault(); // Varsayılan davranışı (yeni sayfaya yönlendirme) engelle
+        e.preventDefault(); 
         setIsProfileMenuOpen((prev) => !prev);
     };
 
@@ -131,7 +129,7 @@ const Navbar = () => {
                 localStorage.removeItem("loggedInUser");
                 localStorage.removeItem("role");
                 localStorage.removeItem("cart");
-                // Rol bilgisini sıfırla
+            
                 setCart([]);
                 setRole(null);
                 setLoggedInUser(null);
@@ -148,7 +146,7 @@ const Navbar = () => {
             })
             .catch((error) => {
                 console.error("Logout error:", error);
-                // Hata durumunda da login sayfasına yönlendirebilirsiniz
+            
                 navigate("/login");
             });
     };

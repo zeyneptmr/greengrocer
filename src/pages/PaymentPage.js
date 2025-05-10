@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaArrowLeft} from "react-icons/fa";
 import { FaShoppingCart, FaShoppingBasket, FaTimes } from 'react-icons/fa';
 import { useFavorites } from "../helpers/FavoritesContext";
-import { useCart } from "../helpers/CartContext"; // yol değişebilir
+import { useCart } from "../helpers/CartContext"; 
 import { generateInvoice } from "../helpers/generateInvoice";
 import { LanguageContext } from "../context/LanguageContext";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ import axios from "axios";
 
 const PaymentPage = () => {
     const [addresses, setAddresses] = useState([]);
-    //const [orderId, setOrderId] = useState(null); // en üstte
+    
     const [savedCards, setSavedCards] = useState([]);
     const [cart, setCart] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -29,9 +29,9 @@ const PaymentPage = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    //const { refreshAuth } = useFavorites();
-    const { clearCarto } = useCart(); // burası önemli
-    const [orderId, setOrderId] = useState(null); // en üstte
+    
+    const { clearCarto } = useCart(); 
+    const [orderId, setOrderId] = useState(null); 
     const { language } = useContext(LanguageContext);
     const { t } = useTranslation("payment");
 
@@ -92,7 +92,7 @@ const PaymentPage = () => {
                 language: language
             };
 
-        // Invoice pdf
+    
             generateInvoice(orderData);
         } catch (error) {
             console.error('Error:', error);
@@ -175,7 +175,7 @@ const PaymentPage = () => {
         }
     };
 
-// Sayfa ilk yüklendiğinde
+
     useEffect(() => {
         fetchProducts();
         fetchData();
@@ -201,14 +201,14 @@ const PaymentPage = () => {
             });
             console.log("Order Created:", res.data);
             
-            // Parse the orderId from the string response
+        
             let orderId = null;
             if (typeof res.data === 'string' && res.data.includes("Order created with ID:")) {
                 orderId = res.data.split("Order created with ID:")[1].trim();
-                setOrderId(orderId); // 📌 state'e kaydet
+                setOrderId(orderId); 
             }
 
-            // Validate orderId before proceeding
+        
             if (!orderId) {
                 console.error("No order ID received from create order API");
                 setErrorMessage("Order creation failed: No order ID received");
@@ -231,8 +231,8 @@ const PaymentPage = () => {
 
             clearCarto();
 
-            // Verileri çekmeden önce frontend state'ini de sıfırla
-            //setCart([]);
+        
+        
             setOrderTotal({
                 totalProductCount: 0,
                 totalPrice: 0,
@@ -240,10 +240,10 @@ const PaymentPage = () => {
                 totalAmount: 0,
             });
 
-            // Son verileri backend'den yeniden al
+    
             await fetchOrderTotal();
             await fetchData();
-            //refreshAuth();
+            
 
             setIsOrderConfirmed(true);
 
@@ -259,9 +259,8 @@ const PaymentPage = () => {
                 <div className="border p-1 rounded-lg mb-2">
                     <h3 className="font-semibold mb-2 mt-4">{t("deliveryAddress")}</h3>
 
-                    {/* Verinin geçerli olup olmadığını kontrol et */}
                     {Array.isArray(addresses) && addresses.length > 0 ? (
-                        // Default address var mı diye kontrol et
+            
                         addresses.some(address => address.isDefault === true) ? (
                             addresses.filter(address => address.isDefault === true).map((address, index) => (
                                 <label
@@ -521,7 +520,7 @@ const PaymentPage = () => {
                             </div>
                         </div>
 
-                        {/* Uyarı Metni */}
+                        {/* Warning Text */}
                         <p className="font-bold text-xl text-gray-800 mb-8">
                             <Trans
                                 i18nKey="minimumAmountWarning"

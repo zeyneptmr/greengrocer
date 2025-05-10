@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import Flag from "react-world-flags"; // Import the flag component
+import Flag from "react-world-flags"; 
 import { useTranslation } from "react-i18next";
 
 export default function ContactForm() {
@@ -30,7 +30,7 @@ export default function ContactForm() {
     const [emailError, setEmailError] = useState("");
     const [phoneError, setPhoneError] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [countryCode, setCountryCode] = useState("+90"); // Default country code set to Turkey
+    const [countryCode, setCountryCode] = useState("+90"); 
     const [bannerMessage, setBannerMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { t } = useTranslation("contact");
@@ -58,7 +58,7 @@ export default function ContactForm() {
     ];
 
     const validateEmail = (email) => {
-        const regex = /^[a-zA-Z0-9@._-]+$/; // Only allows English characters, numbers, @, ., _
+        const regex = /^[a-zA-Z0-9@._-]+$/; 
         return regex.test(email);
     };
 
@@ -126,7 +126,7 @@ export default function ContactForm() {
         const fullPhoneNumber = `${countryCode}${phoneNumber.replace(/\D/g, "")}`;
         const formDataToSubmit = {
             ...formData,
-            phoneNumber: fullPhoneNumber // Include the formatted phone number
+            phoneNumber: fullPhoneNumber 
         };
 
         try {

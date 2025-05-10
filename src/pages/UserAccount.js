@@ -4,7 +4,7 @@ import UserSidebar from "../components/UserSidebar.js";
 import { useTranslation, Trans } from "react-i18next";
 
 const UserAccount = () => {
-    const { t } = useTranslation("useraccount");  // useraccount.json dosyasını kullanacağız
+    const { t } = useTranslation("useraccount");  
 
     return (
         <div className="flex bg-green-50 min-h-screen">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState , useContext} from "react";
 import { ShoppingCart, CheckCircle, Truck, Package, Clock } from "lucide-react";
 import { FaApple } from 'react-icons/fa';
-import { generateInvoice } from "../helpers/generateInvoice"; // senin dosya yolu neyse ona göre değiştir
+import { generateInvoice } from "../helpers/generateInvoice"; 
 import { FaFileInvoice } from "react-icons/fa";
 import { useTranslation, Trans } from "react-i18next";
 import { LanguageContext } from "../context/LanguageContext";
@@ -30,7 +30,7 @@ export default function MyOrdersPage() {
     const { t } = useTranslation("myorders");
     const { language } = useContext(LanguageContext);
 
-    // Filtre seçenekleri
+    
     const filterOptions = [
         { id: "all", label: t("filters.all") },
         { id: "week", label: t("filters.week") },
@@ -100,7 +100,7 @@ export default function MyOrdersPage() {
                 language: language,
             };
 
-            generateInvoice(orderData); // PDF oluşturma fonksiyonunu çağır
+            generateInvoice(orderData); 
         } catch (error) {
             console.error('Hata:', error);
             alert('Fatura oluşturulurken hata oluştu');
@@ -112,7 +112,7 @@ export default function MyOrdersPage() {
         setIsLoading(true);
         try {
             const response = await axios.get("http://localhost:8080/api/customerorder/orders/my", { withCredentials: true });
-            // Siparişleri tarihe göre sıralayın (en yeni en üstte)
+        
             const sortedOrders = response.data.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
@@ -140,7 +140,7 @@ export default function MyOrdersPage() {
         fetchOrders();
     }, []);
 
-    // Dil değişince ürün isimlerini güncelle
+    
     useEffect(() => {
         if (displayedOrders.length > 0) {
             displayedOrders.forEach(order => {
@@ -151,7 +151,7 @@ export default function MyOrdersPage() {
 
 
 
-    // Filtre değiştiğinde siparişleri filtreleme
+    
     const filterOrders = (filterId) => {
         setActiveFilter(filterId);
         
@@ -237,7 +237,7 @@ export default function MyOrdersPage() {
                         {displayedOrders.map((order) => (
                             <div key={order.orderId} className="flex flex-col lg:flex-row gap-6">
 
-                                {/* Sipariş Takip İkonları */}
+                                {/* Order Tracking Icons */}
                                 <div className="flex flex-col justify-center items-center gap-4">
                                     {getStatusSteps(order.latestStatus).map((step, index) => (
                                         <div key={index} className={`rounded-full p-2 ${step.active ? 'bg-green-500 text-white' : 'bg-orange-300 text-white'}`}>
@@ -246,7 +246,7 @@ export default function MyOrdersPage() {
                                     ))}
                                 </div>
 
-                                {/* Sipariş Kartı */}
+                                {/* Order Card */}
                                 <div
                                     className="relative bg-white shadow-lg rounded-2xl p-6 flex flex-col md:flex-row w-full"
                                     onMouseEnter={() => {
@@ -263,19 +263,19 @@ export default function MyOrdersPage() {
                                     </button>
 
 
-                                    {/* Ürünler */}
+                                    {/* Products */}
                                     <div className="md:w-1/2 pr-4 relative">
-                                        {/* Sipariş No Sol Üst */}
+                                        {/* Order No. Upper Left */}
                                         <div className="absolute top-0 left-0 text-xs font-semibold text-orange-500">
                                             {t("orderId")}: {order.orderId}
                                         </div>
 
                                         <div className="mt-4 max-h-[230px] overflow-y-auto custom-scrollbar pr-2">
-                                            {/* Yükleniyor mesajı */}
+                                            {/* Loading message */}
                                             {!productsByOrderId[order.orderId] ? (
                                                 <div
                                                     className="flex justify-center items-center text-green-600 font-semibold gap-2 h-[230px]">
-                                                    {/* Elma İkonu */}
+                                                    {/* Apple Icon */}
                                                     <ShoppingCart className="w-6 h-6 text-green-600"/>
                                                     <span>{t("loadingProducts")}</span>
                                                 </div>
@@ -302,20 +302,20 @@ export default function MyOrdersPage() {
                                         </div>
                                     </div>
 
-                                    {/* Sipariş Bilgileri */}
+                                    {/* Order Information */}
                                     <div
                                         className="md:w-1/2 border-l border-orange-200 pl-4 flex flex-col justify-between">
                                         <div className="flex flex-col gap-2">
-                                            {/* Sipariş No */}
+                                            {/* Order No */}
                                             <div className="text-sm text-gray-600 inline">{t("orderId")}:</div>
                                             <div className="font-semibold inline ml-2">{order.orderId}</div>
 
-                                            {/* Tarih */}
+                                            {/* Date */}
                                             <div className="text-sm text-gray-600 inline ml-4">{t("date")}:</div>
                                             <div
                                                 className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleDateString()}</div>
 
-                                            {/* Saat */}
+                                            {/* Time */}
                                             <div className="text-sm text-gray-600 inline ml-4">{t("time")}:</div>
                                             <div
                                                 className="font-medium inline ml-2">{new Date(order.createdAt).toLocaleTimeString([], {
@@ -323,13 +323,13 @@ export default function MyOrdersPage() {
                                                 minute: '2-digit'
                                             })}</div>
 
-                                            {/* Toplam Tutar */}
+                                            {/* Total Amount */}
                                             <div className="text-sm text-gray-600 inline ml-4">{t("totalAmount")}:</div>
                                             <div
                                                 className="font-bold text-lg text-orange-600 inline ml-2">{order.totalAmount} ₺
                                             </div>
 
-                                            {/* Durum */}
+                                            {/* Status */}
                                             <div className="flex justify-end">
                                                 <div
                                                     className={`font-semibold flex items-center gap-2 inline ml-2 ${order.latestStatus === "Dispatched" ? 'text-green-600' : 'text-orange-500'}`}>
@@ -345,7 +345,7 @@ export default function MyOrdersPage() {
                     </div>
                 ) : (
                     <div className="flex justify-center items-center min-h-[300px]">
-                        <h2 className="text-xl font-bold text-green-600">No orders found in this time range.</h2>
+                        <h2 className="text-xl font-bold text-green-600">{t("noOrders")}</h2>
                     </div>
                 )}
             </div>

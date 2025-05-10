@@ -40,7 +40,7 @@ const SearchBar = () => {
                 }
                 const data = await response.json();
 
-                // Transform backend product format to match frontend format
+        
                 const transformedProducts = data.map(product => ({
                     id: product.id,
                     name: product.translatedName,
@@ -89,7 +89,7 @@ const SearchBar = () => {
                 }
                 const data = await response.json();
 
-                // Transform backend product format to match frontend format
+            
                 const transformedProducts = data.map(product => ({
                     id: product.id,
                     name: product.translatedName,

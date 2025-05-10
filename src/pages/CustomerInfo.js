@@ -17,7 +17,7 @@ const CustomerInfo = () => {
     const [success, setSuccess] = useState(false);
     const [isUpdated, setIsUpdated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { t } = useTranslation("customerinfo");  // customerinfo.json kullanacağız
+    const { t } = useTranslation("customerinfo");  
 
     useEffect(() => {
         const fetchUserData = async () => {

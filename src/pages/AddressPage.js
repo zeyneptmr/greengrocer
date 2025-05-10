@@ -24,9 +24,9 @@ const AddressPage = () => {
     const [addresses, setAddresses] = useState([]);
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [errors, setErrors] = useState({});
-    const [editingIndex, setEditingIndex] = useState(null); // For editing
+    const [editingIndex, setEditingIndex] = useState(null); 
     const [error, setError] = useState("");
-    const { t } = useTranslation("address");  // JSON dosyasının adı "address.json" olacak
+    const { t } = useTranslation("address");  
 
 
     const cityData = {
@@ -66,11 +66,11 @@ const AddressPage = () => {
         }
     };
 
-    // Adresleri backend'den çekiyoruz
+    
     const fetchAddresses = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/addresses', {
-                withCredentials: true,  // Cookie'leri gönder
+                withCredentials: true,  
             });
             setAddresses(response.data);
         } catch (error) {
@@ -139,7 +139,7 @@ const AddressPage = () => {
         if (Object.keys(validationErrors).length === 0) {
             try {
                 if (editingIndex !== null && editingIndex !== undefined) {
-                    // Adres güncelleniyor
+                
                     const addressId = addresses[editingIndex]?.id;
                     if (!addressId) {
                         console.error("Address ID is undefined");
@@ -151,7 +151,7 @@ const AddressPage = () => {
                     });
 
                 } else {
-                    // Yeni adres ekleniyor
+                
                     await axios.post('http://localhost:8080/api/addresses', formData, {
                         withCredentials: true,
                     });
@@ -159,7 +159,7 @@ const AddressPage = () => {
 
                 await fetchAddresses();
 
-                // Formu sıfırla
+            
                 setFormData({
                     firstName: '',
                     lastName: '',
@@ -202,10 +202,10 @@ const AddressPage = () => {
     };
 
     const handleEdit = (index) => {
-        console.log("Editing address at index:", index);  // Burada index'in doğru olduğunu kontrol edin.
+        console.log("Editing address at index:", index);  
         setFormData(addresses[index]);
         setEditingIndex(index);
-        setIsFormVisible(true); // Open the form for editing
+        setIsFormVisible(true); 
     };
 
     const handleDelete = async (index) => {
@@ -422,7 +422,7 @@ const AddressPage = () => {
                                 <FaCheckCircle
                                     style={{cursor: 'pointer', color: address.isDefault ? 'green' : 'gray'}}
                                     onClick={() => handleSetDefault(address.id)}
-                                    size={30} // İkonun boyutunu buradan ayarlıyoruz
+                                    size={30} 
                                 />
 
                                 <p className="text-lg"><strong>{t("receiver")}:</strong> {address.firstName} {address.lastName}</p>

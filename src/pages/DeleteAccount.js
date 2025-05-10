@@ -14,7 +14,7 @@ const DeleteAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const { setIsLoggedIn } = useCart();
-    const { t } = useTranslation("deleteaccount");  // deleteaccount.json
+    const { t } = useTranslation("deleteaccount");  
 
     const handleDelete = async () => {
         setErrorMessage("");

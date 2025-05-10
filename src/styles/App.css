@@ -1,17 +1,17 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Yatay kaymayı engeller */
+  overflow-x: hidden; 
   overscroll-behavior-x: none; 
-  width: 100%; /* Yatayda tamamen ekranı kaplar */
+  width: 100%; 
 }
 
 .App {
   text-align: center;
-  max-width: 100%; /* 1200px yerine ekran genişliğini tam kapsar */
+  max-width: 100%; 
   margin: 0;
-  padding: 0; /* Paddingi sıfırladık */
-  width: 100%; /* Yanlarda boşluk olmasın diye %100 genişlik */
+  padding: 0; 
+  width: 100%; 
 }
 
 .App-header {
@@ -22,8 +22,8 @@ html, body {
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  width: 100%; /* Navbar genişliğini tam ekran yapmak için */
-  padding: 0; /* Navbar'da padding bırakmıyoruz */
+  width: 100%; 
+  padding: 0; 
 }
 
 .App-logo {

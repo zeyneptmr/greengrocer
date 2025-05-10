@@ -12,12 +12,12 @@ const Sidebar = () => {
 
     const { setIsLoggedIn } = useCart();
     const [role, setRole] = useState("");
-    //const [token, setToken] = useState(null);
+    
     const [loggedInUser, setLoggedInUser] = useState(null);
     const navigate = useNavigate();
     const { refreshAuth } = useFavorites();
     const [Cart, setCart] = useState(null);
-    const { t } = useTranslation("usersidebar");  // sidebar.json dosyasını kullanacak
+    const { t } = useTranslation("usersidebar");  
 
     const handleLogout = () => {
         axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true })
@@ -25,7 +25,7 @@ const Sidebar = () => {
                 localStorage.removeItem("loggedInUser");
                 localStorage.removeItem("role");
                 localStorage.removeItem("cart");
-                // Rol bilgisini sıfırla
+            
                 setCart([]);
                 setRole(null);
                 setLoggedInUser(null);
@@ -37,7 +37,7 @@ const Sidebar = () => {
             })
             .catch((error) => {
                 console.error("Logout error:", error);
-                // Hata durumunda da login sayfasına yönlendirebilirsiniz
+            
                 navigate("/");
             });
     };
