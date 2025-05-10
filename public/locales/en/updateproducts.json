@@ -6,6 +6,10 @@
   "delete": "DELETE",
   "update_products": "Update Products",
   "admin_panel": "Admin Panel",
+  "deleteErrorOrderExists": "This product cannot be deleted because it exists in past orders.",
+  "deleteSuccess": "The product was successfully deleted!",
+  "deleteFail": "Failed to delete product. Please try again.",
+  "deleteConfirm": "Are you sure you want to delete this product?",
   "categories": {
     "vegetables": "VEGETABLES",
     "fruits": "FRUITS",

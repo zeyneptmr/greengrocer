@@ -76,15 +76,20 @@ const UpdateProductsPage = () => {
     };
 
     const handleDelete = async (productId) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
+        if (window.confirm(t("deleteConfirm"))){
             try {
                 await axios.delete(`http://localhost:8080/api/products/${productId}`);
                 const updatedProducts = products.filter(product => product.id !== productId);
                 setProducts(updatedProducts);
-                alert("The product was successfully deleted!");
+                alert(t("deleteSuccess"));
             } catch (err) {
                 console.error("Error deleting product:", err);
-                alert("Failed to delete product. Please try again.");
+
+                if (err.response && err.response.status === 409) {
+                    alert(t("deleteErrorOrderExists"));
+                } else {
+                    alert(t("deleteFail"));
+                }
             }
         }
     };

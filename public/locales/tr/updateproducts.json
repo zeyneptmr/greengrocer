@@ -6,6 +6,10 @@
   "delete": "SİL",
   "update_products": "Ürün Güncelle",
   "admin_panel": "Admin Paneli",
+  "deleteErrorOrderExists": "Bu ürün geçmiş siparişlerde yer aldığı için silinemez.",
+  "deleteSuccess": "Ürün başarıyla silindi!",
+  "deleteFail": "Ürün silinemedi. Lütfen tekrar deneyin.",
+  "deleteConfirm": "Bu ürünü silmek istediğinize emin misiniz?",
   "categories": {
     "vegetables": "SEBZELER",
     "fruits": "MEYVELER",

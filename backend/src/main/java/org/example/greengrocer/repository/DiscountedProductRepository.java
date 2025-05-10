@@ -24,4 +24,6 @@ public interface DiscountedProductRepository extends JpaRepository<DiscountedPro
             "WHERE dp.active = true AND pt.language = :language")
     List<DiscountedProduct> findAllActiveDiscountsByLanguage(String language);
 
+    void deleteByProductId(Long productId);
+
 }

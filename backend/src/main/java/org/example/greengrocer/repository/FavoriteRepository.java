@@ -18,4 +18,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     @Transactional
     void deleteAllByUserId(Long userId);
+
+    @Transactional
+    void deleteByProductId(Long productId);
+
 }

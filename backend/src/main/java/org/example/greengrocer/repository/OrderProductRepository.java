@@ -14,6 +14,8 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
     List<OrderProduct> findByCustomerOrder_OrderIdAndCustomerOrder_User_Email(String orderId, String email);
 
     @Transactional
-    void deleteAllByCustomerOrder(CustomerOrder customerOrder); 
+    void deleteAllByCustomerOrder(CustomerOrder customerOrder);
+
+    boolean existsByProductId(Long productId);
 
 }

@@ -10,6 +10,11 @@ import org.example.greengrocer.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.greengrocer.repository.FavoriteRepository;
+import org.example.greengrocer.repository.CartItemRepository;
+import org.example.greengrocer.repository.DiscountedProductRepository;
+
+import org.example.greengrocer.repository.OrderProductRepository;
 
 import org.example.greengrocer.model.ProductTranslation;
 
@@ -18,7 +23,19 @@ import org.example.greengrocer.model.ProductTranslation;
 public class ProductService {
     
     private final ProductRepository productRepository;
-    
+
+    @Autowired
+    private FavoriteRepository favoritesRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private DiscountedProductRepository discountedProductRepository;
+
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -39,11 +56,26 @@ public class ProductService {
     public Product updateProduct(Product product) {
         return productRepository.save(product);
     }
-    
+
+    @Transactional
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+
+            if (orderProductRepository.existsByProductId(id)) {
+                throw new IllegalStateException("Bu ürün silinemez çünkü geçmiş siparişlerde yer alıyor.");
+            }
+
+            favoritesRepository.deleteByProductId(id);
+            cartItemRepository.deleteByProductId(id);
+            discountedProductRepository.deleteByProductId(id);
+
+            productRepository.deleteById(id);
+        }
     }
-    
+
+
     public Product updateStock(Long id, int newStock) {
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
@@ -89,15 +121,6 @@ public class ProductService {
     @Autowired
     private ProductTranslationService translationService;
 
-    /*public List<Product> searchByTranslatedName(String translatedName, String language) {
-        List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
-        return translations.stream()
-                .map(t -> productRepository.findByProductKey(t.getProductKey()))
-                .filter(opt -> opt.isPresent())
-                .map(opt -> opt.get())
-                .collect(Collectors.toList());
-    }*/
-
     public List<Product> searchByTranslatedName(String translatedName, String language) {
         List<ProductTranslation> translations = translationService.searchByTranslatedName(translatedName, language);
         return translations.stream()
@@ -105,10 +128,6 @@ public class ProductService {
                 .flatMap(opt -> opt.stream())  // Optional varsa içindeki Product'ı açar
                 .collect(Collectors.toList());
     }
-
-
-
-
 
 
 

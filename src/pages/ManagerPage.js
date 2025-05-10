@@ -191,12 +191,21 @@ const ManagerPage = () => {
             if (!Array.isArray(ordersResponse.data)) {
                 throw new Error("Invalid order data received");
             }
-            
+
             const dateOrders = ordersResponse.data.filter(order => {
+                if (!order.createdAt) return false;
+
                 const orderDate = new Date(order.createdAt);
-                return orderDate.toISOString().split('T')[0] === dateStr;
+
+                // Local tarih karşılaştırması (UTC problemi çözülüyor)
+                const localDateStr = orderDate.getFullYear() + "-" +
+                    String(orderDate.getMonth() + 1).padStart(2, '0') + "-" +
+                    String(orderDate.getDate()).padStart(2, '0');
+
+                return localDateStr === dateStr;
             });
-            
+
+
             // Sort orders by createdAt timestamp in descending order (newest first)
             const sortedDateOrders = dateOrders.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);

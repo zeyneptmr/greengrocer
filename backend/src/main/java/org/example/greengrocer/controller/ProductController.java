@@ -3,6 +3,8 @@ package org.example.greengrocer.controller;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import java.util.Collections;
 
 import org.example.greengrocer.dto.ProductDTO;
 import org.example.greengrocer.model.Product;
@@ -240,9 +242,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/search/key")
