@@ -68,3 +68,27 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+## Backend - Spring Boot Setup
+
+In the `/backend` directory, open a terminal and run:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+
+## Forgot Password Feature (Backend Requirement)
+
+This project uses Redis and SMTP (Sendinblue) to send password reset emails.
+
+### Steps:
+
+To enable the forgot password feature and receive reset code emails:
+
+Install Redis on your machine.
+Open a terminal in the backend/ .
+Run the following command before starting the Spring Boot app:
+
+```bash
+redis-server
