@@ -1,4 +1,3 @@
-
 # TapTaze – Greengrocer Web Application
 
 **TapTaze** is a dynamic and user-friendly **e-greengrocer** web application developed using **React.js** for the frontend and **Spring Boot (Java)** for the backend. The platform enables seamless online grocery shopping through an intuitive interface designed with a modern user experience in mind.
