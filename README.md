@@ -81,7 +81,6 @@ This project uses **Redis** and **Sendinblue SMTP API** to send password reset e
 ```env
 MAIL_API_KEY=your-sendinblue-api-key
 SENDER_EMAIL=your-verified-email@example.com
-SENDER_NAME=YourAppName
 ```
 
 > 📌 Your Sendinblue account must have a verified sender address that matches `SENDER_EMAIL`.
