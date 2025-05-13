@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import io.github.cdimascio.dotenv.Dotenv;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +24,11 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class MailService {
+
+    private static final Dotenv dotenv = Dotenv.load(); // .env dosyasını yükler
+    private static final String API_KEY = dotenv.get("MAIL_API_KEY");
+
     private static final Logger logger = LoggerFactory.getLogger(MailService.class);
-    private static final String API_KEY = "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";
     private static final String API_URL = "https://api.sendinblue.com/v3/smtp/email";
 
     @Autowired
