@@ -57,7 +57,7 @@ public class MailService {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             Map<String, Object> emailData = new HashMap<>();
             emailData.put("sender", Map.of(
-                    "email", "taptazee@gmail.com",
+                    "email", dotenv.get("SENDER_EMAIL"),
                     "name", "TAPTAZE"
             ));
 

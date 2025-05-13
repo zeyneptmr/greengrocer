@@ -1,74 +1,29 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# TapTaze – Greengrocer Web Application
 
-## Available Scripts
+**TapTaze** is a dynamic and user-friendly **e-greengrocer** web application developed using **React.js** for the frontend and **Spring Boot (Java)** for the backend. The platform enables seamless online grocery shopping through an intuitive interface designed with a modern user experience in mind.
 
-In the project directory, you can run:
+###  Key Features
 
-### `npm start`
+-  Role-based panel system with three separate interfaces:
+    - **User Panel:** Allows customers to browse and search products, manage their personal information, create and update their cart and favorites, track their order status, and download detailed order invoices in a printable format.
+    - **Manager Panel:** Handles stock control, shipping processes, discount management, and user messages.
+    - **Admin Panel:** Manages product details, updates, and administrative-level operations.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The system is designed with flexibility and modularity in mind, supporting dynamic updates and scalable functionality. Whether you're a shopper or a system manager, TapTaze adapts to your needs.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Frontend Setup
 
-### `npm test`
+In the project root directory (where `package.json` is located), run the following commands:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+npm start
+```
 
-### `npm run build`
+The application will run in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
+---
 
 ## Backend - Spring Boot Setup
 
@@ -77,18 +32,80 @@ In the `/backend` directory, open a terminal and run:
 ```bash
 mvn clean install
 mvn spring-boot:run
+```
 
-## Forgot Password Feature (Backend Requirement)
+The backend will run at [http://localhost:8080](http://localhost:8080) by default.
 
-This project uses Redis and SMTP (Sendinblue) to send password reset emails.
+---
 
-### Steps:
+## MySQL Database Setup
 
-To enable the forgot password feature and receive reset code emails:
+This project uses a MySQL database for persistent data storage.
 
-Install Redis on your machine.
-Open a terminal in the backend/ .
-Run the following command before starting the Spring Boot app:
+### Instructions:
+
+1. Install **MySQL Server** and **MySQL Workbench** if not already installed.
+2. Open MySQL Workbench and connect to your local MySQL server.
+3. Create a new schema named: `greengrocer_db`.
+4. Run the backend once to auto-generate required tables via Spring Boot.
+5. After that, populate the database using the provided SQL script:
+
+📂 [`backend/sql/setup.sql`](backend/sql/setup.sql)
+
+6. Open the file `application.properties` under `/backend/src/main/resources` and update the line below with your actual MySQL password:
+
+```properties
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+```
+
+---
+
+## Forgot Password Feature (Mail Sender)
+
+This project uses **Redis** and **Sendinblue SMTP API** to send password reset emails.
+
+### Requirements:
+
+* Redis installed and running locally
+* A valid Sendinblue API Key
+* A verified sender email address
+
+---
+
+### Setup Instructions:
+
+1. In the project root directory, locate the file named `.env.example`.
+2. Make a copy of this file and rename it to `.env`
+3. Open the `.env` file and replace the placeholder values with your actual credentials:
+
+```env
+MAIL_API_KEY=your-sendinblue-api-key
+SENDER_EMAIL=your-verified-email@example.com
+SENDER_NAME=YourAppName
+```
+
+> 📌 Your Sendinblue account must have a verified sender address that matches `SENDER_EMAIL`.
+
+4. Make sure the `.env` file is **not** committed to GitHub. It is already listed in `.gitignore`.
+
+5. Start Redis:
 
 ```bash
 redis-server
+```
+
+6. Then run the backend:
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+## Contact
+
+If you experience any issues running the project or configuring environment variables, feel free to reach out to the project lead via:
+
+🔗 [github.com/zeyneptmr](https://github.com/zeyneptmr)
+
+You may open an issue on the repository or view the profile for more contact options.
