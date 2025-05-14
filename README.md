@@ -11,6 +11,17 @@
 
 The system is designed with flexibility and modularity in mind, supporting dynamic updates and scalable functionality. Whether you're a shopper or a system manager, TapTaze adapts to your needs.
 
+###   Access Information
+
+- To access specific panels within the project, please use the following credentials during registration:
+
+* Manager Panel AccessRegister with: manager@taptaze.com
+
+* Admin Panel AccessRegister with: admin@taptaze.com
+
+⚠️ These roles are assigned based on the email addresses used during signup. Please ensure you use the correct email to access the appropriate panel.
+
+
 ## Frontend Setup
 
 In the project root directory (where `package.json` is located), run the following commands:
@@ -82,7 +93,7 @@ MAIL_API_KEY=your-sendinblue-api-key
 SENDER_EMAIL=your-verified-email@example.com
 ```
 
-> 📌 Your Sendinblue account must have a verified sender address that matches `SENDER_EMAIL`.
+>  Your Sendinblue account must have a verified sender address that matches `SENDER_EMAIL`.
 
 4. Make sure the `.env` file is **not** committed to GitHub. It is already listed in `.gitignore`.
 
@@ -102,8 +113,4 @@ mvn spring-boot:run
 
 ## Contact
 
-If you experience any issues running the project or configuring environment variables, feel free to reach out to the project lead via:
-
-🔗 [github.com/zeyneptmr](https://github.com/zeyneptmr)
-
-You may open an issue on the repository or view the profile for more contact options.
+If you experience any issues running the project or configuring environment variables, feel free to open an issue on the repository.
